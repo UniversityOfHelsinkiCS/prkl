@@ -4,6 +4,7 @@
   "description": "PRKL is a ProjektiRyhmäytymistyöKaLu",
   "main": "app.js",
   "scripts": {
+    "start": "NODE_ENV=development nodemon src/app.js --exec 'npx babel-node'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,6 +18,18 @@
   },
   "homepage": "https://github.com/UniversityOfHelsinkiCS/prkl#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-promise-router": "^3.0.3",
+    "morgan": "^1.9.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.3",
+    "@babel/node": "^7.8.3",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "nodemon": "^2.0.2"
   }
 }
