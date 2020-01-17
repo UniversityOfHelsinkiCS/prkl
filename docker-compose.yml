@@ -4,3 +4,8 @@ services:
   app:
     build:
       context: ./
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./server:/usr/src/app/server
+    image: prkl-dev
+    container_name: prkl-dev
