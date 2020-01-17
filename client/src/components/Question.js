@@ -7,10 +7,11 @@ const Question = () => {
     const props = {
         title: "ooks jonne?",
         options: [
-            { key: 'y', text: 'yes', value: 'yes' },
-            { key: 'hy', text: "you're absolutely right sir", value: 'hy' },
-            { key: 'n', text: 'no', value: 'no' },
-            { key: 'm', text: 'maybe', value: 'maybe' },
+            { key: 1, text: 1, value: 1 },
+            { key: 2, text: 2, value: 2 },
+            { key: 3, text: 3, value: 3 },
+            { key: 4, text: 4, value: 4 },
+            { key: 5, text: 5, value: 5 },
         ],
         freeform: true,
         description: "juotko es"
