@@ -3,6 +3,10 @@ export default {
     // We're using dots for nesting and camelCase for each name
     "Header.courses": "Courses",
     "Header.logout": "Logout",
+    "Header.addCourse": "Add Course",
+
+    "QuestionForm.addNewQuestion": "Add new question",
+
     "StudentInfo.header": "Student Info",
     "StudentInfo.fullname": "Name: {fullname}",
     "StudentInfo.username": "Username: {username}",
