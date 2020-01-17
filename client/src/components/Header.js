@@ -15,7 +15,7 @@ const Header = () => {
         active={activeItem === "Courses"}
         onClick={handleItemClick}
       >
-        <FormattedMessage id="menu.courses"></FormattedMessage>
+        <FormattedMessage id="Header.courses"></FormattedMessage>
       </Menu.Item>
 
       <Menu.Item
@@ -28,7 +28,7 @@ const Header = () => {
 
       <Menu.Item position="right">
         <Button>
-          <FormattedMessage id="menu.logout"></FormattedMessage>
+          <FormattedMessage id="Header.logout"></FormattedMessage>
         </Button>
       </Menu.Item>
     </Menu>

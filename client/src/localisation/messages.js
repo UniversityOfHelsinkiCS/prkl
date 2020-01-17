@@ -6,6 +6,14 @@ export default {
     "menu.personalInfo": "Personal info",
     "menu.logout": "Logout",
     "question.question": "Question",
+    "Header.courses": "Courses",
+    "Header.logout": "Logout",
+    "StudentInfo.header": "Student Info",
+    "StudentInfo.fullname": "Name: {fullname}",
+    "StudentInfo.username": "Username: {username}",
+    "StudentInfo.studentNo": "Student number: {studentNo}",
+    "StudentInfo.email": "Email: {email}",
+
     // You can use placeholders using curly braces ({variable})
     "user.hello": "Hi {username}, how are you?"
     // ...and also HTML
