@@ -20,7 +20,7 @@ const Header = () => {
         active={activeItem === "Courses"}
         onClick={handleItemClick}
       >
-        <FormattedMessage id="Header.courses"></FormattedMessage>
+        <FormattedMessage id="header.courses"></FormattedMessage>
       </Menu.Item>
 
 
@@ -40,12 +40,12 @@ const Header = () => {
         active={activeItem === "personalInfo"}
         onClick={handleItemClick}
       >
-        <FormattedMessage id="menu.personalInfo"></FormattedMessage>
+        <FormattedMessage id="header.personalInfo"></FormattedMessage>
       </Menu.Item>
 
       <Menu.Item position="right">
         <Button>
-          <FormattedMessage id="Header.logout"></FormattedMessage>
+          <FormattedMessage id="header.logout"></FormattedMessage>
         </Button>
       </Menu.Item>
     </Menu>

@@ -1,28 +1,33 @@
 export default {
   en: {
     // We're using dots for nesting and camelCase for each name
-    "menu.courses": "Courses",
+
     "homepage.welcome": "Welcome!",
-    "menu.personalInfo": "Personal info",
-    "menu.logout": "Logout",
+
+    "header.personalInfo": "Personal info",
+    "header.logout": "Logout",
+    "header.courses": "Courses",
+    "header.logout": "Logout",
+    "header.addCourse": "Add Course",
+
     "question.question": "Question",
-    "Header.courses": "Courses",
-    "Header.logout": "Logout",
-    "Header.addCourse": "Add Course",
 
-    "QuestionForm.addNewQuestion": "Add new question",
-    "QuestionCreationForm.addNewQuestion": "Type in your question",
-    "CourseCreationForm.PageTitle": "Create course",
-    "CourseCreationForm.TitleForm": "Title",
-    "CourseCreationForm.CourseCodeForm": "Course code",
-    "CourseCreationForm.CourseDescriptionForm": "Course description",
-    "CourseCreationForm.ConfirmButton": "Confirm",
+    "questionForm.addNewQuestion": "Add new question",
+    "questionCreationForm.addNewQuestion": "Type in your question",
+    "courseCreationForm.PageTitle": "Create course",
+    "courseCreationForm.TitleForm": "Title",
+    "courseCreationForm.CourseCodeForm": "Course code",
+    "courseCreationForm.CourseDescriptionForm": "Course description",
+    "courseCreationForm.ConfirmButton": "Confirm",
+    "courses.searchPlaceholder": "Search courses",
 
-    "StudentInfo.header": "Student Info",
-    "StudentInfo.fullname": "Name: {fullname}",
-    "StudentInfo.username": "Username: {username}",
-    "StudentInfo.studentNo": "Student number: {studentNo}",
-    "StudentInfo.email": "Email: {email}",
+    "questionForm.addNewQuestion": "Add new question",
+
+    "studentInfo.header": "Student Info",
+    "studentInfo.fullname": "Name: {fullname}",
+    "studentInfo.username": "Username: {username}",
+    "studentInfo.studentNo": "Student number: {studentNo}",
+    "studentInfo.email": "Email: {email}",
 
     // You can use placeholders using curly braces ({variable})
     "user.hello": "Hi {username}, how are you?"

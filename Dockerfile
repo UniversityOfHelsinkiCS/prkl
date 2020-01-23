@@ -7,10 +7,16 @@ RUN dpkg-reconfigure -f noninteractive tzdata
 WORKDIR /usr/src/app
 COPY . .
 
-WORKDIR /usr/src/app/server
+# Build frontend.
+WORKDIR /usr/src/app/client
 RUN npm ci
 RUN npm run build
+RUN cp -r build/ ../server/public
+
+# Build backend.
+WORKDIR /usr/src/app/server
+RUN npm ci
 
 EXPOSE 3001
 
-CMD npm run serve
+CMD npm start
