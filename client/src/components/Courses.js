@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Input } from "semantic-ui-react"
-import { FormattedMessage, useIntl } from "react-intl"
+import { useIntl } from "react-intl"
 
 const Courses = () => {
   const [courses, setCourses] = useState([

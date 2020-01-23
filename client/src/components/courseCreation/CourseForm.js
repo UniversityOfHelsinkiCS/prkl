@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Menu, Button, Input, Form, Select, TextArea } from "semantic-ui-react"
+import { Input, Form, Button } from "semantic-ui-react"
 import { FormattedMessage } from "react-intl"
 import QuestionCreationForm from "./QuestionCreationForm"
 
@@ -8,6 +8,8 @@ const CourseFrom = () => {
     const [courseTitle, setCourseTitle] = useState("")
     const [courseDescription, setCourseDescription] = useState("")
     const [courseCode, setCourseCode] = useState("")
+    const [questionText, setQuestionText] = useState("")
+    const [questions, setQuestions] = useState([])
 
 
 
@@ -19,6 +21,13 @@ const CourseFrom = () => {
                 code: courseCode
             }
             console.log('courseObject: ', courseObject);
+        }
+    }
+
+    const handleAddQuestion = () => {
+        if (questionText != "") {
+            setQuestions(questions.concat(questionText))
+            setQuestionText("")
         }
     }
 
@@ -53,7 +62,20 @@ const CourseFrom = () => {
                 </div>
             </Form.Field>
             <div>
-                <QuestionCreationForm />
+                <Form.Field >
+                    <div>
+                        <label>
+                            <FormattedMessage id="questionCreationForm.addNewQuestion"></FormattedMessage>
+                        </label>
+                    </div>
+                    <div>
+                        <Input fluid onChange={event => setQuestionText(event.target.value)} value={questionText} />
+                    </div>
+
+                    <Button onClick={handleAddQuestion}>
+                        <FormattedMessage id="questionForm.addNewQuestion"></FormattedMessage>
+                    </Button>
+                </Form.Field>
             </div>
 
             <div>
