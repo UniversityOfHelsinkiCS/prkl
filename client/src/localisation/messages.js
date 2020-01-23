@@ -11,6 +11,12 @@ export default {
     "Header.addCourse": "Add Course",
 
     "QuestionForm.addNewQuestion": "Add new question",
+    "QuestionCreationForm.addNewQuestion": "Type in your question",
+    "CourseCreationForm.PageTitle": "Create course",
+    "CourseCreationForm.TitleForm": "Title",
+    "CourseCreationForm.CourseCodeForm": "Course code",
+    "CourseCreationForm.CourseDescriptionForm": "Course description",
+    "CourseCreationForm.ConfirmButton": "Confirm",
 
     "StudentInfo.header": "Student Info",
     "StudentInfo.fullname": "Name: {fullname}",

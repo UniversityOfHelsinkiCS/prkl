@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Menu, Button, MenuItem } from "semantic-ui-react"
 import { FormattedMessage } from "react-intl"
-import { Link } from "react-router-dom"
+import { Link, Route } from "react-router-dom"
 
 const Header = () => {
   const [activeItem, setActiveItem] = useState(null)
@@ -23,6 +23,16 @@ const Header = () => {
         <FormattedMessage id="Header.courses"></FormattedMessage>
       </Menu.Item>
 
+
+      <Menu.Item
+        as={Link}
+        to="/addcourse"
+        name="AddCourse"
+        active={activeItem === "AddCourse"}
+        onClick={handleItemClick}
+      >
+        <FormattedMessage id="Header.addCourse"></FormattedMessage>
+      </Menu.Item>
       <Menu.Item
         as={Link}
         to="/user"
@@ -32,15 +42,6 @@ const Header = () => {
       >
         <FormattedMessage id="menu.personalInfo"></FormattedMessage>
       </Menu.Item>
-      <Menu.Item>
-        as={Link}
-        to="/addcourse"
-        name="AddCourse"
-        active={activeItem === "AddCourse"}
-        onClick={handleItemClick}
-        >
-        <FormattedMessage id="Header.addCourse"></FormattedMessage>
-      </Menu.Item>
 
       <Menu.Item position="right">
         <Button>
@@ -48,6 +49,9 @@ const Header = () => {
         </Button>
       </Menu.Item>
     </Menu>
+
+
+
   )
 }
 export default Header
