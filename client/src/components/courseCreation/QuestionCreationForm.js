@@ -15,12 +15,12 @@ const QuestionCreationForm = () => {
         <Form>
             <Form.Field>
                 <label>
-                    <FormattedMessage id="QuestionCreationForm.addNewQuestion"></FormattedMessage>
+                    <FormattedMessage id="questionCreationForm.addNewQuestion"></FormattedMessage>
                 </label>
                 <Input onChange={event => setQuestionText(event.target.value)} />
 
                 <Button onClick={handleClick}>
-                    <FormattedMessage id="QuestionForm.addNewQuestion"></FormattedMessage>
+                    <FormattedMessage id="questionForm.addNewQuestion"></FormattedMessage>
                 </Button>
             </Form.Field>
         </Form>

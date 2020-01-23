@@ -16,7 +16,7 @@ const QuestionForm = () => {
       <Form>
         <div>
           <label>{
-            <FormattedMessage id="QuestionForm.addNewQuestion"></FormattedMessage>
+            <FormattedMessage id="questionForm.addNewQuestion"></FormattedMessage>
           }</label>
         </div>
         <div>

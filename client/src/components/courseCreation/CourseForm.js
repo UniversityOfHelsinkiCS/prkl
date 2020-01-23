@@ -24,11 +24,11 @@ const CourseFrom = () => {
 
     return (
         <div>
-            <h1><FormattedMessage id="CourseCreationForm.PageTitle"></FormattedMessage></h1>
+            <h1><FormattedMessage id="courseCreationForm.PageTitle"></FormattedMessage></h1>
 
             <Form.Field >
                 <div>
-                    <label >{<FormattedMessage id="CourseCreationForm.TitleForm"></FormattedMessage>}</label>
+                    <label >{<FormattedMessage id="courseCreationForm.TitleForm"></FormattedMessage>}</label>
                 </div>
                 <div>
                     <Input fluid type="courseTitle" onChange={event => setCourseTitle(event.target.value)}></Input>
@@ -38,7 +38,7 @@ const CourseFrom = () => {
 
             <Form.Field>
                 <div>
-                    <label>{<FormattedMessage id="CourseCreationForm.CourseDescriptionForm"></FormattedMessage>}</label>
+                    <label>{<FormattedMessage id="courseCreationForm.CourseDescriptionForm"></FormattedMessage>}</label>
                 </div>
                 <div>
                     <Input fluid type="courseDescription" onChange={event => setCourseDescription(event.target.value)}></Input>
@@ -46,7 +46,7 @@ const CourseFrom = () => {
             </Form.Field>
             <Form.Field>
                 <div>
-                    <label>{<FormattedMessage id="CourseCreationForm.CourseCodeForm"></FormattedMessage>}</label>
+                    <label>{<FormattedMessage id="courseCreationForm.CourseCodeForm"></FormattedMessage>}</label>
                 </div>
                 <div>
                     <Input type="courseCode" onChange={event => setCourseCode(event.target.value)}></Input>
@@ -57,7 +57,7 @@ const CourseFrom = () => {
             </div>
 
             <div>
-                <Form.Button onClick={handleSubmit}>{<FormattedMessage id="CourseCreationForm.ConfirmButton"></FormattedMessage>}</Form.Button>
+                <Form.Button onClick={handleSubmit}>{<FormattedMessage id="courseCreationForm.ConfirmButton"></FormattedMessage>}</Form.Button>
             </div>
 
         </div>

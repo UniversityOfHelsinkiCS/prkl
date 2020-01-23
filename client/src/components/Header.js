@@ -31,7 +31,7 @@ const Header = () => {
         active={activeItem === "AddCourse"}
         onClick={handleItemClick}
       >
-        <FormattedMessage id="Header.addCourse"></FormattedMessage>
+        <FormattedMessage id="header.addCourse"></FormattedMessage>
       </Menu.Item>
       <Menu.Item
         as={Link}
