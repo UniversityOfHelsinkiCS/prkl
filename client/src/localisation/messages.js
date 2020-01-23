@@ -7,7 +7,6 @@ export default {
     "header.personalInfo": "Personal info",
     "header.logout": "Logout",
     "header.courses": "Courses",
-    "header.logout": "Logout",
     "header.addCourse": "Add Course",
 
     "question.question": "Question",
