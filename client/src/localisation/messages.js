@@ -9,17 +9,19 @@ export default {
     "header.courses": "Courses",
     "header.addCourse": "Add Course",
 
-    "question.question": "Question",
-
     "questionCreationForm.addNewQuestion": "Type in your question",
+    "questionForm.addNewQuestion": "Add new question",
+
     "courseCreationForm.PageTitle": "Create course",
     "courseCreationForm.TitleForm": "Title",
     "courseCreationForm.CourseCodeForm": "Course code",
     "courseCreationForm.CourseDescriptionForm": "Course description",
     "courseCreationForm.ConfirmButton": "Confirm",
+
     "courses.searchPlaceholder": "Search courses",
 
-    "questionForm.addNewQuestion": "Add new question",
+    "course.questionsPreface": "Evaluate your skills from 1 to 5",
+    "course.multipleChoicePlaceholder": "Choose",
 
     "studentInfo.header": "Student Info",
     "studentInfo.fullname": "Name: {fullname}",

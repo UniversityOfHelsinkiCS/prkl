@@ -1,7 +1,7 @@
 import React, { useState } from "react"
-import { Input, Card } from "semantic-ui-react"
+import { Input, Card, Divider, Segment } from "semantic-ui-react"
 import { Link } from "react-router-dom"
-import { FormattedMessage, useIntl } from "react-intl"
+import { useIntl } from "react-intl"
 
 const Courses = ({ courses }) => {
   const [search, setSearch] = useState("")
@@ -16,20 +16,24 @@ const Courses = ({ courses }) => {
         onChange={handleSearchChange}
         placeholder={intl.formatMessage({ id: "courses.searchPlaceholder" })}
       />
-      <Card.Group>
-        {courses
-          .filter(course =>
-            course.title.toLowerCase().includes(search.toLowerCase())
-          )
-          .map(course => (
-            <Card
-              as={Link}
-              to={`/courses/${course.id}`}
-              fluid
-              header={course.title}
-              description={course.description}
-            ></Card>
-          ))}
+      <Divider />
+
+      <Card.Group itemsPerRow={1}>
+        <div className="coursesList">
+          {courses
+            .filter(course =>
+              course.title.toLowerCase().includes(search.toLowerCase())
+            )
+            .map(course => (
+              <Card
+                fluid
+                as={Link}
+                to={`/courses/${course.id}`}
+                header={course.title}
+                description={course.description}
+              ></Card>
+            ))}
+        </div>
       </Card.Group>
     </div>
   )
