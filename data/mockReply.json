@@ -1,0 +1,130 @@
+{
+    "student": [
+        {
+            "uid":"Kalle",
+            "skillLevels": [
+                {
+                    "name": "java",
+                    "value": 3
+                },
+                {
+                    "name": "python",
+                    "value": 5
+                }
+            ],
+            "desiredGrade" : 3
+        },
+        {
+            "uid":"Matti",
+            "skillLevels": [
+                {
+                    "name": "java",
+                    "value": 2
+                },
+                {
+                    "name": "python",
+                    "value": 1
+                }
+            ],
+            "desiredGrade" : 1
+        },
+        {
+            "uid":"Samuel",
+            "skillLevels": [
+                {
+                    "name": "java",
+                    "value": 5
+                },
+                {
+                    "name": "python",
+                    "value": 5
+                }
+            ],
+            "desiredGrade" : 3
+        },
+        {
+            "uid":"Jere",
+            "skillLevels": [
+                {
+                    "name": "java",
+                    "value": 4
+                },
+                {
+                    "name": "python",
+                    "value": 2
+                }
+            ],
+            "desiredGrade" : 2
+        },
+        {
+            "uid":"Viivi",
+            "skillLevels": [
+                {
+                    "name": "java",
+                    "value": 2
+                },
+                {
+                    "name": "python",
+                    "value": 4
+                }
+            ],
+            "desiredGrade" : 2
+        },
+        {
+            "uid":"Stella",
+            "skillLevels": [
+                {
+                    "name": "java",
+                    "value": 3
+                },
+                {
+                    "name": "python",
+                    "value": 1
+                }
+            ],
+            "desiredGrade" : 3
+        },
+        {
+            "uid":"Ismo",
+            "skillLevels": [
+                {
+                    "name": "java",
+                    "value": 1
+                },
+                {
+                    "name": "python",
+                    "value": 1
+                }
+            ],
+            "desiredGrade" : 1
+        },
+        {
+            "uid":"Lotta",
+            "skillLevels": [
+                {
+                    "name": "java",
+                    "value": 2
+                },
+                {
+                    "name": "python",
+                    "value": 3
+                }
+            ],
+            "desiredGrade" : 2
+        },
+        {
+            "uid":"Romeo",
+            "skillLevels": [
+                {
+                    "name": "java",
+                    "value": 4
+                },
+                {
+                    "name": "python",
+                    "value": 4
+                }
+            ],
+            "desiredGrade" : 1
+        }
+    ]
+}
