@@ -1,0 +1,20 @@
+version: 2.1
+orbs:
+  dockerhub: circleci/docker@0.5.1
+workflows:
+  build-test-deploy:
+    jobs:
+      - dockerhub/publish:
+          image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
+          tag: 'staging'
+          extra_build_args: '--build-arg BASE_PATH=/suoritustarkistin/'
+          filters:
+            branches:
+              only: trunk
+      - dockerhub/publish:
+          image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
+          tag: 'production'
+          extra_build_args: '--build-arg BASE_PATH=/suoritustarkistin/'
+          filters:
+            branches:
+              only: master
