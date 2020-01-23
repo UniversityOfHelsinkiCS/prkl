@@ -12,7 +12,7 @@ const QuestionForm = () => {
     <div>
       <Form>
         <Button onClick={handleClick}>
-          <FormattedMessage id="QuestionForm.addNewQuestion"></FormattedMessage>
+          <FormattedMessage id="questionForm.addNewQuestion"></FormattedMessage>
         </Button>
       </Form>
     </div>

@@ -11,29 +11,29 @@ const StudentInfo = () => {
   return (
     <div>
       <h3>
-        <FormattedMessage id="StudentInfo.header"></FormattedMessage>
+        <FormattedMessage id="studentInfo.header"></FormattedMessage>
       </h3>
       <div>
         <FormattedMessage
-          id="StudentInfo.fullname"
+          id="studentInfo.fullname"
           values={{ fullname: user.name }}
         ></FormattedMessage>
       </div>
       <div>
         <FormattedMessage
-          id="StudentInfo.username"
+          id="studentInfo.username"
           values={{ username: user.username }}
         ></FormattedMessage>
       </div>
       <div>
         <FormattedMessage
-          id="StudentInfo.studentNo"
+          id="studentInfo.studentNo"
           values={{ studentNo: user.studentNo }}
         ></FormattedMessage>
       </div>
       <div>
         <FormattedMessage
-          id="StudentInfo.email"
+          id="studentInfo.email"
           values={{ email: user.email }}
         ></FormattedMessage>
       </div>
