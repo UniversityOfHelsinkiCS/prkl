@@ -11,7 +11,6 @@ export default {
 
     "question.question": "Question",
 
-    "questionForm.addNewQuestion": "Add new question",
     "questionCreationForm.addNewQuestion": "Type in your question",
     "courseCreationForm.PageTitle": "Create course",
     "courseCreationForm.TitleForm": "Title",

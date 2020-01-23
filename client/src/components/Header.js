@@ -23,7 +23,6 @@ const Header = () => {
         <FormattedMessage id="header.courses"></FormattedMessage>
       </Menu.Item>
 
-
       <Menu.Item
         as={Link}
         to="/addcourse"
@@ -49,9 +48,6 @@ const Header = () => {
         </Button>
       </Menu.Item>
     </Menu>
-
-
-
   )
 }
 export default Header
