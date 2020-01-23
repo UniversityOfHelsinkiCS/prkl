@@ -1,19 +1,27 @@
 import React, { useState } from "react"
-import { Button, Form } from "semantic-ui-react"
+import { Button, Form, Input } from "semantic-ui-react"
 import { FormattedMessage } from "react-intl"
 
 const QuestionForm = () => {
-  const [showQuestionForm, setShowQuestionForm] = useState(false)
+  const [questionText, setQuestionText] = useState("")
 
-  const handleClick = () => {
-    setShowQuestionForm(!showQuestionForm)
+  const handleSubmit = () => {
+    console.log('do nothing');
+
   }
   return (
     <div>
+
+
       <Form>
-        <Button onClick={handleClick}>
-          <FormattedMessage id="questionForm.addNewQuestion"></FormattedMessage>
-        </Button>
+        <div>
+          <label>{
+            <FormattedMessage id="questionForm.addNewQuestion"></FormattedMessage>
+          }</label>
+        </div>
+        <div>
+          <Input type="courseCode" onChange={event => setQuestionText(event.target.value)}></Input>
+        </div>
       </Form>
     </div>
   )

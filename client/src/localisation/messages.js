@@ -11,6 +11,13 @@ export default {
 
     "question.question": "Question",
 
+    "questionForm.addNewQuestion": "Add new question",
+    "questionCreationForm.addNewQuestion": "Type in your question",
+    "courseCreationForm.PageTitle": "Create course",
+    "courseCreationForm.TitleForm": "Title",
+    "courseCreationForm.CourseCodeForm": "Course code",
+    "courseCreationForm.CourseDescriptionForm": "Course description",
+    "courseCreationForm.ConfirmButton": "Confirm",
     "courses.searchPlaceholder": "Search courses",
 
     "questionForm.addNewQuestion": "Add new question",

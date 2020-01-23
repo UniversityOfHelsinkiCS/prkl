@@ -1,4 +1,8 @@
 node_modules
 dist
 stats.json
+<<<<<<< HEAD
+notes.md
+=======
 /server/public
+>>>>>>> 909f115e51cc03bc79328d633ee22737ceeb2674
