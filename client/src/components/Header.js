@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Menu, Button, MenuItem } from "semantic-ui-react"
 import { FormattedMessage } from "react-intl"
-import { Link } from "react-router-dom"
+import { Link, Route } from "react-router-dom"
 
 const Header = () => {
   const [activeItem, setActiveItem] = useState(null)
@@ -20,18 +20,9 @@ const Header = () => {
         active={activeItem === "Courses"}
         onClick={handleItemClick}
       >
-        <FormattedMessage id="Header.courses"></FormattedMessage>
+        <FormattedMessage id="header.courses"></FormattedMessage>
       </Menu.Item>
 
-      <Menu.Item
-        as={Link}
-        to="/user"
-        name="personalInfo"
-        active={activeItem === "personalInfo"}
-        onClick={handleItemClick}
-      >
-        <FormattedMessage id="menu.personalInfo"></FormattedMessage>
-      </Menu.Item>
       <Menu.Item
         as={Link}
         to="/addcourse"
@@ -39,12 +30,21 @@ const Header = () => {
         active={activeItem === "AddCourse"}
         onClick={handleItemClick}
       >
-        <FormattedMessage id="Header.addCourse"></FormattedMessage>
+        <FormattedMessage id="header.addCourse"></FormattedMessage>
+      </Menu.Item>
+      <Menu.Item
+        as={Link}
+        to="/user"
+        name="personalInfo"
+        active={activeItem === "personalInfo"}
+        onClick={handleItemClick}
+      >
+        <FormattedMessage id="header.personalInfo"></FormattedMessage>
       </Menu.Item>
 
       <Menu.Item position="right">
         <Button>
-          <FormattedMessage id="Header.logout"></FormattedMessage>
+          <FormattedMessage id="header.logout"></FormattedMessage>
         </Button>
       </Menu.Item>
     </Menu>
