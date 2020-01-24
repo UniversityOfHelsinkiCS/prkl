@@ -9,7 +9,7 @@ COPY . .
 
 # Build frontend.
 WORKDIR /usr/src/app/client
-ENV PUBLIC_URL=/prkl
+ENV PUBLIC_URL=/assembler
 RUN npm ci
 RUN npm run build
 RUN cp -r build/ ../server/public
