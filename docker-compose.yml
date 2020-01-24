@@ -11,3 +11,12 @@ services:
       - "3001:3001"
     image: prkl-dev
     container_name: prkl-dev
+  db:
+    image: postgres:12
+    container_name: prkl_db
+    environment:
+      - PGDATA=/data
+    volumes:
+      - pg_data:/data
+volumes:
+  pg_data:
