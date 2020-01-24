@@ -22,6 +22,11 @@ export default {
 
     "course.questionsPreface": "Evaluate your skills from 1 to 5",
     "course.multipleChoicePlaceholder": "Choose",
+    "course.gradeQuestion": "What is your preferred grade for the course?",
+    "course.gradeAnswer1": "I want a good grade",
+    "course.gradeAnswer2": "I want to pass the course",
+    "course.gradeAnswer3": "I don't care about the grade",
+    "course.confirm": "Confirm answers and enrol to course",
 
     "studentInfo.header": "Student Info",
     "studentInfo.fullname": "Name: {fullname}",
