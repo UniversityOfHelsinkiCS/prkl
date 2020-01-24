@@ -1,6 +1,6 @@
 import React from "react"
-import { Segment, Input, Grid, Dropdown, Button } from "semantic-ui-react"
-import { FormattedMessage, useIntl } from "react-intl"
+import { Segment, Header, Grid, Dropdown, Button } from "semantic-ui-react"
+import { FormattedMessage, useIntl, FormattedDate } from "react-intl"
 
 const Course = ({ course }) => {
   const intl = useIntl()
@@ -10,6 +10,10 @@ const Course = ({ course }) => {
       <h2>
         {course.code} - {course.title}
       </h2>
+      <Header as="h4" color="red">
+        <FormattedMessage id="course.deadline" />
+        <FormattedDate value={course.deadline} />
+      </Header>
       <div>{course.description}</div>
       <h3>
         <FormattedMessage id="course.questionsPreface" />

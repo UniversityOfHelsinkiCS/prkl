@@ -25,7 +25,8 @@ const CourseFrom = () => {
         description: courseDescription,
         code: courseCode,
         id: 100,
-        questions: questions
+        questions,
+        deadline
       }
 
       setCourses(courses.concat(courseObject))
