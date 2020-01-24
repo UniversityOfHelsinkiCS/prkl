@@ -2,8 +2,10 @@ import React, { useState } from "react"
 import { Input, Card, Divider, Segment } from "semantic-ui-react"
 import { Link } from "react-router-dom"
 import { useIntl } from "react-intl"
+import { useStore } from "react-hookstore"
 
-const Courses = ({ courses }) => {
+const Courses = () => {
+  const [courses] = useStore("coursesStore")
   const [search, setSearch] = useState("")
   const handleSearchChange = event => {
     setSearch(event.target.value)
