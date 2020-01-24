@@ -11,6 +11,7 @@ import Course from "./components/courses/Course"
 import { BrowserRouter as Router, Route } from "react-router-dom"
 
 import "./App.css"
+import Home from "./components/Home"
 
 createStore("coursesStore", [
   {
@@ -51,6 +52,7 @@ const App = () => {
       <Router basename={process.env.PUBLIC_URL}>
         <Header />
         <div className="mainContent">
+          <Route exact path="/" render={() => <Home />} />
           <Route path="/user" render={() => <StudentInfo />} />
           <Route path="/addcourse" render={() => <CourseForm />} />
           <Route exact path="/courses" render={() => <Courses />} />
@@ -64,6 +66,7 @@ const App = () => {
         </div>
       </Router>
     </div>
+
   )
 }
 

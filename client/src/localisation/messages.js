@@ -2,7 +2,8 @@ export default {
   en: {
     // We're using dots for nesting and camelCase for each name
 
-    "homepage.welcome": "Welcome!",
+    "home.welcome": "Welcome!",
+    "home.briefing": "Please aquaint yourself with the available projects through the courses tab. Happy grouping!",
 
     "header.personalInfo": "Personal info",
     "header.logout": "Logout",

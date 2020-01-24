@@ -7,7 +7,6 @@ const CourseForm = () => {
     const [courseTitle, setCourseTitle] = useState("")
     const [courseDescription, setCourseDescription] = useState("")
     const [courseCode, setCourseCode] = useState("")
-    const [questionText, setQuestionText] = useState("")
     const [questions, setQuestions] = useState([""])
     const [maxGroup, setMaxGroup] = useState()
     const [minGroup, setMinGroup] = useState()
@@ -15,6 +14,11 @@ const CourseForm = () => {
 
     const [courses, setCourses] = useStore("coursesStore")
 
+    const today = new Date()
+    const dd = String(today.getDate()).padStart(2, '0')
+    const mm = String(today.getMonth() + 1).padStart(2, '0')
+    const yyyy = today.getFullYear()
+    const todayParsed = `${yyyy}-${mm}-${dd}`
     const intl = useIntl()
 
     const handleSubmit = () => {
@@ -72,6 +76,7 @@ const CourseForm = () => {
 
                     <Form.Input
                         type="date"
+                        min={todayParsed}
                         label={intl.formatMessage({
                             id: "courseCreationForm.CourseDeadlineForm"
                         })}
