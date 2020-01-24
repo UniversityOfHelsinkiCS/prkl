@@ -1,0 +1,4 @@
+[Reply|(pk) id:integer; (fk) question:question; (fk) student:student; value:integer]*-1[Student|(pk) id:integer; name:string]
+[Question|(pk) id:integer; (fk) course:course; name:string]*-1[Course|(pk) id:integer; (fk) teacher:teacher; name:string; course_id:string; description:string]
+[Course]*-1[Teacher|(pk) id:integer; name:string]
+[Question]1-*[Reply]
