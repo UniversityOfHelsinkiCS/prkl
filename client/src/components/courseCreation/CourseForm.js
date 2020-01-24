@@ -3,7 +3,7 @@ import { Form, Message } from "semantic-ui-react"
 import { FormattedMessage, useIntl } from "react-intl"
 import { useStore } from "react-hookstore"
 
-const CourseFrom = () => {
+const CourseForm = () => {
     const [courseTitle, setCourseTitle] = useState("")
     const [courseDescription, setCourseDescription] = useState("")
     const [courseCode, setCourseCode] = useState("")
@@ -23,8 +23,9 @@ const CourseFrom = () => {
                 title: courseTitle,
                 description: courseDescription,
                 code: courseCode,
-                id: 100,
-                questions: questions
+                id: courses.length + 1,
+                questions,
+                deadline
             }
 
             setCourses(courses.concat(courseObject))
@@ -137,6 +138,7 @@ const CourseFrom = () => {
             </Form>
         </div>
     )
+
 }
 
-export default CourseFrom
+export default CourseForm

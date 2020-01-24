@@ -28,6 +28,7 @@ export default {
     "questionForm.addQuestion": "Add question",
     "questionForm.removeQuestion": "Remove question",
 
+    "course.deadline": "Deadline to enrol to the course project: ",
     "course.questionsPreface": "Evaluate your skills from 1 to 5",
     "course.multipleChoicePlaceholder": "Choose",
     "course.gradeQuestion": "What are your goals for the project?",
