@@ -23,15 +23,19 @@ const Courses = () => {
       <Card.Group itemsPerRow={1}>
         <div className="coursesList">
           {courses
-            .filter(course =>
-              course.title.toLowerCase().includes(search.toLowerCase())
+            .filter(
+              course =>
+                course.title.toLowerCase().includes(search.toLowerCase()) ||
+                course.code.toLowerCase().includes(search.toLowerCase())
             )
             .map(course => (
               <Card
+                raised
+                key={course.id}
                 fluid
                 as={Link}
                 to={`/courses/${course.id}`}
-                header={course.title}
+                header={`${course.code} - ${course.title}`}
                 description={course.description}
               ></Card>
             ))}

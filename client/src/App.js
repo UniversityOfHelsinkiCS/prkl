@@ -14,34 +14,25 @@ import "./App.css"
 
 createStore("coursesStore", [
   {
+    code: "TKT20006",
     id: 1,
-    title: "Course 1",
-    questions: ["ooks jonne", "juoks es", "osaatko koodaa"],
-    description: "Course for epic gamers"
-  },
-  {
-    id: 2,
     title: "Tira",
     questions: ["ooks jonne", "juoks es", "osaatko koodaa"],
     description: "Helppo lasten kurssi"
   },
   {
-    id: 3,
+    code: "TKT20007",
+    id: 2,
     title: "Alon",
     questions: ["ooks jonne", "juoks es", "osaatko koodaa"],
     description: "Tira 2"
   },
   {
-    id: 4,
+    code: "TKT20003",
+    id: 3,
     title: "JTKT",
     questions: ["ooks jonne", "juoks es", "osaatko koodaa"],
     description: "Send help"
-  },
-  {
-    id: 5,
-    title: "Course 2",
-    questions: ["ooks jonne", "juoks es", "osaatko koodaa"],
-    description: "Course for n00b gamers"
   }
 ])
 

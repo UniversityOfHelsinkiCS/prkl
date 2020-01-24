@@ -25,20 +25,16 @@ export default {
 
     "course.questionsPreface": "Evaluate your skills from 1 to 5",
     "course.multipleChoicePlaceholder": "Choose",
-    "course.gradeQuestion": "What is your preferred grade for the course?",
+    "course.gradeQuestion": "What are your goals for the project?",
     "course.gradeAnswer1": "I want a good grade",
     "course.gradeAnswer2": "I want to pass the course",
     "course.gradeAnswer3": "I don't care about the grade",
-    "course.confirm": "Confirm answers and enrol to course",
+    "course.confirm": "Confirm answers and enrol to the course project",
 
     "studentInfo.header": "Student Info",
     "studentInfo.fullname": "Name: {fullname}",
     "studentInfo.username": "Username: {username}",
     "studentInfo.studentNo": "Student number: {studentNo}",
-    "studentInfo.email": "Email: {email}",
-
-    // You can use placeholders using curly braces ({variable})
-    "user.hello": "Hi {username}, how are you?"
-    // ...and also HTML
+    "studentInfo.email": "Email: {email}"
   }
 }

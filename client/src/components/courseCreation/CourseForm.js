@@ -99,6 +99,7 @@ const CourseFrom = () => {
         <Form.Group style={{ flexWrap: "wrap" }}>
           {questions.map((q, index) => (
             <Form.Input
+              key={index}
               onChange={handleQuestionChange(index)}
               placeholder={intl.formatMessage({
                 id: "questionCreationForm.addNewQuestion"
