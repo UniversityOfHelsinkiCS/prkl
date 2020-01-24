@@ -21,6 +21,7 @@ export default {
     "courseCreationForm.ConfirmButton": "Confirm",
 
     "courses.searchPlaceholder": "Search courses",
+    "courses.deadline": "Enrollment deadline",
 
     "questionForm.addNewQuestion": "Add new question",
     "questionForm.addQuestion": "Add question",

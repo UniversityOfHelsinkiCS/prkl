@@ -10,6 +10,9 @@ const CourseFrom = () => {
   const [courseCode, setCourseCode] = useState("")
   const [questionText, setQuestionText] = useState("")
   const [questions, setQuestions] = useState([""])
+  const [maxGroup, setMaxGroup] = useState()
+  const [minGroup, setMinGroup] = useState()
+  const [deadline, setDeadline] = useState()
 
   const [courses, setCourses] = useStore("coursesStore")
 
@@ -72,7 +75,9 @@ const CourseFrom = () => {
             label={intl.formatMessage({
               id: "courseCreationForm.CourseDeadlineForm"
             })}
-            onChange={event => setCourseCode(event.target.value)}
+            onChange={event => {
+              setDeadline(event.target.value)
+            }}
           ></Form.Input>
         </Form.Group>
 
@@ -91,7 +96,7 @@ const CourseFrom = () => {
             label={intl.formatMessage({
               id: "courseCreationForm.CourseMaxGroupForm"
             })}
-            onChange={event => setCourseCode(event.target.value)}
+            onChange={event => setMaxGroup(event.target.value)}
           ></Form.Input>
 
           <Form.Input
@@ -99,7 +104,7 @@ const CourseFrom = () => {
             label={intl.formatMessage({
               id: "courseCreationForm.CourseMinGroupForm"
             })}
-            onChange={event => setCourseCode(event.target.value)}
+            onChange={event => setMinGroup(event.target.value)}
           ></Form.Input>
         </Form.Group>
 
@@ -126,13 +131,6 @@ const CourseFrom = () => {
             ></Form.Input>
           ))}
         </Form.Group>
-
-        {/* <Form.Field >
-                    <label>
-                        <FormattedMessage id="questionCreationForm.addNewQuestion"></FormattedMessage>
-                    </label>
-                    <Input fluid onChange={event => setQuestionText(event.target.value)} value={questionText} />
-                </Form.Field> */}
 
         <Form.Button primary onClick={handleSubmit}>
           <FormattedMessage id="courseCreationForm.ConfirmButton"></FormattedMessage>

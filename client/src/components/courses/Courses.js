@@ -36,7 +36,9 @@ const Courses = () => {
                 as={Link}
                 to={`/courses/${course.id}`}
                 header={`${course.code} - ${course.title}`}
-                description={course.description}
+                description={`${intl.formatMessage({
+                  id: "courses.deadline"
+                })} ${intl.formatDate(Date.parse(course.deadline))}`}
               ></Card>
             ))}
         </div>
