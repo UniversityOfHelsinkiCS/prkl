@@ -14,6 +14,9 @@ export default {
     "courseCreationForm.PageTitle": "Create course",
     "courseCreationForm.TitleForm": "Title",
     "courseCreationForm.CourseCodeForm": "Course code",
+    "courseCreationForm.CourseDeadlineForm": "Enrollment deadline",
+    "courseCreationForm.CourseMaxGroupForm": "Maximum group size",
+    "courseCreationForm.CourseMinGroupForm": "Minimum group size",
     "courseCreationForm.CourseDescriptionForm": "Course description",
     "courseCreationForm.ConfirmButton": "Confirm",
 
