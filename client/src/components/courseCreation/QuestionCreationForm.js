@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Menu, Button, Input, Form, Select, TextArea } from "semantic-ui-react"
+import { Button, Input, Form } from "semantic-ui-react"
 import { FormattedMessage } from "react-intl"
 
 const QuestionCreationForm = () => {
@@ -14,10 +14,16 @@ const QuestionCreationForm = () => {
     return (
         <Form>
             <Form.Field>
-                <label>
-                    <FormattedMessage id="questionCreationForm.addNewQuestion"></FormattedMessage>
-                </label>
-                <Input onChange={event => setQuestionText(event.target.value)} />
+
+
+                <div>
+                    <label>
+                        <FormattedMessage id="questionCreationForm.addNewQuestion"></FormattedMessage>
+                    </label>
+                </div>
+                <div>
+                    <Input onChange={event => setQuestionText(event.target.value)} />
+                </div>
 
                 <Button onClick={handleClick}>
                     <FormattedMessage id="questionForm.addNewQuestion"></FormattedMessage>

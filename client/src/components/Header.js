@@ -1,7 +1,7 @@
 import React, { useState } from "react"
-import { Menu, Button, MenuItem } from "semantic-ui-react"
+import { Menu, Button } from "semantic-ui-react"
 import { FormattedMessage } from "react-intl"
-import { Link, Route } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 const Header = () => {
   const [activeItem, setActiveItem] = useState(null)

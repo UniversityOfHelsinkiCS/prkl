@@ -20,6 +20,8 @@ export default {
 
     "courses.searchPlaceholder": "Search courses",
 
+    "questionForm.addQuestion": "Add question",
+    "questionForm.removeQuestion": "Remove question",
     "course.questionsPreface": "Evaluate your skills from 1 to 5",
     "course.multipleChoicePlaceholder": "Choose",
     "course.gradeQuestion": "What is your preferred grade for the course?",
