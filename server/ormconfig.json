@@ -1,0 +1,6 @@
+{
+   "type": "postgres",
+   "host": "localhost",
+   "username": "postgres",
+   "password": "postgres"
+}
