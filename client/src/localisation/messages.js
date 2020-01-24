@@ -19,7 +19,8 @@ export default {
     "courseCreationForm.ConfirmButton": "Confirm",
     "courses.searchPlaceholder": "Search courses",
 
-    "questionForm.addNewQuestion": "Add new question",
+    "questionForm.addQuestion": "Add question",
+    "questionForm.removeQuestion": "Remove question",
 
     "studentInfo.header": "Student Info",
     "studentInfo.fullname": "Name: {fullname}",
