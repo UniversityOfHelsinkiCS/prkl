@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Input, Form, Button, FormGroup } from "semantic-ui-react"
+import { Form } from "semantic-ui-react"
 import { FormattedMessage, useIntl } from "react-intl"
 import QuestionCreationForm from "./QuestionCreationForm"
 import { useStore } from "react-hookstore"
@@ -10,6 +10,10 @@ const CourseFrom = () => {
   const [courseCode, setCourseCode] = useState("")
   const [questionText, setQuestionText] = useState("")
   const [questions, setQuestions] = useState([""])
+  const [maxGroup, setMaxGroup] = useState()
+  const [minGroup, setMinGroup] = useState()
+  const [deadline, setDeadline] = useState()
+
   const [courses, setCourses] = useStore("coursesStore")
 
   const intl = useIntl()
@@ -49,42 +53,60 @@ const CourseFrom = () => {
 
       <Form>
         <Form.Field>
-          <label>
-            {
-              <FormattedMessage id="courseCreationForm.TitleForm"></FormattedMessage>
-            }
-          </label>
-          <Input
+          <Form.Input
             fluid
-            type="courseTitle"
+            label={intl.formatMessage({
+              id: "courseCreationForm.TitleForm"
+            })}
             onChange={event => setCourseTitle(event.target.value)}
-          ></Input>
+          ></Form.Input>
         </Form.Field>
 
-        <Form.Field>
-          <label>
-            {
-              <FormattedMessage id="courseCreationForm.CourseDescriptionForm"></FormattedMessage>
-            }
-          </label>
-          <Input
-            fluid
-            type="courseDescription"
-            onChange={event => setCourseDescription(event.target.value)}
-          ></Input>
-        </Form.Field>
-
-        <Form.Field>
-          <label>
-            {
-              <FormattedMessage id="courseCreationForm.CourseCodeForm"></FormattedMessage>
-            }
-          </label>
-          <Input
-            type="courseCode"
+        <Form.Group>
+          <Form.Input
+            label={intl.formatMessage({
+              id: "courseCreationForm.CourseCodeForm"
+            })}
             onChange={event => setCourseCode(event.target.value)}
-          ></Input>
+          ></Form.Input>
+
+          <Form.Input
+            type="date"
+            label={intl.formatMessage({
+              id: "courseCreationForm.CourseDeadlineForm"
+            })}
+            onChange={event => {
+              setDeadline(event.target.value)
+            }}
+          ></Form.Input>
+        </Form.Group>
+
+        <Form.Field>
+          <Form.TextArea
+            label={intl.formatMessage({
+              id: "courseCreationForm.CourseDescriptionForm"
+            })}
+            onChange={event => setCourseDescription(event.target.value)}
+          ></Form.TextArea>
         </Form.Field>
+
+        <Form.Group>
+          <Form.Input
+            type="number"
+            label={intl.formatMessage({
+              id: "courseCreationForm.CourseMaxGroupForm"
+            })}
+            onChange={event => setMaxGroup(event.target.value)}
+          ></Form.Input>
+
+          <Form.Input
+            type="number"
+            label={intl.formatMessage({
+              id: "courseCreationForm.CourseMinGroupForm"
+            })}
+            onChange={event => setMinGroup(event.target.value)}
+          ></Form.Input>
+        </Form.Group>
 
         <Form.Group>
           <Form.Button onClick={handleAddForm}>
@@ -99,6 +121,7 @@ const CourseFrom = () => {
         <Form.Group style={{ flexWrap: "wrap" }}>
           {questions.map((q, index) => (
             <Form.Input
+              key={index}
               onChange={handleQuestionChange(index)}
               placeholder={intl.formatMessage({
                 id: "questionCreationForm.addNewQuestion"
@@ -109,17 +132,8 @@ const CourseFrom = () => {
           ))}
         </Form.Group>
 
-        {/* <Form.Field >
-                    <label>
-                        <FormattedMessage id="questionCreationForm.addNewQuestion"></FormattedMessage>
-                    </label>
-                    <Input fluid onChange={event => setQuestionText(event.target.value)} value={questionText} />
-                </Form.Field> */}
-
-        <Form.Button onClick={handleSubmit}>
-          {
-            <FormattedMessage id="courseCreationForm.ConfirmButton"></FormattedMessage>
-          }
+        <Form.Button primary onClick={handleSubmit}>
+          <FormattedMessage id="courseCreationForm.ConfirmButton"></FormattedMessage>
         </Form.Button>
       </Form>
     </div>
