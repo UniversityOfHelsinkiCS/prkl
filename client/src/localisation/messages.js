@@ -10,7 +10,6 @@ export default {
     "header.addCourse": "Add Course",
 
     "questionCreationForm.addNewQuestion": "Type in your question",
-    "questionForm.addNewQuestion": "Add new question",
 
     "courseCreationForm.PageTitle": "Create course",
     "courseCreationForm.TitleForm": "Title",
@@ -20,8 +19,10 @@ export default {
 
     "courses.searchPlaceholder": "Search courses",
 
+    "questionForm.addNewQuestion": "Add new question",
     "questionForm.addQuestion": "Add question",
     "questionForm.removeQuestion": "Remove question",
+
     "course.questionsPreface": "Evaluate your skills from 1 to 5",
     "course.multipleChoicePlaceholder": "Choose",
     "course.gradeQuestion": "What is your preferred grade for the course?",

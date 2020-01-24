@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import Header from "./components/Header"
 import StudentInfo from "./components/StudentInfo"
+import { createStore, useStore } from "react-hookstore"
 
 import CourseForm from "./components/courseCreation/CourseForm"
 
@@ -12,7 +13,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom"
 import "./App.css"
 
 const App = () => {
-  const [courses, setCourses] = useState([
+  createStore("coursesStore", [
     {
       id: 1,
       title: "Course 1",
@@ -74,6 +75,7 @@ const App = () => {
       description: "Course for n00b gamers"
     }
   ])
+  const [courses] = useStore("coursesStore")
   const courseById = id => {
     const result = courses.find(course => course.id === Number(id))
     return result
@@ -85,11 +87,7 @@ const App = () => {
         <div className="mainContent">
           <Route path="/user" render={() => <StudentInfo />} />
           <Route path="/addcourse" render={() => <CourseForm />} />
-          <Route
-            exact
-            path="/courses"
-            render={() => <Courses courses={courses} />}
-          />
+          <Route exact path="/courses" render={() => <Courses />} />
           <Route
             exact
             path="/courses/:id"
