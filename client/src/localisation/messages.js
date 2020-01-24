@@ -22,6 +22,7 @@ export default {
     "questionCreationForm.creationSuccess": "Course creation succeeded",
 
     "courses.searchPlaceholder": "Search courses",
+    "courses.deadline": "Enrollment deadline",
 
     "questionForm.addNewQuestion": "Add new question",
     "questionForm.addQuestion": "Add question",

@@ -7,8 +7,11 @@ const CourseFrom = () => {
     const [courseTitle, setCourseTitle] = useState("")
     const [courseDescription, setCourseDescription] = useState("")
     const [courseCode, setCourseCode] = useState("")
+    const [questionText, setQuestionText] = useState("")
     const [questions, setQuestions] = useState([""])
-    const [notification, setNotification] = useState("")
+    const [maxGroup, setMaxGroup] = useState()
+    const [minGroup, setMinGroup] = useState()
+    const [deadline, setDeadline] = useState()
 
     const [courses, setCourses] = useStore("coursesStore")
 
@@ -16,31 +19,15 @@ const CourseFrom = () => {
 
     const handleSubmit = () => {
         if (courseTitle && courseDescription && courseCode) {
-            try {
-                const courseObject = {
-                    title: courseTitle,
-                    description: courseDescription,
-                    code: courseCode,
-                    id: courses.length + 1,
-                    questions: questions
-                }
-
-                setCourses(courses.concat(courseObject))
-                setCourseTitle("")
-                setCourseDescription("")
-                setCourseCode("")
-                setQuestions([""])
-                setNotification(intl)
-
-                setTimeout(() => {
-                    setNotification("lmao")
-                }, 6000)
-            } catch (e) {
-                setTimeout(() => {
-                    setNotification("An error occurred when trying to create course, please try again.")
-                }, 6000)
-                console.log("exception: ", e)
+            const courseObject = {
+                title: courseTitle,
+                description: courseDescription,
+                code: courseCode,
+                id: 100,
+                questions: questions
             }
+
+            setCourses(courses.concat(courseObject))
         }
     }
 
@@ -87,7 +74,9 @@ const CourseFrom = () => {
                         label={intl.formatMessage({
                             id: "courseCreationForm.CourseDeadlineForm"
                         })}
-                        onChange={event => setCourseCode(event.target.value)}
+                        onChange={event => {
+                            setDeadline(event.target.value)
+                        }}
                     ></Form.Input>
                 </Form.Group>
 
@@ -106,7 +95,7 @@ const CourseFrom = () => {
                         label={intl.formatMessage({
                             id: "courseCreationForm.CourseMaxGroupForm"
                         })}
-                        onChange={event => setCourseCode(event.target.value)}
+                        onChange={event => setMaxGroup(event.target.value)}
                     ></Form.Input>
 
                     <Form.Input
@@ -114,7 +103,7 @@ const CourseFrom = () => {
                         label={intl.formatMessage({
                             id: "courseCreationForm.CourseMinGroupForm"
                         })}
-                        onChange={event => setCourseCode(event.target.value)}
+                        onChange={event => setMinGroup(event.target.value)}
                     ></Form.Input>
                 </Form.Group>
 
@@ -145,7 +134,6 @@ const CourseFrom = () => {
                 <Form.Button primary onClick={handleSubmit}>
                     <FormattedMessage id="courseCreationForm.ConfirmButton"></FormattedMessage>
                 </Form.Button>
-                {notification !== "" ? <div><Message positive header={notification} ></Message></div> : null}
             </Form>
         </div>
     )
