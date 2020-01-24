@@ -16,6 +16,7 @@ export default {
     "courseCreationForm.CourseCodeForm": "Course code",
     "courseCreationForm.CourseDescriptionForm": "Course description",
     "courseCreationForm.ConfirmButton": "Confirm",
+    "questionCreationForm.creationSuccess": "Course creation succeeded",
 
     "courses.searchPlaceholder": "Search courses",
 
