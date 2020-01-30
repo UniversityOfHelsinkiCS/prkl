@@ -1,18 +1,19 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryColumn, Column, OneToMany} from "typeorm";
+import {Course} from "./Course"
 
 @Entity()
 export class User {
 
-    @PrimaryGeneratedColumn()
-    id: number;
+    // shibboleth userid
+    @PrimaryColumn()
+    shibboletID: number;
 
     @Column()
-    firstName: string;
+    name: string;
 
     @Column()
-    lastName: string;
+    role: number;
 
-    @Column()
-    age: number;
-
+    @OneToMany(type => Course, course => course.teacher)
+    courses_teached: Course[];
 }
