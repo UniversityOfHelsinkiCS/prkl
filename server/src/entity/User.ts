@@ -1,6 +1,8 @@
-import { Entity, PrimaryColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 import { Course } from "./Course";
+import { Reply } from "./Reply"
+import { Group } from "./Group"
 
 @Entity()
 export class User {
@@ -22,4 +24,10 @@ export class User {
     course => course.teacher,
   )
   courses_teached: Course[];
+
+  @OneToMany(type => Reply, reply => reply.student)
+  replies_for_course: Reply[];
+
+  @ManyToMany(type => Group, group => group.students)
+  groups: Group[];
 }

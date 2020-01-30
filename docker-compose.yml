@@ -5,6 +5,8 @@ services:
     build:
       context: ./
       dockerfile: dev.Dockerfile
+    depends_on:
+      - db
     volumes:
       - ./server:/usr/src/app/server
     ports:
