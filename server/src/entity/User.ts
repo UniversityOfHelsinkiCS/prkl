@@ -1,19 +1,25 @@
-import {Entity, PrimaryColumn, Column, OneToMany} from "typeorm";
-import {Course} from "./Course"
+import { Entity, PrimaryColumn, Column, OneToMany } from "typeorm";
+import { ObjectType, Field, ID } from "type-graphql";
+import { Course } from "./Course";
 
 @Entity()
 export class User {
+  // shibboleth userid
+  @Field(() => ID)
+  @PrimaryColumn()
+  shibboletID: number;
 
-    // shibboleth userid
-    @PrimaryColumn()
-    shibboletID: number;
+  @Field(() => String)
+  @Column()
+  name: string;
 
-    @Column()
-    name: string;
+  @Field(() => Number)
+  @Column()
+  role: number;
 
-    @Column()
-    role: number;
-
-    @OneToMany(type => Course, course => course.teacher)
-    courses_teached: Course[];
+  @OneToMany(
+    type => Course,
+    course => course.teacher,
+  )
+  courses_teached: Course[];
 }

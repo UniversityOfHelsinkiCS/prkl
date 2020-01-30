@@ -1,27 +1,37 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm";
-import {User} from "./User"
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity } from "typeorm";
+import { User } from "./User";
+import { ObjectType, Field, ID } from "type-graphql";
 
+@ObjectType()
 @Entity()
-export class Course {
+export class Course extends BaseEntity {
+  @Field(() => ID)
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
+  @Field(() => String)
+  @Column()
+  name: string;
 
-    @Column()
-    name: string; 
-    
-    @Column()
-    course_id: string;
-    
-    @Column()
-    description: string;
-    
-    @Column()
-    max_group_size: number;
-    
-    @Column()
-    min_group_size: number;
+  @Field(() => String)
+  @Column()
+  course_id: string;
 
-    @ManyToOne(type => User, user => user.courses_teached)
-    teacher: User; 
+  @Field(() => String)
+  @Column()
+  description: string;
+
+  @Field(() => Number)
+  @Column()
+  max_group_size: number;
+
+  @Field(() => Number)
+  @Column()
+  min_group_size: number;
+
+  @ManyToOne(
+    type => User,
+    user => user.courses_teached,
+  )
+  teacher: User;
 }
