@@ -15,7 +15,7 @@ export class CreateCourseInput {
   id: string;
 
   @Field()
-  questions: string[];
+  questions: string;
 
   @Field()
   deadline: string;

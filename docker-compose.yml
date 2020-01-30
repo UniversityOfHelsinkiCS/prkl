@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   app:
@@ -9,6 +9,7 @@ services:
       - ./server:/usr/src/app/server
     ports:
       - "3001:3001"
+      - "4000:4000"
     image: prkl-dev
     container_name: prkl-dev
   db:

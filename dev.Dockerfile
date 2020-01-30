@@ -10,6 +10,7 @@ COPY . .
 WORKDIR /usr/src/app/server
 
 EXPOSE 3001
+EXPOSE 4000
 
 RUN npm i -g nodemon
 CMD nodemon

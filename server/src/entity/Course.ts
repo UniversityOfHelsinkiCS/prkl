@@ -11,7 +11,7 @@ export class Course extends BaseEntity {
 
   @Field(() => String)
   @Column()
-  name: string;
+  title: string;
 
   @Field(() => String)
   @Column()

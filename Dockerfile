@@ -19,5 +19,6 @@ WORKDIR /usr/src/app/server
 RUN npm ci
 
 EXPOSE 3001
+EXPOSE 4000
 
 CMD npm start
