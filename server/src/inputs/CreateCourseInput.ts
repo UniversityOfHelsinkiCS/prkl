@@ -11,12 +11,18 @@ export class CreateCourseInput {
   @Field()
   code: string;
 
-  @Field()
-  id: string;
+  // @Field()
+  // id: string;
 
   @Field()
   questions: string;
 
   @Field()
   deadline: string;
+
+  @Field()
+  max_group_size: number;
+
+  @Field()
+  min_group_size: number;
 }

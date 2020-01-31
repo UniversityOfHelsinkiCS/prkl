@@ -18,14 +18,17 @@ const main = async () => {
     const connection = await createConnection({
       type: "postgres",
       host: "db",
+
       username: "postgres",
       password: "postgres",
+      entities: [__dirname + "/entity/*.ts"],
+      synchronize: true,
     });
   } catch (error) {
     console.log("error:", error);
   }
 
-  const schema = await buildSchema({ resolvers: [CourseResolver] });
+  const schema = await buildSchema({ resolvers: [CourseResolver], validate: false });
 
   const server = new ApolloServer({ schema });
   await server.listen(4000);

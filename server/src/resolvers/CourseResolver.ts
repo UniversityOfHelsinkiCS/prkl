@@ -18,7 +18,9 @@ export class CourseResolver {
   async createCourse(@Arg("data") data: CreateCourseInput) {
     const course = Course.create(data);
     console.log("course:", course);
+
     await course.save();
+
     return course;
   }
 
