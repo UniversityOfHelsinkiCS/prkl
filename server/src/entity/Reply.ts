@@ -1,19 +1,28 @@
-// import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm";
-// import {User} from "./User"
-// import {Question} from "./Question"
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity } from "typeorm";
+import { User } from "./User";
+import { ObjectType, Field, ID } from "type-graphql";
+import { Question } from "./Question";
 
-// @Entity()
-// export class Reply{
+@ObjectType()
+@Entity()
+export class Reply extends BaseEntity {
+  @Field(() => ID)
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
-//     @PrimaryGeneratedColumn("uuid")
-//     id: string;
+  @Field(() => Number)
+  @Column({ nullable: true })
+  value: number;
 
-//     @Column()
-//     value: number;
+  @ManyToOne(
+    type => Question,
+    question => question.replies,
+  )
+  question: Question;
 
-//     @ManyToOne(type => Question, question => question.replies)
-//     question: Question;
-
-//     @ManyToOne(type => User, user => user.replies_for_course)
-//     student: User;
-// }
+  @ManyToOne(
+    type => User,
+    user => user.replies_for_course,
+  )
+  student: User;
+}

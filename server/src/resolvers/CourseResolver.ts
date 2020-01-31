@@ -6,7 +6,7 @@ import { CreateCourseInput } from "../inputs/CreateCourseInput";
 export class CourseResolver {
   @Query(() => [Course])
   courses() {
-    return Course.find();
+    return Course.find({ relations: ["questions"] });
   }
 
   @Query(() => Course)
@@ -17,6 +17,7 @@ export class CourseResolver {
   @Mutation(() => Course)
   async createCourse(@Arg("data") data: CreateCourseInput) {
     const course = Course.create(data);
+
     console.log("course:", course);
 
     await course.save();

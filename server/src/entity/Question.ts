@@ -1,21 +1,29 @@
-// import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
-// import { Course } from "./Course";
-// import { Reply } from "./Reply";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, BaseEntity } from "typeorm";
+import { Course } from "./Course";
+import { Reply } from "./Reply";
+import { ObjectType, Field, ID } from "type-graphql";
 
-// @Entity()
-// export class Question {
-//   @PrimaryGeneratedColumn("uuid")
-//   id: string;
+@ObjectType()
+@Entity()
+export class Question extends BaseEntity {
+  @Field(() => ID)
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
-//   @Column()
-//   name: string;
+  @Field(() => String)
+  @Column()
+  name: string;
 
-//   // @ManyToOne(type => Course, course => course.questions)
-//   // course: Course;
+  @ManyToOne(
+    type => Course,
+    course => course.questions,
+  )
+  course: Course;
 
-//   @OneToMany(
-//     type => Reply,
-//     reply => reply.question,
-//   )
-//   replies: Reply[];
-// }
+  @OneToMany(
+    type => Reply,
+    reply => reply.question,
+    { cascade: true, eager: true },
+  )
+  replies: Reply[];
+}

@@ -1,4 +1,5 @@
 import { InputType, Field } from "type-graphql";
+import { CreateQuestionsInput } from "./CreateQuestionsInput";
 
 @InputType()
 export class CreateCourseInput {
@@ -15,9 +16,6 @@ export class CreateCourseInput {
   // id: string;
 
   @Field()
-  questions: string;
-
-  @Field()
   deadline: string;
 
   @Field()
@@ -25,4 +23,7 @@ export class CreateCourseInput {
 
   @Field()
   min_group_size: number;
+
+  @Field(type => [CreateQuestionsInput])
+  questions: CreateQuestionsInput[];
 }

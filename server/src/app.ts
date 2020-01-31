@@ -28,7 +28,7 @@ const main = async () => {
     console.log("error:", error);
   }
 
-  const schema = await buildSchema({ resolvers: [CourseResolver], validate: false });
+  const schema = await buildSchema({ resolvers: [CourseResolver], validate: false, nullableByDefault: true });
 
   const server = new ApolloServer({ schema });
   await server.listen(4000);
