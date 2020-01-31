@@ -14,12 +14,12 @@ export class CourseResolver {
     return Course.findOne({ where: { id } });
   }
 
-  @Mutation(() => Course)
-  async createCourse(@Arg("data") data: CreateCourseInput) {
-    const course = Course.create(data);
-    await course.save();
-    return course;
-  }
+  // @Mutation(() => Course)
+  // async createCourse(@Arg("data") data: CreateCourseInput) {
+  //   const course = Course.create(data);
+  //   await course.save();
+  //   return course;
+  // }
 
   @Mutation(() => Boolean)
   async deleteCourse(@Arg("id") id: string) {
