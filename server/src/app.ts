@@ -14,6 +14,17 @@ const router = promiseRouter();
 const port = 3001;
 
 const main = async () => {
+  try {
+    const connection = await createConnection({
+      type: "postgres",
+      host: "db",
+      username: "postgres",
+      password: "postgres",
+    });
+  } catch (error) {
+    console.log("error:", error);
+  }
+
   const schema = await buildSchema({ resolvers: [CourseResolver] });
 
   const server = new ApolloServer({ schema });

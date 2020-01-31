@@ -12,12 +12,15 @@ services:
       - "4000:4000"
     image: prkl-dev
     container_name: prkl-dev
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 3003:8080
   db:
     image: postgres:12
     container_name: prkl_db
     environment:
       - PGDATA=/data
     volumes:
-      - pg_data:/data
-volumes:
-  pg_data:
+      - ./pg_data:/data
