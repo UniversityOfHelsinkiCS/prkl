@@ -1,6 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTable} from "typeorm";
-import {Course} from "./Course"
-import {User} from "./User"
+import { Entity, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTable } from "typeorm";
+import { Course } from "./Course"
+import { User} from "./User"
 
 @Entity()
 export class Group{
