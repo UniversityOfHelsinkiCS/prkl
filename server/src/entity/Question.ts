@@ -9,7 +9,7 @@ export class Question{
     id: string;
 
     @Column()
-    name: number;
+    name: string;
 
     @ManyToOne(type => Course, course => course.questions)
     course: Course;
