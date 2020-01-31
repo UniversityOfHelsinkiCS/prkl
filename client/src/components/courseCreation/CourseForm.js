@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { useHistory } from "react-router-dom"
 import { Form, Message } from "semantic-ui-react"
 import { FormattedMessage, useIntl } from "react-intl"
 import { useStore } from "react-hookstore"
@@ -14,12 +15,14 @@ const CourseForm = () => {
 
     const [courses, setCourses] = useStore("coursesStore")
 
+    const intl = useIntl()
+    const history = useHistory()
+
     const today = new Date()
     const dd = String(today.getDate()).padStart(2, '0')
     const mm = String(today.getMonth() + 1).padStart(2, '0')
     const yyyy = today.getFullYear()
     const todayParsed = `${yyyy}-${mm}-${dd}`
-    const intl = useIntl()
 
     const handleSubmit = () => {
         if (courseTitle && courseDescription && courseCode) {
@@ -33,6 +36,7 @@ const CourseForm = () => {
             }
 
             setCourses(courses.concat(courseObject))
+            history.push("/courses")
         }
     }
 
