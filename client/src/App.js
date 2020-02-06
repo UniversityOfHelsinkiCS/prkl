@@ -1,17 +1,21 @@
 import React from "react"
 import Header from "./components/Header"
 import StudentInfo from "./components/StudentInfo"
-import { createStore, useStore } from "react-hookstore"
-
-import CourseForm from "./components/courseCreation/CourseForm"
-
-import Courses from "./components/courses/Courses"
-import Course from "./components/courses/Course"
+import { createStore, useStore, setStore } from "react-hookstore"
+import { Query, ApolloConsumer } from 'react-apollo'
+import { useApolloClient, useQuery } from '@apollo/react-hooks'
+import { gql } from 'apollo-boost'
 
 import { BrowserRouter as Router, Route } from "react-router-dom"
 
+import CourseForm from "./components/courseCreation/CourseForm"
+import Courses from "./components/courses/Courses"
+import Course from "./components/courses/Course"
+
+
 import "./App.css"
 import Home from "./components/Home"
+
 
 createStore("coursesStore", [
   {
@@ -40,13 +44,36 @@ createStore("coursesStore", [
   }
 ])
 
+const ALL_COURSES = gql`
+{
+  courses{
+    id,
+    title,
+    code,
+    description
+  }
+}
+`
+
 const App = () => {
-  const [courses] = useStore("coursesStore")
+  const [courses, setCourses] = useStore("coursesStore")
+  const client = useApolloClient()
+  const coursesFromQuery = useQuery(ALL_COURSES)
+
+
+  if (coursesFromQuery.loading) {
+    console.log("loading...")
+    setCourses([""])
+  } else {
+    console.log(coursesFromQuery.data)
+    setCourses(coursesFromQuery.data.courses)
+  }
 
   const courseById = id => {
     const result = courses.find(course => course.id === Number(id))
     return result
   }
+
   return (
     <div className="App">
       <Router basename={process.env.PUBLIC_URL}>
@@ -66,7 +93,6 @@ const App = () => {
         </div>
       </Router>
     </div>
-
   )
 }
 
