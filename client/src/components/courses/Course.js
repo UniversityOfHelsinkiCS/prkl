@@ -1,10 +1,61 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
+import { gql } from 'apollo-boost'
+
+import { useApolloClient, useQuery } from '@apollo/react-hooks'
+
+
+
 import { Segment, Header, Grid, Dropdown, Button } from "semantic-ui-react"
 import { FormattedMessage, useIntl, FormattedDate } from "react-intl"
 
-const Course = ({ course }) => {
-  const intl = useIntl()
+const COURSE = gql`
+  query course($id: String!) {
+    course(id: $id) {
+      id
+      title
+      code
+      questions {
+        name
+      }
+    }
+  }
+`
 
+
+const Course = ({ id }) => {
+  const [course, setCourse] = useState({})
+
+  const intl = useIntl()
+  const client = useApolloClient()
+
+
+
+  // const { loading, data, error } = client.query({
+  //   query: COURSE,
+  //   variables: { id: id }
+  // })
+
+  const { loading, error, data } = useQuery(COURSE,
+    {
+      variables: { id: id }
+    })
+
+
+  useEffect(() => {
+    console.log('benis asd ', loading);
+    console.log('data Course:ssa', data);
+
+    if (!loading) {
+      console.log('data AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', data);
+
+      setCourse(data.course)
+    }
+  }, [loading])
+
+
+  if (loading || !course) {
+    return <div>loading...</div>
+  }
   return (
     <div>
       <h2>
@@ -19,7 +70,7 @@ const Course = ({ course }) => {
         <FormattedMessage id="course.questionsPreface" />
       </h3>
 
-      {course.questions.map(question => (
+      {course.questions && course.questions.map(question => (
         <Segment key={question} raised>
           <Grid>
             <Grid.Row columns={2}>

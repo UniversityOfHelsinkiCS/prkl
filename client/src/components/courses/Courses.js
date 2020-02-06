@@ -12,6 +12,7 @@ const Courses = () => {
   }
   const intl = useIntl()
 
+
   return (
     <div>
       <Input
@@ -22,7 +23,7 @@ const Courses = () => {
 
       <Card.Group itemsPerRow={1}>
         <div className="coursesList">
-          {courses
+          {courses && courses
             .filter(
               course =>
                 course.title.toLowerCase().includes(search.toLowerCase()) ||

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import Header from "./components/Header"
 import StudentInfo from "./components/StudentInfo"
 import { createStore, useStore, setStore } from "react-hookstore"
@@ -57,21 +57,19 @@ const ALL_COURSES = gql`
 
 const App = () => {
   const [courses, setCourses] = useStore("coursesStore")
-  const client = useApolloClient()
-  const coursesFromQuery = useQuery(ALL_COURSES)
 
 
-  if (coursesFromQuery.loading) {
-    console.log("loading...")
-    setCourses([""])
-  } else {
-    console.log(coursesFromQuery.data)
-    setCourses(coursesFromQuery.data.courses)
-  }
+  const { loading, error, data } = useQuery(ALL_COURSES)
 
-  const courseById = id => {
-    const result = courses.find(course => course.id === Number(id))
-    return result
+
+  useEffect(() => {
+    if (!loading) {
+      setCourses(data.courses)
+    }
+  }, [loading])
+
+  if (loading) {
+    return <div>loading...</div>
   }
 
   return (
@@ -86,9 +84,7 @@ const App = () => {
           <Route
             exact
             path="/courses/:id"
-            render={({ match }) => (
-              <Course course={courseById(match.params.id)} />
-            )}
+            render={({ match }) => (<Course id={match.params.id} />)}
           />
         </div>
       </Router>

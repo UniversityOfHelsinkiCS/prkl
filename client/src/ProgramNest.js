@@ -23,6 +23,17 @@ const ALL_COURSES = gql`
 }
 `
 
+const ADD_COURSE = gql`
+{
+  course{
+    id,
+    title,
+    code,
+    description
+  }
+}
+`
+
 const ProgramNest = () => {
 
     return (

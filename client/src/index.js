@@ -14,7 +14,7 @@ console.log('env.hostname: ', env.hostname);
 console.log('uri:', `${env.protocol}${env.hostname}:4000`);
 
 const apolloClient = new ApolloClient({
-  uri: `http://localhost:4000`
+  uri: `/graphql`
 })
 
 ReactDOM.render(
