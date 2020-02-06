@@ -42,12 +42,7 @@ const Course = ({ id }) => {
 
 
   useEffect(() => {
-    console.log('benis asd ', loading);
-    console.log('data Course:ssa', data);
-
     if (!loading) {
-      console.log('data AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', data);
-
       setCourse(data.course)
     }
   }, [loading])
