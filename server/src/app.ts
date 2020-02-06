@@ -52,4 +52,5 @@ app.get("*", (req, res) => res.sendFile(path.resolve("public", "index.html")));
 // Don't block ports in testing.
 if (process.env.NODE_ENV !== "test") {
   app.listen(port);
+  console.log("Listening port 3001");
 }
