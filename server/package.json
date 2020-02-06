@@ -9,8 +9,8 @@
    "main": "app.js",
    "scripts": {
       "dev": "NODE_ENV=development npx nodemon",
-      "build": "npx tsc",
-      "start": "NODE_ENV=production npx tsc && node dist/app.js",
+      "build": "tsc",
+      "start": "node dist/app.js",
       "start:dev": "nodemon",
       "test": "echo \"Error: no test specified\" && exit 1"
    },
