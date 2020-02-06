@@ -38,7 +38,7 @@ export class Course extends BaseEntity {
   )
   teacher: User;
 
-  @Field(() => [Question])
+  @Field(type => [Question])
   @OneToMany(
     type => Question,
     question => question.course,
@@ -46,7 +46,7 @@ export class Course extends BaseEntity {
   )
   questions: Question[];
 
-  @Field(() => [Group])
+  @Field(type => [Group])
   @OneToMany(
     type => Group,
     group => group.course,

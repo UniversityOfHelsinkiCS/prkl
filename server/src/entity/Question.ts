@@ -20,7 +20,7 @@ export class Question extends BaseEntity {
   )
   course: Course;
 
-  @Field(() => [Reply])
+  @Field(type => [Reply])
   @OneToMany(
     type => Reply,
     reply => reply.question,
