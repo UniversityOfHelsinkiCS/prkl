@@ -1,6 +1,7 @@
 import { ApolloServer } from "apollo-server";
 import bodyParser from "body-parser";
 import express from "express";
+import graphqlHttp from "express-graphql";
 import promiseRouter from "express-promise-router";
 import morgan from "morgan";
 import path from "path";
@@ -8,6 +9,8 @@ import { buildSchema } from "type-graphql";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 import { CourseResolver } from "./resolvers/CourseResolver";
+import { UserResolver } from "./resolvers/UserResolver";
+import { GroupResolver } from "./resolvers/GroupResolver";
 
 export const app = express();
 const router = promiseRouter();
@@ -28,28 +31,30 @@ const main = async () => {
     console.log("error:", error);
   }
 
-  const schema = await buildSchema({ resolvers: [CourseResolver], validate: false, nullableByDefault: true });
+  const schema = await buildSchema({
+    resolvers: [CourseResolver, UserResolver, GroupResolver],
+    validate: false,
+    nullableByDefault: true,
+  });
 
-  const server = new ApolloServer({ schema });
-  await server.listen(4000);
+  // Logging format for morgan.
+  const logFormat = process.env.NODE_ENV === "development" ? "dev" : "combined";
+
+  // Middleware.
+  app
+    .use("/graphql", graphqlHttp({ schema, graphiql: true }))
+    .use(bodyParser.json())
+    .use(morgan(logFormat))
+    .use(router);
+
+  // Serve frontend.
+  app.use(express.static("public"));
+  app.get("*", (req, res) => res.sendFile(path.resolve("public", "index.html")));
+
+  // Don't block ports in testing.
+  if (process.env.NODE_ENV !== "test") {
+    app.listen(port);
+  }
 };
 
 main();
-
-// Logging format for morgan.
-const logFormat = process.env.NODE_ENV === "development" ? "dev" : "combined";
-
-// Middleware.
-app
-  .use(bodyParser.json())
-  .use(morgan(logFormat))
-  .use(router);
-
-// Serve frontend.
-app.use(express.static("public"));
-app.get("*", (req, res) => res.sendFile(path.resolve("public", "index.html")));
-
-// Don't block ports in testing.
-if (process.env.NODE_ENV !== "test") {
-  app.listen(port);
-}

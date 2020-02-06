@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany } from "typeorm";
+import { Entity, Column, OneToMany, ManyToMany, BaseEntity, PrimaryGeneratedColumn } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 import { Course } from "./Course";
 import { Reply } from "./Reply";
@@ -6,11 +6,15 @@ import { Group } from "./Group";
 
 @ObjectType()
 @Entity()
-export class User {
-  // shibboleth userid
+export class User extends BaseEntity {
   @Field(() => ID)
-  @PrimaryColumn()
-  shibboletID: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
+
+  // shibboleth userid
+  @Field(() => String)
+  @Column()
+  shibbolethID: String;
 
   @Field(() => String)
   @Column()
@@ -20,12 +24,14 @@ export class User {
   @Column()
   role: number;
 
-  // @OneToMany(
-  //   type => Course,
-  //   course => course.teacher,
-  // )
-  // courses_teached: Course[];
+  @Field(() => [Course])
+  @OneToMany(
+    type => Course,
+    course => course.teacher,
+  )
+  courses_teached: Course[];
 
+  @Field(() => [Reply])
   @OneToMany(
     type => Reply,
     reply => reply.student,

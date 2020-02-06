@@ -16,6 +16,7 @@ export class CourseResolver {
 
   @Mutation(() => Course)
   async createCourse(@Arg("data") data: CreateCourseInput) {
+    console.log("data:", data);
     const course = Course.create(data);
 
     console.log("course:", course);

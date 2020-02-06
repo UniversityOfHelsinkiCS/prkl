@@ -32,12 +32,13 @@ export class Course extends BaseEntity {
   @Column()
   min_group_size: number;
 
-  // @ManyToOne(
-  //   type => User,
-  //   user => user.courses_teached,
-  // )
-  // teacher: User;
+  @ManyToOne(
+    type => User,
+    user => user.courses_teached,
+  )
+  teacher: User;
 
+  @Field(() => [Question])
   @OneToMany(
     type => Question,
     question => question.course,
@@ -45,9 +46,10 @@ export class Course extends BaseEntity {
   )
   questions: Question[];
 
-  // @OneToMany(
-  //   type => Group,
-  //   group => group.course,
-  // )
-  // groups: Group[];
+  @Field(() => [Group])
+  @OneToMany(
+    type => Group,
+    group => group.course,
+  )
+  groups: Group[];
 }
