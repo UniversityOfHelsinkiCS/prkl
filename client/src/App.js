@@ -64,7 +64,7 @@ const App = () => {
 
   useEffect(() => {
     if (!loading) {
-      setCourses(data.courses)
+      setCourses((data && data.courses) || [])
     }
   }, [loading])
 
