@@ -38,6 +38,7 @@ export class Course extends BaseEntity {
   // )
   // teacher: User;
 
+  @Field(type => [Question])
   @OneToMany(
     type => Question,
     question => question.course,
