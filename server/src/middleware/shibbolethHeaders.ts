@@ -20,14 +20,12 @@ export default (req: Request, res: Response, next: NextFunction): void => {
     if (process.env.NODE_ENV === "development") {
       mockHeaders(req);
     }
-    console.log(`givenname is: ${req.headers.givenname}`);
 
     if (req.headers[oldKey]) {
       req.headers[newKey] = Buffer.from(req.headers[oldKey] as string, "latin1").toString("utf8");
 
       req.headers[oldKey] = null;
     }
-    console.log(`firstname is: ${req.headers.firstname}`);
   });
 
   next();
