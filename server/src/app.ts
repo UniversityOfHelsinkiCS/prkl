@@ -10,8 +10,7 @@ import { createConnection } from "typeorm";
 import { CourseResolver } from "./resolvers/CourseResolver";
 import { UserResolver } from "./resolvers/UserResolver";
 import { GroupResolver } from "./resolvers/GroupResolver";
-import shibbCharset from './middleware/shibbolethHeaders';
-
+import shibbCharset from "./middleware/shibbolethHeaders";
 
 export const app = express();
 const router = promiseRouter();
