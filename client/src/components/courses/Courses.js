@@ -10,8 +10,8 @@ const Courses = () => {
   const handleSearchChange = event => {
     setSearch(event.target.value)
   }
-  const intl = useIntl()
 
+  const intl = useIntl()
 
   return (
     <div>
@@ -23,25 +23,27 @@ const Courses = () => {
 
       <Card.Group itemsPerRow={1}>
         <div className="coursesList">
-          {courses && courses
-            .filter(
-              course =>
-                course.title.toLowerCase().includes(search.toLowerCase()) ||
-                course.code.toLowerCase().includes(search.toLowerCase())
-            )
-            .map(course => (
-              <Card
-                raised
-                key={course.id}
-                fluid
-                as={Link}
-                to={`/courses/${course.id}`}
-                header={`${course.code} - ${course.title}`}
-                description={`${intl.formatMessage({
-                  id: "courses.deadline"
-                })} ${intl.formatDate(Date.parse(course.deadline))}`}
-              ></Card>
-            ))}
+          {courses &&
+            courses
+              .filter(
+                course =>
+                  course.title.toLowerCase().includes(search.toLowerCase()) ||
+                  course.code.toLowerCase().includes(search.toLowerCase())
+              )
+              .map(course => (
+                <Card
+                  key={course.id}
+                  raised
+                  key={course.id}
+                  fluid
+                  as={Link}
+                  to={`/courses/${course.id}`}
+                  header={`${course.code} - ${course.title}`}
+                  description={`${intl.formatMessage({
+                    id: "courses.deadline"
+                  })} ${intl.formatDate(course.deadline)}`}
+                ></Card>
+              ))}
         </div>
       </Card.Group>
     </div>

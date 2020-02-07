@@ -8,7 +8,7 @@ export class GroupResolver {
   group(@Arg("id") id: string) {
     return Group.findOne({ where: { id } });
   }
-  @Query(() => Group)
+  @Query(() => [Group])
   groups() {
     return Group.find({ relations: ["students"] });
   }

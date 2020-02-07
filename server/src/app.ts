@@ -1,4 +1,3 @@
-import { ApolloServer } from "apollo-server";
 import bodyParser from "body-parser";
 import express from "express";
 import graphqlHttp from "express-graphql";
@@ -11,6 +10,8 @@ import { createConnection } from "typeorm";
 import { CourseResolver } from "./resolvers/CourseResolver";
 import { UserResolver } from "./resolvers/UserResolver";
 import { GroupResolver } from "./resolvers/GroupResolver";
+import { ReplyResolver } from "./resolvers/ReplyResolver";
+import cors from "cors";
 
 export const app = express();
 const router = promiseRouter();
@@ -21,9 +22,7 @@ const main = async () => {
     const connection = await createConnection({
       type: "postgres",
       host: "db",
-
       username: "postgres",
-      password: "postgres",
       entities: [__dirname + "/entity/*.ts"],
       synchronize: true,
     });
@@ -32,7 +31,7 @@ const main = async () => {
   }
 
   const schema = await buildSchema({
-    resolvers: [CourseResolver, UserResolver, GroupResolver],
+    resolvers: [CourseResolver, UserResolver, ReplyResolver, GroupResolver],
     validate: false,
     nullableByDefault: true,
   });
@@ -42,6 +41,7 @@ const main = async () => {
 
   // Middleware.
   app
+    .use(cors({ origin: "http://localhost:3000" }))
     .use("/graphql", graphqlHttp({ schema, graphiql: true }))
     .use(bodyParser.json())
     .use(morgan(logFormat))

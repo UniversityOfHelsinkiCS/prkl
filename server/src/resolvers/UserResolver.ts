@@ -8,7 +8,8 @@ export class UserResolver {
   user(@Arg("id") id: string) {
     return User.findOne({ where: { id } });
   }
-  @Query(() => User)
+
+  @Query(() => [User])
   users() {
     return User.find();
   }
