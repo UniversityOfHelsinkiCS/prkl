@@ -10,11 +10,13 @@ export class GroupResolver {
   }
   @Query(() => Group)
   groups() {
-    return Group.find();
+    return Group.find({ relations: ["students"] });
   }
 
   @Mutation(() => Group)
   async createGroup(@Arg("data") data: CreateGroupInput) {
+    // data.course.id = "d5183504-b0f7-418b-aaa1-dfa2eb17b813";
+    console.log("CreateGroupInput:", CreateGroupInput.toString());
     console.log("data:", data);
     const group = Group.create(data);
     console.log("group:", group);

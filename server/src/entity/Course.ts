@@ -18,6 +18,10 @@ export class Course extends BaseEntity {
 
   @Field(() => String)
   @Column()
+  deadline: string;
+
+  @Field(() => String)
+  @Column()
   code: string;
 
   @Field(() => String)
@@ -50,6 +54,7 @@ export class Course extends BaseEntity {
   @OneToMany(
     type => Group,
     group => group.course,
+    { cascade: true, eager: true },
   )
   groups: Group[];
 }

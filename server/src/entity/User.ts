@@ -13,7 +13,7 @@ export class User extends BaseEntity {
 
   // shibboleth userid
   @Field(() => String)
-  @Column()
+  @Column({ default: "Shibbo" })
   shibbolethID: String;
 
   @Field(() => String)
@@ -24,17 +24,19 @@ export class User extends BaseEntity {
   @Column()
   role: number;
 
-  @Field(() => [Course])
+  @Field(type => [Course])
   @OneToMany(
     type => Course,
     course => course.teacher,
+    { cascade: true, eager: true },
   )
   courses_teached: Course[];
 
-  @Field(() => [Reply])
+  @Field(type => [Reply])
   @OneToMany(
     type => Reply,
     reply => reply.student,
+    { cascade: true, eager: true },
   )
   replies_for_course: Reply[];
 
