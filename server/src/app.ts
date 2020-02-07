@@ -1,4 +1,3 @@
-import { ApolloServer } from "apollo-server";
 import bodyParser from "body-parser";
 import express from "express";
 import graphqlHttp from "express-graphql";
@@ -11,6 +10,8 @@ import { createConnection } from "typeorm";
 import { CourseResolver } from "./resolvers/CourseResolver";
 import { UserResolver } from "./resolvers/UserResolver";
 import { GroupResolver } from "./resolvers/GroupResolver";
+import shibbCharset from './middleware/shibbolethHeaders';
+
 
 export const app = express();
 const router = promiseRouter();
@@ -34,6 +35,7 @@ const main = async () => {
   const schema = await buildSchema({
     resolvers: [CourseResolver, UserResolver, GroupResolver],
     validate: false,
+    // TODO: Do we want this?
     nullableByDefault: true,
   });
 
@@ -42,6 +44,7 @@ const main = async () => {
 
   // Middleware.
   app
+    .use(shibbCharset)
     .use("/graphql", graphqlHttp({ schema, graphiql: true }))
     .use(bodyParser.json())
     .use(morgan(logFormat))
