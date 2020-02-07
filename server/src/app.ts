@@ -10,12 +10,9 @@ import { createConnection } from "typeorm";
 import { CourseResolver } from "./resolvers/CourseResolver";
 import { UserResolver } from "./resolvers/UserResolver";
 import { GroupResolver } from "./resolvers/GroupResolver";
-<<<<<<< HEAD
 import { ReplyResolver } from "./resolvers/ReplyResolver";
 import cors from "cors";
-=======
 import shibbCharset from "./middleware/shibbolethHeaders";
->>>>>>> e3278472096f60e12994091da1315cf55943547f
 
 export const app = express();
 const router = promiseRouter();
@@ -46,11 +43,8 @@ const main = async () => {
 
   // Middleware.
   app
-<<<<<<< HEAD
     .use(cors({ origin: "http://localhost:3000" }))
-=======
     .use(shibbCharset)
->>>>>>> e3278472096f60e12994091da1315cf55943547f
     .use("/graphql", graphqlHttp({ schema, graphiql: true }))
     .use(bodyParser.json())
     .use(morgan(logFormat))
