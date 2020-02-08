@@ -7,11 +7,11 @@ import path from "path";
 import { buildSchema } from "type-graphql";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
+import cors from "cors";
 import { CourseResolver } from "./resolvers/CourseResolver";
 import { UserResolver } from "./resolvers/UserResolver";
 import { GroupResolver } from "./resolvers/GroupResolver";
 import { ReplyResolver } from "./resolvers/ReplyResolver";
-import cors from "cors";
 import shibbCharset from "./middleware/shibbolethHeaders";
 
 export const app = express();
@@ -41,9 +41,13 @@ const main = async () => {
   // Logging format for morgan.
   const logFormat = process.env.NODE_ENV === "development" ? "dev" : "combined";
 
+  // CORS for development
+  if (process.env.NODE_ENV === "development") {
+    app.use(cors({ origin: "http://localhost:3000" }));
+  }
+
   // Middleware.
   app
-    .use(cors({ origin: "http://localhost:3000" }))
     .use(shibbCharset)
     .use("/graphql", graphqlHttp({ schema, graphiql: true }))
     .use(bodyParser.json())
