@@ -18,8 +18,8 @@ const typeDefs = gql`
 const apolloClient = new ApolloClient({
   uri:
     process.env.NODE_ENV === "development"
-      ? `http://localhost:3001/graphql`
-      : `/graphql`
+      ? `http://localhost:3001/graphql/`
+      : `/graphql/`
 })
 
 ReactDOM.render(
