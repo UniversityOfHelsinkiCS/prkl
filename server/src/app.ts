@@ -41,9 +41,13 @@ const main = async () => {
   // Logging format for morgan.
   const logFormat = process.env.NODE_ENV === "development" ? "dev" : "combined";
 
+  // CORS for development
+  if (process.env.NODE_ENV === "development") {
+    app.use(cors({ origin: "http://localhost:3000" }));
+  }
+
   // Middleware.
   app
-    .use(cors({ origin: "http://localhost:3000" }))
     .use(shibbCharset)
     .use("/graphql", graphqlHttp({ schema, graphiql: true }))
     .use(bodyParser.json())
