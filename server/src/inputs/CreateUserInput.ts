@@ -4,10 +4,8 @@ import { InputType, Field } from "type-graphql";
 @InputType()
 export class CreateUserInput {
   @Field()
-  name: string;
+  shibbolethUid: string;
 
   @Field()
   role: number;
-
-  shibbolethID: string;
 }

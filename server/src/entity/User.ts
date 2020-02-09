@@ -11,14 +11,10 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  // shibboleth userid
-  @Field(() => String)
-  @Column({ default: "Shibbo" })
-  shibbolethID: String;
-
+  // Shibboleth user id.
   @Field(() => String)
   @Column()
-  name: string;
+  shibbolethUid: string;
 
   @Field(() => Number)
   @Column()

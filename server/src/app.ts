@@ -13,6 +13,7 @@ import { UserResolver } from "./resolvers/UserResolver";
 import { GroupResolver } from "./resolvers/GroupResolver";
 import { ReplyResolver } from "./resolvers/ReplyResolver";
 import shibbCharset from "./middleware/shibbolethHeaders";
+import authorization from "./middleware/authorization";
 
 export const app = express();
 const router = promiseRouter();
@@ -49,6 +50,7 @@ const main = async () => {
   // Middleware.
   app
     .use(shibbCharset)
+    .use(authorization)
     .use("/graphql", graphqlHttp({ schema, graphiql: true }))
     .use(bodyParser.json())
     .use(morgan(logFormat))

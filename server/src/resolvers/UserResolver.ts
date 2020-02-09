@@ -14,15 +14,14 @@ export class UserResolver {
     return User.find();
   }
 
+  @Query(() => User)
+  findByShibbolethUid(@Arg("shibbolethUid") shibbolethUid: string): Promise<User> {
+    return User.findOne({ where: { shibbolethUid } });
+  }
+
   @Mutation(() => User)
-  async createUser(@Arg("data") data: CreateUserInput, _, @Ctx() context) {
-    data = { ...data, shibbolethID: "shibbID" };
+  async createUser(@Arg("data") data: CreateUserInput): Promise<User> {
     const user = User.create(data);
-    console.log("context:", context);
-    console.log("_:", _);
-
-    console.log("course:", user);
-
     await user.save();
 
     return user;
