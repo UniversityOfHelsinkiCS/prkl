@@ -1,8 +1,0 @@
-{
-  "type": "postgres",
-  "name": "testdb",
-  "host": "db",
-
-  "username": "postgres",
-  "password": "postgres"
-}
