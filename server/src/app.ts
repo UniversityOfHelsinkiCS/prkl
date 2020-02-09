@@ -28,7 +28,10 @@ const main = async () => {
       database: "postgres",
       username: "postgres",
       entities: [__dirname + "/entity/*.ts"],
-      synchronize: true,
+      //synchronize: true,
+      migrationsTableName: "migrations",
+      migrations: ["migrations/*.ts"],
+      migrationsRun: true,
     });
   } catch (error) {
     console.log("error:", error);
