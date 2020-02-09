@@ -21,9 +21,11 @@ const port = 3001;
 
 const main = async () => {
   try {
-    const connection = await createConnection({
+    await createConnection({
       type: "postgres",
       host: "db",
+      port: 5432,
+      database: "postgres",
       username: "postgres",
       entities: [__dirname + "/entity/*.ts"],
       synchronize: true,
