@@ -11,11 +11,14 @@ import { UserResolver } from "./../resolvers/UserResolver";
 import { CreateUserInput } from "../inputs/CreateUserInput";
 
 export default async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const uid = req.headers.uid;
+  let uid = req.headers.uid;
   const { createUser, findByShibbolethUid } = new UserResolver();
 
   if (typeof uid !== "string") {
-    throw new TypeError("Failed header type check.");
+    console.log(`uid=${uid}`);
+    console.log(`uid[0]=${uid[0]}`);
+    uid = uid[0];
+    //throw new TypeError("Failed header type check.");
   }
 
   let user = await findByShibbolethUid(uid);
