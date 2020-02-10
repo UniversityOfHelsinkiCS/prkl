@@ -16,11 +16,11 @@ const nameMap = [
 ];
 
 export default (req: Request, res: Response, next: NextFunction): void => {
-  nameMap.forEach(({ oldKey, newKey }) => {
-    if (process.env.NODE_ENV === "development") {
-      mockHeaders(req);
-    }
+  if (process.env.NODE_ENV === "development") {
+    mockHeaders(req);
+  }
 
+  nameMap.forEach(({ oldKey, newKey }) => {
     if (req.headers[oldKey]) {
       const cache = req.headers[oldKey] as string;
       req.headers[oldKey] = null;
