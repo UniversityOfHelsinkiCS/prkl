@@ -22,9 +22,9 @@ export default (req: Request, res: Response, next: NextFunction): void => {
     }
 
     if (req.headers[oldKey]) {
-      req.headers[newKey] = Buffer.from(req.headers[oldKey] as string, "latin1").toString("utf8");
-
+      const cache = req.headers[oldKey] as string;
       req.headers[oldKey] = null;
+      req.headers[newKey] = Buffer.from(cache, "latin1").toString("utf8");
     }
   });
 
