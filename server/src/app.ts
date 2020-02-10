@@ -27,7 +27,7 @@ const main = async () => {
       port: 5432,
       database: "postgres",
       username: "postgres",
-      entities: [__dirname + "/entity/*.ts"],
+      entities: [__dirname + "/entity/*{.ts,.js}"],
       synchronize: true,
       //migrationsTableName: "migrations",
       //migrations: ["migrations/*.ts"],
