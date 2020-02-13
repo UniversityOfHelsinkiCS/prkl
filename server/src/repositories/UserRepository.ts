@@ -1,6 +1,6 @@
 import { UserInput } from "./../inputs/UserInput";
 import { plainToClass } from "class-transformer";
-import { User } from "./../entity/User";
+import { User } from "./../entities/User";
 import { EntityRepository, Repository } from "typeorm";
 
 @EntityRepository(User)

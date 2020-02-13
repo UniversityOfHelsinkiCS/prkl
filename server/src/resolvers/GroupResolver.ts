@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Arg, Ctx } from "type-graphql";
-import { Group } from "../entity/Group";
-import { CreateGroupInput } from "../inputs/CreateGroupInput";
+import { Group } from "../entities/Group";
+import { GroupInput } from "../inputs/GroupInput";
 
 @Resolver()
 export class GroupResolver {
@@ -14,9 +14,9 @@ export class GroupResolver {
   }
 
   @Mutation(() => Group)
-  async createGroup(@Arg("data") data: CreateGroupInput) {
+  async createGroup(@Arg("data") data: GroupInput) {
     // data.course.id = "d5183504-b0f7-418b-aaa1-dfa2eb17b813";
-    console.log("CreateGroupInput:", CreateGroupInput.toString());
+    console.log("GroupInput:", GroupInput.toString());
     console.log("data:", data);
     const group = Group.create(data);
     console.log("group:", group);

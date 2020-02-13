@@ -1,8 +1,8 @@
 import { InputType, Field } from "type-graphql";
-import { CreateQuestionsInput } from "./CreateQuestionsInput";
+import { QuestionsInput } from "./QuestionsInput";
 
 @InputType()
-export class CreateCourseInput {
+export class CourseInput {
   @Field()
   title: string;
 
@@ -24,6 +24,6 @@ export class CreateCourseInput {
   @Field()
   min_group_size: number;
 
-  @Field(type => [CreateQuestionsInput])
-  questions: CreateQuestionsInput[];
+  @Field(type => [QuestionsInput])
+  questions: QuestionsInput[];
 }

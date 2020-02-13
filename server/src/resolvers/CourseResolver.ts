@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Arg } from "type-graphql";
-import { Course } from "../entity/Course";
-import { CreateCourseInput } from "../inputs/CreateCourseInput";
+import { Course } from "../entities/Course";
+import { CourseInput } from "../inputs/CourseInput";
 
 @Resolver()
 export class CourseResolver {
@@ -15,7 +15,7 @@ export class CourseResolver {
   }
 
   @Mutation(() => Course)
-  async createCourse(@Arg("data") data: CreateCourseInput) {
+  async createCourse(@Arg("data") data: CourseInput) {
     console.log("data:", data);
     const course = Course.create(data);
 

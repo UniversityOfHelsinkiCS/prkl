@@ -1,8 +1,8 @@
 import { Resolver, Query, Mutation, Arg } from "type-graphql";
-import { Reply } from "../entity/Reply";
-import { CreateReplyInput } from "../inputs/CreateReplyInput";
-import { User } from "../entity/User";
-import { Question } from "../entity/Question";
+import { Reply } from "../entities/Reply";
+import { ReplyInput } from "../inputs/ReplyInput";
+import { User } from "../entities/User";
+import { Question } from "../entities/Question";
 
 @Resolver()
 export class ReplyResolver {
@@ -20,7 +20,7 @@ export class ReplyResolver {
 
   @Mutation(() => Reply)
   async createReply(
-    @Arg("data") data: CreateReplyInput,
+    @Arg("data") data: ReplyInput,
     @Arg("currentUserId") currentUserId: string,
     @Arg("questionId") questionId: string,
   ) {

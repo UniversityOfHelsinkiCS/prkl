@@ -1,6 +1,6 @@
 import { UserRepository } from "./../repositories/UserRepository";
 import { Response, Request, NextFunction } from "express";
-import { User } from "./../entity/User";
+import { User } from "./../entities/User";
 import { getCustomRepository } from "typeorm";
 
 /**

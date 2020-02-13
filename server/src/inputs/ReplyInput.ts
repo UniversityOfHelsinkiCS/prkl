@@ -1,7 +1,7 @@
 import { InputType, Field } from "type-graphql";
 
 @InputType()
-export class CreateReplyInput {
+export class ReplyInput {
   @Field()
   value: number;
 }
