@@ -11,7 +11,9 @@ const Header = () => {
   }
   return (
     <Menu className="mainHeader" size="massive" stackable borderless attached>
-      <Menu.Item>PRKL</Menu.Item>
+      <Menu.Item as={Link} to="/" name="Home" active={activeItem === "Home"}>
+        PRKL
+      </Menu.Item>
 
       <Menu.Item
         as={Link}

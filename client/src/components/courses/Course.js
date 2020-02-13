@@ -16,11 +16,16 @@ const Course = ({ id }) => {
   })
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && data !== undefined) {
       setCourse(data.course)
       console.log("course: ", data.course)
     }
   }, [loading])
+
+  if (error !== undefined) {
+    console.log("error:", error)
+    return <div>Error loading course</div>
+  }
 
   if (loading || !course) {
     return <div>loading...</div>
