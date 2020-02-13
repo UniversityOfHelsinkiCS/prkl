@@ -8,14 +8,14 @@ import { Question } from "../entity/Question";
 export class ReplyResolver {
   @Query(() => [Reply])
   async replies() {
-    console.log("replies", await Reply.find({ relations: ["student"] }));
+    console.log("replies", await Reply.find({ relations: ["student", "question"] }));
 
-    return Reply.find({ relations: ["student"] });
+    return Reply.find({ relations: ["student", "question"] });
   }
   @Query(() => Reply)
   async reply(@Arg("id") id: string) {
-    console.log("reply:", await Reply.findOne({ where: { id }, relations: ["student"] }));
-    return Reply.findOne({ where: { id }, relations: ["student"] });
+    console.log("reply:", await Reply.findOne({ where: { id }, relations: ["student", "question"] }));
+    return Reply.findOne({ where: { id }, relations: ["student", "question"] });
   }
 
   @Mutation(() => Reply)
