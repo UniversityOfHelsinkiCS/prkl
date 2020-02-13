@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react"
-import { COURSE_BY_ID } from "../../GqlQueries"
+import { COURSE_BY_ID, DELETE_COURSE } from "../../GqlQueries"
+import { Form } from "semantic-ui-react"
+import { useHistory } from "react-router-dom"
+import { useStore } from "react-hookstore"
 
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery, useMutation } from "@apollo/react-hooks"
 
 import {
   Segment,
@@ -14,7 +17,13 @@ import {
 import { FormattedMessage, useIntl, FormattedDate } from "react-intl"
 
 const Course = ({ id }) => {
+  const [courses, setCourses] = useStore("coursesStore")
   const [course, setCourse] = useState({})
+
+  const [deleteCourse] = useMutation(DELETE_COURSE)
+
+
+  const history = useHistory()
 
   const intl = useIntl()
 
@@ -37,11 +46,41 @@ const Course = ({ id }) => {
   if (loading || !course) {
     return <Loader active />
   }
+
+
+  const handleDeletion = async () => {
+    const variables = {id: id}
+
+      try {
+        const result = await deleteCourse({
+          variables
+        })
+        const trimmedCourses = []
+
+        courses.forEach(course => {
+          if(course.id !== id){
+            trimmedCourses.push(course)
+          }
+        });
+        setCourses(trimmedCourses)
+
+      } catch (error) {
+        console.log("error:", error)
+      }
+      history.push("/courses")
+    }
+
+
   return (
     <div>
       <h2>
         {course.code} - {course.title}
       </h2>
+
+      <Form.Button primary onClick={handleDeletion}>
+        <FormattedMessage id="course.delete" />
+      </Form.Button>
+
       <Header as="h4" color="red">
         <FormattedMessage id="course.deadline" />
         <FormattedDate value={course.deadline} />

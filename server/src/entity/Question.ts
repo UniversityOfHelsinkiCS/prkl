@@ -17,6 +17,7 @@ export class Question extends BaseEntity {
   @ManyToOne(
     type => Course,
     course => course.questions,
+    {onDelete:"CASCADE"}
   )
   course: Course;
 
@@ -24,7 +25,7 @@ export class Question extends BaseEntity {
   @OneToMany(
     type => Reply,
     reply => reply.question,
-    { cascade: true, eager: true },
+    { cascade: true, eager: true, onDelete:"CASCADE" },
   )
   replies: Reply[];
 }

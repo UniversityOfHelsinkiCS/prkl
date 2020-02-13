@@ -17,12 +17,14 @@ export class Reply extends BaseEntity {
   @ManyToOne(
     type => Question,
     question => question.replies,
+    {onDelete:"CASCADE"}
   )
   question: Question;
 
   @ManyToOne(
     type => User,
     user => user.replies_for_course,
+    {onDelete:"CASCADE"}
   )
   student: User;
 }
