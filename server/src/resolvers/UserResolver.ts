@@ -23,6 +23,7 @@ export class UserResolver {
   async createUser(@Arg("data") data: CreateUserInput): Promise<User> {
     const user = User.create(data);
     await user.save();
+    console.log(await User.find());
 
     return user;
   }
