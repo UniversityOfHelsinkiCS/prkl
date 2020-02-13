@@ -3,7 +3,14 @@ import { COURSE_BY_ID } from "../../GqlQueries"
 
 import { useQuery } from "@apollo/react-hooks"
 
-import { Segment, Header, Grid, Dropdown, Button } from "semantic-ui-react"
+import {
+  Segment,
+  Header,
+  Grid,
+  Dropdown,
+  Button,
+  Loader
+} from "semantic-ui-react"
 import { FormattedMessage, useIntl, FormattedDate } from "react-intl"
 
 const Course = ({ id }) => {
@@ -28,7 +35,7 @@ const Course = ({ id }) => {
   }
 
   if (loading || !course) {
-    return <div>loading...</div>
+    return <Loader active />
   }
   return (
     <div>

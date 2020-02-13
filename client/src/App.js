@@ -9,6 +9,7 @@ import CourseForm from "./components/courseCreation/CourseForm"
 import Courses from "./components/courses/Courses"
 import Course from "./components/courses/Course"
 import { ALL_COURSES } from "./GqlQueries"
+import { Loader, Dimmer, Container } from "semantic-ui-react"
 
 import "./App.css"
 import Home from "./components/Home"
@@ -28,25 +29,26 @@ const App = () => {
     }
   }, [loading])
 
-  if (loading) {
-    return <div>loading...</div>
-  }
-
   return (
     <div className="App">
       <Router basename={process.env.PUBLIC_URL}>
         <Header />
-        <div className="mainContent">
-          <Route exact path="/" render={() => <Home />} />
-          <Route path="/user" render={() => <StudentInfo />} />
-          <Route path="/addcourse" render={() => <CourseForm />} />
-          <Route exact path="/courses" render={() => <Courses />} />
-          <Route
-            exact
-            path="/courses/:id"
-            render={({ match }) => <Course id={match.params.id} />}
-          />
-        </div>
+        {loading ? (
+          <Loader active />
+        ) : (
+          <div className="mainContent">
+            <Loader></Loader>
+            <Route exact path="/" render={() => <Home />} />
+            <Route path="/user" render={() => <StudentInfo />} />
+            <Route path="/addcourse" render={() => <CourseForm />} />
+            <Route exact path="/courses" render={() => <Courses />} />
+            <Route
+              exact
+              path="/courses/:id"
+              render={({ match }) => <Course id={match.params.id} />}
+            />
+          </div>
+        )}
       </Router>
     </div>
   )
