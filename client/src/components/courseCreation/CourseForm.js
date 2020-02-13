@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom"
 import { Form } from "semantic-ui-react"
 import { FormattedMessage, useIntl } from "react-intl"
 import { useMutation } from "@apollo/react-hooks"
-import { ALL_COURSES, CREATE_COURSE } from "../../GqlQueries"
+import { CREATE_COURSE } from "../../GqlQueries"
 import { useStore } from "react-hookstore"
 
 const CourseForm = () => {
@@ -73,9 +73,10 @@ const CourseForm = () => {
         <FormattedMessage id="courseCreationForm.PageTitle" />
       </h1>
 
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <Form.Field>
           <Form.Input
+            required
             fluid
             label={intl.formatMessage({
               id: "courseCreationForm.TitleForm"
@@ -86,6 +87,7 @@ const CourseForm = () => {
 
         <Form.Group>
           <Form.Input
+            required
             label={intl.formatMessage({
               id: "courseCreationForm.CourseCodeForm"
             })}
@@ -93,6 +95,7 @@ const CourseForm = () => {
           />
 
           <Form.Input
+            required
             type="date"
             min={todayParsed}
             label={intl.formatMessage({
@@ -106,6 +109,7 @@ const CourseForm = () => {
 
         <Form.Field>
           <Form.TextArea
+            required
             label={intl.formatMessage({
               id: "courseCreationForm.CourseDescriptionForm"
             })}
@@ -115,6 +119,7 @@ const CourseForm = () => {
 
         <Form.Group>
           <Form.Input
+            required
             type="number"
             label={intl.formatMessage({
               id: "courseCreationForm.CourseMinGroupForm"
@@ -123,6 +128,7 @@ const CourseForm = () => {
           />
 
           <Form.Input
+            required
             type="number"
             label={intl.formatMessage({
               id: "courseCreationForm.CourseMaxGroupForm"
@@ -144,6 +150,7 @@ const CourseForm = () => {
         <Form.Group style={{ flexWrap: "wrap" }}>
           {questions.map((q, index) => (
             <Form.Input
+              required
               key={index}
               onChange={handleQuestionChange(index)}
               placeholder={intl.formatMessage({
@@ -155,7 +162,7 @@ const CourseForm = () => {
           ))}
         </Form.Group>
 
-        <Form.Button primary onClick={handleSubmit}>
+        <Form.Button primary type="submit">
           <FormattedMessage id="courseCreationForm.ConfirmButton" />
         </Form.Button>
       </Form>
