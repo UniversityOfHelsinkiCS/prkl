@@ -27,7 +27,6 @@ const Course = ({ id }) => {
 
   const [deleteCourse] = useMutation(DELETE_COURSE)
 
-
   const history = useHistory()
 
   const intl = useIntl()
@@ -70,33 +69,27 @@ const Course = ({ id }) => {
     return <Loader active />
   }
 
-<<<<<<< HEAD
-=======
-
   const handleDeletion = async () => {
-    const variables = {id: id}
+    const variables = { id: id }
 
-      try {
-        const result = await deleteCourse({
-          variables
-        })
-        const trimmedCourses = []
+    try {
+      const result = await deleteCourse({
+        variables
+      })
+      const trimmedCourses = []
 
-        courses.forEach(course => {
-          if(course.id !== id){
-            trimmedCourses.push(course)
-          }
-        });
-        setCourses(trimmedCourses)
-
-      } catch (error) {
-        console.log("error:", error)
-      }
-      history.push("/courses")
+      courses.forEach(course => {
+        if (course.id !== id) {
+          trimmedCourses.push(course)
+        }
+      })
+      setCourses(trimmedCourses)
+    } catch (error) {
+      console.log("error:", error)
     }
+    history.push("/courses")
+  }
 
-
->>>>>>> fe49898dbef201dffbc8244870a057e640df7862
   return (
     <div>
       <h2>
