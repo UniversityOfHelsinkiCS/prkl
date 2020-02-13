@@ -11,7 +11,6 @@ const nameMap = [
   { oldKey: "uid", newKey: "uid" },
   { oldKey: "givenname", newKey: "firstname" },
   { oldKey: "mail", newKey: "email" },
-  // TODO: Parse student number out of the code.
   { oldKey: "schacpersonaluniquecode", newKey: "studentNo" },
   { oldKey: "sn", newKey: "lastname" },
 ];
@@ -28,6 +27,18 @@ export default (req: Request, res: Response, next: NextFunction): void => {
       req.headers[newKey] = Buffer.from(cache, "latin1").toString("utf8");
     }
   });
+
+  // Attempt to parse student number from schacwhatever.
+  // Expected form: urn:schac:personalUniqueCode:int:studentID:helsinki.fi:011110002
+  if (typeof req.headers.studentNo === "string") {
+    const parts = req.headers.studentNo.split(":");
+
+    if (parts.length < 7 || parts[4] !== "studentID") {
+      req.headers.studentNo = null;
+    } else {
+      req.headers.studentNo = parts[6];
+    }
+  }
 
   next();
 };
