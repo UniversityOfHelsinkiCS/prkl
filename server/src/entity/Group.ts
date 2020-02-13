@@ -10,12 +10,14 @@ export class Group extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
+  @Field(type => Course)
   @ManyToOne(
     type => Course,
     course => course.groups,
   )
   course: Course;
 
+  @Field(type => [User])
   @ManyToMany(
     type => User,
     user => user.groups,

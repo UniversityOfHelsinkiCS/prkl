@@ -32,10 +32,11 @@ export class User extends BaseEntity {
   @OneToMany(
     type => Reply,
     reply => reply.student,
-    { cascade: true, eager: true },
+    { cascade: true },
   )
   replies_for_course: Reply[];
 
+  @Field(type => [Group])
   @ManyToMany(
     type => Group,
     group => group.students,

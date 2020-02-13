@@ -14,17 +14,19 @@ export class Reply extends BaseEntity {
   @Column({ nullable: true })
   value: number;
 
+  @Field(type => Question)
   @ManyToOne(
     type => Question,
     question => question.replies,
-    {onDelete:"CASCADE"}
+    { onDelete: "CASCADE", eager: true },
   )
   question: Question;
 
+  @Field(type => User)
   @ManyToOne(
     type => User,
     user => user.replies_for_course,
-    {onDelete:"CASCADE"}
+    { onDelete: "CASCADE", eager: true },
   )
   student: User;
 }

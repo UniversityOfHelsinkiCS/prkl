@@ -36,6 +36,7 @@ export class Course extends BaseEntity {
   @Column()
   min_group_size: number;
 
+  @Field(type => User)
   @ManyToOne(
     type => User,
     user => user.courses_teached,
