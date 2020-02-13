@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { COURSE_BY_ID, DELETE_COURSE } from "../../GqlQueries"
-import { Form } from "semantic-ui-react"
+
 import { useHistory } from "react-router-dom"
 import { useStore } from "react-hookstore"
 
