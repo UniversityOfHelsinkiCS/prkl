@@ -11,6 +11,7 @@ const nameMap = [
   { oldKey: "uid", newKey: "uid" },
   { oldKey: "givenname", newKey: "firstname" },
   { oldKey: "mail", newKey: "email" },
+  // TODO: Parse student number out of the code.
   { oldKey: "schacpersonaluniquecode", newKey: "studentNo" },
   { oldKey: "sn", newKey: "lastname" },
 ];

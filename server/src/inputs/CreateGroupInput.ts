@@ -2,11 +2,11 @@ import { InputType, Field } from "type-graphql";
 import { User } from "../entity/User";
 import { Course } from "../entity/Course";
 import { CreateCourseInput } from "./CreateCourseInput";
-import { CreateUserInput } from "./CreateUserInput";
+import { UserInput } from "./UserInput";
 
 @InputType()
 export class CreateGroupInput {
-  @Field(type => [CreateUserInput])
+  @Field(type => [UserInput])
   students: User[];
 
   @Field(type => CreateCourseInput)

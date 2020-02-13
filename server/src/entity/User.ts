@@ -20,6 +20,22 @@ export class User extends BaseEntity {
   @Column()
   role: number;
 
+  @Field(() => String)
+  @Column()
+  firstname: string;
+
+  @Field(() => String)
+  @Column()
+  lastname: string;
+
+  @Field(() => String)
+  @Column()
+  studentNo: string;
+
+  @Field(() => String)
+  @Column()
+  email: string;
+
   @Field(type => [Course])
   @OneToMany(
     type => Course,

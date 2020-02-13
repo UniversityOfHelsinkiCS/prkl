@@ -40,8 +40,6 @@ const main = async () => {
   const schema = await buildSchema({
     resolvers: [CourseResolver, UserResolver, ReplyResolver, GroupResolver],
     validate: false,
-    // TODO: Do we want this?
-    nullableByDefault: true,
   });
 
   // Logging format for morgan.
