@@ -70,7 +70,7 @@ const CourseForm = () => {
   return (
     <div>
       <h1>
-        <FormattedMessage id="courseCreationForm.PageTitle"></FormattedMessage>
+        <FormattedMessage id="courseCreationForm.PageTitle" />
       </h1>
 
       <Form>
@@ -81,7 +81,7 @@ const CourseForm = () => {
               id: "courseCreationForm.TitleForm"
             })}
             onChange={event => setCourseTitle(event.target.value)}
-          ></Form.Input>
+          />
         </Form.Field>
 
         <Form.Group>
@@ -90,7 +90,7 @@ const CourseForm = () => {
               id: "courseCreationForm.CourseCodeForm"
             })}
             onChange={event => setCourseCode(event.target.value)}
-          ></Form.Input>
+          />
 
           <Form.Input
             type="date"
@@ -101,7 +101,7 @@ const CourseForm = () => {
             onChange={event => {
               setDeadline(event.target.value)
             }}
-          ></Form.Input>
+          />
         </Form.Group>
 
         <Form.Field>
@@ -110,34 +110,34 @@ const CourseForm = () => {
               id: "courseCreationForm.CourseDescriptionForm"
             })}
             onChange={event => setCourseDescription(event.target.value)}
-          ></Form.TextArea>
+          />
         </Form.Field>
 
         <Form.Group>
           <Form.Input
             type="number"
             label={intl.formatMessage({
-              id: "courseCreationForm.CourseMaxGroupForm"
+              id: "courseCreationForm.CourseMinGroupForm"
             })}
-            onChange={event => setMaxGroup(event.target.value)}
-          ></Form.Input>
+            onChange={event => setMinGroup(event.target.value)}
+          />
 
           <Form.Input
             type="number"
             label={intl.formatMessage({
-              id: "courseCreationForm.CourseMinGroupForm"
+              id: "courseCreationForm.CourseMaxGroupForm"
             })}
-            onChange={event => setMinGroup(event.target.value)}
-          ></Form.Input>
+            onChange={event => setMaxGroup(event.target.value)}
+          />
         </Form.Group>
 
         <Form.Group>
           <Form.Button onClick={handleAddForm}>
-            <FormattedMessage id="questionForm.addQuestion"></FormattedMessage>
+            <FormattedMessage id="questionForm.addQuestion" />
           </Form.Button>
 
           <Form.Button onClick={handleRemoveForm}>
-            <FormattedMessage id="questionForm.removeQuestion"></FormattedMessage>
+            <FormattedMessage id="questionForm.removeQuestion" />
           </Form.Button>
         </Form.Group>
 
@@ -151,12 +151,12 @@ const CourseForm = () => {
               })}
               label={`Question number ${index + 1}`}
               value={q.name}
-            ></Form.Input>
+            />
           ))}
         </Form.Group>
 
         <Form.Button primary onClick={handleSubmit}>
-          <FormattedMessage id="courseCreationForm.ConfirmButton"></FormattedMessage>
+          <FormattedMessage id="courseCreationForm.ConfirmButton" />
         </Form.Button>
       </Form>
     </div>

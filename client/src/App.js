@@ -20,6 +20,8 @@ const App = () => {
 
   const { loading, error, data } = useQuery(ALL_COURSES)
 
+  useEffect(() => {}, [])
+
   useEffect(() => {
     if (!loading) {
       setCourses((data && data.courses) || [])

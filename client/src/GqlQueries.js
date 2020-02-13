@@ -12,6 +12,19 @@ export const ALL_COURSES = gql`
   }
 `
 
+export const CURRENT_USER = gql`
+  {
+    currentUser {
+      id
+      firstname
+      lastname
+      email
+      studentNo
+      role
+    }
+  }
+`
+
 export const COURSE_BY_ID = gql`
   query course($id: String!) {
     course(id: $id) {
