@@ -36,9 +36,11 @@ export class Course extends BaseEntity {
   @Column()
   min_group_size: number;
 
+  @Field(type => User)
   @ManyToOne(
     type => User,
     user => user.courses_teached,
+    {onDelete:"CASCADE"}
   )
   teacher: User;
 
@@ -46,7 +48,7 @@ export class Course extends BaseEntity {
   @OneToMany(
     type => Question,
     question => question.course,
-    { cascade: true, eager: true },
+    { cascade: ["remove", "insert", "update"], eager: true, onDelete:"CASCADE" },
   )
   questions: Question[];
 
@@ -54,7 +56,7 @@ export class Course extends BaseEntity {
   @OneToMany(
     type => Group,
     group => group.course,
-    { cascade: true, eager: true },
+    { cascade: ["remove", "insert", "update"], eager: true, onDelete:"CASCADE" },
   )
   groups: Group[];
 }

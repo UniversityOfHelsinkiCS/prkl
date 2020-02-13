@@ -40,6 +40,7 @@ export default {
     "course.dataCheckbox":
       "I agree that other students in my future group will recieve my personal information",
     "course.confirm": "Confirm answers and enrol to the course project",
+    "course.delete": "Delete course",
 
     "studentInfo.header": "Student Info",
     "studentInfo.fullname": "Name: {fullname}",

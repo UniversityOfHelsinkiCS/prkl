@@ -14,9 +14,11 @@ export class Question extends BaseEntity {
   @Column()
   name: string;
 
+  @Field(type => Course)
   @ManyToOne(
     type => Course,
     course => course.questions,
+    { onDelete: "CASCADE" },
   )
   course: Course;
 
@@ -24,7 +26,7 @@ export class Question extends BaseEntity {
   @OneToMany(
     type => Reply,
     reply => reply.question,
-    { cascade: true, eager: true },
+    { cascade: true, onDelete: "CASCADE" },
   )
   replies: Reply[];
 }
