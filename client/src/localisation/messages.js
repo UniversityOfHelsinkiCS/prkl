@@ -44,7 +44,6 @@ export default {
 
     "studentInfo.header": "Student Info",
     "studentInfo.fullname": "Name: {fullname}",
-    "studentInfo.username": "Username: {username}",
     "studentInfo.studentNo": "Student number: {studentNo}",
     "studentInfo.email": "Email: {email}"
   }

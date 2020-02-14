@@ -8,32 +8,61 @@ import { BrowserRouter as Router, Route } from "react-router-dom"
 import CourseForm from "./components/courseCreation/CourseForm"
 import Courses from "./components/courses/Courses"
 import Course from "./components/courses/Course"
-import { ALL_COURSES } from "./GqlQueries"
+import { ALL_COURSES, CURRENT_USER } from "./GqlQueries"
 import { Loader, Dimmer, Container } from "semantic-ui-react"
 
 import "./App.css"
 import Home from "./components/Home"
 
 createStore("coursesStore", [])
+createStore("userStore", {})
 
 const App = () => {
   const [courses, setCourses] = useStore("coursesStore")
+  const [user, setUser] = useStore("userStore")
 
-  const { loading, error, data } = useQuery(ALL_COURSES)
+  const {
+    loading: courseLoading,
+    error: courseError,
+    data: courseData
+  } = useQuery(ALL_COURSES)
 
-  useEffect(() => {}, [])
+  const { loading: userLoading, error: userError, data: userData } = useQuery(
+    CURRENT_USER
+  )
 
   useEffect(() => {
-    if (!loading) {
-      setCourses((data && data.courses) || [])
+    if (!userLoading) {
+      console.log("data:", userData)
+      console.log("loading:", userLoading)
+
+      if (userError !== undefined) {
+        console.log("error:", userError)
+      } else {
+        setUser(userData.currentUser)
+      }
     }
-  }, [loading])
+  }, [userLoading])
+
+  useEffect(() => {
+    if (!courseLoading) {
+      console.log("data:", courseData)
+      console.log("loading:", courseLoading)
+      console.log("error:", courseError)
+
+      if (userError !== undefined) {
+        console.log("error:", courseError)
+      } else {
+        setCourses((courseData && courseData.courses) || [])
+      }
+    }
+  }, [courseLoading])
 
   return (
     <div className="App">
       <Router basename={process.env.PUBLIC_URL}>
         <Header />
-        {loading ? (
+        {courseLoading ? (
           <Loader active />
         ) : (
           <div className="mainContent">

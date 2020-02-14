@@ -1,13 +1,10 @@
 import React, { useState } from "react"
 import { FormattedMessage } from "react-intl"
+import { useStore } from "react-hookstore"
 
 const StudentInfo = () => {
-  const [user, setUser] = useState({
-    username: "TestU",
-    name: "Test User",
-    studentNo: 123456789,
-    email: "test@user.com"
-  })
+  const [user] = useStore("userStore")
+  console.log("user:", user)
   return (
     <div>
       <h3>
@@ -16,15 +13,10 @@ const StudentInfo = () => {
       <div>
         <FormattedMessage
           id="studentInfo.fullname"
-          values={{ fullname: user.name }}
+          values={{ fullname: `${user.firstname} ${user.lastname}` }}
         ></FormattedMessage>
       </div>
-      <div>
-        <FormattedMessage
-          id="studentInfo.username"
-          values={{ username: user.username }}
-        ></FormattedMessage>
-      </div>
+
       <div>
         <FormattedMessage
           id="studentInfo.studentNo"
