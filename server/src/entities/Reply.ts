@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity } from "t
 import { User } from "./User";
 import { ObjectType, Field, ID } from "type-graphql";
 import { Question } from "./Question";
+import { Registration } from "./Registration";
 
 @ObjectType()
 @Entity()
@@ -18,15 +19,15 @@ export class Reply extends BaseEntity {
   @ManyToOne(
     type => Question,
     question => question.replies,
-    { onDelete: "CASCADE", eager: true },
+    { onDelete: "CASCADE" },
   )
   question: Question;
 
-  @Field(type => User)
+  @Field(type => Registration)
   @ManyToOne(
-    type => User,
-    user => user.replies_for_course,
-    { onDelete: "CASCADE", eager: true },
+    type => Registration,
+    registration => registration.questionReplies,
+    { onDelete: "CASCADE" },
   )
-  student: User;
+  registration: Registration;
 }

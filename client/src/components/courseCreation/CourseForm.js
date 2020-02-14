@@ -122,6 +122,8 @@ const CourseForm = () => {
           <Form.Input
             required
             type="number"
+            min="1"
+            max={maxGroup}
             label={intl.formatMessage({
               id: "courseCreationForm.CourseMinGroupForm"
             })}
@@ -131,6 +133,7 @@ const CourseForm = () => {
           <Form.Input
             required
             type="number"
+            min={minGroup}
             label={intl.formatMessage({
               id: "courseCreationForm.CourseMaxGroupForm"
             })}

@@ -138,11 +138,7 @@ const Course = ({ id }) => {
                             { key: 1, value: 1, text: 1 }
                           ]}
                           onChange={(event, value) => {
-                            // console.log("value:", value.value)
                             answers[index].value = value.value
-
-                            // console.log("answers:", answers)
-                            // console.log("index:", index)
                           }}
                         ></Form.Dropdown>
                       </Form.Field>
