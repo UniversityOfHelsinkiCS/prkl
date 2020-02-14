@@ -113,11 +113,11 @@ const Course = ({ id }) => {
           course.questions.map((question, index) => {
             console.log("index:", index)
             return (
-              <Segment key={question.name} raised>
+              <Segment key={question.content} raised>
                 <Grid>
                   <Grid.Row columns={2}>
                     <Grid.Column verticalAlign="middle">
-                      <b>{question.name}</b>
+                      <b>{question.content}</b>
                     </Grid.Column>
                     <Grid.Column textAlign="right">
                       <Form.Field required>

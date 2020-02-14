@@ -10,7 +10,7 @@ import Courses from "./components/courses/Courses"
 import Course from "./components/courses/Course"
 import { ALL_COURSES, CURRENT_USER } from "./GqlQueries"
 import { Loader, Dimmer, Container } from "semantic-ui-react"
-import DevBar from "./components/DevBar"
+import DevBar from "./admin/DevBar"
 
 import "./App.css"
 import Home from "./components/Home"
