@@ -3,6 +3,7 @@ describe("first prkl test", () => {
         //to run the tests, you need to compose via docker, start the client in 
         //dev mode and start up cypress.
         cy.visit("localhost:3000/")
+        cy.contains("Admin").click()
 
         cy.contains("Courses").click()
 

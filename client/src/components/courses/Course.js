@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { COURSE_BY_ID, DELETE_COURSE } from "../../GqlQueries"
 
-import { useHistory } from "react-router-dom"
 import { useStore } from "react-hookstore"
+import { useHistory } from "react-router-dom"
 
 import { useQuery, useMutation } from "@apollo/react-hooks"
 
@@ -20,6 +20,7 @@ import { FormattedMessage, useIntl, FormattedDate } from "react-intl"
 
 const Course = ({ id }) => {
   const [courses, setCourses] = useStore("coursesStore")
+  const [user] = useStore("userStore")
   const [course, setCourse] = useState({})
   const [checkbox, setCheckbox] = useState(false)
   const [goals, setGoals] = useState({})
@@ -96,9 +97,11 @@ const Course = ({ id }) => {
         {course.code} - {course.title}
       </h2>
 
-      <Form.Button primary onClick={handleDeletion}>
-        <FormattedMessage id="course.delete" />
-      </Form.Button>
+      {user && user.role === 3 ? (
+        <Form.Button primary onClick={handleDeletion}>
+          <FormattedMessage id="course.delete" />
+        </Form.Button>
+      ) : null}
 
       <Header as="h4" color="red">
         <FormattedMessage id="course.deadline" />
