@@ -38,7 +38,7 @@ export default {
     "course.gradeAnswer2": "I want to pass the course",
     "course.gradeAnswer3": "I don't care about the grade",
     "course.dataCheckbox":
-      "I agree that other students in my future group will recieve my personal information",
+      "I agree to disclose my information with the other students in my future group.",
     "course.confirm": "Confirm answers and enrol to the course project",
     "course.delete": "Delete course",
 
