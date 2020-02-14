@@ -21,18 +21,7 @@ const port = 3001;
 
 const main = async () => {
   try {
-    await createConnection({
-      type: "postgres",
-      host: "db",
-      port: 5432,
-      database: "postgres",
-      username: "postgres",
-      entities: [__dirname + "/entities/*{.ts,.js}"],
-      synchronize: true,
-      //migrationsTableName: "migrations",
-      //migrations: ["migrations/*.ts"],
-      //migrationsRun: true,
-    });
+    await createConnection();
   } catch (error) {
     console.log("error:", error);
   }
