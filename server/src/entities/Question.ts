@@ -12,7 +12,7 @@ export class Question extends BaseEntity {
 
   @Field(() => String)
   @Column()
-  name: string;
+  content: string;
 
   @Field(type => Course)
   @ManyToOne(

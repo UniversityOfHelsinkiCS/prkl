@@ -4,7 +4,7 @@ import { ReplyInput } from "./ReplyInput";
 @InputType()
 export class QuestionsInput {
   @Field()
-  name: string;
+  content: string;
 
   @Field(type => [ReplyInput], { nullable: true })
   replies: ReplyInput[];
