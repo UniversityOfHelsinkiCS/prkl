@@ -20,6 +20,22 @@ export class User extends BaseEntity {
   @Column()
   role: number;
 
+  @Field(() => String)
+  @Column()
+  firstname: string;
+
+  @Field(() => String)
+  @Column()
+  lastname: string;
+
+  @Field(() => String, { nullable: true })
+  @Column()
+  studentNo: string;
+
+  @Field(() => String)
+  @Column()
+  email: string;
+
   @Field(type => [Course])
   @OneToMany(
     type => Course,
@@ -32,10 +48,11 @@ export class User extends BaseEntity {
   @OneToMany(
     type => Reply,
     reply => reply.student,
-    { cascade: true, eager: true },
+    { cascade: true },
   )
   replies_for_course: Reply[];
 
+  @Field(type => [Group])
   @ManyToMany(
     type => Group,
     group => group.students,

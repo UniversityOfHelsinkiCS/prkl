@@ -27,7 +27,7 @@ const main = async () => {
       port: 5432,
       database: "postgres",
       username: "postgres",
-      entities: [__dirname + "/entity/*{.ts,.js}"],
+      entities: [__dirname + "/entities/*{.ts,.js}"],
       synchronize: true,
       //migrationsTableName: "migrations",
       //migrations: ["migrations/*.ts"],
@@ -40,8 +40,6 @@ const main = async () => {
   const schema = await buildSchema({
     resolvers: [CourseResolver, UserResolver, ReplyResolver, GroupResolver],
     validate: false,
-    // TODO: Do we want this?
-    nullableByDefault: true,
   });
 
   // Logging format for morgan.

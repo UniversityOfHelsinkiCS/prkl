@@ -11,7 +11,7 @@ const defaultHeaders = {
   uid: "123",
   givenname: "Firstname",
   mail: "default@email",
-  schacpersonaluniquecode: "12345678",
+  schacpersonaluniquecode: "urn:schac:personalUniqueCode:int:studentID:helsinki.fi:011110002",
   sn: "Lastname",
 };
 
