@@ -5,6 +5,7 @@ import { FormattedMessage, useIntl } from "react-intl"
 import { useMutation } from "@apollo/react-hooks"
 import { CREATE_COURSE } from "../../GqlQueries"
 import { useStore } from "react-hookstore"
+import QuestionForm from "./QuestionForm";
 
 const CourseForm = () => {
   const [courseTitle, setCourseTitle] = useState("")
@@ -152,16 +153,7 @@ const CourseForm = () => {
 
         <Form.Group style={{ flexWrap: "wrap" }}>
           {questions.map((q, index) => (
-            <Form.Input
-              required
-              key={index}
-              onChange={handleQuestionChange(index)}
-              placeholder={intl.formatMessage({
-                id: "questionCreationForm.addNewQuestion"
-              })}
-              label={`Question number ${index + 1}`}
-              value={q.name}
-            />
+            <QuestionForm key={`addQuestionField${index}`} questionId={index}/>
           ))}
         </Form.Group>
 

@@ -30,6 +30,13 @@ export default {
     "questionForm.addQuestion": "Add question",
     "questionForm.removeQuestion": "Remove question",
 
+    "questionForm.titlePlaceholder" : "Question",
+    "questionForm.title" : "Title",
+    "questionForm.numericalQuestion": "Single choice",
+    "questionForm.freeformQuestion": "Freeform",
+    "questionForm.multipleSelectOne": "Multiple select",
+    
+
     "course.deadline": "Deadline to enrol to the course project: ",
     "course.questionsPreface": "Evaluate your skills from 1 to 5",
     "course.multipleChoicePlaceholder": "Choose",
@@ -38,7 +45,7 @@ export default {
     "course.gradeAnswer2": "I want to pass the course",
     "course.gradeAnswer3": "I don't care about the grade",
     "course.dataCheckbox":
-      "I agree to disclose my information with the other students in my future group.",
+    "I agree to disclose my information with the other students in my future group.",
     "course.confirm": "Confirm answers and enrol to the course project",
     "course.delete": "Delete course",
 
