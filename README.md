@@ -1,11 +1,15 @@
-# PRKL
+# Assembler
 
-PRKL is a tool for automating division of students into project groups. The name is shorthand for _Projektiryhmäytymistyökalu_.
+Assembler is a tool for automating division of students into project groups. It goes by the nickname "prkl" which is shorthand for _Projektiryhmäytymistyökalu_.
 
 |Branch|CI Status|
 |---|---|
 |`master`|[![CircleCI](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/master.svg?style=svg)](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/master)|
 |`trunk`|[![CircleCI](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/trunk.svg?style=svg)](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/trunk)|
+
+### Documentation:
+
+- [Migrations](documentation/migrations.md)
 
 ## Usage
 
