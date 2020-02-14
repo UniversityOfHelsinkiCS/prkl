@@ -10,6 +10,7 @@ import Courses from "./components/courses/Courses"
 import Course from "./components/courses/Course"
 import { ALL_COURSES, CURRENT_USER } from "./GqlQueries"
 import { Loader, Dimmer, Container } from "semantic-ui-react"
+import DevBar from "./components/DevBar"
 
 import "./App.css"
 import Home from "./components/Home"
@@ -59,27 +60,33 @@ const App = () => {
   }, [courseLoading])
 
   return (
-    <div className="App">
-      <Router basename={process.env.PUBLIC_URL}>
-        <Header />
-        {courseLoading ? (
-          <Loader active />
-        ) : (
-          <div className="mainContent">
-            <Loader></Loader>
-            <Route exact path="/" render={() => <Home />} />
-            <Route path="/user" render={() => <StudentInfo />} />
-            <Route path="/addcourse" render={() => <CourseForm />} />
-            <Route exact path="/courses" render={() => <Courses />} />
-            <Route
-              exact
-              path="/courses/:id"
-              render={({ match }) => <Course id={match.params.id} />}
-            />
-          </div>
-        )}
-      </Router>
-    </div>
+    <>
+      {process.env.NODE_ENV === "development" ? <DevBar /> : null}
+      <div className="App">
+        <Router basename={process.env.PUBLIC_URL}>
+          <Header />
+          {courseLoading ? (
+            <Loader active />
+          ) : (
+            <div className="mainContent">
+              <Loader></Loader>
+              <Route exact path="/" render={() => <Home />} />
+              <Route path="/user" render={() => <StudentInfo />} />
+              {user && user.role === 3 ? (
+                <Route path="/addcourse" render={() => <CourseForm />} />
+              ) : null}
+
+              <Route exact path="/courses" render={() => <Courses />} />
+              <Route
+                exact
+                path="/courses/:id"
+                render={({ match }) => <Course id={match.params.id} />}
+              />
+            </div>
+          )}
+        </Router>
+      </div>
+    </>
   )
 }
 
