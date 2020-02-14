@@ -4,6 +4,7 @@ import { ObjectType, Field, ID } from "type-graphql";
 import { User } from "./User";
 import { Question } from "./Question";
 import { Group } from "./Group";
+import { Registration } from "./Registration";
 
 @ObjectType()
 @Entity()
@@ -39,8 +40,7 @@ export class Course extends BaseEntity {
   @Field(type => User)
   @ManyToOne(
     type => User,
-    user => user.courses_teached,
-    { onDelete: "CASCADE" },
+    user => user.coursesTeached,
   )
   teacher: User;
 
@@ -56,7 +56,15 @@ export class Course extends BaseEntity {
   @OneToMany(
     type => Group,
     group => group.course,
-    { cascade: ["remove", "insert", "update"], eager: true, onDelete: "CASCADE" },
+    { cascade: ["remove", "insert", "update"], onDelete: "CASCADE" },
   )
   groups: Group[];
+
+  @Field(type => [Registration])
+  @OneToMany(
+    type => Registration,
+    registration => registration.course,
+    { cascade: ["remove", "insert", "update"], onDelete: "CASCADE" },
+  )
+  registrations: Registration[];
 }
