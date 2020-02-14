@@ -6,6 +6,6 @@ export class QuestionsInput {
   @Field()
   name: string;
 
-  @Field(type => [ReplyInput])
+  @Field(type => [ReplyInput], { nullable: true })
   replies: ReplyInput[];
 }

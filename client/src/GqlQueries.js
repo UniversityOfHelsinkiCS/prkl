@@ -42,7 +42,7 @@ export const COURSE_BY_ID = gql`
   }
 `
 export const CREATE_COURSE = gql`
-  mutation createCourse($data: CreateCourseInput) {
+  mutation createCourse($data: CourseInput!) {
     createCourse(data: $data) {
       title
       code
@@ -59,7 +59,7 @@ export const CREATE_COURSE = gql`
 `
 
 export const DELETE_COURSE = gql`
-  mutation deleteCourse($id: String!){
-      deleteCourse(id: $id)
+  mutation deleteCourse($id: String!) {
+    deleteCourse(id: $id)
   }
 `
