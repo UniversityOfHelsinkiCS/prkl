@@ -29,7 +29,7 @@ export class User extends BaseEntity {
   lastname: string;
 
   @Field(() => String, { nullable: true })
-  @Column({ default: "999999999" })
+  @Column({ default: "999999999", nullable: true })
   studentNo: string;
 
   @Field(() => String)
