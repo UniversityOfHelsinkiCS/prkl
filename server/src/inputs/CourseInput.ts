@@ -16,13 +16,13 @@ export class CourseInput {
   // id: string;
 
   @Field()
-  deadline: string;
+  deadline: Date;
 
   @Field()
-  max_group_size: number;
+  maxGroupSize: number;
 
   @Field()
-  min_group_size: number;
+  minGroupSize: number;
 
   @Field(type => [QuestionsInput])
   questions: QuestionsInput[];

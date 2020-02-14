@@ -33,9 +33,9 @@ const CourseForm = () => {
         title: courseTitle,
         description: courseDescription,
         code: courseCode,
-        min_group_size: Number.parseInt(minGroup),
-        max_group_size: Number.parseInt(maxGroup),
-        deadline,
+        minGroupSize: Number.parseInt(minGroup),
+        maxGroupSize: Number.parseInt(maxGroup),
+        deadline: new Date(deadline),
         questions
       }
       const variables = { data: { ...courseObject } }
@@ -56,12 +56,12 @@ const CourseForm = () => {
 
   const handleQuestionChange = index => (e, { value }) => {
     const newQuestions = [...questions]
-    newQuestions[index] = { name: value }
+    newQuestions[index] = { content: value }
     setQuestions(newQuestions)
   }
 
   const handleAddForm = () => {
-    setQuestions([...questions, { name: "" }])
+    setQuestions([...questions, { content: "" }])
   }
   const handleRemoveForm = () => {
     setQuestions(questions.slice(0, questions.length - 1))

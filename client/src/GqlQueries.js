@@ -33,10 +33,10 @@ export const COURSE_BY_ID = gql`
       code
       description
       deadline
-      max_group_size
-      min_group_size
+      maxGroupSize
+      minGroupSize
       questions {
-        name
+        content
       }
     }
   }
@@ -49,10 +49,10 @@ export const CREATE_COURSE = gql`
       id
       description
       deadline
-      max_group_size
-      min_group_size
+      maxGroupSize
+      minGroupSize
       questions {
-        name
+        content
       }
     }
   }

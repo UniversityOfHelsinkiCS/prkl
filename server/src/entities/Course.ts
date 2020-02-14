@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity, OneToMany, Timestamp } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 
 import { User } from "./User";
@@ -16,9 +16,9 @@ export class Course extends BaseEntity {
   @Column()
   title: string;
 
-  @Field(() => String)
-  @Column()
-  deadline: string;
+  @Field(() => Date)
+  @Column("timestamptz")
+  deadline: Date;
 
   @Field(() => String)
   @Column()
@@ -30,17 +30,17 @@ export class Course extends BaseEntity {
 
   @Field(() => Number)
   @Column()
-  max_group_size: number;
+  maxGroupSize: number;
 
   @Field(() => Number)
   @Column()
-  min_group_size: number;
+  minGroupSize: number;
 
   @Field(type => User)
   @ManyToOne(
     type => User,
     user => user.courses_teached,
-    {onDelete:"CASCADE"}
+    { onDelete: "CASCADE" },
   )
   teacher: User;
 
@@ -48,7 +48,7 @@ export class Course extends BaseEntity {
   @OneToMany(
     type => Question,
     question => question.course,
-    { cascade: ["remove", "insert", "update"], eager: true, onDelete:"CASCADE" },
+    { cascade: ["remove", "insert", "update"], eager: true, onDelete: "CASCADE" },
   )
   questions: Question[];
 
@@ -56,7 +56,7 @@ export class Course extends BaseEntity {
   @OneToMany(
     type => Group,
     group => group.course,
-    { cascade: ["remove", "insert", "update"], eager: true, onDelete:"CASCADE" },
+    { cascade: ["remove", "insert", "update"], eager: true, onDelete: "CASCADE" },
   )
   groups: Group[];
 }
