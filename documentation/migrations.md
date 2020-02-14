@@ -1,6 +1,6 @@
 # Migrations
 
-Migration functionality is provided by `typeorm` and run always on backend start-up. See [TypeORM Documentation - Migrations](https://typeorm.io/#/migrations) for more information.
+Migration functionality is provided by `typeorm` and runs always on backend start-up. See [TypeORM Documentation - Migrations](https://typeorm.io/#/migrations) for more information.
 
 ## Migration Files
 
