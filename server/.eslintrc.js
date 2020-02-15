@@ -5,8 +5,10 @@ module.exports =  {
     'prettier/@typescript-eslint',
     'plugin:prettier/recommended',
   ],
- parserOptions:  {
+  parserOptions:  {
     ecmaVersion:  2018,
     sourceType:  'module',
+    
   },
+  ignorePatterns: ["src/migrations"],
 };

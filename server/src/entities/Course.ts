@@ -26,7 +26,7 @@ export class Course extends BaseEntity {
   code: string;
 
   @Field(() => String)
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
   @Field(() => Number)
@@ -36,6 +36,14 @@ export class Course extends BaseEntity {
   @Field(() => Number)
   @Column()
   minGroupSize: number;
+
+  @Field(() => Date)
+  @Column("timestamptz")
+  createdAt: Date;
+
+  @Field(() => Date)
+  @Column("timestamptz", { nullable: true })
+  updatedAt: Date;
 
   @Field(type => User)
   @ManyToOne(

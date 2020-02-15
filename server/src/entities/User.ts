@@ -13,7 +13,7 @@ export class User extends BaseEntity {
 
   // Shibboleth user id.
   @Field(() => String)
-  @Column({ default: "default shibb uid" })
+  @Column()
   shibbolethUid: string;
 
   @Field(() => Number)
@@ -21,19 +21,19 @@ export class User extends BaseEntity {
   role: number;
 
   @Field(() => String)
-  @Column({ default: "def firstname" })
+  @Column()
   firstname: string;
 
   @Field(() => String)
-  @Column({ default: "def lastname" })
+  @Column()
   lastname: string;
 
   @Field(() => String, { nullable: true })
-  @Column({ default: "999999999", nullable: true })
+  @Column({ nullable: true })
   studentNo: string;
 
   @Field(() => String)
-  @Column({ default: "defa email" })
+  @Column()
   email: string;
 
   @Field(type => [Course])
