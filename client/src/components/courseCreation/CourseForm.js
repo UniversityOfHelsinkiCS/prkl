@@ -1,32 +1,32 @@
-import React, { useState } from "react"
-import { useHistory } from "react-router-dom"
-import { Form } from "semantic-ui-react"
-import { FormattedMessage, useIntl } from "react-intl"
-import { useMutation } from "@apollo/react-hooks"
-import { CREATE_COURSE } from "../../GqlQueries"
-import { useStore } from "react-hookstore"
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import { Form } from "semantic-ui-react";
+import { FormattedMessage, useIntl } from "react-intl";
+import { useMutation } from "@apollo/react-hooks";
+import { CREATE_COURSE } from "../../GqlQueries";
+import { useStore } from "react-hookstore";
 import QuestionForm from "./QuestionForm";
 
 const CourseForm = () => {
-  const [courseTitle, setCourseTitle] = useState("")
-  const [courseDescription, setCourseDescription] = useState("")
-  const [courseCode, setCourseCode] = useState("")
-  const [questions, setQuestions] = useState([{}])
-  const [maxGroup, setMaxGroup] = useState()
-  const [minGroup, setMinGroup] = useState()
-  const [deadline, setDeadline] = useState()
-  const [courses, setCourses] = useStore("coursesStore")
+  const [courseTitle, setCourseTitle] = useState("");
+  const [courseDescription, setCourseDescription] = useState("");
+  const [courseCode, setCourseCode] = useState("");
+  const [questions, setQuestions] = useState([{ content: "" }]);
+  const [maxGroup, setMaxGroup] = useState();
+  const [minGroup, setMinGroup] = useState();
+  const [deadline, setDeadline] = useState();
+  const [courses, setCourses] = useStore("coursesStore");
 
-  const [createCourse] = useMutation(CREATE_COURSE)
+  const [createCourse] = useMutation(CREATE_COURSE);
 
-  const intl = useIntl()
-  const history = useHistory()
+  const intl = useIntl();
+  const history = useHistory();
 
-  const today = new Date()
-  const dd = String(today.getDate()).padStart(2, "0")
-  const mm = String(today.getMonth() + 1).padStart(2, "0")
-  const yyyy = today.getFullYear()
-  const todayParsed = `${yyyy}-${mm}-${dd}`
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2, "0");
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const yyyy = today.getFullYear();
+  const todayParsed = `${yyyy}-${mm}-${dd}`;
 
   const handleSubmit = async () => {
     if (courseTitle && courseDescription && courseCode) {
@@ -38,35 +38,36 @@ const CourseForm = () => {
         maxGroupSize: Number.parseInt(maxGroup),
         deadline: new Date(deadline),
         questions
-      }
-      const variables = { data: { ...courseObject } }
+      };
+      const variables = { data: { ...courseObject } };
 
       try {
         const result = await createCourse({
           variables
-        })
-        console.log("result:", result)
-        setCourses(courses.concat(result.data.createCourse))
+        });
+        console.log("result:", result);
+        setCourses(courses.concat(result.data.createCourse));
       } catch (error) {
-        console.log("error:", error)
+        console.log("error:", error);
       }
 
-      history.push("/courses")
+      history.push("/courses");
     }
-  }
+  };
 
   const handleQuestionChange = index => (e, { value }) => {
-    const newQuestions = [...questions]
-    newQuestions[index] = { content: value }
-    setQuestions(newQuestions)
-  }
+    const newQuestions = [...questions];
+    newQuestions[index] = { content: value };
+    setQuestions(newQuestions);
+  };
 
-  const handleAddForm = () => {
-    setQuestions([...questions, { content: "" }])
-  }
+  const handleAddForm = e => {
+    e.preventDefault();
+    setQuestions([...questions, { content: "" }]);
+  };
   const handleRemoveForm = () => {
-    setQuestions(questions.slice(0, questions.length - 1))
-  }
+    setQuestions(questions.slice(0, questions.length - 1));
+  };
 
   return (
     <div>
@@ -103,7 +104,7 @@ const CourseForm = () => {
               id: "courseCreationForm.CourseDeadlineForm"
             })}
             onChange={event => {
-              setDeadline(event.target.value)
+              setDeadline(event.target.value);
             }}
           />
         </Form.Group>
@@ -153,7 +154,7 @@ const CourseForm = () => {
 
         <Form.Group style={{ flexWrap: "wrap" }}>
           {questions.map((q, index) => (
-            <QuestionForm key={`addQuestionField${index}`} questionId={index}/>
+            <QuestionForm key={`addQuestionField${index}`} questionId={index} />
           ))}
         </Form.Group>
 
@@ -162,7 +163,7 @@ const CourseForm = () => {
         </Form.Button>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default CourseForm
+export default CourseForm;

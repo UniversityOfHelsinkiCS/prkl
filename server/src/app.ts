@@ -55,7 +55,8 @@ const main = async () => {
   // Don't block ports in testing.
   if (process.env.NODE_ENV !== "test") {
     app.listen(port);
+    console.log(`Listening to port ${port}`);
   }
 };
 
-main();
+main().catch(error => console.error(error));

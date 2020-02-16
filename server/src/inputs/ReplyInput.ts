@@ -4,4 +4,10 @@ import { InputType, Field } from "type-graphql";
 export class ReplyInput {
   @Field()
   value: number;
+
+  @Field()
+  questionId: string;
+
+  @Field()
+  registrationId: string;
 }

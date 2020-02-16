@@ -4,8 +4,8 @@ import { IsOptional, IsDate, MaxDate } from "class-validator";
 
 @InputType()
 export class CourseInput {
-  @Field()
-  id: string;
+  // @Field()
+  // id: string;
 
   @Field()
   title: string;
@@ -27,15 +27,15 @@ export class CourseInput {
   @Field()
   minGroupSize: number;
 
-  @Field()
-  @IsDate()
-  @MaxDate(new Date())
-  createdAt: Date;
+  // @Field()
+  // @IsDate()
+  // @MaxDate(new Date())
+  // createdAt: Date;
 
-  @Field()
-  @IsDate()
-  @MaxDate(new Date())
-  updatedAt: Date;
+  // @Field({ nullable: true })
+  // @IsDate()
+  // @MaxDate(new Date())
+  // updatedAt: Date;
 
   @Field(type => [QuestionsInput])
   questions: QuestionsInput[];

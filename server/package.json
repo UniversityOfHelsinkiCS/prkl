@@ -1,51 +1,51 @@
 {
-   "name": "prkl-server",
-   "version": "1.0.0-alpha",
-   "description": "Backend for PRKL service.",
-   "repository": {
-      "type": "git",
-      "url": "https://github.com/UniversityOfHelsinkiCS/prkl.git"
-   },
-   "main": "app.js",
-   "scripts": {
-      "dev": "NODE_ENV=development npx nodemon",
-      "build": "tsc",
-      "start": "node dist/app.js",
-      "start:dev": "nodemon",
-      "test": "echo \"Error: no test specified\" && exit 1"
-   },
-   "author": "",
-   "license": "MIT",
-   "devDependencies": {
-      "@types/body-parser": "^1.17.1",
-      "@types/express": "^4.17.2",
-      "@types/morgan": "^1.7.37",
-      "@types/node": "^8.0.29",
-      "@types/rc": "^1.1.0",
-      "@typescript-eslint/eslint-plugin": "^2.17.0",
-      "@typescript-eslint/parser": "^2.17.0",
-      "eslint": "^6.8.0",
-      "eslint-config-prettier": "^6.9.0",
-      "eslint-plugin-prettier": "^3.1.2",
-      "prettier": "^1.19.1",
-      "ts-node": "3.3.0",
-      "typescript": "3.3.3333"
-   },
-   "dependencies": {
-      "apollo-server": "^2.9.16",
-      "apollo-server-express": "^2.9.16",
-      "body-parser": "^1.19.0",
-      "class-transformer": "^0.2.3",
-      "class-validator": "^0.11.0",
-      "cors": "^2.8.5",
-      "express": "^4.17.1",
-      "express-graphql": "^0.9.0",
-      "express-promise-router": "^3.0.3",
-      "morgan": "^1.9.1",
-      "pg": "^7.17.1",
-      "rc": "^1.2.8",
-      "reflect-metadata": "^0.1.10",
-      "type-graphql": "^0.17.6",
-      "typeorm": "0.2.22"
-   }
+  "name": "prkl-server",
+  "version": "1.0.0-alpha",
+  "description": "Backend for PRKL service.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/UniversityOfHelsinkiCS/prkl.git"
+  },
+  "main": "app.js",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon",
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/body-parser": "^1.17.1",
+    "@types/express": "^4.17.2",
+    "@types/morgan": "^1.7.37",
+    "@types/node": "^8.0.29",
+    "@types/rc": "^1.1.0",
+    "@typescript-eslint/eslint-plugin": "^2.17.0",
+    "@typescript-eslint/parser": "^2.17.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "nodemon": "^2.0.2",
+    "prettier": "^1.19.1",
+    "ts-node": "8.6.2",
+    "typescript": "3.7.5"
+  },
+  "dependencies": {
+    "apollo-server": "^2.9.16",
+    "apollo-server-express": "^2.9.16",
+    "body-parser": "^1.19.0",
+    "class-transformer": "^0.2.3",
+    "class-validator": "^0.11.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-graphql": "^0.9.0",
+    "express-promise-router": "^3.0.3",
+    "morgan": "^1.9.1",
+    "pg": "^7.17.1",
+    "rc": "^1.2.8",
+    "reflect-metadata": "^0.1.10",
+    "type-graphql": "^0.17.6",
+    "typeorm": "0.2.22"
+  }
 }

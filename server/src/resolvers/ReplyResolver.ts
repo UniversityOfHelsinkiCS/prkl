@@ -19,16 +19,10 @@ export class ReplyResolver {
   }
 
   @Mutation(() => Reply)
-  async createReply(
-    @Arg("data") data: ReplyInput,
-    @Arg("registrationId") registrationId: string,
-    @Arg("questionId") questionId: string,
-  ) {
+  async createReply(@Arg("data") data: ReplyInput) {
     console.log("data:", data);
 
     const reply = Reply.create(data);
-    reply.registration = await Registration.findOne({ where: { registrationId } });
-    reply.question = await Question.findOne({ where: { questionId } });
 
     console.log("reply:", reply);
 

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity, JoinColumn } from "typeorm";
 import { User } from "./User";
 import { ObjectType, Field, ID } from "type-graphql";
 import { Question } from "./Question";
@@ -15,12 +15,21 @@ export class Reply extends BaseEntity {
   @Column({ nullable: true })
   value: number;
 
+  @Field(() => String)
+  @Column({ nullable: false })
+  questionId: string;
+
+  @Field(() => String)
+  @Column({ nullable: false })
+  registrationId: string;
+
   @Field(type => Question)
   @ManyToOne(
     type => Question,
     question => question.replies,
     { onDelete: "CASCADE" },
   )
+  @JoinColumn({ name: "questionId" })
   question: Question;
 
   @Field(type => Registration)
@@ -29,5 +38,6 @@ export class Reply extends BaseEntity {
     registration => registration.questionReplies,
     { onDelete: "CASCADE" },
   )
+  @JoinColumn({ name: "registrationId" })
   registration: Registration;
 }

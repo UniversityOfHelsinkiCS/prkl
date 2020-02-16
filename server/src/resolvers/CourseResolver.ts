@@ -1,6 +1,7 @@
-import { Resolver, Query, Mutation, Arg } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Ctx } from "type-graphql";
 import { Course } from "../entities/Course";
 import { CourseInput } from "../inputs/CourseInput";
+import { isContext } from "vm";
 
 @Resolver()
 export class CourseResolver {
@@ -15,9 +16,10 @@ export class CourseResolver {
   }
 
   @Mutation(() => Course)
-  async createCourse(@Arg("data") data: CourseInput) {
+  async createCourse(@Ctx() context, @Arg("data") data: CourseInput) {
     console.log("data:", data);
     const course = Course.create(data);
+    course.teacher = context.user;
 
     console.log("course:", course);
 

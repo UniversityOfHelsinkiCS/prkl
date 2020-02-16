@@ -1,4 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity, OneToMany, Timestamp } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  BaseEntity,
+  OneToMany,
+  Timestamp,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 
 import { User } from "./User";
@@ -37,12 +47,10 @@ export class Course extends BaseEntity {
   @Column()
   minGroupSize: number;
 
-  @Field(() => Date)
-  @Column("timestamptz")
+  @CreateDateColumn({ type: "timestamptz" })
   createdAt: Date;
 
-  @Field(() => Date)
-  @Column("timestamptz", { nullable: true })
+  @UpdateDateColumn({ type: "timestamptz", nullable: true })
   updatedAt: Date;
 
   @Field(type => User)
