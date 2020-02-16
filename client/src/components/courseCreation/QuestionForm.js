@@ -40,7 +40,6 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
     let newQuestions = [...questions]
     newQuestions[questionId] = questionObject
     setQuestion(questionObject)
-
     setQuestions(newQuestions)
   }
 
@@ -64,7 +63,9 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
         })}
       />
       <Form.Group inline>
-        <label>Question Type</label>
+        <label>
+          <FormattedMessage id="questionForm.questionTypeLabel" />
+        </label>
         <Form.Field
           control={Radio}
           label={intl.formatMessage({

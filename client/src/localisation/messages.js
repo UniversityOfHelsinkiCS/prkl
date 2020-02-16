@@ -11,16 +11,14 @@ export default {
     "header.courses": "Courses",
     "header.addCourse": "Add Course",
 
-    "questionCreationForm.addNewQuestion": "Type in your question",
-
-    "courseForm.PageTitle": "Create course",
-    "courseForm.TitleForm": "Title",
-    "courseForm.CourseCodeForm": "Course code",
-    "courseForm.CourseDeadlineForm": "Enrollment deadline",
-    "courseForm.CourseMaxGroupForm": "Maximum group size",
-    "courseForm.CourseMinGroupForm": "Minimum group size",
-    "courseForm.CourseDescriptionForm": "Course description",
-    "courseForm.ConfirmButton": "Confirm",
+    "courseForm.pageTitle": "Create course",
+    "courseForm.titleForm": "Title",
+    "courseForm.courseCodeForm": "Course code",
+    "courseForm.courseDeadlineForm": "Enrollment deadline",
+    "courseForm.courseMaxGroupForm": "Maximum group size",
+    "courseForm.courseMinGroupForm": "Minimum group size",
+    "courseForm.courseDescriptionForm": "Course description",
+    "courseForm.confirmButton": "Confirm",
     "courseForm.addQuestion": "Add question",
     "courseForm.removeQuestion": "Remove question",
 
@@ -35,6 +33,7 @@ export default {
     "questionForm.freeformQuestion": "Freeform",
     "questionForm.multipleSelectOne": "Multiple select",
     "questionForm.optionTitle": "Choice {number}",
+    "questionForm.questionTypeLabel": "Question type",
 
     "course.deadline": "Deadline to enrol to the course project: ",
     "course.questionsPreface": "Evaluate your skills from 1 to 5",

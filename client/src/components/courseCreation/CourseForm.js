@@ -65,7 +65,7 @@ const CourseForm = () => {
   return (
     <div>
       <h1>
-        <FormattedMessage id="courseForm.PageTitle" />
+        <FormattedMessage id="courseForm.pageTitle" />
       </h1>
 
       <Form onSubmit={handleSubmit}>
@@ -74,7 +74,7 @@ const CourseForm = () => {
             required
             fluid
             label={intl.formatMessage({
-              id: "courseForm.TitleForm"
+              id: "courseForm.titleForm"
             })}
             onChange={event => setCourseTitle(event.target.value)}
           />
@@ -84,7 +84,7 @@ const CourseForm = () => {
           <Form.Input
             required
             label={intl.formatMessage({
-              id: "courseForm.CourseCodeForm"
+              id: "courseForm.courseCodeForm"
             })}
             onChange={event => setCourseCode(event.target.value)}
           />
@@ -94,7 +94,7 @@ const CourseForm = () => {
             type="date"
             min={todayParsed}
             label={intl.formatMessage({
-              id: "courseForm.CourseDeadlineForm"
+              id: "courseForm.courseDeadlineForm"
             })}
             onChange={event => {
               setDeadline(event.target.value)
@@ -106,7 +106,7 @@ const CourseForm = () => {
           <Form.TextArea
             required
             label={intl.formatMessage({
-              id: "courseForm.CourseDescriptionForm"
+              id: "courseForm.courseDescriptionForm"
             })}
             onChange={event => setCourseDescription(event.target.value)}
           />
@@ -119,7 +119,7 @@ const CourseForm = () => {
             min="1"
             max={maxGroup}
             label={intl.formatMessage({
-              id: "courseForm.CourseMinGroupForm"
+              id: "courseForm.courseMinGroupForm"
             })}
             onChange={event => setMinGroup(event.target.value)}
           />
@@ -129,7 +129,7 @@ const CourseForm = () => {
             type="number"
             min={minGroup}
             label={intl.formatMessage({
-              id: "courseForm.CourseMaxGroupForm"
+              id: "courseForm.courseMaxGroupForm"
             })}
             onChange={event => setMaxGroup(event.target.value)}
           />
@@ -157,7 +157,7 @@ const CourseForm = () => {
         </Form.Group>
 
         <Form.Button primary type="submit">
-          <FormattedMessage id="courseForm.ConfirmButton" />
+          <FormattedMessage id="courseForm.confirmButton" />
         </Form.Button>
       </Form>
     </div>
