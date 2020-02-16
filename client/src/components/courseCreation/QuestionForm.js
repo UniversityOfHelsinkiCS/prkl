@@ -2,11 +2,47 @@ import React, { useState } from "react"
 import { Form, Input, Radio, Segment } from "semantic-ui-react"
 import { FormattedMessage, useIntl } from "react-intl"
 
-const QuestionForm = ({ questionId, setQuestions }) => {
+const QuestionForm = ({ questionId, setQuestions, questions }) => {
   const intl = useIntl()
-  const [title, setTitle] = useState("")
+
   const [options, setOptions] = useState([{}])
-  const [questionType, setQuestionType] = useState("0")
+  const [question, setQuestion] = useState({ questionType: "0", title: "" })
+
+  const handleOptionChange = index => (e, { value }) => {
+    const newOptions = [...options]
+    newOptions[index] = { content: value }
+    setOptions(newOptions)
+
+    const questionObject = {
+      ...question,
+      options: newOptions
+    }
+    let newQuestions = [...questions]
+    newQuestions[questionId] = questionObject
+    setQuestion(questionObject)
+    setQuestions(newQuestions)
+  }
+
+  const handleTypeChange = value => {
+    let questionObject = { ...question, questionType: value }
+    if (value === "2") {
+      delete questionObject.options
+    }
+
+    let newQuestions = [...questions]
+    newQuestions[questionId] = questionObject
+    setQuestion(questionObject)
+    setQuestions(newQuestions)
+  }
+
+  const handleTitleChange = (e, { value }) => {
+    const questionObject = { ...question, title: value }
+    let newQuestions = [...questions]
+    newQuestions[questionId] = questionObject
+    setQuestion(questionObject)
+
+    setQuestions(newQuestions)
+  }
 
   const handleAddForm = () => {
     setOptions([...options, { content: "" }])
@@ -15,12 +51,10 @@ const QuestionForm = ({ questionId, setQuestions }) => {
     setOptions(options.slice(0, options.length - 1))
   }
 
-  const handleTypeChange = type => {
-    setQuestionType(type)
-  }
   return (
     <Segment style={{ padding: 15, margin: 10 }}>
       <Form.Field
+        onChange={handleTitleChange}
         control={Input}
         label={intl.formatMessage({
           id: "questionForm.title"
@@ -37,7 +71,7 @@ const QuestionForm = ({ questionId, setQuestions }) => {
             id: "questionForm.numericalQuestion"
           })}
           value="0"
-          checked={questionType === "0"}
+          checked={question.questionType === "0"}
           onChange={() => handleTypeChange("0")}
         />
         <Form.Field
@@ -46,7 +80,7 @@ const QuestionForm = ({ questionId, setQuestions }) => {
             id: "questionForm.multipleSelectOne"
           })}
           value="1"
-          checked={questionType === "1"}
+          checked={question.questionType === "1"}
           onChange={() => handleTypeChange("1")}
         />
         <Form.Field
@@ -55,11 +89,11 @@ const QuestionForm = ({ questionId, setQuestions }) => {
             id: "questionForm.freeformQuestion"
           })}
           value="2"
-          checked={questionType === "2"}
+          checked={question.questionType === "2"}
           onChange={() => handleTypeChange("2")}
         />
       </Form.Group>
-      {questionType !== "2" ? (
+      {question.questionType !== "2" ? (
         <>
           <Form.Group>
             <Form.Button type="button" onClick={handleAddForm}>
@@ -74,6 +108,7 @@ const QuestionForm = ({ questionId, setQuestions }) => {
           <Form.Group style={{ flexWrap: "wrap" }}>
             {options.map((q, index) => (
               <Form.Field
+                onChange={handleOptionChange(index)}
                 control={Input}
                 type="text"
                 label={intl.formatMessage(

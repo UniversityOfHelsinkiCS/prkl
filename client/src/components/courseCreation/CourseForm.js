@@ -11,7 +11,7 @@ const CourseForm = () => {
   const [courseTitle, setCourseTitle] = useState("")
   const [courseDescription, setCourseDescription] = useState("")
   const [courseCode, setCourseCode] = useState("")
-  const [questions, setQuestions] = useState([{ content: "" }])
+  const [questions, setQuestions] = useState([])
   const [maxGroup, setMaxGroup] = useState()
   const [minGroup, setMinGroup] = useState()
   const [deadline, setDeadline] = useState()
@@ -29,36 +29,29 @@ const CourseForm = () => {
   const todayParsed = `${yyyy}-${mm}-${dd}`
 
   const handleSubmit = async () => {
-    if (courseTitle && courseDescription && courseCode) {
-      const courseObject = {
-        title: courseTitle,
-        description: courseDescription,
-        code: courseCode,
-        minGroupSize: Number.parseInt(minGroup),
-        maxGroupSize: Number.parseInt(maxGroup),
-        deadline: new Date(deadline),
-        questions
-      }
-      const variables = { data: { ...courseObject } }
-
-      try {
-        const result = await createCourse({
-          variables
-        })
-        console.log("result:", result)
-        setCourses(courses.concat(result.data.createCourse))
-      } catch (error) {
-        console.log("error:", error)
-      }
-
-      history.push("/courses")
+    const courseObject = {
+      title: courseTitle,
+      description: courseDescription,
+      code: courseCode,
+      minGroupSize: Number.parseInt(minGroup),
+      maxGroupSize: Number.parseInt(maxGroup),
+      deadline: new Date(deadline),
+      questions
     }
-  }
+    console.log("courseObject:", courseObject)
+    const variables = { data: { ...courseObject } }
 
-  const handleQuestionChange = index => (e, { value }) => {
-    const newQuestions = [...questions]
-    newQuestions[index] = { content: value }
-    setQuestions(newQuestions)
+    try {
+      const result = await createCourse({
+        variables
+      })
+      console.log("result:", result)
+      setCourses(courses.concat(result.data.createCourse))
+    } catch (error) {
+      console.log("error:", error)
+    }
+
+    history.push("/courses")
   }
 
   const handleAddForm = e => {
@@ -157,6 +150,7 @@ const CourseForm = () => {
             <QuestionForm
               key={`addQuestionField${index}`}
               setQuestions={setQuestions}
+              questions={questions}
               questionId={index}
             />
           ))}
