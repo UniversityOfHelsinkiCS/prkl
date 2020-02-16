@@ -13,29 +13,28 @@ export default {
 
     "questionCreationForm.addNewQuestion": "Type in your question",
 
-    "courseCreationForm.PageTitle": "Create course",
-    "courseCreationForm.TitleForm": "Title",
-    "courseCreationForm.CourseCodeForm": "Course code",
-    "courseCreationForm.CourseDeadlineForm": "Enrollment deadline",
-    "courseCreationForm.CourseMaxGroupForm": "Maximum group size",
-    "courseCreationForm.CourseMinGroupForm": "Minimum group size",
-    "courseCreationForm.CourseDescriptionForm": "Course description",
-    "courseCreationForm.ConfirmButton": "Confirm",
-    "questionCreationForm.creationSuccess": "Course creation succeeded",
+    "courseForm.PageTitle": "Create course",
+    "courseForm.TitleForm": "Title",
+    "courseForm.CourseCodeForm": "Course code",
+    "courseForm.CourseDeadlineForm": "Enrollment deadline",
+    "courseForm.CourseMaxGroupForm": "Maximum group size",
+    "courseForm.CourseMinGroupForm": "Minimum group size",
+    "courseForm.CourseDescriptionForm": "Course description",
+    "courseForm.ConfirmButton": "Confirm",
+    "courseForm.addQuestion": "Add question",
+    "courseForm.removeQuestion": "Remove question",
 
     "courses.searchPlaceholder": "Search courses",
     "courses.deadline": "Enrollment deadline",
 
-    "questionForm.addNewQuestion": "Add new question",
-    "questionForm.addQuestion": "Add question",
-    "questionForm.removeQuestion": "Remove question",
-
-    "questionForm.titlePlaceholder" : "Question",
-    "questionForm.title" : "Title",
+    "questionForm.addQuestion": "Add answer option",
+    "questionForm.removeQuestion": "Remove answer option",
+    "questionForm.titlePlaceholder": "Question",
+    "questionForm.title": "Title",
     "questionForm.numericalQuestion": "Single choice",
     "questionForm.freeformQuestion": "Freeform",
     "questionForm.multipleSelectOne": "Multiple select",
-    
+    "questionForm.optionTitle": "Choice {number}",
 
     "course.deadline": "Deadline to enrol to the course project: ",
     "course.questionsPreface": "Evaluate your skills from 1 to 5",
@@ -45,7 +44,7 @@ export default {
     "course.gradeAnswer2": "I want to pass the course",
     "course.gradeAnswer3": "I don't care about the grade",
     "course.dataCheckbox":
-    "I agree to disclose my information with the other students in my future group.",
+      "I agree to disclose my information with the other students in my future group.",
     "course.confirm": "Confirm answers and enrol to the course project",
     "course.delete": "Delete course",
 
