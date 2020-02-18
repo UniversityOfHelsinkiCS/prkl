@@ -1,19 +1,28 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity, JoinColumn } from "typeorm";
-import { User } from "./User";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  BaseEntity,
+  JoinColumn,
+  ManyToMany,
+  JoinTable,
+} from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 import { Question } from "./Question";
 import { Registration } from "./Registration";
+import { QuestionChoice } from "./QuestionChoice";
 
 @ObjectType()
 @Entity()
-export class Reply extends BaseEntity {
+export class Answer extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Field(() => Number)
+  @Field(() => String)
   @Column({ nullable: true })
-  value: number;
+  content: string;
 
   @Field(() => String)
   @Column({ nullable: false })
@@ -26,7 +35,7 @@ export class Reply extends BaseEntity {
   @Field(type => Question)
   @ManyToOne(
     type => Question,
-    question => question.replies,
+    question => question.answers,
     { onDelete: "CASCADE" },
   )
   @JoinColumn({ name: "questionId" })
@@ -35,9 +44,17 @@ export class Reply extends BaseEntity {
   @Field(type => Registration)
   @ManyToOne(
     type => Registration,
-    registration => registration.questionReplies,
+    registration => registration.questionAnswers,
     { onDelete: "CASCADE" },
   )
   @JoinColumn({ name: "registrationId" })
   registration: Registration;
+
+  @Field(type => [QuestionChoice])
+  @ManyToMany(
+    type => QuestionChoice,
+    questionChoice => questionChoice.answers,
+  )
+  @JoinTable({ name: "answerChoice" })
+  answerChoices: QuestionChoice[];
 }

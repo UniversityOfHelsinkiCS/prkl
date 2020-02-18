@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, BaseEntity } from "typeorm";
 import { Course } from "./Course";
-import { Reply } from "./Reply";
+import { Answer } from "./Answer";
 import { ObjectType, Field, ID } from "type-graphql";
+import { QuestionChoice } from "./QuestionChoice";
 
 @ObjectType()
 @Entity()
@@ -14,6 +15,22 @@ export class Question extends BaseEntity {
   @Column()
   content: string;
 
+  @Field(() => String)
+  @Column()
+  questionType: string;
+
+  @Field(() => Number)
+  @Column({ nullable: true })
+  rangeMin: number;
+
+  @Field(() => Number)
+  @Column({ nullable: true })
+  rangeMax: number;
+
+  @Field(() => Number)
+  @Column()
+  order: number;
+
   @Field(type => Course)
   @ManyToOne(
     type => Course,
@@ -22,11 +39,18 @@ export class Question extends BaseEntity {
   )
   course: Course;
 
-  @Field(type => [Reply])
+  @Field(type => [QuestionChoice])
   @OneToMany(
-    type => Reply,
-    reply => reply.question,
+    type => QuestionChoice,
+    questionChoice => questionChoice.question,
+  )
+  questionChoices: QuestionChoice[];
+
+  @Field(type => [Answer])
+  @OneToMany(
+    type => Answer,
+    answer => answer.question,
     { cascade: true, onDelete: "CASCADE" },
   )
-  replies: Reply[];
+  answers: Answer[];
 }

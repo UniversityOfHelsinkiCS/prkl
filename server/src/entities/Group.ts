@@ -22,6 +22,6 @@ export class Group extends BaseEntity {
     type => User,
     user => user.groups,
   )
-  @JoinTable()
+  @JoinTable({ name: "groupStudents" })
   students: User[];
 }
