@@ -1,11 +1,28 @@
 import { InputType, Field } from "type-graphql";
-import { ReplyInput } from "./ReplyInput";
+import { AnswerInput } from "./AnswerInput";
+import { QuestionChoiceInput } from "./QuestionChoiceInput";
 
 @InputType()
 export class QuestionsInput {
   @Field()
   content: string;
 
-  @Field(type => [ReplyInput], { nullable: true })
-  replies: ReplyInput[];
+  @Field()
+  questionType: string;
+
+  //rangeMin and rangeMax need to have a value if the questionChoices are ordered
+  @Field({ nullable: true })
+  rangeMin: number;
+
+  @Field({ nullable: true })
+  rangeMax: number;
+
+  @Field()
+  order: number;
+
+  @Field(type => [QuestionChoiceInput], { nullable: true })
+  questionChoices: QuestionChoiceInput[];
+
+  @Field(type => [AnswerInput], { nullable: true })
+  answers: AnswerInput[];
 }

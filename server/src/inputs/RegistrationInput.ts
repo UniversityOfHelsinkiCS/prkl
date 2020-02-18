@@ -1,11 +1,11 @@
 import { InputType, Field } from "type-graphql";
-import { ReplyInput } from "./ReplyInput";
+import { AnswerInput } from "./AnswerInput";
 
 @InputType()
 export class RegistrationInput {
   @Field()
   courseId: string;
 
-  @Field(type => [ReplyInput])
-  questionReplies: ReplyInput[];
+  @Field(type => [AnswerInput])
+  questionAnswers: AnswerInput[];
 }
