@@ -11,6 +11,7 @@ import Course from "./components/courses/Course"
 import { ALL_COURSES, CURRENT_USER } from "./GqlQueries"
 import { Loader, Dimmer, Container } from "semantic-ui-react"
 import DevBar from "./admin/DevBar"
+import { roles } from "./util/user_roles"
 
 import "./App.css"
 import Home from "./components/Home"
@@ -31,6 +32,8 @@ const App = () => {
   const { loading: userLoading, error: userError, data: userData } = useQuery(
     CURRENT_USER
   )
+
+  const ADMIN_ROLE = 3
 
   useEffect(() => {
     if (!userLoading) {
@@ -72,7 +75,7 @@ const App = () => {
               <Loader></Loader>
               <Route exact path="/" render={() => <Home />} />
               <Route path="/user" render={() => <StudentInfo />} />
-              {user && user.role === 3 ? (
+              {user && user.role === roles.ADMIN_ROLE ? (
                 <Route path="/addcourse" render={() => <CourseForm />} />
               ) : null}
 

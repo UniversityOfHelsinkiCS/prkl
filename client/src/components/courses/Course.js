@@ -3,6 +3,7 @@ import { COURSE_BY_ID, DELETE_COURSE } from "../../GqlQueries"
 
 import { useStore } from "react-hookstore"
 import { useHistory } from "react-router-dom"
+import { roles } from "../../util/user_roles"
 
 import { useQuery, useMutation } from "@apollo/react-hooks"
 
@@ -97,7 +98,7 @@ const Course = ({ id }) => {
         {course.code} - {course.title}
       </h2>
 
-      {user && user.role === 3 ? (
+      {user && user.role === roles.ADMIN_ROLE ? (
         <Form.Button primary onClick={handleDeletion}>
           <FormattedMessage id="course.delete" />
         </Form.Button>
