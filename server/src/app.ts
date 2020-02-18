@@ -11,7 +11,7 @@ import cors from "cors";
 import { CourseResolver } from "./resolvers/CourseResolver";
 import { UserResolver } from "./resolvers/UserResolver";
 import { GroupResolver } from "./resolvers/GroupResolver";
-import { ReplyResolver } from "./resolvers/ReplyResolver";
+import { RegistrationResolver } from "./resolvers/RegistrationResolver";
 import shibbCharset from "./middleware/shibbolethHeaders";
 import authorization from "./middleware/authorization";
 
@@ -27,7 +27,7 @@ const main = async () => {
   }
 
   const schema = await buildSchema({
-    resolvers: [CourseResolver, UserResolver, ReplyResolver, GroupResolver],
+    resolvers: [CourseResolver, UserResolver, GroupResolver, RegistrationResolver],
     validate: false,
   });
 

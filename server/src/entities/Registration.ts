@@ -1,4 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne, BaseEntity } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+  BaseEntity,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Column,
+} from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 
 import { User } from "./User";
@@ -12,12 +22,23 @@ export class Registration extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
+  @CreateDateColumn({ type: "timestamptz" })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: "timestamptz", nullable: true })
+  updatedAt: Date;
+
+  @Field(() => String)
+  @Column({ nullable: false })
+  courseId: string;
+
   @Field(type => Course)
   @ManyToOne(
     type => Course,
     course => course.registrations,
     { eager: true },
   )
+  @JoinColumn({ name: "courseId" })
   course: Course;
 
   @Field(type => User)
@@ -31,6 +52,7 @@ export class Registration extends BaseEntity {
   @OneToMany(
     type => Reply,
     reply => reply.registration,
+    { cascade: ["remove", "insert", "update"] },
   )
-  questionReplies: Reply;
+  questionReplies: Reply[];
 }

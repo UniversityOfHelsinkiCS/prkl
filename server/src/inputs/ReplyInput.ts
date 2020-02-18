@@ -7,7 +7,4 @@ export class ReplyInput {
 
   @Field()
   questionId: string;
-
-  @Field()
-  registrationId: string;
 }

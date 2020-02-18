@@ -1,6 +1,6 @@
 import { InputType, Field } from "type-graphql";
 import { QuestionsInput } from "./QuestionsInput";
-import { IsOptional, IsDate, MaxDate } from "class-validator";
+import { IsOptional, IsDate } from "class-validator";
 
 @InputType()
 export class CourseInput {
@@ -26,16 +26,6 @@ export class CourseInput {
 
   @Field()
   minGroupSize: number;
-
-  // @Field()
-  // @IsDate()
-  // @MaxDate(new Date())
-  // createdAt: Date;
-
-  // @Field({ nullable: true })
-  // @IsDate()
-  // @MaxDate(new Date())
-  // updatedAt: Date;
 
   @Field(type => [QuestionsInput])
   questions: QuestionsInput[];

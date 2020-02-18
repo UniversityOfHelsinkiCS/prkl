@@ -1,7 +1,6 @@
 import { Resolver, Query, Mutation, Arg, Ctx } from "type-graphql";
 import { Course } from "../entities/Course";
 import { CourseInput } from "../inputs/CourseInput";
-import { isContext } from "vm";
 
 @Resolver()
 export class CourseResolver {
