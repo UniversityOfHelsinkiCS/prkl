@@ -38,14 +38,12 @@ const CourseForm = () => {
       deadline: new Date(deadline),
       questions
     }
-    console.log("courseObject:", courseObject)
     const variables = { data: { ...courseObject } }
 
     try {
       const result = await createCourse({
         variables
       })
-      console.log("result:", result)
       setCourses(courses.concat(result.data.createCourse))
     } catch (error) {
       console.log("error:", error)

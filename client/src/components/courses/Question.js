@@ -4,8 +4,63 @@ import { useIntl, FormattedMessage } from "react-intl"
 
 const Question = ({ question, index, answers }) => {
   const intl = useIntl()
-  console.log("answers:", answers)
-  console.log("question:", question)
+
+  const changeType = () => {
+    switch (question.questionType) {
+      case "freeForm":
+        return (
+          <Form.TextArea
+            onChange={(e, { value }) => (answers[index].answer = value)}
+            required
+            placeholder={intl.formatMessage({
+              id: "course.freeFormPlaceholder"
+            })}
+          />
+        )
+      case "singleChoice":
+        return (
+          <Form.Dropdown
+            required
+            selection
+            placeholder={intl.formatMessage({
+              id: "course.multipleChoicePlaceholder"
+            })}
+            options={question.questionChoices.map(choice => ({
+              key: choice.id,
+              value: choice.order,
+              text: choice.content
+            }))}
+            onChange={(event, { value }) => {
+              answers[index].answer =
+                question.questionChoices[value - 1].id
+            }}
+          ></Form.Dropdown>
+        )
+      case "multipleChoice":
+        return (
+          <Form.Dropdown
+            multiple selection
+            required
+            selection
+            placeholder={intl.formatMessage({
+              id: "course.multipleChoicePlaceholder"
+            })}
+            options={question.questionChoices.map(choice => ({
+              key: choice.id,
+              value: choice.order,
+              text: choice.content
+            }))}
+            onChange={(event, { value }) => {
+
+              answers[index].answer = value.map(v =>
+                question.questionChoices[v - 1].id)
+            }}
+          ></Form.Dropdown>
+        )
+      default: return null
+
+    }
+  }
 
   return (
     <div style={{ paddingTop: 5, paddingBottom: 5 }}>
@@ -22,33 +77,7 @@ const Question = ({ question, index, answers }) => {
             </Grid.Column>
             <Grid.Column textAlign="right">
               <Form.Field>
-                {question.questionType === "freeForm" ? (
-                  <Form.TextArea
-                    onChange={(e, { value }) => (answers[index].answer = value)}
-                    required
-                    placeholder={intl.formatMessage({
-                      id: "course.freeFormPlaceholder"
-                    })}
-                  />
-                ) : (
-                  <Form.Dropdown
-                    required
-                    selection
-                    placeholder={intl.formatMessage({
-                      id: "course.multipleChoicePlaceholder"
-                    })}
-                    options={question.questionChoices.map(choice => ({
-                      key: choice.id,
-                      value: choice.order,
-                      text: choice.content
-                    }))}
-                    onChange={(event, { value }) => {
-                      console.log("value:", value)
-                      answers[index].answer =
-                        question.questionChoices[value - 1].id
-                    }}
-                  ></Form.Dropdown>
-                )}
+                {changeType()}
               </Form.Field>
             </Grid.Column>
           </Grid.Row>

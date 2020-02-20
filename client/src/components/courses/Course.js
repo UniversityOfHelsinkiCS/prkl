@@ -29,11 +29,10 @@ const Course = ({ id }) => {
     variables: { id }
   })
 
-  const gradeQuestion = {
+  let gradeQuestion = {
     questionType: "singleChoice",
     content: intl.formatMessage({ id: "gradeQuestion.title" }),
     id: "gradeQuestionId",
-    order: 1000,
     questionChoices: [
       {
         order: 1,
@@ -63,7 +62,7 @@ const Course = ({ id }) => {
   }, [loading])
 
   const handleFormSubmit = async () => {
-    console.log("questions:", course.questions)
+    gradeQuestion.order = course.questions.length
     let answer = {}
     answer.courseId = course.id
     answer.questionAnswers = course.questions.map(question => {
@@ -81,7 +80,7 @@ const Course = ({ id }) => {
     })
     console.log("submitanswer:", answer)
     try {
-      await createRegistration({ data: answer })
+      await createRegistration({variables: { data: answer }})
     } catch (error) {
       console.log("error:", error)
     }
@@ -140,9 +139,6 @@ const Course = ({ id }) => {
       <Form onSubmit={handleFormSubmit}>
         {course.questions &&
           course.questions.map((question, index) => {
-            console.log("index:", index)
-            console.log("question:", question)
-
             return (
               <Question
                 key={question.id}

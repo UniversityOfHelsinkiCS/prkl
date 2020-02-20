@@ -14,7 +14,6 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
 
   const handleOptionChange = index => (e, { value }) => {
     const newOptions = options
-    console.log("options:", options)
     newOptions[index] = { ...newOptions[index], content: value }
     setOptions(newOptions)
 
@@ -23,7 +22,6 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
       questionChoices: newOptions
     }
     let newQuestions = [...questions]
-    console.log("newQuestions:", newQuestions)
 
     newQuestions[questionId] = questionObject
     setQuestion(questionObject)
@@ -52,10 +50,6 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
 
   const handleAddForm = () => {
     setOptions([...options, { order: options.length + 1, content: "" }])
-    console.log("options:", [
-      ...options,
-      { order: options.length + 1, content: "" }
-    ])
   }
   const handleRemoveForm = () => {
     setOptions(options.slice(0, options.length - 1))
