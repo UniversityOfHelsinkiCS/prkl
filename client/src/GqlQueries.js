@@ -29,14 +29,22 @@ export const COURSE_BY_ID = gql`
   query course($id: String!) {
     course(id: $id) {
       id
-      title
-      code
-      description
-      deadline
       maxGroupSize
       minGroupSize
+      title
+      description
+      code
+      deadline
       questions {
+        id
         content
+        questionType
+        questionChoices {
+          content
+          order
+          id
+        }
+        order
       }
     }
   }
@@ -44,16 +52,21 @@ export const COURSE_BY_ID = gql`
 export const CREATE_COURSE = gql`
   mutation createCourse($data: CourseInput!) {
     createCourse(data: $data) {
-      title
-      code
       id
-      description
-      deadline
       maxGroupSize
       minGroupSize
-      questions {
-        content
-      }
+      title
+      description
+      code
+      deadline
+    }
+  }
+`
+
+export const REGISTER_TO_COURSE = gql`
+  mutation createRegistration($data: RegistrationInput!) {
+    createRegistration(data: $data) {
+      id
     }
   }
 `

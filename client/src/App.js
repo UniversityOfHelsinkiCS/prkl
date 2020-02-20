@@ -16,7 +16,39 @@ import { roles } from "./util/user_roles"
 import "./App.css"
 import Home from "./components/Home"
 
-createStore("coursesStore", [])
+createStore("coursesStore", [
+  // {
+  //   title: "Title",
+  //   id: "811775c8-fbe0-4385-bb02-78f4fbbc4937",
+  //   description: "description",
+  //   code: "Code",
+  //   minGroupSize: 1,
+  //   maxGroupSize: 9,
+  //   deadline: "2020-02-12",
+  //   questions: [
+  //     {
+  //       questionType: "singleChoice",
+  //       title: "Single choice",
+  //       options: [
+  //         { content: "scoice 1", value: 1 },
+  //         { content: "scoice 2", value: 2 }
+  //       ]
+  //     },
+  //     {
+  //       questionType: "multipleChoice",
+  //       title: "Multiple choice",
+  //       options: [
+  //         { content: "msoice 1", value: 1 },
+  //         { content: "mshoice 2", value: 2 }
+  //       ]
+  //     },
+  //     {
+  //       questionType: "freeForm",
+  //       title: "Freeform question"
+  //     }
+  //   ]
+  // }
+])
 createStore("userStore", {})
 
 const App = () => {

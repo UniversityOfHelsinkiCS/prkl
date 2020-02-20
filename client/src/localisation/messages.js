@@ -25,6 +25,11 @@ export default {
     "courses.searchPlaceholder": "Search courses",
     "courses.deadline": "Enrollment deadline",
 
+    "gradeQuestion.title": "Select an option that best describes you",
+    "gradeQuestion.gradeAnswer1": "I want a good grade",
+    "gradeQuestion.gradeAnswer2": "I want to pass the course",
+    "gradeQuestion.gradeAnswer3": "I don't care about the grade",
+
     "questionForm.addQuestion": "Add answer option",
     "questionForm.removeQuestion": "Remove answer option",
     "questionForm.titlePlaceholder": "Question",
@@ -36,12 +41,10 @@ export default {
     "questionForm.questionTypeLabel": "Question type",
 
     "course.deadline": "Deadline to enrol to the course project: ",
-    "course.questionsPreface": "Evaluate your skills from 1 to 5",
+    "course.questionsPreface": "Answer the questions below",
     "course.multipleChoicePlaceholder": "Choose",
+    "course.freeFormPlaceholder": "Type your answer",
     "course.gradeQuestion": "What are your goals for the project?",
-    "course.gradeAnswer1": "I want a good grade",
-    "course.gradeAnswer2": "I want to pass the course",
-    "course.gradeAnswer3": "I don't care about the grade",
     "course.dataCheckbox":
       "I agree to disclose my information with the other students in my future group.",
     "course.confirm": "Confirm answers and enrol to the course project",

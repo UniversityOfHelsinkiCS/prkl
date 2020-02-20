@@ -5,19 +5,26 @@ import { FormattedMessage, useIntl } from "react-intl"
 const QuestionForm = ({ questionId, setQuestions, questions }) => {
   const intl = useIntl()
 
-  const [options, setOptions] = useState([{}])
-  const [question, setQuestion] = useState({ questionType: "0", title: "" })
+  const [options, setOptions] = useState([])
+  const [question, setQuestion] = useState({
+    questionType: "singleChoice",
+    content: "",
+    order: questionId
+  })
 
   const handleOptionChange = index => (e, { value }) => {
-    const newOptions = [...options]
-    newOptions[index] = { content: value }
+    const newOptions = options
+    console.log("options:", options)
+    newOptions[index] = { ...newOptions[index], content: value }
     setOptions(newOptions)
 
     const questionObject = {
       ...question,
-      options: newOptions
+      questionChoices: newOptions
     }
     let newQuestions = [...questions]
+    console.log("newQuestions:", newQuestions)
+
     newQuestions[questionId] = questionObject
     setQuestion(questionObject)
     setQuestions(newQuestions)
@@ -25,8 +32,8 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
 
   const handleTypeChange = value => {
     let questionObject = { ...question, questionType: value }
-    if (value === "2") {
-      delete questionObject.options
+    if (value === "freeForm") {
+      delete questionObject.questionChoices
     }
 
     let newQuestions = [...questions]
@@ -36,7 +43,7 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
   }
 
   const handleTitleChange = (e, { value }) => {
-    const questionObject = { ...question, title: value }
+    const questionObject = { ...question, content: value }
     let newQuestions = [...questions]
     newQuestions[questionId] = questionObject
     setQuestion(questionObject)
@@ -44,7 +51,11 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
   }
 
   const handleAddForm = () => {
-    setOptions([...options, { content: "" }])
+    setOptions([...options, { order: options.length + 1, content: "" }])
+    console.log("options:", [
+      ...options,
+      { order: options.length + 1, content: "" }
+    ])
   }
   const handleRemoveForm = () => {
     setOptions(options.slice(0, options.length - 1))
@@ -53,6 +64,7 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
   return (
     <Segment style={{ padding: 15, margin: 10 }}>
       <Form.Field
+        required
         onChange={handleTitleChange}
         control={Input}
         label={intl.formatMessage({
@@ -71,37 +83,37 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
           label={intl.formatMessage({
             id: "questionForm.numericalQuestion"
           })}
-          value="0"
-          checked={question.questionType === "0"}
-          onChange={() => handleTypeChange("0")}
+          value="singleChoice"
+          checked={question.questionType === "singleChoice"}
+          onChange={() => handleTypeChange("singleChoice")}
         />
         <Form.Field
           control={Radio}
           label={intl.formatMessage({
             id: "questionForm.multipleSelectOne"
           })}
-          value="1"
-          checked={question.questionType === "1"}
-          onChange={() => handleTypeChange("1")}
+          value="multipleChoice"
+          checked={question.questionType === "multipleChoice"}
+          onChange={() => handleTypeChange("multipleChoice")}
         />
         <Form.Field
           control={Radio}
           label={intl.formatMessage({
             id: "questionForm.freeformQuestion"
           })}
-          value="2"
-          checked={question.questionType === "2"}
-          onChange={() => handleTypeChange("2")}
+          value="freeForm"
+          checked={question.questionType === "freeForm"}
+          onChange={() => handleTypeChange("freeForm")}
         />
       </Form.Group>
-      {question.questionType !== "2" ? (
+      {question.questionType !== "freeForm" ? (
         <>
           <Form.Group>
-            <Form.Button type="button" onClick={handleAddForm}>
+            <Form.Button type="button" onClick={handleAddForm} color="green">
               <FormattedMessage id="questionForm.addQuestion" />
             </Form.Button>
 
-            <Form.Button type="button" onClick={handleRemoveForm}>
+            <Form.Button type="button" onClick={handleRemoveForm} color="red">
               <FormattedMessage id="questionForm.removeQuestion" />
             </Form.Button>
           </Form.Group>

@@ -136,11 +136,11 @@ const CourseForm = () => {
         </Form.Group>
 
         <Form.Group>
-          <Form.Button type="button" onClick={handleAddForm}>
+          <Form.Button type="button" onClick={handleAddForm} color="green">
             <FormattedMessage id="courseForm.addQuestion" />
           </Form.Button>
 
-          <Form.Button type="button" onClick={handleRemoveForm}>
+          <Form.Button type="button" onClick={handleRemoveForm} color="red">
             <FormattedMessage id="courseForm.removeQuestion" />
           </Form.Button>
         </Form.Group>
