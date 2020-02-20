@@ -69,7 +69,7 @@ const Course = ({ id }) => {
       if (question.questionType === "freeForm") {
         return {
           questionId: question.id,
-          content: question.content
+          content: question.answer
         }
       } else {
         return {
