@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react"
+import { flatten } from "ramda"
+
 import {
   COURSE_BY_ID,
   DELETE_COURSE,
@@ -56,7 +58,7 @@ const Course = ({ id }) => {
     if (!loading && data !== undefined) {
       setCourse({
         ...data.course,
-        questions: data.course.questions.concat(gradeQuestion)
+        //questions: data.course.questions.concat(gradeQuestion)
       })
     }
   }, [loading])
@@ -74,7 +76,7 @@ const Course = ({ id }) => {
       } else {
         return {
           questionId: question.id,
-          answerChoices: [question.answer]
+          answerChoices: flatten([question.answer]).map((x) => ({id: x}))
         }
       }
     })

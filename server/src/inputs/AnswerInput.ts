@@ -3,7 +3,7 @@ import { QuestionAnswerInput } from "./QuestionAnswerInput";
 
 @InputType()
 export class AnswerInput {
-  @Field()
+  @Field({ nullable: true })
   content: string;
 
   @Field()

@@ -4,8 +4,8 @@
   "port": 5432,
   "database": "postgres",
   "username": "postgres",
-  "entities": ["src/entities/*{.ts,.js}"],
+  "entities": ["dist/entities/*.js"],
   "migrationsTableName": "migrations",
-  "migrations": ["src/migrations/*{.ts,.js}"],
+  "migrations": ["dist/migrations/*.js"],
   "migrationsRun": true
 }
