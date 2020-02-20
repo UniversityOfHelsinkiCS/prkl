@@ -54,6 +54,7 @@ export class Answer extends BaseEntity {
   @ManyToMany(
     type => QuestionChoice,
     questionChoice => questionChoice.answers,
+    { cascade: ["update"] },
   )
   @JoinTable({ name: "answerChoice" })
   answerChoices: QuestionChoice[];
