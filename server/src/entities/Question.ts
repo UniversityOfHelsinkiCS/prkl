@@ -43,7 +43,7 @@ export class Question extends BaseEntity {
   @OneToMany(
     type => QuestionChoice,
     questionChoice => questionChoice.question,
-    { cascade: true },
+    { cascade: true, eager: true },
   )
   questionChoices: QuestionChoice[];
 
