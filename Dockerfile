@@ -28,7 +28,7 @@ COPY server server/
 
 # Build backend
 WORKDIR /usr/src/app/server
-RUN NODE_ENV=production npx tsc
+RUN npm run build
 
 EXPOSE 3001
 EXPOSE 4000
