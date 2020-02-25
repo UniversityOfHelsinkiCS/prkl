@@ -15,6 +15,6 @@ export class UserResolver {
 
   @Query(() => User)
   currentUser(@Ctx() context): Promise<User> {
-    return User.findOne({ where: { shibbolethUid: context.user.shibbolethUid } });
+    return User.findOne({ where: { shibbolethUid: context.user.shibbolethUid }, relations: ["registrations"] });
   }
 }

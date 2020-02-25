@@ -106,7 +106,7 @@ const App = () => {
             <div className="mainContent">
               <Loader></Loader>
               <Route exact path="/" render={() => <Home />} />
-              <Route path="/user" render={() => <StudentInfo />} />
+              <Route path="/user" render={() => <StudentInfo userLoading={userLoading}/>} />
               {user && user.role === roles.ADMIN_ROLE ? (
                 <Route path="/addcourse" render={() => <CourseForm />} />
               ) : null}
