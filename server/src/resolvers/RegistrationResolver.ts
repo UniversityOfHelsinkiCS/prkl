@@ -14,6 +14,14 @@ export class RegistrationResolver {
     return Registration.findOne({ where: { id }, relations: ["course"] });
   }
 
+  @Query(() => [Registration])
+  courseRegistrations(@Arg("courseId") courseId: string) {
+    return Registration.find({
+      where: { courseId: courseId },
+      relations: ["questionAnswers", "questionAnswers.question", "questionAnswers.answerChoices"],
+    });
+  }
+
   @Mutation(() => Registration)
   async createRegistration(@Ctx() context, @Arg("data") data: RegistrationInput) {
     const registration = Registration.create(data);
