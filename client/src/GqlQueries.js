@@ -97,12 +97,14 @@ query courseRegistrations($courseId: String!) {
    questionAnswers {
     question {
      content
+     order
     }
     id
     content
     answerChoices {
      id
      content
+     order
     }
    }
   }

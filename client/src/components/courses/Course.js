@@ -39,47 +39,30 @@ const Course = ({ id }) => {
     variables: { courseId: id },
   });
 
-  const gradeQuestion = {
-    questionType: 'singleChoice',
-    content: intl.formatMessage({ id: 'gradeQuestion.title' }),
-    id: 'a9be5cf5-4599-44ed-8c46-118a052aadea',
-    questionChoices: [
-      {
-        order: 1,
-        content: intl.formatMessage({ id: 'gradeQuestion.gradeAnswer1' }),
-        id: '18d16642-bfe5-4eb1-9061-76d6a0c70cbe',
-      },
-      {
-        order: 2,
-        content: intl.formatMessage({ id: 'gradeQuestion.gradeAnswer2' }),
-        id: 'd4b9e327-bdca-4558-916a-47b9a77e0b73',
-      },
-      {
-        order: 3,
-        content: intl.formatMessage({ id: 'gradeQuestion.gradeAnswer3' }),
-        id: 'b715b68f-8698-4d36-8036-393360e17859',
-      },
-    ],
-  };
-
   useEffect(() => {
     if (!loading && data !== undefined) {
       setCourse({
         ...data.course,
-        // questions: data.course.questions.concat(gradeQuestion)
-      });
+        questions: data.course.questions.sort((a, b) => a.order - b.order)
+      })
     }
 
     if (!regLoading && regData !== undefined) {
-      console.log('regData', regData);
+
+      // TODO: sort with backend instead of this hacky shit
+      // FIXME: this is fucked
       setRegistrations(
-        regData.courseRegistrations,
-      );
+        regData.courseRegistrations.map(r => {
+          r.questionAnswers.sort((a, b) => a.question.order - b.question.order)
+          r.questionAnswers.forEach(qa => qa.answerChoices.sort((a, b) => a.order - b.order))
+
+          return r
+        })
+      )
     }
   }, [data, loading, regData, regLoading]);
 
   const handleFormSubmit = async () => {
-    gradeQuestion.order = course.questions.length;
     const answer = {};
     answer.courseId = course.id;
     answer.questionAnswers = course.questions.map((question) => {
@@ -151,7 +134,7 @@ const Course = ({ id }) => {
       <h2>
         {course.code}
         {' '}
--
+        -
         {course.title}
       </h2>
 
@@ -227,10 +210,10 @@ const Course = ({ id }) => {
                       {reg.questionAnswers.map((qa) => (
                         <Table.Cell key={qa.id}>
 
-                        |
+                          |
                           {' '}
                           {qa.content ? `${qa.content} |`
-                : qa.answerChoices.map((answer) => `${answer.content} | `)}
+                            : qa.answerChoices.map((answer) => `${answer.content} | `)}
                         </Table.Cell>
                       ))}
 
