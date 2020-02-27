@@ -18,7 +18,7 @@ export class RegistrationResolver {
   courseRegistrations(@Arg("courseId") courseId: string) {
     return Registration.find({
       where: { courseId: courseId },
-      relations: ["questionAnswers", "questionAnswers.question", "questionAnswers.answerChoices"],
+      relations: ["student", "questionAnswers", "questionAnswers.question", "questionAnswers.answerChoices"],
     });
   }
 
