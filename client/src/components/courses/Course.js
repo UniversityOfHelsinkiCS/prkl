@@ -11,7 +11,7 @@ import { useStore } from "react-hookstore"
 import { useHistory } from "react-router-dom"
 import { roles } from "../../util/user_roles"
 import { useQuery, useMutation } from "@apollo/react-hooks"
-import { Header, Button, Form, Loader, Card } from "semantic-ui-react"
+import { Header, Button, Form, Loader, Card, Table } from "semantic-ui-react"
 import { FormattedMessage, useIntl, FormattedDate } from "react-intl"
 import Question from "./Question"
 
@@ -32,7 +32,7 @@ const Course = ({ id }) => {
   const { loading, error, data } = useQuery(COURSE_BY_ID, {
     variables: { id }
   })
-  
+
   const { loading: regLoading, error: regError, data: regData } = useQuery(COURSE_REGISTRATION, {
     variables: { courseId: id }
   })
@@ -67,7 +67,7 @@ const Course = ({ id }) => {
         //questions: data.course.questions.concat(gradeQuestion)
       })
     }
-    
+
     if (!regLoading && regData !== undefined) {
       console.log("regData", regData);
       setRegistrations(
@@ -191,22 +191,54 @@ const Course = ({ id }) => {
         </Form.Button>
       </Form>
       <div>
-        {registrations && user.role === 3 ? 
-        <div>
-        <h3>Students enrolled to the course:</h3>
-        {registrations.map(reg => {
-          return (
-            <Card key={reg.id} content={`${reg.student.firstname} ${reg.student.lastname} 
-            ${reg.student.studentNo} `} />
-          )
-        }
-          
-         )}
-        </div>: 
-        null
+        {course.questions && registrations && user.role === 3 ?
+          <div>
+            <h3>Students enrolled to the course:</h3>
+
+            <Table>
+
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>first name</Table.HeaderCell>
+                  <Table.HeaderCell>first name</Table.HeaderCell>
+                  <Table.HeaderCell>student no.</Table.HeaderCell>
+                  {course.questions.map(question => <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>)}
+                </Table.Row>
+              </Table.Header>
+
+
+              <Table.Body>
+
+                {registrations.map(reg =>
+
+                  <Table.Row key={reg.id}>
+                    <Table.Cell>
+                      {reg.student.firstname}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {reg.student.lastname}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {reg.student.studentNo}
+                    </Table.Cell>
+                    {reg.questionAnswers.map(qa =>
+                      <Table.Cell key={qa.id}>
+
+                        | {qa.content ? `${qa.content} |` :
+                          qa.answerChoices.map(answer => `${answer.content} | `)}
+                      </Table.Cell>
+                    )}
+
+                  </Table.Row>
+                )}
+              </Table.Body>
+
+            </Table>
+          </div> :
+          null
         }
       </div>
-      </div>
+    </div>
   )
 }
 export default Course
