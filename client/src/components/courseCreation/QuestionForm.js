@@ -1,59 +1,61 @@
-import React, { useState } from "react"
-import { Form, Input, Radio, Segment } from "semantic-ui-react"
-import { FormattedMessage, useIntl } from "react-intl"
+import React, { useState } from 'react';
+import {
+  Form, Input, Radio, Segment,
+} from 'semantic-ui-react';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const QuestionForm = ({ questionId, setQuestions, questions }) => {
-  const intl = useIntl()
+  const intl = useIntl();
 
-  const [options, setOptions] = useState([])
+  const [options, setOptions] = useState([]);
   const [question, setQuestion] = useState({
-    questionType: "singleChoice",
-    content: "",
-    order: questionId
-  })
+    questionType: 'singleChoice',
+    content: '',
+    order: questionId,
+  });
 
-  const handleOptionChange = index => (e, { value }) => {
-    const newOptions = options
-    newOptions[index] = { ...newOptions[index], content: value }
-    setOptions(newOptions)
+  const handleOptionChange = (index) => (e, { value }) => {
+    const newOptions = options;
+    newOptions[index] = { ...newOptions[index], content: value };
+    setOptions(newOptions);
 
     const questionObject = {
       ...question,
-      questionChoices: newOptions
+      questionChoices: newOptions,
+    };
+    const newQuestions = [...questions];
+
+    newQuestions[questionId] = questionObject;
+    setQuestion(questionObject);
+    setQuestions(newQuestions);
+  };
+
+  const handleTypeChange = (value) => {
+    const questionObject = { ...question, questionType: value };
+    if (value === 'freeForm') {
+      delete questionObject.questionChoices;
     }
-    let newQuestions = [...questions]
 
-    newQuestions[questionId] = questionObject
-    setQuestion(questionObject)
-    setQuestions(newQuestions)
-  }
-
-  const handleTypeChange = value => {
-    let questionObject = { ...question, questionType: value }
-    if (value === "freeForm") {
-      delete questionObject.questionChoices
-    }
-
-    let newQuestions = [...questions]
-    newQuestions[questionId] = questionObject
-    setQuestion(questionObject)
-    setQuestions(newQuestions)
-  }
+    const newQuestions = [...questions];
+    newQuestions[questionId] = questionObject;
+    setQuestion(questionObject);
+    setQuestions(newQuestions);
+  };
 
   const handleTitleChange = (e, { value }) => {
-    const questionObject = { ...question, content: value }
-    let newQuestions = [...questions]
-    newQuestions[questionId] = questionObject
-    setQuestion(questionObject)
-    setQuestions(newQuestions)
-  }
+    const questionObject = { ...question, content: value };
+    const newQuestions = [...questions];
+    newQuestions[questionId] = questionObject;
+    setQuestion(questionObject);
+    setQuestions(newQuestions);
+  };
 
   const handleAddForm = () => {
-    setOptions([...options, { order: options.length + 1, content: "" }])
-  }
+    setOptions([...options, { order: options.length + 1, content: '' }]);
+  };
   const handleRemoveForm = () => {
-    setOptions(options.slice(0, options.length - 1))
-  }
+    setOptions(options.slice(0, options.length - 1));
+  };
 
   return (
     <Segment style={{ padding: 15, margin: 10 }}>
@@ -62,10 +64,10 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
         onChange={handleTitleChange}
         control={Input}
         label={intl.formatMessage({
-          id: "questionForm.title"
+          id: 'questionForm.title',
         })}
         placeholder={intl.formatMessage({
-          id: "questionForm.titlePlaceholder"
+          id: 'questionForm.titlePlaceholder',
         })}
       />
       <Form.Group inline>
@@ -75,32 +77,32 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
         <Form.Field
           control={Radio}
           label={intl.formatMessage({
-            id: "questionForm.numericalQuestion"
+            id: 'questionForm.numericalQuestion',
           })}
           value="singleChoice"
-          checked={question.questionType === "singleChoice"}
-          onChange={() => handleTypeChange("singleChoice")}
+          checked={question.questionType === 'singleChoice'}
+          onChange={() => handleTypeChange('singleChoice')}
         />
         <Form.Field
           control={Radio}
           label={intl.formatMessage({
-            id: "questionForm.multipleSelectOne"
+            id: 'questionForm.multipleSelectOne',
           })}
           value="multipleChoice"
-          checked={question.questionType === "multipleChoice"}
-          onChange={() => handleTypeChange("multipleChoice")}
+          checked={question.questionType === 'multipleChoice'}
+          onChange={() => handleTypeChange('multipleChoice')}
         />
         <Form.Field
           control={Radio}
           label={intl.formatMessage({
-            id: "questionForm.freeformQuestion"
+            id: 'questionForm.freeformQuestion',
           })}
           value="freeForm"
-          checked={question.questionType === "freeForm"}
-          onChange={() => handleTypeChange("freeForm")}
+          checked={question.questionType === 'freeForm'}
+          onChange={() => handleTypeChange('freeForm')}
         />
       </Form.Group>
-      {question.questionType !== "freeForm" ? (
+      {question.questionType !== 'freeForm' ? (
         <>
           <Form.Group>
             <Form.Button type="button" onClick={handleAddForm} color="green">
@@ -112,7 +114,7 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
             </Form.Button>
           </Form.Group>
 
-          <Form.Group style={{ flexWrap: "wrap" }}>
+          <Form.Group style={{ flexWrap: 'wrap' }}>
             {options.map((q, index) => (
               <Form.Field
                 onChange={handleOptionChange(index)}
@@ -120,20 +122,20 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
                 type="text"
                 label={intl.formatMessage(
                   {
-                    id: "questionForm.optionTitle"
+                    id: 'questionForm.optionTitle',
                   },
                   {
-                    number: index + 1
-                  }
+                    number: index + 1,
+                  },
                 )}
                 key={`question${questionId}optionsForm${index}`}
                 placeholder={intl.formatMessage(
                   {
-                    id: "questionForm.optionTitle"
+                    id: 'questionForm.optionTitle',
                   },
                   {
-                    number: index + 1
-                  }
+                    number: index + 1,
+                  },
                 )}
               />
             ))}
@@ -141,7 +143,7 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
         </>
       ) : null}
     </Segment>
-  )
-}
+  );
+};
 
-export default QuestionForm
+export default QuestionForm;
