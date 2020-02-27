@@ -63,7 +63,7 @@ const Course = ({ id }) => {
   useEffect(() => {
     if (!loading && data !== undefined) {
       setCourse({
-        ...data.course,
+        ...data.course
         //questions: data.course.questions.concat(gradeQuestion)
       })
     }
@@ -89,13 +89,16 @@ const Course = ({ id }) => {
       } else {
         return {
           questionId: question.id,
-          answerChoices: flatten([question.answer]).map((x) => ({id: x}))
+          answerChoices: flatten([question.answer]).map(x => ({ id: x }))
         }
       }
     })
     console.log("submitanswer:", answer)
     try {
-      await createRegistration({variables: { data: answer }})
+      await createRegistration({
+        variables: { data: answer },
+        refetchQueries: []
+      })
     } catch (error) {
       console.log("error:", error)
     }
@@ -129,6 +132,18 @@ const Course = ({ id }) => {
       console.log("error:", error)
     }
     history.push("/courses")
+  }
+
+  const submitButtonDisabled = () => {
+    const found = user.registrations.find(r => r.course.id === course.id)
+    console.log("user:", user)
+    console.log("found:", found)
+
+    if (found === undefined && checkbox) {
+      return false
+    }
+    console.log("no registration 4 u")
+    return true
   }
 
   return (
@@ -169,9 +184,10 @@ const Course = ({ id }) => {
           label={{
             children: intl.formatMessage({ id: "course.dataCheckbox" })
           }}
+          onClick={() => setCheckbox(!checkbox)}
         ></Form.Checkbox>
 
-        <Form.Button primary type="submit">
+        <Form.Button primary type="submit" disabled={submitButtonDisabled()}>
           <FormattedMessage id="course.confirm" />
         </Form.Button>
       </Form>

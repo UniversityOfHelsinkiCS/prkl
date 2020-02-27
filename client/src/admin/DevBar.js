@@ -12,7 +12,8 @@ const DevBar = () => {
     email: "student@email",
     studentNo: "123456789",
     lastname: "Lastname",
-    role: 1
+    role: 1,
+    registrations: [{ course: { id: "1" } }]
   }
   const staff = {
     uid: "456-456",
@@ -20,7 +21,8 @@ const DevBar = () => {
     email: "staff@email",
     studentNo: "987654321",
     lastname: "Lastname",
-    role: 2
+    role: 2,
+    registrations: [{ course: { id: "1" } }]
   }
   const admin = {
     uid: "789-789",
@@ -28,7 +30,8 @@ const DevBar = () => {
     email: "admin@email",
     studentNo: "133742069",
     lastname: "Lastname",
-    role: 3
+    role: 3,
+    registrations: [{ course: { id: "1" } }]
   }
 
   const [activeItem, setActiveItem] = useState(null)
