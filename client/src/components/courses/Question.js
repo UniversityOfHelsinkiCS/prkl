@@ -64,11 +64,11 @@ const Question = ({ question, index, answers }) => {
 
   return (
     <div style={{ paddingTop: 5, paddingBottom: 5 }}>
-      {index === answers.length - 1 ? (
+      {/* {index === answers.length - 1 ? (
         <h3 style={{ paddingTop: 10 }}>
           <FormattedMessage id="course.gradeQuestion" />
         </h3>
-      ) : null}
+      ) : null} */}
       <Segment key={question.content} raised>
         <Grid>
           <Grid.Row columns={2}>

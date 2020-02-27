@@ -40,22 +40,22 @@ const Course = ({ id }) => {
   let gradeQuestion = {
     questionType: "singleChoice",
     content: intl.formatMessage({ id: "gradeQuestion.title" }),
-    id: "gradeQuestionId",
+    id: "a9be5cf5-4599-44ed-8c46-118a052aadea",
     questionChoices: [
       {
         order: 1,
         content: intl.formatMessage({ id: "gradeQuestion.gradeAnswer1" }),
-        id: "gradeAnswer1"
+        id: "18d16642-bfe5-4eb1-9061-76d6a0c70cbe"
       },
       {
         order: 2,
         content: intl.formatMessage({ id: "gradeQuestion.gradeAnswer2" }),
-        id: "gradeAnswer2"
+        id: "d4b9e327-bdca-4558-916a-47b9a77e0b73"
       },
       {
         order: 3,
         content: intl.formatMessage({ id: "gradeQuestion.gradeAnswer3" }),
-        id: "gradeAnswer3"
+        id: "b715b68f-8698-4d36-8036-393360e17859"
       }
     ]
   }
@@ -64,7 +64,7 @@ const Course = ({ id }) => {
     if (!loading && data !== undefined) {
       setCourse({
         ...data.course
-        //questions: data.course.questions.concat(gradeQuestion)
+        // questions: data.course.questions.concat(gradeQuestion)
       })
     }
 
