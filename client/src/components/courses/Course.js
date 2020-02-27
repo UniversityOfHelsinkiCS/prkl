@@ -197,7 +197,7 @@ const Course = ({ id }) => {
         {registrations.map(reg => {
           return (
             <Card key={reg.id} content={`${reg.student.firstname} ${reg.student.lastname} 
-            ${reg.student.studentNo} ${reg.student.questionAnswers.question} `} />
+            ${reg.student.studentNo} `} />
           )
         }
           
