@@ -84,3 +84,27 @@ export const DELETE_COURSE = gql`
     deleteCourse(id: $id)
   }
 `
+
+export const COURSE_REGISTRATION = gql`
+query courseRegistrations($courseId: String!) {
+  courseRegistrations(courseId: $courseId){
+   id
+   student{
+     firstname
+     lastname
+     studentNo
+   }
+   questionAnswers {
+    question {
+     content
+    }
+    id
+    content
+    answerChoices {
+     id
+     content
+    }
+   }
+  }
+ }
+`

@@ -4,13 +4,14 @@ import { flatten } from "ramda"
 import {
   COURSE_BY_ID,
   DELETE_COURSE,
-  REGISTER_TO_COURSE
+  REGISTER_TO_COURSE,
+  COURSE_REGISTRATION
 } from "../../GqlQueries"
 import { useStore } from "react-hookstore"
 import { useHistory } from "react-router-dom"
 import { roles } from "../../util/user_roles"
 import { useQuery, useMutation } from "@apollo/react-hooks"
-import { Header, Button, Form, Loader } from "semantic-ui-react"
+import { Header, Button, Form, Loader, Card } from "semantic-ui-react"
 import { FormattedMessage, useIntl, FormattedDate } from "react-intl"
 import Question from "./Question"
 
@@ -18,6 +19,7 @@ const Course = ({ id }) => {
   const [courses, setCourses] = useStore("coursesStore")
   const [user] = useStore("userStore")
   const [course, setCourse] = useState({})
+  const [registrations, setRegistrations] = useState([])
   const [checkbox, setCheckbox] = useState(false)
   const [createRegistration] = useMutation(REGISTER_TO_COURSE)
 
@@ -29,6 +31,10 @@ const Course = ({ id }) => {
 
   const { loading, error, data } = useQuery(COURSE_BY_ID, {
     variables: { id }
+  })
+  
+  const { loading: regLoading, error: regError, data: regData } = useQuery(COURSE_REGISTRATION, {
+    variables: { courseId: id }
   })
 
   let gradeQuestion = {
@@ -61,7 +67,14 @@ const Course = ({ id }) => {
         //questions: data.course.questions.concat(gradeQuestion)
       })
     }
-  }, [loading])
+    
+    if (!regLoading && regData !== undefined) {
+      console.log("regData", regData);
+      setRegistrations(
+        regData.courseRegistrations
+      )
+    }
+  }, [loading, regLoading])
 
   const handleFormSubmit = async () => {
     gradeQuestion.order = course.questions.length
@@ -177,7 +190,23 @@ const Course = ({ id }) => {
           <FormattedMessage id="course.confirm" />
         </Form.Button>
       </Form>
-    </div>
+      <div>
+        {registrations && user.role === 3 ? 
+        <div>
+        <h3>Students enrolled to the course:</h3>
+        {registrations.map(reg => {
+          return (
+            <Card key={reg.id} content={`${reg.student.firstname} ${reg.student.lastname} 
+            ${reg.student.studentNo} ${reg.student.questionAnswers.question} `} />
+          )
+        }
+          
+         )}
+        </div>: 
+        null
+        }
+      </div>
+      </div>
   )
 }
 export default Course
