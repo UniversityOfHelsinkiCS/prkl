@@ -16,39 +16,7 @@ import { roles } from "./util/user_roles"
 import "./App.css"
 import Home from "./components/Home"
 
-createStore("coursesStore", [
-  // {
-  //   title: "Title",
-  //   id: "811775c8-fbe0-4385-bb02-78f4fbbc4937",
-  //   description: "description",
-  //   code: "Code",
-  //   minGroupSize: 1,
-  //   maxGroupSize: 9,
-  //   deadline: "2020-02-12",
-  //   questions: [
-  //     {
-  //       questionType: "singleChoice",
-  //       title: "Single choice",
-  //       options: [
-  //         { content: "scoice 1", value: 1 },
-  //         { content: "scoice 2", value: 2 }
-  //       ]
-  //     },
-  //     {
-  //       questionType: "multipleChoice",
-  //       title: "Multiple choice",
-  //       options: [
-  //         { content: "msoice 1", value: 1 },
-  //         { content: "mshoice 2", value: 2 }
-  //       ]
-  //     },
-  //     {
-  //       questionType: "freeForm",
-  //       title: "Freeform question"
-  //     }
-  //   ]
-  // }
-])
+createStore("coursesStore", [])
 createStore("userStore", {})
 
 const App = () => {
@@ -64,8 +32,6 @@ const App = () => {
   const { loading: userLoading, error: userError, data: userData } = useQuery(
     CURRENT_USER
   )
-
-  const ADMIN_ROLE = 3
 
   useEffect(() => {
     if (!userLoading) {
@@ -106,7 +72,10 @@ const App = () => {
             <div className="mainContent">
               <Loader></Loader>
               <Route exact path="/" render={() => <Home />} />
-              <Route path="/user" render={() => <StudentInfo userLoading={userLoading}/>} />
+              <Route
+                path="/user"
+                render={() => <StudentInfo userLoading={userLoading} />}
+              />
               {user && user.role === roles.ADMIN_ROLE ? (
                 <Route path="/addcourse" render={() => <CourseForm />} />
               ) : null}

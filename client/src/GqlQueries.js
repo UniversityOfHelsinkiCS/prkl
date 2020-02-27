@@ -21,9 +21,13 @@ export const CURRENT_USER = gql`
       email
       studentNo
       role
-      registrations{
+      registrations {
         id
-        course{title code}
+        course {
+          id
+          title
+          code
+        }
       }
     }
   }
