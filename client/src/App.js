@@ -9,10 +9,10 @@ import CourseForm from "./components/courseCreation/CourseForm"
 import Courses from "./components/courses/Courses"
 import Course from "./components/courses/Course"
 import { ALL_COURSES, CURRENT_USER } from "./GqlQueries"
-import { Loader, Dimmer, Container } from "semantic-ui-react"
+import { Loader } from "semantic-ui-react"
 import DevBar from "./admin/DevBar"
 import { roles } from "./util/user_roles"
-
+import userService from "./services/userService"
 import "./App.css"
 import Home from "./components/Home"
 
@@ -29,30 +29,11 @@ const App = () => {
     data: courseData
   } = useQuery(ALL_COURSES)
 
-  const { loading: userLoading, error: userError, data: userData } = useQuery(
-    CURRENT_USER
-  )
-
-  useEffect(() => {
-    if (!userLoading) {
-      console.log("data:", userData)
-      console.log("loading:", userLoading)
-
-      if (userError !== undefined) {
-        console.log("error:", userError)
-      } else {
-        setUser(userData.currentUser)
-      }
-    }
-  }, [userLoading])
+  userService(useQuery, useEffect, setUser)
 
   useEffect(() => {
     if (!courseLoading) {
-      console.log("data:", courseData)
-      console.log("loading:", courseLoading)
-      console.log("error:", courseError)
-
-      if (userError !== undefined) {
+      if (courseError !== undefined) {
         console.log("error:", courseError)
       } else {
         setCourses((courseData && courseData.courses) || [])
@@ -66,17 +47,14 @@ const App = () => {
       <div className="App">
         <Router basename={process.env.PUBLIC_URL}>
           <Header />
-          {courseLoading ? (
+          {courseLoading && user ? (
             <Loader active />
           ) : (
             <div className="mainContent">
-              <Loader></Loader>
+              <Loader />
               <Route exact path="/" render={() => <Home />} />
-              <Route
-                path="/user"
-                render={() => <StudentInfo userLoading={userLoading} />}
-              />
-              {user && user.role === roles.ADMIN_ROLE ? (
+              <Route path="/user" render={() => <StudentInfo />} />
+              {user.role === roles.ADMIN_ROLE ? (
                 <Route path="/addcourse" render={() => <CourseForm />} />
               ) : null}
 

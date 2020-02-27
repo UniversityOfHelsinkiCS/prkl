@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FormattedMessage } from "react-intl"
 import { useStore } from "react-hookstore"
 
-const StudentInfo = ({ userLoading }) => {
+const StudentInfo = () => {
   const [user] = useStore("userStore")
   console.log("user:", user)
 
@@ -30,17 +30,20 @@ const StudentInfo = ({ userLoading }) => {
           values={{ email: user.email }}
         ></FormattedMessage>
       </div>
-      {user.registrations && !userLoading ?
+      {user.registrations ? (
         <div>
           <h3>
             <FormattedMessage id="studentInfo.course"></FormattedMessage>
           </h3>
           <ul>
-            {user.registrations.map(reg =>
-              <li key={reg.id}>{reg.course.title} {reg.course.code}</li>)}
+            {user.registrations.map(reg => (
+              <li key={reg.id}>
+                {reg.course.title} {reg.course.code}
+              </li>
+            ))}
           </ul>
-        </div> : null
-      }
+        </div>
+      ) : null}
     </div>
   )
 }

@@ -10,7 +10,7 @@ export class UserResolver {
 
   @Query(() => [User])
   users(): Promise<User[]> {
-    return User.find();
+    return User.find({ relations: ["registrations"] });
   }
 
   @Query(() => User)

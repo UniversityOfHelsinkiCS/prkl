@@ -83,8 +83,7 @@ const Course = ({ id }) => {
     console.log("submitanswer:", answer)
     try {
       await createRegistration({
-        variables: { data: answer },
-        refetchQueries: []
+        variables: { data: answer }
       })
     } catch (error) {
       console.log("error:", error)
