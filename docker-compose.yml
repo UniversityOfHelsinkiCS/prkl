@@ -1,13 +1,30 @@
-version: '3.7'
+version: "3.7"
 
 services:
   app:
     build:
       context: ./
       dockerfile: dev.Dockerfile
+    # depends_on:
+    #   - db
     volumes:
       - ./server:/usr/src/app/server
     ports:
       - "3001:3001"
+      - "4000:4000"
     image: prkl-dev
     container_name: prkl-dev
+    environment:
+      - NODE_ENV=development
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 3003:8080
+  db:
+    image: postgres:12
+    container_name: prkl_db
+    environment:
+      - PGDATA=/data
+    volumes:
+      - ./pg_data:/data

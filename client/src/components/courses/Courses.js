@@ -1,13 +1,16 @@
 import React, { useState } from "react"
-import { Input, Card, Divider, Segment } from "semantic-ui-react"
+import { Input, Card, Divider } from "semantic-ui-react"
 import { Link } from "react-router-dom"
 import { useIntl } from "react-intl"
+import { useStore } from "react-hookstore"
 
-const Courses = ({ courses }) => {
+const Courses = () => {
+  const [courses] = useStore("coursesStore")
   const [search, setSearch] = useState("")
   const handleSearchChange = event => {
     setSearch(event.target.value)
   }
+
   const intl = useIntl()
 
   return (
@@ -20,19 +23,27 @@ const Courses = ({ courses }) => {
 
       <Card.Group itemsPerRow={1}>
         <div className="coursesList">
-          {courses
-            .filter(course =>
-              course.title.toLowerCase().includes(search.toLowerCase())
-            )
-            .map(course => (
-              <Card
-                fluid
-                as={Link}
-                to={`/courses/${course.id}`}
-                header={course.title}
-                description={course.description}
-              ></Card>
-            ))}
+          {courses &&
+            courses
+              .filter(
+                course =>
+                  course.title.toLowerCase().includes(search.toLowerCase()) ||
+                  course.code.toLowerCase().includes(search.toLowerCase())
+              )
+              .map(course => (
+                <Card
+                  key={course.id}
+                  raised
+                  key={course.id}
+                  fluid
+                  as={Link}
+                  to={`/courses/${course.id}`}
+                  header={`${course.code} - ${course.title}`}
+                  description={`${intl.formatMessage({
+                    id: "courses.deadline"
+                  })} ${intl.formatDate(course.deadline)}`}
+                ></Card>
+              ))}
         </div>
       </Card.Group>
     </div>

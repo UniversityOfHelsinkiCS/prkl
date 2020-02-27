@@ -1,0 +1,11 @@
+{
+  "type": "postgres",
+  "host": "db",
+  "port": 5432,
+  "database": "postgres",
+  "username": "postgres",
+  "entities": ["dist/entities/*.js"],
+  "migrationsTableName": "migrations",
+  "migrations": ["dist/migrations/*.js"],
+  "migrationsRun": true
+}
