@@ -77,15 +77,17 @@ const Course = ({ id }) => {
       };
     });
     console.log('submitanswer:', answer);
-    try {
-      await createRegistration({
-        variables: { data: answer }
-      });
-      history.push('/courses');
-      window.alert("enrolment succesful!")
+    if (window.confirm("Confirm enrollment?")) {
+      try {
+        await createRegistration({
+          variables: { data: answer }
+        });
+        history.push('/courses');
+        window.alert("enrolment succesful!")
 
-    } catch (submitError) {
-      console.log('submiterror:', submitError);
+      } catch (submitError) {
+        console.log('submiterror:', submitError);
+      }
     }
   };
 
@@ -133,54 +135,54 @@ const Course = ({ id }) => {
 
   return (
     <div>
-      {userIsRegistered() ? 
-      <Header as="h2">
-        <Icon name="thumbs up outline" />
-        <Header.Content>
-          <FormattedMessage id="course.userHasRegistered" />
-        </Header.Content>
-      </Header>
-     : <>
-      <h2>{`${course.code} -${course.title}`}</h2>
+      {userIsRegistered() ?
+        <Header as="h2">
+          <Icon name="thumbs up outline" />
+          <Header.Content>
+            <FormattedMessage id="course.userHasRegistered" />
+          </Header.Content>
+        </Header>
+        : <>
+          <h2>{`${course.code} -${course.title}`}</h2>
 
-      {user && user.role === roles.ADMIN_ROLE ? (
-        <Button onClick={handleDeletion} color="red">
-          <FormattedMessage id="course.delete" />
-        </Button>
-      ) : null}
+          {user && user.role === roles.ADMIN_ROLE ? (
+            <Button onClick={handleDeletion} color="red">
+              <FormattedMessage id="course.delete" />
+            </Button>
+          ) : null}
 
-      <Header as="h4" color="red">
-        <FormattedMessage id="course.deadline" />
-        <FormattedDate value={course.deadline} />
-      </Header>
-      <div>{course.description}</div>
-      <h3>
-        <FormattedMessage id="course.questionsPreface" />
-      </h3>
-      <Form onSubmit={handleFormSubmit}>
-        {course.questions &&
-          course.questions.map((question, index) => (
-            <Question
-              key={question.id}
-              question={question}
-              index={index}
-              answers={course.questions}
+          <Header as="h4" color="red">
+            <FormattedMessage id="course.deadline" />
+            <FormattedDate value={course.deadline} />
+          </Header>
+          <div>{course.description}</div>
+          <h3>
+            <FormattedMessage id="course.questionsPreface" />
+          </h3>
+          <Form onSubmit={handleFormSubmit}>
+            {course.questions &&
+              course.questions.map((question, index) => (
+                <Question
+                  key={question.id}
+                  question={question}
+                  index={index}
+                  answers={course.questions}
+                />
+              ))}
+
+            <Form.Checkbox
+              required
+              label={{
+                children: intl.formatMessage({ id: 'course.dataCheckbox' })
+              }}
+              onClick={() => setCheckbox(!checkbox)}
             />
-          ))}
 
-        <Form.Checkbox
-          required
-          label={{
-            children: intl.formatMessage({ id: 'course.dataCheckbox' })
-          }}
-          onClick={() => setCheckbox(!checkbox)}
-        />
-
-        <Form.Button primary type="submit" disabled={!checkbox}>
-          <FormattedMessage id="course.confirm" />
-        </Form.Button>
-      </Form>
-      </>}
+            <Form.Button primary type="submit" disabled={!checkbox}>
+              <FormattedMessage id="course.confirm" />
+            </Form.Button>
+          </Form>
+        </>}
       <div>
         {course.questions && registrations && user.role === 3 ? (
           <div>

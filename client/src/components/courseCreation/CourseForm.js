@@ -40,16 +40,17 @@ const CourseForm = () => {
     };
     const variables = { data: { ...courseObject } };
 
-    try {
-      const result = await createCourse({
-        variables,
-      });
-      setCourses(courses.concat(result.data.createCourse));
-    } catch (error) {
-      console.log('error:', error);
+    if (window.confirm("Confirm course creation?")) {
+      try {
+        const result = await createCourse({
+          variables,
+        });
+        setCourses(courses.concat(result.data.createCourse));
+      } catch (error) {
+        console.log('error:', error);
+      }
+      history.push('/courses');
     }
-
-    history.push('/courses');
   };
 
   const handleAddForm = (e) => {
