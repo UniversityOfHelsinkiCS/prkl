@@ -49,11 +49,12 @@ export default {
       'I agree to disclose my information with the other students in my future group.',
     'course.confirm': 'Confirm answers and enrol to the course project',
     'course.delete': 'Delete course',
+    'course.userHasRegistered': 'Registered to course!',
 
     'studentInfo.header': 'Student Info',
     'studentInfo.fullname': 'Name: {fullname}',
     'studentInfo.studentNo': 'Student number: {studentNo}',
     'studentInfo.email': 'Email: {email}',
-    'studentInfo.course': 'Enrolled courses',
-  },
+    'studentInfo.course': 'Enrolled courses'
+  }
 };
