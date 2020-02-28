@@ -14,6 +14,8 @@ import {
   DELETE_COURSE,
   REGISTER_TO_COURSE,
   COURSE_REGISTRATION,
+  CURRENT_USER,
+  ALL_COURSES
 } from '../../GqlQueries';
 import Question from './Question';
 
@@ -23,7 +25,7 @@ const Course = ({ id }) => {
   const [course, setCourse] = useState({});
   const [registrations, setRegistrations] = useState([]);
   const [checkbox, setCheckbox] = useState(false);
-  const [createRegistration] = useMutation(REGISTER_TO_COURSE);
+  const [createRegistration] = useMutation(REGISTER_TO_COURSE, { refetchQueries: [{ query: CURRENT_USER }] });
 
   const [deleteCourse] = useMutation(DELETE_COURSE);
 
@@ -80,8 +82,11 @@ const Course = ({ id }) => {
     console.log('submitanswer:', answer);
     try {
       await createRegistration({
-        variables: { data: answer },
+        variables: { data: answer }
       });
+      history.push('/courses');
+      window.alert("enrolment succesful!")
+
     } catch (error) {
       console.log('error:', error);
     }
