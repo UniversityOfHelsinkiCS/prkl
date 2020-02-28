@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost"
+import { gql } from 'apollo-boost';
 
 export const ALL_COURSES = gql`
   {
@@ -10,7 +10,7 @@ export const ALL_COURSES = gql`
       deadline
     }
   }
-`
+`;
 
 export const CURRENT_USER = gql`
   {
@@ -31,7 +31,7 @@ export const CURRENT_USER = gql`
       }
     }
   }
-`
+`;
 
 export const COURSE_BY_ID = gql`
   query course($id: String!) {
@@ -56,7 +56,7 @@ export const COURSE_BY_ID = gql`
       }
     }
   }
-`
+`;
 export const CREATE_COURSE = gql`
   mutation createCourse($data: CourseInput!) {
     createCourse(data: $data) {
@@ -69,7 +69,7 @@ export const CREATE_COURSE = gql`
       deadline
     }
   }
-`
+`;
 
 export const REGISTER_TO_COURSE = gql`
   mutation createRegistration($data: RegistrationInput!) {
@@ -77,13 +77,13 @@ export const REGISTER_TO_COURSE = gql`
       id
     }
   }
-`
+`;
 
 export const DELETE_COURSE = gql`
   mutation deleteCourse($id: String!) {
     deleteCourse(id: $id)
   }
-`
+`;
 
 export const COURSE_REGISTRATION = gql`
 query courseRegistrations($courseId: String!) {
@@ -97,14 +97,16 @@ query courseRegistrations($courseId: String!) {
    questionAnswers {
     question {
      content
+     order
     }
     id
     content
     answerChoices {
      id
      content
+     order
     }
    }
   }
  }
-`
+`;

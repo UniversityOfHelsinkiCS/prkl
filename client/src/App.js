@@ -1,49 +1,49 @@
-import React, { useEffect } from "react"
-import Header from "./components/Header"
-import StudentInfo from "./components/StudentInfo"
-import { createStore, useStore } from "react-hookstore"
-import { useQuery } from "@apollo/react-hooks"
-import { BrowserRouter as Router, Route } from "react-router-dom"
+import React, { useEffect } from 'react';
+import { createStore, useStore } from 'react-hookstore';
+import { useQuery } from '@apollo/react-hooks';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Loader } from 'semantic-ui-react';
+import Header from './components/Header';
+import StudentInfo from './components/StudentInfo';
 
-import CourseForm from "./components/courseCreation/CourseForm"
-import Courses from "./components/courses/Courses"
-import Course from "./components/courses/Course"
-import { ALL_COURSES, CURRENT_USER } from "./GqlQueries"
-import { Loader } from "semantic-ui-react"
-import DevBar from "./admin/DevBar"
-import { roles } from "./util/user_roles"
-import userService from "./services/userService"
-import "./App.css"
-import Home from "./components/Home"
+import CourseForm from './components/courseCreation/CourseForm';
+import Courses from './components/courses/Courses';
+import Course from './components/courses/Course';
+import { ALL_COURSES, CURRENT_USER } from './GqlQueries';
+import DevBar from './admin/DevBar';
+import roles from './util/user_roles';
+import userService from './services/userService';
+import './App.css';
+import Home from './components/Home';
 
-createStore("coursesStore", [])
-createStore("userStore", {})
+createStore('coursesStore', []);
+createStore('userStore', {});
 
-const App = () => {
-  const [courses, setCourses] = useStore("coursesStore")
-  const [user, setUser] = useStore("userStore")
+export default () => {
+  const [courses, setCourses] = useStore('coursesStore');
+  const [user, setUser] = useStore('userStore');
 
   const {
     loading: courseLoading,
     error: courseError,
-    data: courseData
-  } = useQuery(ALL_COURSES)
+    data: courseData,
+  } = useQuery(ALL_COURSES);
 
-  userService(useQuery, useEffect, setUser)
+  userService(useQuery, useEffect, setUser);
 
   useEffect(() => {
     if (!courseLoading) {
       if (courseError !== undefined) {
-        console.log("error:", courseError)
+        console.log('error:', courseError);
       } else {
-        setCourses((courseData && courseData.courses) || [])
+        setCourses((courseData && courseData.courses) || []);
       }
     }
-  }, [courseLoading])
+  }, [courseData, courseError, courseLoading, setCourses]);
 
   return (
     <>
-      {process.env.NODE_ENV === "development" ? <DevBar /> : null}
+      {process.env.NODE_ENV === 'development' ? <DevBar /> : null}
       <div className="App">
         <Router basename={process.env.PUBLIC_URL}>
           <Header />
@@ -69,7 +69,5 @@ const App = () => {
         </Router>
       </div>
     </>
-  )
-}
-
-export default App
+  );
+};
