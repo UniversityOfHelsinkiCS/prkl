@@ -6,7 +6,7 @@ import { CourseInput } from "../inputs/CourseInput";
 export class CourseResolver {
   @Query(() => [Course])
   courses() {
-    return Course.find({ relations: ["questions"] });
+    return Course.find({ where: { deleted: false }, relations: ["questions"] });
   }
 
   @Query(() => Course)
@@ -31,7 +31,8 @@ export class CourseResolver {
   async deleteCourse(@Arg("id") id: string) {
     const course = await Course.findOne({ where: { id } });
     if (!course) throw new Error("Course not found!");
-    await course.remove();
+    course.deleted = true;
+    await course.save();
     return true;
   }
 }
