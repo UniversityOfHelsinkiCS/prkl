@@ -4,16 +4,14 @@ import { flatten } from 'ramda';
 import { useStore } from 'react-hookstore';
 import { useHistory } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import {
-  Header, Button, Form, Loader, Card, Table,
-} from 'semantic-ui-react';
+import { Header, Button, Form, Loader, Table, Icon } from 'semantic-ui-react';
 import { FormattedMessage, useIntl, FormattedDate } from 'react-intl';
 import roles from '../../util/user_roles';
 import {
   COURSE_BY_ID,
   DELETE_COURSE,
   REGISTER_TO_COURSE,
-  COURSE_REGISTRATION,
+  COURSE_REGISTRATION
 } from '../../GqlQueries';
 import Question from './Question';
 
@@ -32,11 +30,11 @@ const Course = ({ id }) => {
   const intl = useIntl();
 
   const { loading, error, data } = useQuery(COURSE_BY_ID, {
-    variables: { id },
+    variables: { id }
   });
 
-  const { loading: regLoading, error: regError, data: regData } = useQuery(COURSE_REGISTRATION, {
-    variables: { courseId: id },
+  const { loading: regLoading, data: regData } = useQuery(COURSE_REGISTRATION, {
+    variables: { courseId: id }
   });
 
   useEffect(() => {
@@ -44,46 +42,45 @@ const Course = ({ id }) => {
       setCourse({
         ...data.course,
         questions: data.course.questions.sort((a, b) => a.order - b.order)
-      })
+      });
     }
 
     if (!regLoading && regData !== undefined) {
-
       // TODO: sort with backend instead of this hacky shit
       // FIXME: this is fucked
       setRegistrations(
         regData.courseRegistrations.map(r => {
-          r.questionAnswers.sort((a, b) => a.question.order - b.question.order)
-          r.questionAnswers.forEach(qa => qa.answerChoices.sort((a, b) => a.order - b.order))
+          r.questionAnswers.sort((a, b) => a.question.order - b.question.order);
+          r.questionAnswers.forEach(qa => qa.answerChoices.sort((a, b) => a.order - b.order));
 
-          return r
+          return r;
         })
-      )
+      );
     }
   }, [data, loading, regData, regLoading]);
 
   const handleFormSubmit = async () => {
     const answer = {};
     answer.courseId = course.id;
-    answer.questionAnswers = course.questions.map((question) => {
+    answer.questionAnswers = course.questions.map(question => {
       if (question.questionType === 'freeForm') {
         return {
           questionId: question.id,
-          content: question.answer,
+          content: question.answer
         };
       }
       return {
         questionId: question.id,
-        answerChoices: flatten([question.answer]).map((x) => ({ id: x })),
+        answerChoices: flatten([question.answer]).map(x => ({ id: x }))
       };
     });
     console.log('submitanswer:', answer);
     try {
       await createRegistration({
-        variables: { data: answer },
+        variables: { data: answer }
       });
-    } catch (error) {
-      console.log('error:', error);
+    } catch (submitError) {
+      console.log('submiterror:', submitError);
     }
   };
 
@@ -101,42 +98,56 @@ const Course = ({ id }) => {
 
     try {
       await deleteCourse({
-        variables,
+        variables
       });
       const trimmedCourses = [];
 
-      courses.forEach((course) => {
-        if (course.id !== id) {
-          trimmedCourses.push(course);
+      courses.forEach(remainingCourse => {
+        if (remainingCourse.id !== id) {
+          trimmedCourses.push(remainingCourse);
         }
       });
       setCourses(trimmedCourses);
-    } catch (error) {
-      console.log('error:', error);
+    } catch (deletionError) {
+      console.log('error:', deletionError);
     }
     history.push('/courses');
   };
 
   const submitButtonDisabled = () => {
-    const found = user.registrations.find((r) => r.course.id === course.id);
-    console.log('user:', user);
-    console.log('found:', found);
-
-    if (found === undefined && checkbox) {
+    if (checkbox) {
       return false;
     }
     console.log('no registration 4 u');
     return true;
   };
 
+  const userIsRegistered = () => {
+    const found = user.registrations.find(r => r.course.id === course.id);
+    console.log('user:', user);
+    console.log('found:', found);
+
+    if (found === undefined) {
+      return false;
+    }
+    console.log('no registration 4 u');
+    return true;
+  };
+
+  if (userIsRegistered()) {
+    return (
+      <Header as="h2">
+        <Icon name="thumbs up outline" />
+        <Header.Content>
+          <FormattedMessage id="course.userHasRegistered" />
+        </Header.Content>
+      </Header>
+    );
+  }
+
   return (
     <div>
-      <h2>
-        {course.code}
-        {' '}
-        -
-        {course.title}
-      </h2>
+      <h2>{`${course.code} -${course.title}`}</h2>
 
       {user && user.role === roles.ADMIN_ROLE ? (
         <Button onClick={handleDeletion} color="red">
@@ -153,8 +164,8 @@ const Course = ({ id }) => {
         <FormattedMessage id="course.questionsPreface" />
       </h3>
       <Form onSubmit={handleFormSubmit}>
-        {course.questions
-          && course.questions.map((question, index) => (
+        {course.questions &&
+          course.questions.map((question, index) => (
             <Question
               key={question.id}
               question={question}
@@ -166,65 +177,52 @@ const Course = ({ id }) => {
         <Form.Checkbox
           required
           label={{
-            children: intl.formatMessage({ id: 'course.dataCheckbox' }),
+            children: intl.formatMessage({ id: 'course.dataCheckbox' })
           }}
           onClick={() => setCheckbox(!checkbox)}
-        >
-        </Form.Checkbox>
+        />
 
         <Form.Button primary type="submit" disabled={submitButtonDisabled()}>
           <FormattedMessage id="course.confirm" />
         </Form.Button>
       </Form>
       <div>
-        {course.questions && registrations && user.role === 3
-          ? (
-            <div>
-              <h3>Students enrolled to the course:</h3>
+        {course.questions && registrations && user.role === 3 ? (
+          <div>
+            <h3>Students enrolled to the course:</h3>
 
-              <Table>
-
-                <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell>first name</Table.HeaderCell>
-                    <Table.HeaderCell>first name</Table.HeaderCell>
-                    <Table.HeaderCell>student no.</Table.HeaderCell>
-                    {course.questions.map((question) => <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>)}
-                  </Table.Row>
-                </Table.Header>
-
-
-                <Table.Body>
-
-                  {registrations.map((reg) => (
-                    <Table.Row key={reg.id}>
-                      <Table.Cell>
-                        {reg.student.firstname}
-                      </Table.Cell>
-                      <Table.Cell>
-                        {reg.student.lastname}
-                      </Table.Cell>
-                      <Table.Cell>
-                        {reg.student.studentNo}
-                      </Table.Cell>
-                      {reg.questionAnswers.map((qa) => (
-                        <Table.Cell key={qa.id}>
-
-                          |
-                          {' '}
-                          {qa.content ? `${qa.content} |`
-                            : qa.answerChoices.map((answer) => `${answer.content} | `)}
-                        </Table.Cell>
-                      ))}
-
-                    </Table.Row>
+            <Table>
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>first name</Table.HeaderCell>
+                  <Table.HeaderCell>first name</Table.HeaderCell>
+                  <Table.HeaderCell>student no.</Table.HeaderCell>
+                  {course.questions.map(question => (
+                    <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
                   ))}
-                </Table.Body>
+                </Table.Row>
+              </Table.Header>
 
-              </Table>
-            </div>
-          )
-          : null}
+              <Table.Body>
+                {registrations.map(reg => (
+                  <Table.Row key={reg.id}>
+                    <Table.Cell>{reg.student.firstname}</Table.Cell>
+                    <Table.Cell>{reg.student.lastname}</Table.Cell>
+                    <Table.Cell>{reg.student.studentNo}</Table.Cell>
+                    {reg.questionAnswers.map(qa => (
+                      <Table.Cell key={qa.id}>
+                        |{' '}
+                        {qa.content
+                          ? `${qa.content} |`
+                          : qa.answerChoices.map(answer => `${answer.content} | `)}
+                      </Table.Cell>
+                    ))}
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
+          </div>
+        ) : null}
       </div>
     </div>
   );
