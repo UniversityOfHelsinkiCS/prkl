@@ -16,6 +16,7 @@ import {
   ALL_COURSES
 } from '../../GqlQueries';
 import Question from './Question';
+import RegistrationForm from '../registration/RegistrationForm';
 
 const Course = ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
@@ -68,7 +69,7 @@ const Course = ({ id }) => {
       if (question.questionType === 'freeForm') {
         return {
           questionId: question.id,
-          content: question.answer
+          content: question.answer,
         };
       }
       return {
@@ -159,29 +160,7 @@ const Course = ({ id }) => {
           <h3>
             <FormattedMessage id="course.questionsPreface" />
           </h3>
-          <Form onSubmit={handleFormSubmit}>
-            {course.questions &&
-              course.questions.map((question, index) => (
-                <Question
-                  key={question.id}
-                  question={question}
-                  index={index}
-                  answers={course.questions}
-                />
-              ))}
-
-            <Form.Checkbox
-              required
-              label={{
-                children: intl.formatMessage({ id: 'course.dataCheckbox' })
-              }}
-              onClick={() => setCheckbox(!checkbox)}
-            />
-
-            <Form.Button primary type="submit" disabled={!checkbox}>
-              <FormattedMessage id="course.confirm" />
-            </Form.Button>
-          </Form>
+          <RegistrationForm courseId={course.id} questions={course.questions} />
         </>}
       <div>
         {course.questions && registrations && user.role === 3 ? (
