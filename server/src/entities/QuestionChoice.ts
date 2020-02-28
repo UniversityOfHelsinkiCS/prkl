@@ -1,10 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity, ManyToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity, ManyToMany, Unique } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 import { Question } from "./Question";
 import { Answer } from "./Answer";
 
 @ObjectType()
 @Entity({ name: "questionChoice" })
+@Unique(["question", "order"])
 export class QuestionChoice extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn("uuid")

@@ -8,6 +8,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Column,
+  Unique,
 } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 
@@ -17,6 +18,7 @@ import { Answer } from "./Answer";
 
 @ObjectType()
 @Entity()
+@Unique(["courseId", "student"])
 export class Registration extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn("uuid")

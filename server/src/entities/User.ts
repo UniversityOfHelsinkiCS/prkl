@@ -13,7 +13,7 @@ export class User extends BaseEntity {
 
   // Shibboleth user id.
   @Field(() => String)
-  @Column()
+  @Column({ unique: true })
   shibbolethUid: string;
 
   @Field(() => Number)
