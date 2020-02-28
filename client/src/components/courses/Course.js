@@ -131,19 +131,16 @@ const Course = ({ id }) => {
     return true;
   };
 
-  if (userIsRegistered()) {
-    return (
+  return (
+    <div>
+      {userIsRegistered() ? 
       <Header as="h2">
         <Icon name="thumbs up outline" />
         <Header.Content>
           <FormattedMessage id="course.userHasRegistered" />
         </Header.Content>
       </Header>
-    );
-  }
-
-  return (
-    <div>
+     : <>
       <h2>{`${course.code} -${course.title}`}</h2>
 
       {user && user.role === roles.ADMIN_ROLE ? (
@@ -183,6 +180,7 @@ const Course = ({ id }) => {
           <FormattedMessage id="course.confirm" />
         </Form.Button>
       </Form>
+      </>}
       <div>
         {course.questions && registrations && user.role === 3 ? (
           <div>
