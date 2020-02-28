@@ -114,14 +114,6 @@ const Course = ({ id }) => {
     history.push('/courses');
   };
 
-  const submitButtonDisabled = () => {
-    if (checkbox) {
-      return false;
-    }
-    console.log('no registration 4 u');
-    return true;
-  };
-
   const userIsRegistered = () => {
     const found = user.registrations.find(r => r.course.id === course.id);
     console.log('user:', user);
@@ -182,7 +174,7 @@ const Course = ({ id }) => {
           onClick={() => setCheckbox(!checkbox)}
         />
 
-        <Form.Button primary type="submit" disabled={submitButtonDisabled()}>
+        <Form.Button primary type="submit" disabled={!checkbox}>
           <FormattedMessage id="course.confirm" />
         </Form.Button>
       </Form>
