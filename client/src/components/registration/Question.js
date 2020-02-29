@@ -3,7 +3,7 @@ import { Segment, Grid, Form } from 'semantic-ui-react';
 import { useIntl } from 'react-intl';
 import ValidatedInput from '../forms/ValidatedInput';
 
-const Question = ({ question, index, answers, hookForm }) => {
+const Question = ({ question, hookForm }) => {
   const intl = useIntl();
 
   const changeType = () => {
@@ -24,7 +24,7 @@ const Question = ({ question, index, answers, hookForm }) => {
             placeholder={intl.formatMessage({ id: 'course.multipleChoicePlaceholder' })}
             options={question.questionChoices.map(choice => ({
               key: choice.id,
-              value: choice.order,
+              value: choice.id,
               text: choice.content,
             }))}
             formControl={hookForm}
@@ -39,7 +39,7 @@ const Question = ({ question, index, answers, hookForm }) => {
             placeholder={intl.formatMessage({ id: 'course.multipleChoicePlaceholder' })}
             options={question.questionChoices.map(choice => ({
               key: choice.id,
-              value: choice.order,
+              value: choice.id,
               text: choice.content,
             }))}
             formControl={hookForm}
