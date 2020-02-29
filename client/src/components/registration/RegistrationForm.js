@@ -1,29 +1,33 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Form, Checkbox } from 'semantic-ui-react';
-import { FormattedMessage, useIntl } from 'react-intl';
-import Question from '../courses/Question';
+import { Form, Button } from 'semantic-ui-react';
+import { FormattedMessage } from 'react-intl';
+import Question from './Question';
 
 export default ({ courseId, questions }) => {
-  const { register, handleSubmit, watch, errors } = useForm();
-  const intl = useIntl();
+  const hookForm = useForm({ mode: 'onChange' });
+  const { handleSubmit } = hookForm;
+
+  const onSubmit = (data, e) => {
+    console.log(data);
+  };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit(onSubmit)}>
       {questions &&
         questions.map((question, index) => (
-          <Question key={question.id} question={question} index={index} answers={questions} />
+          <Question
+            key={question.id}
+            question={question}
+            index={index}
+            answers={questions}
+            hookForm={hookForm}
+          />
         ))}
 
-      <Form.Field>
-        <Checkbox
-          name="toc"
-          ref={register}
-          label={intl.formatMessage({ id: 'course.dataCheckbox' })}
-        />
-      </Form.Field>
-
-      <Form.Button primary type="submit" content={<FormattedMessage id="course.confirm" />} />
+      <Button primary type="submit">
+        <FormattedMessage id="course.confirm" />
+      </Button>
     </Form>
   );
 };
