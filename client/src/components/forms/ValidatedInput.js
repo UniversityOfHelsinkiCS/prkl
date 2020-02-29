@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * HOC to make react-hook-form work with semantic-ui.
@@ -9,7 +10,7 @@ import React, { useEffect } from 'react';
  * Extra props are passed to the child component so you can use this as if you were using the
  * inner Semantic component.
  */
-export default ({ name, type, formControl, ...rest }) => {
+const ValidatedInput = ({ name, type, formControl, ...rest }) => {
   const { setValue, triggerValidation, errors, register } = formControl;
   const Inner = type;
 
@@ -30,3 +31,18 @@ export default ({ name, type, formControl, ...rest }) => {
     />
   );
 };
+
+ValidatedInput.propTypes = {
+  /** Unique name. */
+  name: PropTypes.string.isRequired,
+  /** Uninstated React component to render as input control (most likely a Semantic component.) */
+  type: PropTypes.func.isRequired,
+  /** Form control object generated with `react-hook-form`'s `useForm()`. */
+  formControl: PropTypes.shape({
+    setValue: PropTypes.func.isRequired,
+    triggerValidation: PropTypes.func.isRequired,
+    register: PropTypes.func.isRequired,
+  }).isRequired,
+};
+
+export default ValidatedInput;
