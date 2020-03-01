@@ -24,7 +24,7 @@ const ValidatedInput = ({ name, type, formControl, ...rest }) => {
       fluid
       onChange={(e, { value }) => {
         setValue(name, value);
-        triggerValidation();
+        triggerValidation(name);
       }}
       error={!!errors[name]}
       {...rest}
