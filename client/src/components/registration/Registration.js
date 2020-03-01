@@ -15,6 +15,9 @@ export default ({ courseId, questions }) => {
 
   // Format form data for GraphQL and post to backend.
   const onSubmit = async data => {
+    // Remove TOC button's value.
+    delete data.toc; // eslint-disable-line no-param-reassign
+
     const answer = { courseId };
 
     answer.questionAnswers = Object.keys(data).map(key => {
