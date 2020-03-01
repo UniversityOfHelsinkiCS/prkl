@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { Form } from 'semantic-ui-react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import Question from './Question';
 import ConfirmableButton from '../forms/ConfirmableButton';
 import ValidationError from '../forms/ValidationError';
 
 export default ({ questions, formControl, onSubmit }) => {
   const { setValue, triggerValidation, errors, register } = formControl;
+  const intl = useIntl();
 
   useEffect(() => {
     register({ name: 'toc' }, { required: true });
@@ -20,7 +21,7 @@ export default ({ questions, formControl, onSubmit }) => {
         ))}
 
       <Form.Checkbox
-        label="moooo"
+        label={intl.formatMessage({ id: 'forms.toc' })}
         name="toc"
         onChange={(e, { name, value }) => {
           setValue(name, value);
