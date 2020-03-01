@@ -6,6 +6,7 @@ import { useMutation } from 'react-apollo';
 import Question from './Question';
 import { FREEFORM, SINGLE_CHOICE, MULTI_CHOICE } from '../../util/questionTypes';
 import { REGISTER_TO_COURSE } from '../../GqlQueries';
+import ConfirmableButton from '../forms/ConfirmableButton';
 
 export default ({ courseId, questions }) => {
   const hookForm = useForm({ mode: 'onChange' });
@@ -50,15 +51,24 @@ export default ({ courseId, questions }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form>
       {questions &&
         questions.map(question => (
           <Question key={question.id} question={question} hookForm={hookForm} />
         ))}
 
+      {/*
       <Button primary type="submit">
         <FormattedMessage id="course.confirm" />
       </Button>
+*/}
+      <ConfirmableButton
+        formControl={hookForm}
+        onClick={handleSubmit(onSubmit)}
+        prompt={<FormattedMessage id="course.confirmRegistration" />}
+      >
+        <FormattedMessage id="course.submitRegistration" />
+      </ConfirmableButton>
     </Form>
   );
   // TODO: Add TOC checkbox.

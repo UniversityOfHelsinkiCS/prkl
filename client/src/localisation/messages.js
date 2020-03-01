@@ -47,7 +47,8 @@ export default {
     'course.gradeQuestion': 'What are your goals for the project?',
     'course.dataCheckbox':
       'I agree to disclose my information with the other students in my future group.',
-    'course.confirm': 'Confirm answers and enrol to the course project',
+    'course.submitRegistration': 'Register On The Course',
+    'course.confirmRegistration': 'Confirm Registration',
     'course.delete': 'Delete course',
     'course.userHasRegistered': 'Registered to course!',
 
