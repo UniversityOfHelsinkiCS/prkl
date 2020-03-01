@@ -9,7 +9,7 @@ import StudentInfo from './components/StudentInfo';
 import CourseForm from './components/courseCreation/CourseForm';
 import Courses from './components/courses/Courses';
 import Course from './components/courses/Course';
-import { ALL_COURSES, CURRENT_USER } from './GqlQueries';
+import { ALL_COURSES } from './GqlQueries';
 import DevBar from './admin/DevBar';
 import roles from './util/user_roles';
 import userService from './services/userService';
@@ -23,11 +23,7 @@ export default () => {
   const [courses, setCourses] = useStore('coursesStore');
   const [user, setUser] = useStore('userStore');
 
-  const {
-    loading: courseLoading,
-    error: courseError,
-    data: courseData,
-  } = useQuery(ALL_COURSES);
+  const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
 
   userService(useQuery, useEffect, setUser);
 
