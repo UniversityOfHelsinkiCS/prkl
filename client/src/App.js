@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Loader } from 'semantic-ui-react';
 import Header from './components/Header';
 import StudentInfo from './components/StudentInfo';
-
 import CourseForm from './components/courseCreation/CourseForm';
 import Courses from './components/courses/Courses';
 import Course from './components/courses/Course';
@@ -14,7 +13,6 @@ import DevBar from './admin/DevBar';
 import roles from './util/user_roles';
 import userService from './services/userService';
 import './App.css';
-import Home from './components/Home';
 
 createStore('coursesStore', []);
 createStore('userStore', {});
@@ -48,18 +46,16 @@ export default () => {
           ) : (
             <div className="mainContent">
               <Loader />
-              <Route exact path="/" render={() => <Home />} />
               <Route path="/user" render={() => <StudentInfo />} />
               {user.role === roles.ADMIN_ROLE ? (
                 <Route path="/addcourse" render={() => <CourseForm />} />
               ) : null}
-
-              <Route exact path="/courses" render={() => <Courses />} />
               <Route
                 exact
                 path="/courses/:id"
                 render={({ match }) => <Course id={match.params.id} />}
               />
+              <Route path="*" component={Courses} />
             </div>
           )}
         </Router>
