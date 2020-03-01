@@ -48,7 +48,8 @@ const Question = ({ question, hookForm }) => {
             multiple
           />
         );
-      default: return null;
+      default:
+        return null;
     }
   };
 
@@ -61,9 +62,7 @@ const Question = ({ question, hookForm }) => {
               <b>{question.content}</b>
             </Grid.Column>
             <Grid.Column textAlign="right">
-              <Form.Field>
-                {changeType()}
-              </Form.Field>
+              <Form.Field>{changeType()}</Form.Field>
             </Grid.Column>
           </Grid.Row>
         </Grid>
