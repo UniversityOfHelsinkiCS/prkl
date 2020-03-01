@@ -29,5 +29,3 @@ npx ts-node node_modules/typeorm/cli.js migration:generate -n <NAME>
 ```
 
 **Remember to double-check your migrations before committing - undoing them can be a real PITA!**
-
-At the moment typeorm tries to drop unique constraints when making the migration file. Remember to remove these from both up and down -parts before committing.
