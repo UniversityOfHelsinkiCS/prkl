@@ -103,23 +103,24 @@ const Course = ({ id }) => {
 
   const handleDeletion = async () => {
     const variables = { id };
+    if (window.confirm("Delete course?")) {
+      try {
+        await deleteCourse({
+          variables
+        });
+        const trimmedCourses = [];
 
-    try {
-      await deleteCourse({
-        variables
-      });
-      const trimmedCourses = [];
-
-      courses.forEach(remainingCourse => {
-        if (remainingCourse.id !== id) {
-          trimmedCourses.push(remainingCourse);
-        }
-      });
-      setCourses(trimmedCourses);
-    } catch (deletionError) {
-      console.log('error:', deletionError);
+        courses.forEach(remainingCourse => {
+          if (remainingCourse.id !== id) {
+            trimmedCourses.push(remainingCourse);
+          }
+        });
+        setCourses(trimmedCourses);
+      } catch (deletionError) {
+        console.log('error:', deletionError);
+      }
+      history.push('/courses');
     }
-    history.push('/courses');
   };
 
   const userIsRegistered = () => {
@@ -136,6 +137,12 @@ const Course = ({ id }) => {
 
   return (
     <div>
+      <h2>{`${course.code} -${course.title}`}</h2>
+      {user && user.role === roles.ADMIN_ROLE ? (
+          <Button onClick={handleDeletion} color="red">
+            <FormattedMessage id="course.delete" />
+          </Button>
+        ) : null}
       {userIsRegistered() ?
         <Header as="h2">
           <Icon name="thumbs up outline" />
@@ -144,13 +151,6 @@ const Course = ({ id }) => {
           </Header.Content>
         </Header>
         : <>
-          <h2>{`${course.code} -${course.title}`}</h2>
-
-          {user && user.role === roles.ADMIN_ROLE ? (
-            <Button onClick={handleDeletion} color="red">
-              <FormattedMessage id="course.delete" />
-            </Button>
-          ) : null}
 
           <Header as="h4" color="red">
             <FormattedMessage id="course.deadline" />
