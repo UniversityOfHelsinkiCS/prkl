@@ -2,6 +2,7 @@ import { UserRepository } from "./../repositories/UserRepository";
 import { Response, Request, NextFunction } from "express";
 import { User } from "./../entities/User";
 import { getCustomRepository } from "typeorm";
+import { AuthChecker } from "type-graphql";
 
 /**
  * Check that user details match.
@@ -44,4 +45,11 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
   req["user"] = user;
 
   next();
+};
+
+/** Custom authChecker function for type-graphql. */
+export const authChecker: AuthChecker = ({ context }, roles) => {
+  const user: User = context["user"];
+  const minRole = Math.min.apply(null, roles);
+  return user.role >= minRole;
 };

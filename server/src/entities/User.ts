@@ -17,7 +17,7 @@ export class User extends BaseEntity {
   shibbolethUid: string;
 
   @Field(() => Number)
-  @Column({ default: 3 })
+  @Column({ default: 1 })
   role: number;
 
   @Field(() => String)

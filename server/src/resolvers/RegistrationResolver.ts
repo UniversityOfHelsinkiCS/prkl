@@ -1,6 +1,7 @@
-import { Resolver, Query, Mutation, Arg, Ctx } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Ctx, Authorized } from "type-graphql";
 import { Registration } from "../entities/Registration";
 import { RegistrationInput } from "../inputs/RegistrationInput";
+import { STAFF } from "../utils/userRoles";
 
 @Resolver()
 export class RegistrationResolver {
@@ -14,6 +15,7 @@ export class RegistrationResolver {
     return Registration.findOne({ where: { id }, relations: ["course"] });
   }
 
+  @Authorized(STAFF)
   @Query(() => [Registration])
   courseRegistrations(@Arg("courseId") courseId: string) {
     return Registration.find({
