@@ -52,10 +52,10 @@ export default () => {
               ) : null}
               <Route
                 exact
-                path="/courses/:id"
+                path="/course/:id"
                 render={({ match }) => <Course id={match.params.id} />}
               />
-              <Route path="*" component={Courses} />
+              <Route exact path={['/', '/courses']} component={Courses} />
             </div>
           )}
         </Router>
