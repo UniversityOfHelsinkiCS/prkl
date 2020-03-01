@@ -16,7 +16,7 @@ import {
   ALL_COURSES
 } from '../../GqlQueries';
 import Question from './Question';
-import RegistrationForm from '../registration/RegistrationForm';
+import Registration from '../registration/Registration';
 
 const Course = ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
@@ -160,7 +160,7 @@ const Course = ({ id }) => {
           <h3>
             <FormattedMessage id="course.questionsPreface" />
           </h3>
-          <RegistrationForm courseId={course.id} questions={course.questions} />
+          <Registration courseId={course.id} questions={course.questions} />
         </>}
       <div>
         {course.questions && registrations && user.role === 3 ? (

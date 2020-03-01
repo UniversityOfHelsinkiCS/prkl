@@ -59,5 +59,6 @@ export default {
     'forms.errorAnswerAll': 'Please answer all questions!',
     'forms.submitRegistration': 'Register On The Course',
     'forms.confirmRegistration': 'Confirm Registration',
+    'forms.registrationSuccess': 'Great success! Your registration was received.',
   },
 };
