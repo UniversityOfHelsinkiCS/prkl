@@ -7,6 +7,7 @@ import Question from './Question';
 import { FREEFORM, SINGLE_CHOICE, MULTI_CHOICE } from '../../util/questionTypes';
 import { REGISTER_TO_COURSE } from '../../GqlQueries';
 import ConfirmableButton from '../forms/ConfirmableButton';
+import ValidationError from '../forms/ValidationError';
 
 export default ({ courseId, questions }) => {
   const hookForm = useForm({ mode: 'onChange' });
@@ -57,17 +58,16 @@ export default ({ courseId, questions }) => {
           <Question key={question.id} question={question} hookForm={hookForm} />
         ))}
 
-      {/*
-      <Button primary type="submit">
-        <FormattedMessage id="course.confirm" />
-      </Button>
-*/}
+      <ValidationError errors={hookForm.errors}>
+        <FormattedMessage id="forms.errorAnswerAll" />
+      </ValidationError>
+
       <ConfirmableButton
         formControl={hookForm}
         onClick={handleSubmit(onSubmit)}
-        prompt={<FormattedMessage id="course.confirmRegistration" />}
+        prompt={<FormattedMessage id="forms.confirmRegistration" />}
       >
-        <FormattedMessage id="course.submitRegistration" />
+        <FormattedMessage id="forms.submitRegistration" />
       </ConfirmableButton>
     </Form>
   );

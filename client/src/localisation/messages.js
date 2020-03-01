@@ -47,8 +47,6 @@ export default {
     'course.gradeQuestion': 'What are your goals for the project?',
     'course.dataCheckbox':
       'I agree to disclose my information with the other students in my future group.',
-    'course.submitRegistration': 'Register On The Course',
-    'course.confirmRegistration': 'Confirm Registration',
     'course.delete': 'Delete course',
     'course.userHasRegistered': 'Registered to course!',
 
@@ -56,6 +54,10 @@ export default {
     'studentInfo.fullname': 'Name: {fullname}',
     'studentInfo.studentNo': 'Student number: {studentNo}',
     'studentInfo.email': 'Email: {email}',
-    'studentInfo.course': 'Enrolled courses'
-  }
+    'studentInfo.course': 'Enrolled courses',
+
+    'forms.errorAnswerAll': 'Please answer all questions!',
+    'forms.submitRegistration': 'Register On The Course',
+    'forms.confirmRegistration': 'Confirm Registration',
+  },
 };
