@@ -13,13 +13,13 @@ import { UserResolver } from "./resolvers/UserResolver";
 import { GroupResolver } from "./resolvers/GroupResolver";
 import { RegistrationResolver } from "./resolvers/RegistrationResolver";
 import shibbCharset from "./middleware/shibbolethHeaders";
-import authorization from "./middleware/authorization";
+import authorization, { authChecker } from "./middleware/authorization";
 
 export const app = express();
 const router = promiseRouter();
 const port = 3001;
 
-const main = async () => {
+const main = async (): Promise<void> => {
   try {
     await createConnection();
   } catch (error) {
@@ -28,7 +28,9 @@ const main = async () => {
 
   const schema = await buildSchema({
     resolvers: [CourseResolver, UserResolver, GroupResolver, RegistrationResolver],
+    // FIXME: Shouldn't validation be on..?
     validate: false,
+    authChecker,
   });
 
   // Logging format for morgan.

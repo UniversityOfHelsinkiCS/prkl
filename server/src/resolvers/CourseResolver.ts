@@ -1,37 +1,36 @@
-import { Resolver, Query, Mutation, Arg, Ctx } from "type-graphql";
+import { STAFF } from "./../utils/userRoles";
+import { Resolver, Query, Mutation, Arg, Ctx, Authorized } from "type-graphql";
 import { Course } from "../entities/Course";
 import { CourseInput } from "../inputs/CourseInput";
 
 @Resolver()
 export class CourseResolver {
   @Query(() => [Course])
-  courses() {
-    return Course.find({ relations: ["questions"] });
+  courses(): Promise<Course[]> {
+    return Course.find({ where: { deleted: false }, relations: ["questions"] });
   }
 
   @Query(() => Course)
-  course(@Arg("id") id: string) {
+  course(@Arg("id") id: string): Promise<Course> {
     return Course.findOne({ where: { id } });
   }
 
+  @Authorized(STAFF)
   @Mutation(() => Course)
-  async createCourse(@Ctx() context, @Arg("data") data: CourseInput) {
-    console.log("data:", data);
+  async createCourse(@Ctx() context, @Arg("data") data: CourseInput): Promise<Course> {
     const course = Course.create(data);
     course.teacher = context.user;
-
-    console.log("course:", course);
-
     await course.save();
-
     return course;
   }
 
+  @Authorized(STAFF)
   @Mutation(() => Boolean)
-  async deleteCourse(@Arg("id") id: string) {
+  async deleteCourse(@Arg("id") id: string): Promise<boolean> {
     const course = await Course.findOne({ where: { id } });
     if (!course) throw new Error("Course not found!");
-    await course.remove();
+    course.deleted = true;
+    await course.save();
     return true;
   }
 }

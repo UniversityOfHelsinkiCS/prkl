@@ -36,7 +36,7 @@ export default () => {
             <FormattedMessage id="studentInfo.course" />
           </h3>
           <ul>
-            {user.registrations.map((reg) => (
+            {user.registrations.filter((reg) => !reg.course.deleted).map((reg) => (
               <li key={reg.id}>
                 {reg.course.title}
                 {' '}

@@ -14,8 +14,8 @@ export default () => {
 
   return (
     <Menu className="mainHeader" size="massive" stackable borderless attached>
-      <Menu.Item as={Link} to="/" name="Home" active={activeItem === 'Home'}>
-        PRKL
+      <Menu.Item header as={Link} to="/" name="Home" active={activeItem === 'Home'}>
+        Assembler
       </Menu.Item>
 
       <Menu.Item

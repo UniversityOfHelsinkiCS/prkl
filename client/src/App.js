@@ -5,16 +5,14 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Loader } from 'semantic-ui-react';
 import Header from './components/Header';
 import StudentInfo from './components/StudentInfo';
-
 import CourseForm from './components/courseCreation/CourseForm';
 import Courses from './components/courses/Courses';
 import Course from './components/courses/Course';
-import { ALL_COURSES, CURRENT_USER } from './GqlQueries';
+import { ALL_COURSES } from './GqlQueries';
 import DevBar from './admin/DevBar';
 import roles from './util/user_roles';
 import userService from './services/userService';
 import './App.css';
-import Home from './components/Home';
 
 createStore('coursesStore', []);
 createStore('userStore', {});
@@ -23,11 +21,7 @@ export default () => {
   const [courses, setCourses] = useStore('coursesStore');
   const [user, setUser] = useStore('userStore');
 
-  const {
-    loading: courseLoading,
-    error: courseError,
-    data: courseData,
-  } = useQuery(ALL_COURSES);
+  const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
 
   userService(useQuery, useEffect, setUser);
 
@@ -52,18 +46,16 @@ export default () => {
           ) : (
             <div className="mainContent">
               <Loader />
-              <Route exact path="/" render={() => <Home />} />
               <Route path="/user" render={() => <StudentInfo />} />
               {user.role === roles.ADMIN_ROLE ? (
                 <Route path="/addcourse" render={() => <CourseForm />} />
               ) : null}
-
-              <Route exact path="/courses" render={() => <Courses />} />
               <Route
                 exact
-                path="/courses/:id"
+                path="/course/:id"
                 render={({ match }) => <Course id={match.params.id} />}
               />
+              <Route exact path={['/', '/courses']} component={Courses} />
             </div>
           )}
         </Router>

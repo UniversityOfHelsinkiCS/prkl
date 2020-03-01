@@ -27,6 +27,7 @@ export const CURRENT_USER = gql`
           id
           title
           code
+          deleted
         }
       }
     }

@@ -1,6 +1,7 @@
-import { Resolver, Query, Mutation, Arg, Ctx } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Authorized } from "type-graphql";
 import { Group } from "../entities/Group";
 import { GroupInput } from "../inputs/GroupInput";
+import { STAFF } from "../utils/userRoles";
 
 @Resolver()
 export class GroupResolver {
@@ -13,6 +14,7 @@ export class GroupResolver {
     return Group.find({ relations: ["students"] });
   }
 
+  @Authorized(STAFF)
   @Mutation(() => Group)
   async createGroup(@Arg("data") data: GroupInput) {
     // data.course.id = "d5183504-b0f7-418b-aaa1-dfa2eb17b813";

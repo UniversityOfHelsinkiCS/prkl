@@ -45,9 +45,6 @@ export default {
     'course.multipleChoicePlaceholder': 'Choose',
     'course.freeFormPlaceholder': 'Type your answer',
     'course.gradeQuestion': 'What are your goals for the project?',
-    'course.dataCheckbox':
-      'I agree to disclose my information with the other students in my future group.',
-    'course.confirm': 'Confirm answers and enrol to the course project',
     'course.delete': 'Delete course',
     'course.userHasRegistered': 'Registered to course!',
 
@@ -55,6 +52,12 @@ export default {
     'studentInfo.fullname': 'Name: {fullname}',
     'studentInfo.studentNo': 'Student number: {studentNo}',
     'studentInfo.email': 'Email: {email}',
-    'studentInfo.course': 'Enrolled courses'
-  }
+    'studentInfo.course': 'Enrolled courses',
+
+    'forms.errorAnswerAll': 'Please answer all questions!',
+    'forms.submitRegistration': 'Register On The Course',
+    'forms.confirmRegistration': 'Confirm Registration',
+    'forms.registrationSuccess': 'Great success! Your registration was received.',
+    'forms.toc': 'Assembler may disclose my name and e-mail address to students in my group.',
+  },
 };

@@ -35,7 +35,7 @@ const Courses = () => {
                   raised
                   fluid
                   as={Link}
-                  to={`/courses/${course.id}`}
+                  to={`/course/${course.id}`}
                   header={`${course.code} - ${course.title}`}
                   description={`${intl.formatMessage({
                     id: 'courses.deadline',

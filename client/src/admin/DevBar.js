@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-
 import { Menu } from 'semantic-ui-react';
-
 import { useStore } from 'react-hookstore';
 
 const DevBar = () => {
@@ -54,38 +52,19 @@ const DevBar = () => {
     }
   };
   return (
-    <Menu
-      className="mainHeader"
-      size="massive"
-      stackable
-      borderless
-      attached
-      inverted
-    >
+    <Menu className="mainHeader" size="massive" stackable borderless attached inverted>
       <Menu.Item name="Home" active={activeItem === 'Home'}>
         DEV
       </Menu.Item>
 
-      <Menu.Item
-        name="student"
-        active={activeItem === 'student'}
-        onClick={handleItemClick}
-      >
+      <Menu.Item name="student" active={activeItem === 'student'} onClick={handleItemClick}>
         Student
       </Menu.Item>
 
-      <Menu.Item
-        name="staff"
-        active={activeItem === 'staff'}
-        onClick={handleItemClick}
-      >
+      <Menu.Item name="staff" active={activeItem === 'staff'} onClick={handleItemClick}>
         Staff
       </Menu.Item>
-      <Menu.Item
-        name="admin"
-        active={activeItem === 'admin'}
-        onClick={handleItemClick}
-      >
+      <Menu.Item name="admin" active={activeItem === 'admin'} onClick={handleItemClick}>
         Admin
       </Menu.Item>
     </Menu>

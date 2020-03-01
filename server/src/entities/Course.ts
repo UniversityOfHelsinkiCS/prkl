@@ -47,6 +47,10 @@ export class Course extends BaseEntity {
   @Column()
   minGroupSize: number;
 
+  @Field(() => Boolean)
+  @Column({ default: false })
+  deleted: boolean;
+
   @CreateDateColumn({ type: "timestamptz" })
   createdAt: Date;
 
