@@ -50,6 +50,9 @@ const main = async (): Promise<void> => {
     .use(morgan(logFormat))
     .use(router);
 
+  // Route for keep-alive polling.
+  app.get("/keepalive", (req, res) => res.send("This is the way."));
+
   // Serve frontend.
   app.use(express.static("public"));
   app.get("*", (req, res) => res.sendFile(path.resolve("public", "index.html")));
