@@ -4,31 +4,19 @@
 describe("Test for student user", () => {
   it("Student can see his personal info.", () => {
     cy.visit("localhost:3000/")
-    cy.contains("Student").click()
     cy.contains("Personal info").click()
     cy.url().should("include", "/user")
   })
   it("Student can list all available courses.", () => {
     cy.visit("localhost:3000/")
-    cy.contains("Student").click()
     cy.contains("Courses").click()
     cy.url().should("include", "/courses")
-  })
-  it("Student can go back to the homepage.", () => {
-    cy.visit("localhost:3000/")
-    cy.contains("Personal info").click()
-    cy.contains("PRKL").click()
-    cy.contains(
-      "Please aquaint yourself with the available projects through the courses tab. Happy grouping!"
-    )
   })
 })
 
 describe("Test for admin user", () => {
   it("Fills out course form without questions, posts it, lists courses, removes course it added.", () => {
     cy.visit("localhost:3000/")
-    cy.contains("Student").click()
-    cy.contains("Admin").click()
 
     cy.contains("Add Course").click()
 
@@ -48,7 +36,7 @@ describe("Test for admin user", () => {
     cy.get(":nth-child(4) > .ui > label").click()
 
     cy.get(":nth-child(7) > .ui").click()
-
+    
     cy.contains("Courses").click()
 
     cy.contains("TESTcode").click()
