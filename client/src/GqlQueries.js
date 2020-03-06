@@ -87,27 +87,32 @@ export const DELETE_COURSE = gql`
 `;
 
 export const COURSE_REGISTRATION = gql`
-query courseRegistrations($courseId: String!) {
-  courseRegistrations(courseId: $courseId){
-   id
-   student{
-     firstname
-     lastname
-     studentNo
-   }
-   questionAnswers {
-    question {
-     content
-     order
+  query courseRegistrations($courseId: String!) {
+    courseRegistrations(courseId: $courseId) {
+      id
+      student {
+        firstname
+        lastname
+        studentNo
+      }
+      questionAnswers {
+        question {
+          content
+          order
+          questionType
+          questionChoices {
+            content
+            order
+          }
+        }
+        id
+        content
+        answerChoices {
+          id
+          content
+          order
+        }
+      }
     }
-    id
-    content
-    answerChoices {
-     id
-     content
-     order
-    }
-   }
   }
- }
 `;
