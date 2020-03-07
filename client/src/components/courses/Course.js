@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
 import { useHistory } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { Header, Button, Loader, Table, Icon } from 'semantic-ui-react';
+import { Header, Button, Loader, Icon } from 'semantic-ui-react';
 import { FormattedMessage, FormattedDate } from 'react-intl';
 import roles from '../../util/user_roles';
 import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
 import Registration from '../registration/Registration';
+import CourseRegistration from '../../admin/CourseRegistrations';
 
 export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
@@ -114,40 +115,8 @@ export default ({ id }) => {
         </>
       )}
       <div>
-        {course.questions && registrations && user.role === 3 ? (
-          <div>
-            <h3>Students enrolled to the course:</h3>
-
-            <Table>
-              <Table.Header>
-                <Table.Row>
-                  <Table.HeaderCell>first name</Table.HeaderCell>
-                  <Table.HeaderCell>first name</Table.HeaderCell>
-                  <Table.HeaderCell>student no.</Table.HeaderCell>
-                  {course.questions.map(question => (
-                    <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
-                  ))}
-                </Table.Row>
-              </Table.Header>
-
-              <Table.Body>
-                {registrations.map(reg => (
-                  <Table.Row key={reg.id}>
-                    <Table.Cell>{reg.student.firstname}</Table.Cell>
-                    <Table.Cell>{reg.student.lastname}</Table.Cell>
-                    <Table.Cell>{reg.student.studentNo}</Table.Cell>
-                    {reg.questionAnswers.map(qa => (
-                      <Table.Cell key={qa.id}>
-                        {qa.content
-                          ? `${qa.content} |`
-                          : qa.answerChoices.map(answer => `${answer.content} | `)}
-                      </Table.Cell>
-                    ))}
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table>
-          </div>
+        {course.questions && registrations && user.role === roles.ADMIN_ROLE ? (
+          <CourseRegistration course={course} registrations={registrations} />
         ) : null}
       </div>
     </div>

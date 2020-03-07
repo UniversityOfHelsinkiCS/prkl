@@ -5,16 +5,6 @@ import { STAFF } from "../utils/userRoles";
 
 @Resolver()
 export class RegistrationResolver {
-  @Query(() => [Registration])
-  registrations() {
-    return Registration.find({ relations: ["course"] });
-  }
-
-  @Query(() => Registration)
-  registration(@Arg("id") id: string) {
-    return Registration.findOne({ where: { id }, relations: ["course"] });
-  }
-
   @Authorized(STAFF)
   @Query(() => [Registration])
   courseRegistrations(@Arg("courseId") courseId: string) {
@@ -26,6 +16,7 @@ export class RegistrationResolver {
         "questionAnswers",
         "questionAnswers.question",
         "questionAnswers.answerChoices",
+        "questionAnswers.question.questionChoices",
       ],
     });
   }

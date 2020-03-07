@@ -7,12 +7,12 @@ import { CourseInput } from "../inputs/CourseInput";
 export class CourseResolver {
   @Query(() => [Course])
   courses(): Promise<Course[]> {
-    return Course.find({ where: { deleted: false }, relations: ["questions"] });
+    return Course.find({ where: { deleted: false } });
   }
 
   @Query(() => Course)
   course(@Arg("id") id: string): Promise<Course> {
-    return Course.findOne({ where: { id } });
+    return Course.findOne({ where: { id }, relations: ["questions", "questions.questionChoices"] });
   }
 
   @Authorized(STAFF)

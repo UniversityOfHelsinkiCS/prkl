@@ -40,7 +40,7 @@ export class User extends BaseEntity {
   @OneToMany(
     type => Course,
     course => course.teacher,
-    { cascade: true, eager: true },
+    { cascade: true },
   )
   coursesTeached: Course[];
 

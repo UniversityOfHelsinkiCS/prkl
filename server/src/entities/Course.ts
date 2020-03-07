@@ -68,7 +68,7 @@ export class Course extends BaseEntity {
   @OneToMany(
     type => Question,
     question => question.course,
-    { cascade: ["remove", "insert", "update"], eager: true, onDelete: "CASCADE" },
+    { cascade: ["remove", "insert", "update"], onDelete: "CASCADE" },
   )
   questions: Question[];
 

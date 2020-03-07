@@ -13,6 +13,7 @@ import DevBar from './admin/DevBar';
 import roles from './util/user_roles';
 import userService from './services/userService';
 import './App.css';
+import KeepAlive from './components/misc/KeepAlive';
 
 createStore('coursesStore', []);
 createStore('userStore', {});
@@ -59,6 +60,7 @@ export default () => {
             </div>
           )}
         </Router>
+        <KeepAlive />
       </div>
     </>
   );

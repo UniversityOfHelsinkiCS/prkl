@@ -38,7 +38,6 @@ export class Registration extends BaseEntity {
   @ManyToOne(
     type => Course,
     course => course.registrations,
-    { eager: true },
   )
   @JoinColumn({ name: "courseId" })
   course: Course;
