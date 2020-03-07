@@ -94,6 +94,7 @@ export const COURSE_REGISTRATION = gql`
         firstname
         lastname
         studentNo
+        email
       }
       questionAnswers {
         question {

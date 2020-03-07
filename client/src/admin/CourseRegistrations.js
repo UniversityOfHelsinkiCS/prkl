@@ -51,6 +51,7 @@ const CourseRegistration = ({ course, registrations }) => {
               <Table.HeaderCell>First name</Table.HeaderCell>
               <Table.HeaderCell>Last name</Table.HeaderCell>
               <Table.HeaderCell>Student no.</Table.HeaderCell>
+              <Table.HeaderCell>Email</Table.HeaderCell>
               {course.questions.map(question => (
                 <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
               ))}
@@ -63,6 +64,7 @@ const CourseRegistration = ({ course, registrations }) => {
                 <Table.Cell>{reg.student.firstname}</Table.Cell>
                 <Table.Cell>{reg.student.lastname}</Table.Cell>
                 <Table.Cell>{reg.student.studentNo}</Table.Cell>
+                <Table.Cell>{reg.student.email}</Table.Cell>
                 {reg.questionAnswers.map(qa => (
                   <Table.Cell key={qa.id}>{questionSwitch(qa)}</Table.Cell>
                 ))}
