@@ -1,0 +1,38 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: dev.Dockerfile
+    # depends_on:
+    #   - db
+    volumes:
+      - ./server:/usr/src/app/server
+    ports:
+      - "3001:3001"
+      - "4000:4000"
+    image: prkl-test
+    container_name: prkl-test
+    environment:
+      - NODE_ENV=development
+  db:
+    image: postgres:12
+    container_name: prkl-db-test
+    environment:
+      - PGDATA=/data
+    volumes:
+      - ./pg_data_test:/data
+  e2e:
+    command: >
+      ./node_modules/.bin/cypress run --headless -b chrome
+    depends_on: 
+      - app
+    environment: 
+      - CYPRESS_baseUrl=http://app:3001
+    build:
+      context: ./
+      dockerfile: test.Dockerfile
+    volumes: 
+      - ./results:/results
+      - ./e2e/cypress/integration:/e2e/cypress/integration

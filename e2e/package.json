@@ -1,0 +1,17 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Team PRKL",
+  "license": "MIT",
+  "devDependencies": {
+    "cypress": "^4.1.0"
+  },
+  "directories": {
+		"test": "tests"
+	}
+}

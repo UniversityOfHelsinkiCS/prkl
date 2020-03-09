@@ -25,8 +25,7 @@
     "start": "react-scripts start",
     "build": "rm -rf ../server/public/ && react-scripts build && cp -r build/ ../server/public",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "cypress:open": "cypress open"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -44,7 +43,6 @@
     ]
   },
   "devDependencies": {
-    "cypress": "^4.0.1",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-import": "^2.20.1",

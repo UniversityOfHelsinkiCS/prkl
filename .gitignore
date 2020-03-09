@@ -4,4 +4,4 @@ stats.json
 notes.md
 /server/public
 /client/build
-pg_data
+pg_data*
