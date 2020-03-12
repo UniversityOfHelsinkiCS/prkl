@@ -4,9 +4,12 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import Question from './Question';
 import ConfirmableButton from '../forms/ConfirmableButton';
 import ValidationError from '../forms/ValidationError';
+import TimeForm from '../forms/TimeForm';
+import { Controller } from 'react-hook-form';
 
 export default ({ questions, formControl, onSubmit }) => {
-  const { setValue, triggerValidation, errors, register } = formControl;
+  console.log('formcontrol', formControl);
+  const { setValue, triggerValidation, errors, register, control } = formControl;
   const intl = useIntl();
 
   useEffect(() => {
@@ -19,6 +22,17 @@ export default ({ questions, formControl, onSubmit }) => {
         questions.map(question => (
           <Question key={question.id} question={question} hookForm={formControl} />
         ))}
+
+      {/* <Controller
+        as={TimeForm}
+        name={'controlledTimeForm'}
+        onChange={([event]) => {
+          console.log('registration form asdeded', event);
+          return event;
+        }}
+        control={control}
+      /> */}
+      <TimeForm />
 
       <Form.Checkbox
         label={intl.formatMessage({ id: 'forms.toc' })}

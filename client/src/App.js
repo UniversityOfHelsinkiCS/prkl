@@ -45,20 +45,20 @@ export default () => {
           {courseLoading && user ? (
             <Loader active />
           ) : (
-            <div className="mainContent">
-              <Loader />
-              <Route path="/user" render={() => <StudentInfo />} />
-              {user.role === roles.ADMIN_ROLE ? (
-                <Route path="/addcourse" render={() => <CourseForm />} />
-              ) : null}
-              <Route
-                exact
-                path="/course/:id"
-                render={({ match }) => <Course id={match.params.id} />}
-              />
-              <Route exact path={['/', '/courses']} component={Courses} />
-            </div>
-          )}
+              <div className="mainContent">
+                <Loader />
+                <Route path="/user" render={() => <StudentInfo />} />
+                {user.role === roles.ADMIN_ROLE ? (
+                  <Route path="/addcourse" render={() => <CourseForm />} />
+                ) : null}
+                <Route
+                  exact
+                  path="/course/:id"
+                  render={({ match }) => <Course id={match.params.id} />}
+                />
+                <Route exact path={['/', '/courses']} component={Courses} />
+              </div>
+            )}
         </Router>
         <KeepAlive />
       </div>
