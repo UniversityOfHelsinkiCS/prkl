@@ -8,7 +8,6 @@ import TimeForm from '../forms/TimeForm';
 import { Controller } from 'react-hook-form';
 
 export default ({ questions, formControl, onSubmit }) => {
-  console.log('formcontrol', formControl);
   const { setValue, triggerValidation, errors, register, control } = formControl;
   const intl = useIntl();
 
