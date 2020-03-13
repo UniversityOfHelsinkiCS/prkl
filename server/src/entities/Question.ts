@@ -3,6 +3,7 @@ import { Course } from "./Course";
 import { Answer } from "./Answer";
 import { ObjectType, Field, ID } from "type-graphql";
 import { QuestionChoice } from "./QuestionChoice";
+import { WorkingTimes } from "./WorkingTimes";
 
 @ObjectType()
 @Entity()
@@ -55,4 +56,12 @@ export class Question extends BaseEntity {
     { cascade: true, onDelete: "CASCADE" },
   )
   answers: Answer[];
+
+  @Field(type => [WorkingTimes])
+  @OneToMany(
+    type => WorkingTimes,
+    workingTimes => workingTimes.timeQuestion,
+    { cascade: true, onDelete: "CASCADE" },
+  )
+  workingTimes: WorkingTimes[];
 }
