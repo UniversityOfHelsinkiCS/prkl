@@ -15,6 +15,7 @@ import { ObjectType, Field, ID } from "type-graphql";
 import { User } from "./User";
 import { Course } from "./Course";
 import { Answer } from "./Answer";
+import { WorkingTimes } from "./WorkingTimes";
 
 @ObjectType()
 @Entity()
@@ -56,4 +57,12 @@ export class Registration extends BaseEntity {
     { cascade: ["remove", "insert", "update"] },
   )
   questionAnswers: Answer[];
+
+  @Field(type => [WorkingTimes])
+  @OneToMany(
+    type => WorkingTimes,
+    workingTimes => workingTimes.registration,
+    { cascade: ["remove", "insert", "update"] },
+  )
+  workingTimes: WorkingTimes[];
 }

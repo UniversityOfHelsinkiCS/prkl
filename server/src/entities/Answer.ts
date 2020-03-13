@@ -36,7 +36,6 @@ export class Answer extends BaseEntity {
   @ManyToOne(
     type => Question,
     question => question.answers,
-    { onDelete: "CASCADE" },
   )
   @JoinColumn({ name: "questionId" })
   question: Question;
@@ -45,7 +44,6 @@ export class Answer extends BaseEntity {
   @ManyToOne(
     type => Registration,
     registration => registration.questionAnswers,
-    { onDelete: "CASCADE" },
   )
   @JoinColumn({ name: "registrationId" })
   registration: Registration;
