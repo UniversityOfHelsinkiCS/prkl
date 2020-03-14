@@ -1,15 +1,6 @@
 version: 2.1
 orbs:
   dockerhub: circleci/docker@0.5.1
-jobs:
-  build:
-    docker:
-      - image: circleci/buildpack-deps:stretch
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          command: docker-compose -f docker-compose-test.yml up --exit-code-from e2e
 workflows:
   build-test-deploy:
     jobs:
@@ -27,10 +18,13 @@ workflows:
           filters:
             branches:
               only: master
-      - tests:
-          extra_build_args: '--build-arg PUBLIC_URL=/prkl/'
-          filters:
-            branches:
-              only: e2e-tests
-          requires:
-            - build
+      - dockerhub/publish:
+        image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
+        tag: 'testing-tests'
+        extra_build_args: '--build-arg PUBLIC_URL=/prkl/'
+        filters:
+          branches:
+            only: e2e-tests
+        after_checkout:
+          - run:
+              command: docker-compose -f docker-compose-test.yml up --exit-code-from e2e
