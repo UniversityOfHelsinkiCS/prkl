@@ -5,8 +5,8 @@ services:
     build:
       context: ./
       dockerfile: dev.Dockerfile
-    # depends_on:
-    #   - db
+    depends_on:
+      - db
     volumes:
       - ./server:/usr/src/app/server
     ports:
@@ -15,21 +15,26 @@ services:
     image: prkl-test
     container_name: prkl-test
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=test
+
   db:
     image: postgres:12
     container_name: prkl-db-test
     environment:
       - PGDATA=/data
+      - POSTGRES_PASSWORD=postgres
     volumes:
       - ./pg_data_test:/data
+
   e2e:
-    command: >
-      ./node_modules/.bin/cypress run --headless -b chrome
+    container_name: prkl-e2e
+    command: dockerize -wait tcp://db:5432 -wait tcp://app:3001 -timeout 60s bash -c "./node_modules/.bin/cypress run --headless -b chrome"
     depends_on: 
       - app
+      - db
     environment: 
       - CYPRESS_baseUrl=http://app:3001
+      - DOCKERIZE_VERSION=v0.6.1
     build:
       context: ./
       dockerfile: test.Dockerfile

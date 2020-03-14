@@ -8,6 +8,7 @@ module.exports = {
   port: 5432,
   database: "postgres",
   username: "postgres",
+  password: "postgres",
   entities: [`${prefix}/entities/*.${ext}`],
   migrationsTableName: "migrations",
   migrations: [`${prefix}/migrations/*.${ext}`],
