@@ -1,6 +1,15 @@
 version: 2.1
 orbs:
   dockerhub: circleci/docker@0.5.1
+jobs:
+  build:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          command: docker-compose -f docker-compose-test.yml up --exit-code-from e2e
 workflows:
   build-test-deploy:
     jobs:
@@ -23,10 +32,5 @@ workflows:
           filters:
             branches:
               only: e2e-tests
-          docker:
-            - image: circleci/buildpack-deps:stretch
-          steps:
-            - checkout
-            - setup_remote_docker
-            - run:
-                command: docker-compose -f docker-compose-test.yml up --exit-code-from e2e
+          requires:
+            - build
