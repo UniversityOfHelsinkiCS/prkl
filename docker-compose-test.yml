@@ -4,7 +4,7 @@ services:
   app:
     build:
       context: ./
-      dockerfile: dev.Dockerfile
+      dockerfile: testApp.Dockerfile
     depends_on:
       - db
     volumes:

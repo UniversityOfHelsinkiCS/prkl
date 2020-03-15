@@ -20,6 +20,9 @@ const router = promiseRouter();
 const port = 3001;
 
 const main = async (): Promise<void> => {
+  console.log("Mitä nyt taas?");
+  console.log("Entered main().");
+  console.log("in main: ", process.env.NODE_ENV);
   try {
     await createConnection();
   } catch (error) {
@@ -57,11 +60,9 @@ const main = async (): Promise<void> => {
   app.use(express.static("public"));
   app.get("*", (req, res) => res.sendFile(path.resolve("public", "index.html")));
 
-  // Don't block ports in testing.
-  if (process.env.NODE_ENV !== "test") {
-    app.listen(port);
-    console.log(`Listening to port ${port}`);
-  }
+  // Start the app.
+  app.listen(port);
+  console.log(`Listening to port ${port}`);
 };
 
-main().catch(error => console.error(error));
+main().catch(error => console.log(error));
