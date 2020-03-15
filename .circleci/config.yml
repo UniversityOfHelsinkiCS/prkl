@@ -21,7 +21,6 @@ workflows:
       - dockerhub/publish:
           image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
           tag: 'testing-tests'
-          extra_build_args: '--build-arg PUBLIC_URL=/prkl/'
           filters:
             branches:
               only: e2e-tests
