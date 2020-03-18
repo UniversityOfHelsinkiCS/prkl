@@ -27,7 +27,7 @@ export class WorkingTimes extends BaseEntity {
   questionId: string;
 
   @Field(() => Boolean)
-  @Column({ nullable: false })
+  @Column({ nullable: false, default: false })
   tentative: boolean;
 
   @Field(type => Registration)
