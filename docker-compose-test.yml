@@ -25,6 +25,8 @@ services:
       - POSTGRES_PASSWORD=postgres
     volumes:
       - ./pg_data_test:/data
+    ports:
+      - 5432:5432
 
   e2e:
     container_name: prkl-e2e

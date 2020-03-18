@@ -32,5 +32,7 @@ RUN npm run build
 
 EXPOSE 3001
 EXPOSE 4000
+EXPOSE 5432
+EXPOSE 5431
 
 CMD npm start

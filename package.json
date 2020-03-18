@@ -1,0 +1,40 @@
+{
+  "name": "assembler",
+  "version": "0.1.0",
+  "description": "Tool for automating division of students into project groups.",
+  "scripts": {
+    "postinstall": "npm run install:all && npm run build-all",
+    "install:client": "cd client && npm ci",
+    "install:server": "cd server && npm ci",
+    "install:all": "npm run install:client && npm run install:server",
+    "build:client": "cd client && npm run build && rm -rf ../server/public/ && cp -r build/ ../server/public",
+    "build:server": "cd server && npm run build",
+    "build-all": "npm run build:client && npm run build:server",
+    "build-all:production": "NODE_ENV=production npm run build-all",
+    "build-all:test": "NODE_ENV=test npm run build-all",
+    "start": "cd server && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UniversityOfHelsinkiCS/prkl.git"
+  },
+  "author": "University of Helsinki",
+  "contributors": [
+    "Joonas Häkkinen",
+    "Marinella Laaksonen",
+    "Markus Andersson",
+    "Kevin Hann",
+    "Tiera Salmi"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/UniversityOfHelsinkiCS/prkl/issues"
+  },
+  "homepage": "https://github.com/UniversityOfHelsinkiCS/prkl#readme",
+  "keywords": [
+    "assembler",
+    "prkl",
+    "projektiryhmäytymistyökalu",
+    "toska"
+  ]
+}
