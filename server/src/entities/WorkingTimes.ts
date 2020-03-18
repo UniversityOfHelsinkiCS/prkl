@@ -26,6 +26,10 @@ export class WorkingTimes extends BaseEntity {
   @Column({ nullable: false })
   questionId: string;
 
+  @Field(() => Boolean)
+  @Column({ nullable: false })
+  tentative: boolean;
+
   @Field(type => Registration)
   @ManyToOne(
     type => Registration,
