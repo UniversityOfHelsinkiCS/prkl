@@ -19,6 +19,8 @@ const makeEmptySheet = () => {
 const TimeForm = ({ onChange }) => {
   const intl = useIntl();
 
+  // const { setValue } = formControl;
+
   const [table, setTable] = useState(makeEmptySheet());
 
   const handleClick = useCallback(e => {
@@ -26,14 +28,18 @@ const TimeForm = ({ onChange }) => {
     const hour = parseInt(e.currentTarget.dataset.hour, 10);
 
     setTable(currentTable => {
-      const toggleHour = (hours, hour) => ({ ...hours, [hour]: !hours[hour] });
+      const toggleHour = (hoursToToggle, hourToToggle) => ({
+        ...hoursToToggle,
+        [hourToToggle]: !hoursToToggle[hourToToggle],
+      });
       const newTable = {
         ...currentTable,
         [day]: toggleHour(currentTable[day], hour),
       };
+      console.log('newTable:', newTable);
       //TODO: give the times a questionType, so that
       //it is possible to submit the form without it breaking
-      // onChange(newTable);
+      onChange(newTable);
       return newTable;
     });
   }, []);
@@ -63,7 +69,7 @@ const TimeForm = ({ onChange }) => {
                 data-hour={hour}
                 onClick={handleClick}
               >
-                {hour} - {hour + 1}
+                {hour} -{hour + 1}
               </Table.Cell>
             ))}
           </Table.Row>

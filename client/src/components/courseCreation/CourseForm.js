@@ -28,19 +28,25 @@ const CourseForm = () => {
   const yyyy = today.getFullYear();
   const todayParsed = `${yyyy}-${mm}-${dd}`;
 
-  const handleSubmit = async () => {
-    const courseObject = {
-      title: courseTitle,
-      description: courseDescription,
-      code: courseCode,
-      minGroupSize: Number.parseInt(minGroup),
-      maxGroupSize: Number.parseInt(maxGroup),
-      deadline: new Date(deadline),
-      questions,
-    };
-    const variables = { data: { ...courseObject } };
+  const calendarQuestion = {
+    questionType: 'times',
+    content: 'times',
+    order: questions.length + 1,
+  };
 
-    if (window.confirm("Confirm course creation?")) {
+  const handleSubmit = async () => {
+    if (window.confirm('Confirm course creation?')) {
+      const courseObject = {
+        title: courseTitle,
+        description: courseDescription,
+        code: courseCode,
+        minGroupSize: Number.parseInt(minGroup),
+        maxGroupSize: Number.parseInt(maxGroup),
+        deadline: new Date(deadline),
+        questions,
+      };
+      courseObject.questions.push(calendarQuestion);
+      const variables = { data: { ...courseObject } };
       try {
         const result = await createCourse({
           variables,
@@ -53,7 +59,7 @@ const CourseForm = () => {
     }
   };
 
-  const handleAddForm = (e) => {
+  const handleAddForm = e => {
     e.preventDefault();
     setQuestions([...questions, { content: '' }]);
   };
@@ -75,7 +81,7 @@ const CourseForm = () => {
             label={intl.formatMessage({
               id: 'courseForm.titleForm',
             })}
-            onChange={(event) => setCourseTitle(event.target.value)}
+            onChange={event => setCourseTitle(event.target.value)}
           />
         </Form.Field>
 
@@ -85,7 +91,7 @@ const CourseForm = () => {
             label={intl.formatMessage({
               id: 'courseForm.courseCodeForm',
             })}
-            onChange={(event) => setCourseCode(event.target.value)}
+            onChange={event => setCourseCode(event.target.value)}
           />
 
           <Form.Input
@@ -95,7 +101,7 @@ const CourseForm = () => {
             label={intl.formatMessage({
               id: 'courseForm.courseDeadlineForm',
             })}
-            onChange={(event) => {
+            onChange={event => {
               setDeadline(event.target.value);
             }}
           />
@@ -107,7 +113,7 @@ const CourseForm = () => {
             label={intl.formatMessage({
               id: 'courseForm.courseDescriptionForm',
             })}
-            onChange={(event) => setCourseDescription(event.target.value)}
+            onChange={event => setCourseDescription(event.target.value)}
           />
         </Form.Field>
 
@@ -120,7 +126,7 @@ const CourseForm = () => {
             label={intl.formatMessage({
               id: 'courseForm.courseMinGroupForm',
             })}
-            onChange={(event) => setMinGroup(event.target.value)}
+            onChange={event => setMinGroup(event.target.value)}
           />
 
           <Form.Input
@@ -130,7 +136,7 @@ const CourseForm = () => {
             label={intl.formatMessage({
               id: 'courseForm.courseMaxGroupForm',
             })}
-            onChange={(event) => setMaxGroup(event.target.value)}
+            onChange={event => setMaxGroup(event.target.value)}
           />
         </Form.Group>
 

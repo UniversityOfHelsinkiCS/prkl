@@ -1,6 +1,8 @@
 import React from 'react';
 import { Segment, Grid, Form } from 'semantic-ui-react';
 import { useIntl } from 'react-intl';
+import { Controller } from 'react-hook-form';
+import TimeForm from '../forms/TimeForm';
 import ValidatedInput from '../forms/ValidatedInput';
 
 const Question = ({ question, hookForm }) => {
@@ -48,10 +50,27 @@ const Question = ({ question, hookForm }) => {
             multiple
           />
         );
+
       default:
         return null;
     }
   };
+
+  if (question.questionType === 'times') {
+    return (
+      <Controller
+        as={TimeForm}
+        name={question.id}
+        onChange={([event]) => {
+          console.log('registration form', event);
+          return event;
+        }}
+        control={hookForm.control}
+      />
+    );
+
+    // return <TimeForm name={question.id} formControl={hookForm} />;
+  }
 
   return (
     <div style={{ paddingTop: 5, paddingBottom: 5 }}>
