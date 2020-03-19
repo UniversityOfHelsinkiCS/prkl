@@ -24,14 +24,14 @@ export default ({ questions, formControl, onSubmit }) => {
 
       {/* <Controller
         as={TimeForm}
-        name={'controlledTimeForm'}
+        name="controlledTimeForm"
         onChange={([event]) => {
-          console.log('registration form asdeded', event);
+          console.log('registration form', event);
           return event;
         }}
         control={control}
       /> */}
-      <TimeForm />
+      {/* <TimeForm /> */}
 
       <Form.Checkbox
         label={intl.formatMessage({ id: 'forms.toc' })}

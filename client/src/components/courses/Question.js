@@ -1,6 +1,7 @@
 import React from 'react';
 import { Segment, Grid, Form } from 'semantic-ui-react';
 import { useIntl } from 'react-intl';
+import TimeForm from '../forms/TimeForm';
 
 const Question = ({ question, index, answers }) => {
   const intl = useIntl();
@@ -25,7 +26,7 @@ const Question = ({ question, index, answers }) => {
             placeholder={intl.formatMessage({
               id: 'course.multipleChoicePlaceholder',
             })}
-            options={question.questionChoices.map((choice) => ({
+            options={question.questionChoices.map(choice => ({
               key: choice.id,
               value: choice.order,
               text: choice.content,
@@ -33,8 +34,7 @@ const Question = ({ question, index, answers }) => {
             onChange={(event, { value }) => {
               answers[index].answer = question.questionChoices[value - 1].id;
             }}
-          >
-          </Form.Dropdown>
+          ></Form.Dropdown>
         );
       case 'multipleChoice':
         return (
@@ -45,18 +45,24 @@ const Question = ({ question, index, answers }) => {
             placeholder={intl.formatMessage({
               id: 'course.multipleChoicePlaceholder',
             })}
-            options={question.questionChoices.map((choice) => ({
+            options={question.questionChoices.map(choice => ({
               key: choice.id,
               value: choice.order,
               text: choice.content,
             }))}
             onChange={(event, { value }) => {
-              answers[index].answer = value.map((v) => question.questionChoices[v - 1].id);
+              answers[index].answer = value.map(v => question.questionChoices[v - 1].id);
             }}
-          >
-          </Form.Dropdown>
+          ></Form.Dropdown>
         );
-      default: return null;
+
+      case 'times':
+        console.log('paaska');
+
+        return <TimeForm />;
+
+      default:
+        return null;
     }
   };
 
@@ -69,9 +75,7 @@ const Question = ({ question, index, answers }) => {
               <b>{question.content}</b>
             </Grid.Column>
             <Grid.Column textAlign="right">
-              <Form.Field>
-                {changeType()}
-              </Form.Field>
+              <Form.Field>{changeType()}</Form.Field>
             </Grid.Column>
           </Grid.Row>
         </Grid>
