@@ -23,11 +23,11 @@ export class GroupResolver {
 
     const groups = data.groups ? data.groups : await formNewGroups(courseId);
 
-    groups.forEach(async g => {
-      const students = await User.findByIds(g.userIds);
-      Group.create({ courseId, students }).save();
-    });
-
-    return Group.find({ where: { courseId: courseId }, relations: ["students"] });
+    return await Promise.all(
+      groups.map(async g => {
+        const students = await User.findByIds(g.userIds);
+        return Group.create({ courseId, students }).save();
+      }),
+    );
   }
 }
