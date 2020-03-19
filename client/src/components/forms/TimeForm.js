@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Table, Tab } from 'semantic-ui-react';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { Table } from 'semantic-ui-react';
+import { useIntl } from 'react-intl';
 
 const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 const hours = [];
-for (let i = 8; i < 22; i++) hours.push(i);
+for (let i = 8; i < 22; i += 1) hours.push(i);
 
 const makeEmptySheet = () => {
   return weekdays.reduce((sheet, day) => {
@@ -69,7 +69,7 @@ const TimeForm = ({ onChange }) => {
                 data-hour={hour}
                 onClick={handleClick}
               >
-                {hour} -{hour + 1}
+                {`${hour} -${hour + 1}`}
               </Table.Cell>
             ))}
           </Table.Row>

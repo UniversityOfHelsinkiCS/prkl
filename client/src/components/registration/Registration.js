@@ -20,7 +20,7 @@ export default ({ courseId, questions }) => {
     const entries = Object.entries(day);
 
     if (!entries[0][1]) {
-      prev = entries[0];
+      [, prev] = entries;
     }
 
     for (let i = 1; i < entries.length; i += 1) {
