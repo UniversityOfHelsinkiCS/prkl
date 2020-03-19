@@ -29,7 +29,7 @@ export class GroupResolver {
   }
 
   @Authorized(STAFF)
-  @Mutation(() => Group)
+  @Mutation(() => [Group])
   async createGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
     const { courseId, groups } = data;
     (await Group.find({ where: { course: { id: courseId } } })).forEach(g => g.remove());
