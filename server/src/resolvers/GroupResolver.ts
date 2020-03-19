@@ -1,33 +1,12 @@
 import { Course } from "./../entities/Course";
 import { GroupListInput } from "./../inputs/GroupListInput";
-import { Resolver, Query, Mutation, Arg, Authorized } from "type-graphql";
+import { Resolver, Mutation, Arg, Authorized } from "type-graphql";
 import { Group } from "../entities/Group";
-import { GroupInput } from "../inputs/GroupInput";
 import { STAFF } from "../utils/userRoles";
 import { User } from "../entities/User";
 
 @Resolver()
 export class GroupResolver {
-  // FIXME: remove or make safe
-  @Query(() => Group)
-  group(@Arg("id") id: string) {
-    return Group.findOne({ where: { id } });
-  }
-  // FIXME: remove or make safe
-  @Query(() => [Group])
-  groups() {
-    return Group.find({ relations: ["students"] });
-  }
-
-  @Authorized(STAFF)
-  @Mutation(() => Group)
-  async createGroup(@Arg("data") data: GroupInput) {
-    const group = Group.create(data);
-    await group.save();
-
-    return group;
-  }
-
   @Authorized(STAFF)
   @Mutation(() => [Group])
   async createGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
