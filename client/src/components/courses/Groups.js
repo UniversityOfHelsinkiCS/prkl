@@ -1,36 +1,42 @@
 import React from 'react';
 import { Table, Header } from 'semantic-ui-react';
+import { FormattedMessage } from 'react-intl';
 
 const Groups = () => {
   // Mock data
   const groups = [
     [
-      { firstname: 'Batman', lastname: 'Batname', studentno: '0123', email: 'batmail' },
-      { firstname: 'Superman', lastname: 'Supername', studentno: '0987', email: 'supermail' },
+      { firstname: 'Bruce', lastname: 'Wayne', studentno: '0123', email: 'batmail' },
+      { firstname: 'Clark', lastname: 'Kent', studentno: '0987', email: 'supermail' },
     ],
     [
-      { firstname: 'Spiderman', lastname: 'Spidername', studentno: '0456', email: 'spidermail' },
-      { firstname: 'Daredevil', lastname: 'Devilname', studentno: '0666', email: 'devilmail' },
+      { firstname: 'Peter', lastname: 'Parker', studentno: '0456', email: 'spidermail' },
+      { firstname: 'Tony', lastname: 'Stark', studentno: '1337', email: 'ironmail' },
     ],
   ];
 
   return (
     <div>
-      <h2>Groups:</h2>
       {groups.map((grop, index) => (
         <div key={index}>
           <p />
           <Header as="h3">
             <div>
-              Group {index + 1}:
+              <FormattedMessage id="group.title" /> {index + 1}:
             </div>
           </Header>
           <Table>
             <Table.Header>
               <Table.Row>
-                <Table.HeaderCell>Name</Table.HeaderCell>
-                <Table.HeaderCell>Student no.</Table.HeaderCell>
-                <Table.HeaderCell>Email</Table.HeaderCell>
+                <Table.HeaderCell>
+                  <FormattedMessage id="group.name" />
+                </Table.HeaderCell>
+                <Table.HeaderCell>
+                  <FormattedMessage id="group.studentNumber" />
+                </Table.HeaderCell>
+                <Table.HeaderCell>
+                  <FormattedMessage id="group.email" />
+                </Table.HeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>
