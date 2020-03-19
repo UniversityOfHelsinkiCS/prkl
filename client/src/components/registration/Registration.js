@@ -13,8 +13,6 @@ export default ({ courseId, questions }) => {
   const [createRegistration] = useMutation(REGISTER_TO_COURSE);
   const [success, setSuccess] = useState(false);
 
-  console.log(new Date(1970, 0, 1, 8, 0));
-
   const parseDay = (day, dayIndex, key) => {
     let prev = null;
     const list = [];
@@ -47,7 +45,6 @@ export default ({ courseId, questions }) => {
         });
       }
     }
-    // console.log(`list number: ${dayIndex}`, list);
 
     return list;
   };
@@ -56,7 +53,6 @@ export default ({ courseId, questions }) => {
     const timeList = [];
     Object.values(week).forEach((day, dayIndex) => {
       const parsedDay = parseDay(day, dayIndex, key);
-      // console.log('parsedDay', parsedDay);
 
       parsedDay.forEach(stamp => {
         timeList.push(stamp);
@@ -105,7 +101,6 @@ export default ({ courseId, questions }) => {
     try {
       // TODO: Add spinner before next line and disable the submit button on click.
 
-      console.log('answer:', answer);
       await createRegistration({ variables: { data: answer } });
       setSuccess(true);
     } catch (err) {
