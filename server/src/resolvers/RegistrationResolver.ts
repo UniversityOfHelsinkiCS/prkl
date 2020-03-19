@@ -17,6 +17,7 @@ export class RegistrationResolver {
         "questionAnswers.question",
         "questionAnswers.answerChoices",
         "questionAnswers.question.questionChoices",
+        "workingTimes",
       ],
     });
   }

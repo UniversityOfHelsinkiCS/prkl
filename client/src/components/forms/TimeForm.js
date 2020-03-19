@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Table } from 'semantic-ui-react';
+import { Table, Icon } from 'semantic-ui-react';
 import { useIntl } from 'react-intl';
 
 const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
@@ -45,11 +45,11 @@ const TimeForm = ({ onChange }) => {
   }, []);
 
   return (
-    <Table celled striped>
+    <Table collapsing celled striped style={{ cursor: 'pointer' }}>
       <Table.Header>
         <Table.Row>
           {weekdays.map(day => (
-            <Table.HeaderCell key={day}>
+            <Table.HeaderCell textAlign="center" key={day}>
               {intl.formatMessage({ id: `timeForm.${day}` })}
             </Table.HeaderCell>
           ))}
@@ -61,15 +61,15 @@ const TimeForm = ({ onChange }) => {
           <Table.Row key={hour}>
             {weekdays.map(day => (
               <Table.Cell
+                style={{ paddingTop: 5, paddingBottom: 5, paddingRight: 15, paddingLeft: 15 }}
                 key={`${day}-${hour}`}
                 textAlign="center"
-                selectable
-                negative={table[day][hour]}
+                bgcolor={table[day][hour] ? '#ff004c' : '#87de54'}
                 data-weekday={day}
                 data-hour={hour}
                 onClick={handleClick}
               >
-                {`${hour} -${hour + 1}`}
+                {`${hour} - ${hour + 1}`} <Icon name={table[day][hour] ? 'times' : 'checkmark'} />
               </Table.Cell>
             ))}
           </Table.Row>
