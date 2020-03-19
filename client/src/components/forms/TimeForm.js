@@ -4,7 +4,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 const hours = [];
-for (let i = 8; i < 20; i++) hours.push(i);
+for (let i = 8; i < 22; i++) hours.push(i);
 
 const makeEmptySheet = () => {
   return weekdays.reduce((sheet, day) => {
@@ -19,9 +19,11 @@ const makeEmptySheet = () => {
 const TimeForm = ({ onChange }) => {
   const intl = useIntl();
 
-  // const { setValue } = formControl;
-
   const [table, setTable] = useState(makeEmptySheet());
+
+  useEffect(() => {
+    onChange(makeEmptySheet());
+  }, []);
 
   const handleClick = useCallback(e => {
     const day = e.currentTarget.dataset.weekday;
@@ -36,9 +38,7 @@ const TimeForm = ({ onChange }) => {
         ...currentTable,
         [day]: toggleHour(currentTable[day], hour),
       };
-      console.log('newTable:', newTable);
-      //TODO: give the times a questionType, so that
-      //it is possible to submit the form without it breaking
+
       onChange(newTable);
       return newTable;
     });
