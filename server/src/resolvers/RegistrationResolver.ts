@@ -13,7 +13,6 @@ export class RegistrationResolver {
       where: { courseId: courseId },
       relations: [
         "student",
-        "student.registrations",
         "questionAnswers",
         "questionAnswers.question",
         "questionAnswers.answerChoices",
@@ -25,9 +24,6 @@ export class RegistrationResolver {
 
   @Mutation(() => Registration)
   async createRegistration(@Ctx() context, @Arg("data") data: RegistrationInput) {
-    data.workingTimes = data.questionAnswers
-      .filter(x => x.workingTimes)
-      .flatMap(x => x.workingTimes.map(workingTime => ({ ...workingTime, questionId: x.questionId })));
     const registration = Registration.create(data);
     registration.student = context.user;
 

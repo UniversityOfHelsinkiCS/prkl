@@ -87,17 +87,9 @@ export default ({ courseId, questions }) => {
           break;
 
         case TIMES:
-<<<<<<< HEAD
           parseWeek(data[key], key).forEach(stamp => {
             answer.workingTimes.push(stamp);
           });
-=======
-          console.log('imes');
-          console.log('mitä imetään?', data[key]);
-          console.log('parsed', parseWeek(data[key]));
-
-          res.workingTimes = parseWeek(data[key]);
->>>>>>> adding working times works from client
           break;
         default:
           throw new Error('Question type not supported!');

@@ -35,6 +35,10 @@ export class Registration extends BaseEntity {
   @Column({ nullable: false })
   courseId: string;
 
+  @Field(() => String)
+  @Column({ nullable: true })
+  studentId: string;
+
   @Field(type => Course)
   @ManyToOne(
     type => Course,
@@ -48,6 +52,7 @@ export class Registration extends BaseEntity {
     type => User,
     user => user.registrations,
   )
+  @JoinColumn({ name: "studentId" })
   student: User;
 
   @Field(type => [Answer])

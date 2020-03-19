@@ -6,6 +6,6 @@ export class GroupListInput {
   @Field()
   courseId: string;
 
-  @Field(type => [GroupInput])
+  @Field(type => [GroupInput], { nullable: true })
   groups: GroupInput[];
 }
