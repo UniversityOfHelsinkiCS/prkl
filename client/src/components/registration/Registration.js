@@ -13,19 +13,11 @@ export default ({ courseId, questions }) => {
   const [createRegistration] = useMutation(REGISTER_TO_COURSE);
   const [success, setSuccess] = useState(false);
 
-  const parseDay = (day, dayIndex) => {
+  console.log(new Date(1970, 0, 1, 8, 0));
+
+  const parseDay = (day, dayIndex, key) => {
     let prev = null;
     const list = [];
-    // console.log('day dayssa:', day);
-
-    // Object.entries(day).forEach(hour => {
-    //   if (hour[1] && prev) {
-    // list.push({ startTime: `${dayIndex}-${prev[0]}`, endTime: `${dayIndex}-${hour[0]}` });
-    //     prev = null;
-    //   } else if (!hour[1]) {
-    //     prev = hour;
-    //   }
-    // });
 
     const entries = Object.entries(day);
 
@@ -35,7 +27,12 @@ export default ({ courseId, questions }) => {
 
     for (let i = 1; i < entries.length; i += 1) {
       if (prev && entries[i][1]) {
-        list.push({ startTime: `${dayIndex}-${prev[0]}`, endTime: `${dayIndex}-${entries[i][0]}` });
+        list.push({
+          questionId: key,
+          tentative: false,
+          startTime: new Date(1970, 0, dayIndex + 5, prev[0], 0),
+          endTime: new Date(1970, 0, dayIndex + 5, entries[i][0], 0),
+        });
         prev = null;
       } else if (!prev && !entries[i][1]) {
         prev = entries[i];
@@ -43,8 +40,10 @@ export default ({ courseId, questions }) => {
 
       if (i === entries.length - 1 && prev) {
         list.push({
-          startTime: `${dayIndex}-${prev[0]}`,
-          endTime: `${dayIndex}-${Number.parseInt(entries[i][0], 10) + 1}`,
+          questionId: key,
+          tentative: false,
+          startTime: new Date(1970, 0, dayIndex + 5, prev[0], 0),
+          endTime: new Date(1970, 0, dayIndex + 5, Number.parseInt(entries[i][0], 10) + 1, 0),
         });
       }
     }
@@ -53,10 +52,10 @@ export default ({ courseId, questions }) => {
     return list;
   };
 
-  const parseWeek = week => {
+  const parseWeek = (week, key) => {
     const timeList = [];
     Object.values(week).forEach((day, dayIndex) => {
-      const parsedDay = parseDay(day, dayIndex);
+      const parsedDay = parseDay(day, dayIndex, key);
       // console.log('parsedDay', parsedDay);
 
       parsedDay.forEach(stamp => {
@@ -66,22 +65,17 @@ export default ({ courseId, questions }) => {
     return timeList;
   };
 
-  console.log('questions:', questions);
   // Format form data for GraphQL and post to backend.
   const onSubmit = async data => {
     // Remove TOC button's value.
     delete data.toc; // eslint-disable-line no-param-reassign
-    console.log('data:', data);
-    console.log('courseId:', courseId);
-
     const answer = { courseId };
 
-    console.log('answer:', answer);
+    answer.workingTimes = [];
 
     answer.questionAnswers = Object.keys(data).map(key => {
       const res = { questionId: key };
       const type = questions.filter(q => q.id === key)[0].questionType;
-      console.log('type:', type);
 
       switch (type) {
         case FREEFORM:
@@ -97,13 +91,10 @@ export default ({ courseId, questions }) => {
           break;
 
         case TIMES:
-          console.log('imes');
-          console.log('mitä imetään?', data[key]);
-          console.log('parsed', parseWeek(data[key]));
-
-          res.answerChoices = parseWeek(data[key]);
+          parseWeek(data[key], key).forEach(stamp => {
+            answer.workingTimes.push(stamp);
+          });
           break;
-
         default:
           throw new Error('Question type not supported!');
       }
@@ -113,6 +104,8 @@ export default ({ courseId, questions }) => {
 
     try {
       // TODO: Add spinner before next line and disable the submit button on click.
+
+      console.log('answer:', answer);
       await createRegistration({ variables: { data: answer } });
       setSuccess(true);
     } catch (err) {

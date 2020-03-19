@@ -52,9 +52,11 @@ const CourseRegistration = ({ course, registrations }) => {
               <Table.HeaderCell>Last name</Table.HeaderCell>
               <Table.HeaderCell>Student no.</Table.HeaderCell>
               <Table.HeaderCell>Email</Table.HeaderCell>
-              {course.questions.map(question => (
-                <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
-              ))}
+              {course.questions.map(question =>
+                question.questionType !== 'times' ? (
+                  <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
+                ) : null
+              )}
             </Table.Row>
           </Table.Header>
 
