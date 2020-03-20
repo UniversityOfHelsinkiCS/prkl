@@ -40,8 +40,8 @@ const CourseForm = () => {
         title: courseTitle,
         description: courseDescription,
         code: courseCode,
-        minGroupSize: Number.parseInt(minGroup),
-        maxGroupSize: Number.parseInt(maxGroup),
+        minGroupSize: Number.parseInt(minGroup, 10),
+        maxGroupSize: Number.parseInt(maxGroup, 10),
         deadline: new Date(deadline),
         questions,
       };
