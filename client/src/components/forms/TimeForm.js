@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Table, Icon } from 'semantic-ui-react';
 import { useIntl } from 'react-intl';
+import timeChoices from '../../util/timeFormChoices';
 
 const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 const hours = [];
@@ -9,7 +10,7 @@ for (let i = 8; i < 22; i += 1) hours.push(i);
 const makeEmptySheet = () => {
   return weekdays.reduce((sheet, day) => {
     sheet[day] = hours.reduce((acc, hour) => {
-      acc[hour] = false;
+      acc[hour] = timeChoices.yes;
       return acc;
     }, {});
     return sheet;
@@ -26,14 +27,52 @@ const TimeForm = ({ onChange }) => {
     onChange(makeEmptySheet());
   }, []);
 
+  const switchChoiceIcon = choice => {
+    switch (choice) {
+      case timeChoices.yes:
+        return 'check';
+      case timeChoices.maybe:
+        return 'question';
+      case timeChoices.no:
+        return 'times';
+      default:
+        throw new Error(`Unexpected switch fallthrough with choice: ${choice}`);
+    }
+  };
+
+  const switchChoiceColor = choice => {
+    switch (choice) {
+      case timeChoices.yes:
+        return '#87de54';
+      case timeChoices.maybe:
+        return 'yellow';
+      case timeChoices.no:
+        return '#ff004c';
+      default:
+        throw new Error(`Unexpected switch fallthrough with choice: ${choice}`);
+    }
+  };
+
   const handleClick = useCallback(e => {
     const day = e.currentTarget.dataset.weekday;
     const hour = parseInt(e.currentTarget.dataset.hour, 10);
 
     setTable(currentTable => {
+      const switchChoice = choice => {
+        switch (choice) {
+          case timeChoices.yes:
+            return timeChoices.maybe;
+          case timeChoices.maybe:
+            return timeChoices.no;
+          case timeChoices.no:
+            return timeChoices.yes;
+          default:
+            throw new Error(`Unexpected switch fallthrough with choice: ${choice}`);
+        }
+      };
       const toggleHour = (hoursToToggle, hourToToggle) => ({
         ...hoursToToggle,
-        [hourToToggle]: !hoursToToggle[hourToToggle],
+        [hourToToggle]: switchChoice(hoursToToggle[hourToToggle]),
       });
       const newTable = {
         ...currentTable,
@@ -80,13 +119,9 @@ const TimeForm = ({ onChange }) => {
                 }}
                 key={`${day}-${hour}`}
                 textAlign="center"
-                bgcolor={table[day][hour] ? '#ff004c' : '#87de54'}
+                bgcolor={switchChoiceColor(table[day][hour])}
                 data-weekday={day}
                 data-hour={hour}
-                // onClick={handleClick}
-                // onFocus={() => {
-                //   console.log('focus');
-                // }}
                 onMouseDown={e => {
                   handleClick(e);
                   setMouseDown(true);
@@ -104,21 +139,9 @@ const TimeForm = ({ onChange }) => {
                   e.stopPropagation();
                   return false;
                 }}
-                // onTouchStart={e => {
-                //   e.preventDefault();
-
-                //   handleClick(e);
-                //   setMouseDown(true);
-                //   console.log('touch down');
-                // }}
-                // onTouchEnd={e => {
-                //   e.preventDefault();
-                //   setMouseDown(false);
-                //   console.log('touch up');
-                // }}
               >
                 {`${hour} - ${hour + 1} `}
-                <Icon name={table[day][hour] ? 'times' : 'checkmark'} />
+                <Icon name={switchChoiceIcon(table[day][hour])} />
               </Table.Cell>
             ))}
           </Table.Row>

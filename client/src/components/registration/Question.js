@@ -63,7 +63,6 @@ const Question = ({ question, hookForm }) => {
         as={TimeForm}
         name={question.id}
         onChange={([event]) => {
-          console.log('registration form', event);
           return event;
         }}
         control={hookForm.control}

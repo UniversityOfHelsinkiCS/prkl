@@ -6,6 +6,7 @@ import { FREEFORM, SINGLE_CHOICE, MULTI_CHOICE, TIMES } from '../../util/questio
 import { REGISTER_TO_COURSE } from '../../GqlQueries';
 import SuccessMessage from '../forms/SuccessMessage';
 import RegistrationForm from './RegistrationForm';
+import timeChoices from '../../util/timeFormChoices';
 
 export default ({ courseId, questions }) => {
   const hookForm = useForm({ mode: 'onChange' });
@@ -14,32 +15,32 @@ export default ({ courseId, questions }) => {
   const [success, setSuccess] = useState(false);
 
   const parseDay = (day, dayIndex, key) => {
-    let prev = null;
+    let prev = [1, timeChoices.no];
     const list = [];
 
     const entries = Object.entries(day);
 
-    if (!entries[0][1]) {
-      [, prev] = entries;
+    if (entries[0][1] !== timeChoices.no) {
+      [prev] = entries;
     }
 
     for (let i = 1; i < entries.length; i += 1) {
-      if (prev && entries[i][1]) {
+      if (prev[1] !== timeChoices.no && entries[i][1] !== prev[1]) {
         list.push({
           questionId: key,
-          tentative: false,
+          tentative: prev[1] === timeChoices.maybe,
           startTime: new Date(1970, 0, dayIndex + 5, prev[0], 0),
           endTime: new Date(1970, 0, dayIndex + 5, entries[i][0], 0),
         });
-        prev = null;
-      } else if (!prev && !entries[i][1]) {
+        prev = entries[i];
+      } else if (prev[1] === timeChoices.no && entries[i][1] !== timeChoices.no) {
         prev = entries[i];
       }
 
-      if (i === entries.length - 1 && prev) {
+      if (i === entries.length - 1 && prev[1] !== timeChoices.no) {
         list.push({
           questionId: key,
-          tentative: false,
+          tentative: prev[1] === timeChoices.maybe,
           startTime: new Date(1970, 0, dayIndex + 5, prev[0], 0),
           endTime: new Date(1970, 0, dayIndex + 5, Number.parseInt(entries[i][0], 10) + 1, 0),
         });
@@ -100,7 +101,6 @@ export default ({ courseId, questions }) => {
 
     try {
       // TODO: Add spinner before next line and disable the submit button on click.
-
       await createRegistration({ variables: { data: answer } });
       setSuccess(true);
     } catch (err) {
