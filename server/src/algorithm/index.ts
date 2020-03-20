@@ -9,7 +9,17 @@ import { GroupInput } from "../inputs/GroupInput";
 // 3. singlevalita, 3 vaihtoehtoa,
 // 4. singlevalita, 4 vaihtoehtoa
 
-export const formGroups = (course: Course, registrations: Registration[]) => {
+const shuffle = (arr: Array<string>): Array<string> => {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * i);
+    const temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+  }
+  return arr;
+};
+
+export const formGroups = (course: Course, registrations: Registration[]): GroupInput[] => {
   const minSize = course.minGroupSize;
 
   let groupSizes = Array(Math.floor(registrations.length / minSize)).fill(minSize);
@@ -18,12 +28,12 @@ export const formGroups = (course: Course, registrations: Registration[]) => {
     groupSizes[i % groupSizes.length]++;
   }
 
+  const shuffledStudents = shuffle(registrations.map(reg => reg.studentId));
   const groups = new Array();
 
   for (let i = 0; i < groupSizes.length; i++) {
-    let group = new GroupInput();
-    let groupRegistrations = registrations.splice(0, groupSizes[i]);
-    group.userIds = groupRegistrations.map(reg => reg.studentId);
+    const group = new GroupInput();
+    group.userIds = shuffledStudents.splice(0, groupSizes[i]);
     groups.push(group);
   }
 
