@@ -25,23 +25,19 @@ export const formGroups = (course: Course, registrations: Registration[]): Group
   const groups = new Array();
   const numberOfGroups = Math.floor(registrations.length / minSize);
 
+  let groupSizes = Array(numberOfGroups).fill(minSize);
+
+  for (let i = 0; i < registrations.length % minSize; i++) {
+    groupSizes[i % groupSizes.length]++;
+  }
+
   //quick fix if there aren't enough registrations to fill one minimum sized group
-  if (numberOfGroups == 0) {
+  if (groupSizes.length == 0) groupSizes.push(registrations.length);
+
+  for (let i = 0; i < groupSizes.length; i++) {
     const group = new GroupInput();
-    group.userIds = shuffledStudents;
+    group.userIds = shuffledStudents.splice(0, groupSizes[i]);
     groups.push(group);
-  } else {
-    let groupSizes = Array(numberOfGroups).fill(minSize);
-
-    for (let i = 0; i < registrations.length % minSize; i++) {
-      groupSizes[i % groupSizes.length]++;
-    }
-
-    for (let i = 0; i < groupSizes.length; i++) {
-      const group = new GroupInput();
-      group.userIds = shuffledStudents.splice(0, groupSizes[i]);
-      groups.push(group);
-    }
   }
 
   return groups;
