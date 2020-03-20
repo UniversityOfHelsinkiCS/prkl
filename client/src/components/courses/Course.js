@@ -79,7 +79,7 @@ export default ({ id }) => {
   };
 
   const handleSeeGroups = () => {
-    setSeeGroups(!seeGroups) 
+    setSeeGroups(!seeGroups);
   };
 
   const userIsRegistered = () => {
@@ -128,7 +128,7 @@ export default ({ id }) => {
             <Button toggle active={seeGroups} onClick={handleSeeGroups}>
               <FormattedMessage id="course.seeGroups" />
             </Button>
-            {seeGroups ? <Groups /> : null}
+            {seeGroups ? <Groups courseId={id} /> : null}
           </div>
         ) : null}
       </div>

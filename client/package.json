@@ -44,7 +44,7 @@
     ]
   },
   "devDependencies": {
-    "cypress": "^4.0.1",
+    "cypress": "^4.2.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-import": "^2.20.1",

@@ -77,6 +77,7 @@ export default {
     'courseRegistration.email': 'Email',
 
     'group.title': 'Group',
+    'group.empty': 'No groups generated',
     'group.name': 'Name',
     'group.studentNumber': 'Student number',
     'group.email': 'Email',

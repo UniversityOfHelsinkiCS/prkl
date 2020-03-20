@@ -1,13 +1,13 @@
 import { Course } from "./../entities/Course";
 import { GroupListInput } from "./../inputs/GroupListInput";
-import { Resolver, Mutation, Arg, Authorized, ID } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Authorized } from "type-graphql";
 import { Group } from "../entities/Group";
 import { STAFF } from "../utils/userRoles";
 import { User } from "../entities/User";
 import { formGroups } from "../algorithm/index";
 import { Registration } from "../entities/Registration";
 
-const formNewGroups = async (courseId: String) => {
+const formNewGroups = async (courseId: string) => {
   const registrations = await Registration.find({ where: { courseId: courseId } });
   const course = await Course.findOne({ where: { id: courseId } });
   return formGroups(course, registrations);
@@ -15,6 +15,14 @@ const formNewGroups = async (courseId: String) => {
 
 @Resolver()
 export class GroupResolver {
+  @Query(() => [Group])
+  courseGroups(@Arg("courseId") courseId: string): Promise<Group[]> {
+    return Group.find({
+      where: { courseId: courseId },
+      relations: ["students"],
+    });
+  }
+
   @Authorized(STAFF)
   @Mutation(() => [Group])
   async createGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
