@@ -20,6 +20,7 @@ const TimeForm = ({ onChange }) => {
   const intl = useIntl();
 
   const [table, setTable] = useState(makeEmptySheet());
+  const [mouseDown, setMouseDown] = useState(false);
 
   useEffect(() => {
     onChange(makeEmptySheet());
@@ -45,7 +46,17 @@ const TimeForm = ({ onChange }) => {
   }, []);
 
   return (
-    <Table collapsing celled striped style={{ cursor: 'pointer' }}>
+    <Table
+      unstackable
+      compact="very"
+      collapsing
+      celled
+      style={{
+        cursor: 'pointer',
+        userSelect: 'none',
+      }}
+      className="no_highlights"
+    >
       <Table.Header>
         <Table.Row>
           {weekdays.map(day => (
@@ -61,15 +72,53 @@ const TimeForm = ({ onChange }) => {
           <Table.Row key={hour}>
             {weekdays.map(day => (
               <Table.Cell
-                style={{ paddingTop: 5, paddingBottom: 5, paddingRight: 15, paddingLeft: 15 }}
+                style={{
+                  paddingTop: 5,
+                  paddingBottom: 5,
+                  paddingRight: 15,
+                  paddingLeft: 15,
+                }}
                 key={`${day}-${hour}`}
                 textAlign="center"
                 bgcolor={table[day][hour] ? '#ff004c' : '#87de54'}
                 data-weekday={day}
                 data-hour={hour}
-                onClick={handleClick}
+                // onClick={handleClick}
+                // onFocus={() => {
+                //   console.log('focus');
+                // }}
+                onMouseDown={e => {
+                  handleClick(e);
+                  setMouseDown(true);
+                }}
+                onMouseUp={() => {
+                  setMouseDown(false);
+                }}
+                onMouseEnter={e => {
+                  if (mouseDown) {
+                    handleClick(e);
+                  }
+                }}
+                onContextMenu={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  return false;
+                }}
+                // onTouchStart={e => {
+                //   e.preventDefault();
+
+                //   handleClick(e);
+                //   setMouseDown(true);
+                //   console.log('touch down');
+                // }}
+                // onTouchEnd={e => {
+                //   e.preventDefault();
+                //   setMouseDown(false);
+                //   console.log('touch up');
+                // }}
               >
-                {`${hour} - ${hour + 1}`} <Icon name={table[day][hour] ? 'times' : 'checkmark'} />
+                {`${hour} - ${hour + 1} `}
+                <Icon name={table[day][hour] ? 'times' : 'checkmark'} />
               </Table.Cell>
             ))}
           </Table.Row>
