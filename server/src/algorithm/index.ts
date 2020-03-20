@@ -21,20 +21,27 @@ const shuffle = (arr: Array<string>): Array<string> => {
 
 export const formGroups = (course: Course, registrations: Registration[]): GroupInput[] => {
   const minSize = course.minGroupSize;
-
-  let groupSizes = Array(Math.floor(registrations.length / minSize)).fill(minSize);
-
-  for (let i = 0; i < registrations.length % minSize; i++) {
-    groupSizes[i % groupSizes.length]++;
-  }
-
   const shuffledStudents = shuffle(registrations.map(reg => reg.studentId));
   const groups = new Array();
+  const numberOfGroups = Math.floor(registrations.length / minSize);
 
-  for (let i = 0; i < groupSizes.length; i++) {
+  //quick fix if there aren't enough registrations to fill one minimum sized group
+  if (numberOfGroups == 0) {
     const group = new GroupInput();
-    group.userIds = shuffledStudents.splice(0, groupSizes[i]);
+    group.userIds = shuffledStudents;
     groups.push(group);
+  } else {
+    let groupSizes = Array(numberOfGroups).fill(minSize);
+
+    for (let i = 0; i < registrations.length % minSize; i++) {
+      groupSizes[i % groupSizes.length]++;
+    }
+
+    for (let i = 0; i < groupSizes.length; i++) {
+      const group = new GroupInput();
+      group.userIds = shuffledStudents.splice(0, groupSizes[i]);
+      groups.push(group);
+    }
   }
 
   return groups;
