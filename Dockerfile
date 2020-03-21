@@ -1,7 +1,7 @@
 FROM node:12.16
 
 # Configure frontend url via --build-arg.
-ARG frontendUrl=/
+ARG PUBLIC_URL=/
 
 # Set timezone to Europe/Helsinki
 RUN echo "Europe/Helsinki" > /etc/timezone
@@ -22,7 +22,7 @@ COPY client client/
 
 # Build frontend.
 WORKDIR /usr/src/app/client
-ENV PUBLIC_URL=$frontendUrl
+ENV PUBLIC_URL=$PUBLIC_URL
 RUN npm run build
 RUN cp -r build/ ../server/public
 
