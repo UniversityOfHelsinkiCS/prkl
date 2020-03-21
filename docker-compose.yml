@@ -12,6 +12,7 @@ services:
     container_name: prkl-dev
     environment:
       - NODE_ENV=development
+    command: npm run start:dev
 
   test-app:
     build: .
@@ -37,6 +38,8 @@ services:
       - POSTGRES_PASSWORD=postgres
     volumes:
       - ./pg_data:/data
+    ports:
+      - 5432:5432
 
   test-db:
     image: postgres:12

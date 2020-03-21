@@ -14,8 +14,10 @@
     "build-all:production": "NODE_ENV=production npm run build-all",
     "build-all:test": "NODE_ENV=test npm run build-all",
     "start": "cd server && npm start",
+    "start:dev": "cd server && npm run start:dev",
     "test": "docker-compose build test-app && docker-compose run tests; docker-compose down",
-    "test:ci": "cd e2e && npm run test"
+    "test:ci": "cd e2e && npm run test",
+    "dev": "docker-compose up db app; exit 0"
   },
   "repository": {
     "type": "git",
