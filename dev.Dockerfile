@@ -1,4 +1,4 @@
-FROM node:12
+FROM node:12.16
 
 # Set timezone to Europe/Helsinki
 RUN echo "Europe/Helsinki" > /etc/timezone
@@ -10,6 +10,5 @@ COPY . .
 WORKDIR /usr/src/app/server
 
 EXPOSE 3001
-EXPOSE 4000
 
 CMD npm run dev

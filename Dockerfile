@@ -1,4 +1,4 @@
-FROM node:12-slim
+FROM node:12.16
 
 # Set timezone to Europe/Helsinki
 RUN echo "Europe/Helsinki" > /etc/timezone

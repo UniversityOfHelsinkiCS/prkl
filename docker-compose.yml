@@ -5,26 +5,52 @@ services:
     build:
       context: ./
       dockerfile: dev.Dockerfile
-    # depends_on:
-    #   - db
     volumes:
       - ./server:/usr/src/app/server
     ports:
       - "3001:3001"
-      - "4000:4000"
-    image: prkl-dev
     container_name: prkl-dev
     environment:
       - NODE_ENV=development
+
+  test-app:
+    build: .
+    ports:
+      - 3001:3001
+    container_name: test-app
+    environment:
+      - NODE_ENV=test
+    depends_on:
+      - test-db
+
   adminer:
     image: adminer
     restart: always
     ports:
       - 3003:8080
+
   db:
     image: postgres:12
-    container_name: prkl_db
+    container_name: prkl-db
     environment:
       - PGDATA=/data
     volumes:
       - ./pg_data:/data
+
+  test-db:
+    image: postgres:12
+    container_name: test-db
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+
+  tests:
+    build: ./e2e/
+    container_name: prkl-test
+    environment:
+      - CYPRESS_BASE_URL=http://test-app:3001
+    depends_on:
+      - test-app
+    volumes:
+      - ./e2e/cypress:/e2e/cypress
