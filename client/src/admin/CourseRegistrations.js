@@ -1,5 +1,6 @@
 import React from 'react';
-import { Table } from 'semantic-ui-react';
+import { Table, Form } from 'semantic-ui-react';
+import { FormattedMessage } from 'react-intl';
 
 const CourseRegistration = ({ course, registrations }) => {
   const mapshit = qa => {
@@ -43,18 +44,30 @@ const CourseRegistration = ({ course, registrations }) => {
   return (
     <>
       <div>
-        <h3>Students enrolled to the course:</h3>
+        <h3>
+          <FormattedMessage id="courseRegistration.title" />
+        </h3>
 
         <Table>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>First name</Table.HeaderCell>
-              <Table.HeaderCell>Last name</Table.HeaderCell>
-              <Table.HeaderCell>Student no.</Table.HeaderCell>
-              <Table.HeaderCell>Email</Table.HeaderCell>
-              {course.questions.map(question => (
-                <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
-              ))}
+              <Table.HeaderCell>
+                <FormattedMessage id="courseRegistration.firstName" />
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                <FormattedMessage id="courseRegistration.lastName" />
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                <FormattedMessage id="courseRegistration.studentNumber" />
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                <FormattedMessage id="courseRegistration.email" />
+              </Table.HeaderCell>
+              {course.questions.map(question =>
+                question.questionType !== 'times' ? (
+                  <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
+                ) : null
+              )}
             </Table.Row>
           </Table.Header>
 

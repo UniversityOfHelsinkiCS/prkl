@@ -117,3 +117,19 @@ export const COURSE_REGISTRATION = gql`
     }
   }
 `;
+
+export const COURSE_GROUPS = gql`
+  query courseGroups($courseId: String!) {
+    courseGroups(courseId: $courseId) {
+      id
+      courseId
+      students {
+        id
+        firstname
+        lastname
+        studentNo
+        email
+      }
+    }
+  }
+`;

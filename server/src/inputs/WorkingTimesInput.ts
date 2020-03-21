@@ -11,6 +11,6 @@ export class WorkingTimesInput {
   @Field()
   endTime: Date;
 
-  @Field()
+  @Field({ nullable: true })
   tentative: boolean;
 }
