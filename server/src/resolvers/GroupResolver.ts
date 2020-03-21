@@ -1,29 +1,25 @@
-import { Resolver, Query, Mutation, Arg, Authorized } from "type-graphql";
+import { Course } from "./../entities/Course";
+import { GroupListInput } from "./../inputs/GroupListInput";
+import { Resolver, Mutation, Arg, Authorized } from "type-graphql";
 import { Group } from "../entities/Group";
-import { GroupInput } from "../inputs/GroupInput";
 import { STAFF } from "../utils/userRoles";
+import { User } from "../entities/User";
 
 @Resolver()
 export class GroupResolver {
-  @Query(() => Group)
-  group(@Arg("id") id: string) {
-    return Group.findOne({ where: { id } });
-  }
-  @Query(() => [Group])
-  groups() {
-    return Group.find({ relations: ["students"] });
-  }
-
   @Authorized(STAFF)
-  @Mutation(() => Group)
-  async createGroup(@Arg("data") data: GroupInput) {
-    // data.course.id = "d5183504-b0f7-418b-aaa1-dfa2eb17b813";
-    console.log("GroupInput:", GroupInput.toString());
-    console.log("data:", data);
-    const group = Group.create(data);
-    console.log("group:", group);
-    await group.save();
+  @Mutation(() => [Group])
+  async createGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
+    const { courseId, groups } = data;
+    (await Group.find({ where: { course: { id: courseId } } })).forEach(g => g.remove());
 
-    return group;
+    const course = await Course.findOne({ id: courseId });
+
+    groups.forEach(async g => {
+      const students = await User.findByIds(g.userIds);
+      Group.create({ course, students }).save();
+    });
+
+    return Group.find({ where: { course: { id: courseId } } });
   }
 }

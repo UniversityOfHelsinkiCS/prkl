@@ -3,4 +3,4 @@ client/node_modules
 server/node_modules
 client/build
 documentation
-pg_data_test
+server/dist

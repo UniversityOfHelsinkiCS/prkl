@@ -8,6 +8,7 @@ import roles from '../../util/user_roles';
 import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
 import Registration from '../registration/Registration';
 import CourseRegistration from '../../admin/CourseRegistrations';
+import Groups from './Groups';
 
 export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
@@ -102,21 +103,25 @@ export default ({ id }) => {
           </Header.Content>
         </Header>
       ) : (
-        <>
-          <Header as="h4" color="red">
-            <FormattedMessage id="course.deadline" />
-            <FormattedDate value={course.deadline} />
-          </Header>
-          <div>{course.description}</div>
-          <h3>
-            <FormattedMessage id="course.questionsPreface" />
-          </h3>
-          <Registration courseId={course.id} questions={course.questions} />
-        </>
-      )}
+          <>
+            <Header as="h4" color="red">
+              <FormattedMessage id="course.deadline" />
+              <FormattedDate value={course.deadline} />
+            </Header>
+            <div>{course.description}</div>
+            <h3>
+              <FormattedMessage id="course.questionsPreface" />
+            </h3>
+            <Registration courseId={course.id} questions={course.questions} />
+          </>
+        )}
       <div>
         {course.questions && registrations && user.role === roles.ADMIN_ROLE ? (
-          <CourseRegistration course={course} registrations={registrations} />
+          <div>
+            <CourseRegistration course={course} registrations={registrations} />
+            <p></p>
+            <Groups />
+          </div>
         ) : null}
       </div>
     </div>

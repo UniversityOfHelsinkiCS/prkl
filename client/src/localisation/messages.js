@@ -59,5 +59,14 @@ export default {
     'forms.confirmRegistration': 'Confirm Registration',
     'forms.registrationSuccess': 'Great success! Your registration was received.',
     'forms.toc': 'Assembler may disclose my name and e-mail address to students in my group.',
+
+    "timeForm.time": "Time",
+    "timeForm.monday": "Monday",
+    "timeForm.tuesday": "Tuesday",
+    "timeForm.wednesday": "Wednesday",
+    "timeForm.thursday": "Thursday",
+    "timeForm.friday": "Friday",
+    "timeForm.saturday": "Saturday",
+    "timeForm.sunday": "Sunday",
   },
 };

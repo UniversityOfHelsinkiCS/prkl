@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTable, BaseEntity } from "typeorm";
+import { ObjectType, Field, ID } from "type-graphql";
 import { Course } from "./Course";
 import { User } from "./User";
-import { ObjectType, Field, ID } from "type-graphql";
 
 @ObjectType()
 @Entity()
