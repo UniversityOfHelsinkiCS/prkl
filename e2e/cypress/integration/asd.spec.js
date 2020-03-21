@@ -3,6 +3,7 @@
 
 describe("Test for student user", () => {
   it("Student can see his personal info.", () => {
+    throw new Error("intentionally failing");
     cy.visit("/")
     cy.contains("Personal info").click()
     cy.url().should("include", "/user")
