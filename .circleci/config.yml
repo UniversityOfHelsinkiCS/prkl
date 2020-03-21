@@ -30,7 +30,7 @@ workflows:
       - dockerhub/publish:
           image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
           tag: 'staging'
-          extra_build_args: '--build-arg PUBLIC_URL=/prkl/'
+          extra_build_args: '--build-arg PUBLIC_URL=/assembler'
           filters:
             branches:
               only: trunk
@@ -38,7 +38,7 @@ workflows:
       - dockerhub/publish:
           image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
           tag: 'production'
-          extra_build_args: '--build-arg PUBLIC_URL=/prkl/'
+          extra_build_args: '--build-arg PUBLIC_URL=/assembler'
           filters:
             branches:
               only: master

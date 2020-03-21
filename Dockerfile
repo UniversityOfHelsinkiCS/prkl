@@ -1,5 +1,8 @@
 FROM node:12.16
 
+# Configure frontend url via --build-arg.
+ARG frontendUrl=/
+
 # Set timezone to Europe/Helsinki
 RUN echo "Europe/Helsinki" > /etc/timezone
 RUN dpkg-reconfigure -f noninteractive tzdata
@@ -7,7 +10,7 @@ RUN dpkg-reconfigure -f noninteractive tzdata
 # Install frontend dependencies
 WORKDIR /usr/src/app/client
 COPY client/package.json client/package-lock.json ./
-RUN npm install --production
+RUN npm ci
 
 # Install backend dependencies
 WORKDIR /usr/src/app/server
@@ -19,7 +22,7 @@ COPY client client/
 
 # Build frontend.
 WORKDIR /usr/src/app/client
-ENV PUBLIC_URL=/assembler
+ENV PUBLIC_URL=$frontendUrl
 RUN npm run build
 RUN cp -r build/ ../server/public
 
@@ -31,6 +34,5 @@ WORKDIR /usr/src/app/server
 RUN npm run build
 
 EXPOSE 3001
-EXPOSE 4000
 
 CMD npm start
