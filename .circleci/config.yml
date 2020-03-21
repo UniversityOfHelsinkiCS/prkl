@@ -1,9 +1,32 @@
 version: 2.1
+
 orbs:
-  dockerhub: circleci/docker@0.5.1
+  dockerhub: circleci/docker@1.0.0
+
+executors:
+  test-exec:
+    machine:
+      image: ubuntu-1604:201903-01
+
+jobs:
+  run-tests:
+    executor: test-exec
+    steps:
+      - checkout
+      - run: npm run install:e2e
+      - run: docker-compose up -d test-app
+      - run: timeout 5m bash -c 'until $(curl --output /dev/null --silent --fail http://localhost:3001); do printf .; sleep 5; done'
+      - run: npm run test:ci
+      - store_artifacts:
+          path: e2e/cypress/videos
+      - store_artifacts:
+          path: e2e/cypress/screenshots
+
 workflows:
   build-test-deploy:
     jobs:
+      - run-tests
+
       - dockerhub/publish:
           image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
           tag: 'staging'
@@ -11,6 +34,7 @@ workflows:
           filters:
             branches:
               only: trunk
+
       - dockerhub/publish:
           image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
           tag: 'production'
@@ -18,12 +42,12 @@ workflows:
           filters:
             branches:
               only: master
+
       - dockerhub/publish:
           image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
           tag: 'testing-tests'
           filters:
             branches:
               only: e2e-tests
-          after_checkout:
-            - run:
-                command: exit docker-compose -f docker-compose-test.yml up --exit-code-from e2e
+          requires:
+            - run-tests

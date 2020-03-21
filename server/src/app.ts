@@ -20,9 +20,6 @@ const router = promiseRouter();
 const port = 3001;
 
 const main = async (): Promise<void> => {
-  console.log("Mitä nyt taas?");
-  console.log("Entered main().");
-  console.log("in main: ", process.env.NODE_ENV);
   try {
     await createConnection();
   } catch (error) {

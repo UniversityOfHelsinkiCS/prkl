@@ -34,6 +34,7 @@ services:
     container_name: prkl-db
     environment:
       - PGDATA=/data
+      - POSTGRES_PASSWORD=postgres
     volumes:
       - ./pg_data:/data
 
