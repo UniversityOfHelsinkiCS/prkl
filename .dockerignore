@@ -4,3 +4,4 @@ server/node_modules
 client/build
 documentation
 server/dist
+server/public
