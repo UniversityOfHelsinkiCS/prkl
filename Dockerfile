@@ -10,7 +10,7 @@ RUN dpkg-reconfigure -f noninteractive tzdata
 # Install frontend dependencies
 WORKDIR /usr/src/app/client
 COPY client/package.json client/package-lock.json ./
-RUN npm ci
+RUN npm install --production
 
 # Install backend dependencies
 WORKDIR /usr/src/app/server
