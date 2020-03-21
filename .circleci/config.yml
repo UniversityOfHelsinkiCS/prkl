@@ -34,6 +34,8 @@ workflows:
           filters:
             branches:
               only: trunk
+          requires:
+            - run-tests
 
       - dockerhub/publish:
           image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
@@ -42,6 +44,8 @@ workflows:
           filters:
             branches:
               only: master
+          requires:
+            - run-tests
 
       - dockerhub/publish:
           image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
