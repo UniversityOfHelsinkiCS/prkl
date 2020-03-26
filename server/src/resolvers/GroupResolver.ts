@@ -29,7 +29,7 @@ export class GroupResolver {
     const { courseId } = data;
     (await Group.find({ where: { courseId: courseId } })).forEach(g => g.remove());
 
-    const groups = data.groups ? data.groups : await formNewGroups(courseId);
+    const groups = data.groups && data.groups.length > 0 ? data.groups : await formNewGroups(courseId);
 
     return await Promise.all(
       groups.map(async g => {
