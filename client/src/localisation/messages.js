@@ -48,6 +48,7 @@ export default {
     'course.delete': 'Delete course',
     'course.userHasRegistered': 'Registered to course!',
     'course.seeGroups': 'Generated groups',
+    'course.generateGroups': 'Generate groups',
 
     'studentInfo.header': 'Student Info',
     'studentInfo.fullname': 'Name: {fullname}',
