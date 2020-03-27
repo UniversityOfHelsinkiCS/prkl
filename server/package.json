@@ -11,7 +11,8 @@
     "start:dev": "NODE_ENV=development nodemon",
     "build": "npx tsc",
     "start": "node dist/app.js",
-    "start:prod": "NODE_ENV=production node dist/app.js"
+    "start:prod": "NODE_ENV=production node dist/app.js",
+    "start:test": "NODE_ENV=test node dist/app.js"
   },
   "author": "",
   "license": "MIT",

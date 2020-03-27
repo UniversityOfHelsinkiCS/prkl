@@ -15,6 +15,7 @@
     "build-all:test": "NODE_ENV=test npm run build-all",
     "start:prod": "cd server && npm start:prod",
     "start:dev": "cd server && npm run start:dev",
+    "start:test": "cd server && npm run start:test",
     "test": "docker-compose build test-app && docker-compose run tests; docker-compose down",
     "test:ci": "cd e2e && npm run test",
     "dev": "docker-compose up db adminer app; exit 0"
