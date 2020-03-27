@@ -2,6 +2,7 @@ import { Resolver, Query, Mutation, Arg, Ctx, Authorized } from "type-graphql";
 import { Registration } from "../entities/Registration";
 import { RegistrationInput } from "../inputs/RegistrationInput";
 import { STAFF } from "../utils/userRoles";
+import { WorkingTimes } from "../entities/WorkingTimes";
 
 @Resolver()
 export class RegistrationResolver {
@@ -12,11 +13,11 @@ export class RegistrationResolver {
       where: { courseId: courseId },
       relations: [
         "student",
-        "student.registrations",
         "questionAnswers",
         "questionAnswers.question",
         "questionAnswers.answerChoices",
         "questionAnswers.question.questionChoices",
+        "workingTimes",
       ],
     });
   }

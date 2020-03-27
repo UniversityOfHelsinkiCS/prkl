@@ -1,8 +1,8 @@
-import { UserRepository } from "./../repositories/UserRepository";
 import { Response, Request, NextFunction } from "express";
-import { User } from "./../entities/User";
 import { getCustomRepository } from "typeorm";
 import { AuthChecker } from "type-graphql";
+import { UserRepository } from "./../repositories/UserRepository";
+import { User } from "./../entities/User";
 
 /**
  * Check that user details match.

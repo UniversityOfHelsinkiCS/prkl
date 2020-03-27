@@ -1,0 +1,14 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cypress run"
+  },
+  "author": "Team PRKL",
+  "license": "MIT",
+  "devDependencies": {
+    "cypress": "^4.1.0"
+  }
+}

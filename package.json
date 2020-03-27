@@ -1,0 +1,46 @@
+{
+  "name": "assembler",
+  "version": "0.1.0",
+  "description": "Tool for automating division of students into project groups.",
+  "scripts": {
+    "postinstall": "npm run install:all && npm run build-all",
+    "install:client": "cd client && npm ci",
+    "install:server": "cd server && npm ci",
+    "install:e2e": "cd e2e && npm ci",
+    "install:all": "npm run install:client && npm run install:server",
+    "build:client": "cd client && npm run build && rm -rf ../server/public/ && cp -r build/ ../server/public",
+    "build:server": "cd server && npm run build",
+    "build-all": "npm run build:client && npm run build:server",
+    "build-all:production": "NODE_ENV=production npm run build-all",
+    "build-all:test": "NODE_ENV=test npm run build-all",
+    "start:prod": "cd server && npm start:prod",
+    "start:dev": "cd server && npm run start:dev",
+    "start:test": "cd server && npm run start:test",
+    "test": "docker-compose build test-app && docker-compose run tests; docker-compose down",
+    "test:ci": "cd e2e && npm run test",
+    "dev": "docker-compose up db adminer app; exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UniversityOfHelsinkiCS/prkl.git"
+  },
+  "author": "University of Helsinki",
+  "contributors": [
+    "Joonas Häkkinen",
+    "Marinella Laaksonen",
+    "Markus Andersson",
+    "Kevin Hann",
+    "Tiera Salmi"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/UniversityOfHelsinkiCS/prkl/issues"
+  },
+  "homepage": "https://github.com/UniversityOfHelsinkiCS/prkl#readme",
+  "keywords": [
+    "assembler",
+    "prkl",
+    "projektiryhmäytymistyökalu",
+    "toska"
+  ]
+}

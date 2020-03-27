@@ -6,6 +6,7 @@
  */
 import { Request } from "express";
 import rc from "rc";
+import { getActiveMockUser } from "../testUtils/switchUser";
 
 const defaultHeaders = {
   uid: "123",
@@ -16,6 +17,7 @@ const defaultHeaders = {
 };
 
 export default (req: Request): void => {
-  const config = rc("mockheaders", defaultHeaders);
-  Object.keys(config).forEach(key => (req.headers[key] = config[key]));
+  const headers = getActiveMockUser() ? getActiveMockUser() : rc("mockheaders", defaultHeaders);
+  console.log("headers", headers);
+  Object.keys(headers).forEach(key => (req.headers[key] = headers[key]));
 };

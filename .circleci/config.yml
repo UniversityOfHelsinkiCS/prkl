@@ -1,20 +1,57 @@
 version: 2.1
+
 orbs:
-  dockerhub: circleci/docker@0.5.1
+  dockerhub: circleci/docker@1.0.0
+
+executors:
+  test-exec:
+    machine:
+      image: ubuntu-1604:201903-01
+
+jobs:
+  run-tests:
+    executor: test-exec
+    steps:
+      - checkout
+      - run: npm run install:e2e
+      - run: docker-compose up -d test-app
+      - run: timeout 5m bash -c 'until $(curl --output /dev/null --silent --fail http://localhost:3001); do printf .; sleep 5; done'
+      - run: npm run test:ci
+      - store_artifacts:
+          path: e2e/cypress/videos
+      - store_artifacts:
+          path: e2e/cypress/screenshots
+
 workflows:
   build-test-deploy:
     jobs:
+      - run-tests
+
       - dockerhub/publish:
           image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
           tag: 'staging'
-          extra_build_args: '--build-arg PUBLIC_URL=/prkl/'
+          extra_build_args: '--build-arg PUBLIC_URL=/assembler'
           filters:
             branches:
               only: trunk
+          requires:
+            - run-tests
+
       - dockerhub/publish:
           image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
           tag: 'production'
-          extra_build_args: '--build-arg PUBLIC_URL=/prkl/'
+          extra_build_args: '--build-arg PUBLIC_URL=/assembler'
           filters:
             branches:
               only: master
+          requires:
+            - run-tests
+
+      - dockerhub/publish:
+          image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
+          tag: 'testing-tests'
+          filters:
+            branches:
+              only: e2e-tests
+          requires:
+            - run-tests

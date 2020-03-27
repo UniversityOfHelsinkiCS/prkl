@@ -15,6 +15,7 @@ import { ObjectType, Field, ID } from "type-graphql";
 import { User } from "./User";
 import { Course } from "./Course";
 import { Answer } from "./Answer";
+import { WorkingTimes } from "./WorkingTimes";
 
 @ObjectType()
 @Entity()
@@ -34,6 +35,10 @@ export class Registration extends BaseEntity {
   @Column({ nullable: false })
   courseId: string;
 
+  @Field(() => String)
+  @Column({ nullable: true })
+  studentId: string;
+
   @Field(type => Course)
   @ManyToOne(
     type => Course,
@@ -47,6 +52,7 @@ export class Registration extends BaseEntity {
     type => User,
     user => user.registrations,
   )
+  @JoinColumn({ name: "studentId" })
   student: User;
 
   @Field(type => [Answer])
@@ -56,4 +62,12 @@ export class Registration extends BaseEntity {
     { cascade: ["remove", "insert", "update"] },
   )
   questionAnswers: Answer[];
+
+  @Field(type => [WorkingTimes])
+  @OneToMany(
+    type => WorkingTimes,
+    workingTimes => workingTimes.registration,
+    { cascade: ["remove", "insert", "update"] },
+  )
+  workingTimes: WorkingTimes[];
 }

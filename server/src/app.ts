@@ -14,6 +14,8 @@ import { GroupResolver } from "./resolvers/GroupResolver";
 import { RegistrationResolver } from "./resolvers/RegistrationResolver";
 import shibbCharset from "./middleware/shibbolethHeaders";
 import authorization, { authChecker } from "./middleware/authorization";
+import seeding from "./testUtils/seeding";
+import { switchUser } from "./testUtils/switchUser";
 
 export const app = express();
 const router = promiseRouter();
@@ -53,15 +55,22 @@ const main = async (): Promise<void> => {
   // Route for keep-alive polling.
   app.get("/keepalive", (req, res) => res.send("This is the way."));
 
+  // Register routes for development and testing utilities.
+  if (process.env.NODE_ENV !== "production") {
+    seeding(router);
+    switchUser(router);
+  }
+
+  // TODO: for debugging, remove this
+  app.get("/env", (req, res) => res.send(`ENV: ${process.env.NODE_ENV}`));
+
   // Serve frontend.
   app.use(express.static("public"));
   app.get("*", (req, res) => res.sendFile(path.resolve("public", "index.html")));
 
-  // Don't block ports in testing.
-  if (process.env.NODE_ENV !== "test") {
-    app.listen(port);
-    console.log(`Listening to port ${port}`);
-  }
+  // Start the app.
+  app.listen(port);
+  console.log(`Listening to port ${port}`);
 };
 
-main().catch(error => console.error(error));
+main().catch(error => console.log(error));

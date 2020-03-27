@@ -11,5 +11,5 @@ export default (useQuery, useEffect, setUser) => {
         setUser(userData.currentUser);
       }
     }
-  }, [userLoading]);
+  }, [userLoading, setUser, userError]);
 };
