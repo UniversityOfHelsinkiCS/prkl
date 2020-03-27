@@ -86,7 +86,11 @@ export default ({ courseId }) => {
   const swapElements = (fromIndex, toIndex, fromTable, toTable) => {
     const newGroups = [...groups];
     const removed = newGroups[fromTable].splice(fromIndex, 1);
+
     newGroups[toTable].splice(toIndex, 0, removed[0]);
+    if (newGroups[fromTable].length === 0) {
+      newGroups.splice(fromTable, 1);
+    }
     setGroups(newGroups);
     handleGroupCreation();
   };
