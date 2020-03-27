@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Header, Loader, Button } from 'semantic-ui-react';
-import { FormattedMessage } from 'react-intl';
-import { useQuery } from '@apollo/react-hooks';
-import { COURSE_GROUPS } from '../../GqlQueries';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { useQuery, useMutation } from '@apollo/react-hooks';
+import { COURSE_GROUPS, GENERATE_GROUPS } from '../../GqlQueries';
 import DraggableRow from './DraggableRow';
 
 export default ({ courseId }) => {
@@ -11,6 +11,9 @@ export default ({ courseId }) => {
   const { loading, error, data } = useQuery(COURSE_GROUPS, {
     variables: { courseId },
   });
+
+  const [generateGroups] = useMutation(GENERATE_GROUPS);
+  const intl = useIntl();
 
   useEffect(() => {
     if (!loading && data !== undefined) {
@@ -64,12 +67,32 @@ export default ({ courseId }) => {
     }
     return null;
   };
+  const handleGroupCreation = () => {
+    const groupObject = [];
+    groups.forEach(group => {
+      if (group.length > 0) {
+        groupObject.push({ userIds: group.map(user => user.id) });
+      }
+    });
+
+    const dataObject = { data: { courseId, groups: groupObject } };
+    try {
+      generateGroups({ variables: dataObject });
+    } catch (generationError) {
+      console.log('error generating groups:', generationError);
+    }
+  };
 
   const swapElements = (fromIndex, toIndex, fromTable, toTable) => {
     const newGroups = [...groups];
     const removed = newGroups[fromTable].splice(fromIndex, 1);
+
     newGroups[toTable].splice(toIndex, 0, removed[0]);
+    if (newGroups[fromTable].length === 0) {
+      newGroups.splice(fromTable, 1);
+    }
     setGroups(newGroups);
+    handleGroupCreation();
   };
 
   if (loading || !groups) {
@@ -133,7 +156,7 @@ export default ({ courseId }) => {
           ))}
         </div>
       )}
-      {addGroupButton()}
+      <div>{addGroupButton()}</div>
     </div>
   );
 };

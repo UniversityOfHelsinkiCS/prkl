@@ -7,6 +7,7 @@ describe("Test for student user", () => {
     cy.contains("Personal info").click()
     cy.url().should("include", "/user")
   })
+  
   it("Student can list all available courses.", () => {
     cy.visit("/")
     cy.contains("Courses").click()

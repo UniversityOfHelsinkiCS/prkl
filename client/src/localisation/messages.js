@@ -90,5 +90,7 @@ export default {
     'groups.loadingError': 'Error loading groups',
     'groups.addGroupButton': 'Add new group',
     'groups.removeGroupButton': 'Remove group',
+    'groups.createGroups': 'Create and save groups',
+    'groups.createConfirm': 'Confirm group selection',
   },
 };
