@@ -4,7 +4,6 @@ import { useStore } from 'react-hookstore';
 
 export default () => {
   const [user] = useStore('userStore');
-  console.log('user:', user);
 
   return (
     <div>
@@ -45,6 +44,11 @@ export default () => {
           <h3>
             <FormattedMessage id="studentInfo.group" />
           </h3>
+          {user.groups.length === 0 ? (
+            <div>
+              <FormattedMessage id="studentInfo.noGroups" />
+            </div>
+          ) : null}
           <ul>
             {user.groups
               .filter(group => !group.course.deleted)
