@@ -30,6 +30,21 @@ export const CURRENT_USER = gql`
           deleted
         }
       }
+      groups {
+        id
+        students {
+          id
+          firstname
+          lastname
+          email
+        }
+        course {
+          id
+          title
+          code
+          deleted
+        }
+      }
     }
   }
 `;

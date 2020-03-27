@@ -61,9 +61,6 @@ const main = async (): Promise<void> => {
     switchUser(router);
   }
 
-  // TODO: for debugging, remove this
-  app.get("/env", (req, res) => res.send(`ENV: ${process.env.NODE_ENV}`));
-
   // Serve frontend.
   app.use(express.static("public"));
   app.get("*", (req, res) => res.sendFile(path.resolve("public", "index.html")));

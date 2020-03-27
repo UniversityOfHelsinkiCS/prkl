@@ -15,6 +15,7 @@ const formNewGroups = async (courseId: string) => {
 
 @Resolver()
 export class GroupResolver {
+  @Authorized(STAFF)
   @Query(() => [Group])
   courseGroups(@Arg("courseId") courseId: string): Promise<Group[]> {
     return Group.find({

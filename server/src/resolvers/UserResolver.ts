@@ -1,4 +1,4 @@
-import { Resolver, Query, Arg, Ctx, Authorized } from "type-graphql";
+import { Resolver, Query, Arg, Ctx, Authorized, Args } from "type-graphql";
 import { User } from "../entities/User";
 import { STAFF } from "../utils/userRoles";
 
@@ -8,7 +8,8 @@ export class UserResolver {
   currentUser(@Ctx() context): Promise<User> {
     return User.findOne({
       where: { shibbolethUid: context.user.shibbolethUid },
-      relations: ["registrations", "registrations.course"],
+      relations: ["registrations", "registrations.course", 
+      "groups", "groups.students", "groups.course"],
     });
   }
 }
