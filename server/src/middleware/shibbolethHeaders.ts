@@ -16,7 +16,6 @@ const nameMap = [
 ];
 
 export default (req: Request, res: Response, next: NextFunction): void => {
-  console.log(process.env.NODE_ENV);
   if (process.env.NODE_ENV !== "production") {
     mockHeaders(req);
   }

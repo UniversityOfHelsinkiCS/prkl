@@ -14,6 +14,7 @@ import { GroupResolver } from "./resolvers/GroupResolver";
 import { RegistrationResolver } from "./resolvers/RegistrationResolver";
 import shibbCharset from "./middleware/shibbolethHeaders";
 import authorization, { authChecker } from "./middleware/authorization";
+import seeding from "./testUtils/seeding";
 
 export const app = express();
 const router = promiseRouter();
@@ -52,6 +53,11 @@ const main = async (): Promise<void> => {
 
   // Route for keep-alive polling.
   app.get("/keepalive", (req, res) => res.send("This is the way."));
+
+  // Register routes for development and testing utilities.
+  if (process.env.NODE_ENV !== "production") {
+    seeding(router);
+  }
 
   // Serve frontend.
   app.use(express.static("public"));
