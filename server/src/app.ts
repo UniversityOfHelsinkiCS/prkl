@@ -62,7 +62,7 @@ const main = async (): Promise<void> => {
   }
 
   // TODO: for debugging, remove this
-  app.get("/env", (req, res) => res.send(process.env.NODE_ENV));
+  app.get("/env", (req, res) => res.send(`ENV: ${process.env.NODE_ENV}`));
 
   // Serve frontend.
   app.use(express.static("public"));
