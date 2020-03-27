@@ -135,11 +135,15 @@ export const COURSE_GROUPS = gql`
 `;
 
 export const GENERATE_GROUPS = gql`
-  mutation createGroups($data: GroupListInput!){
-    createGroups(data: $data){
+  mutation createGroups($data: GroupListInput!) {
+    createGroups(data: $data) {
       id
       courseId
-      students{id, firstname, lastname}
+      students {
+        id
+        firstname
+        lastname
+      }
     }
   }
-`
+`;
