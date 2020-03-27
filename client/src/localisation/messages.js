@@ -77,10 +77,13 @@ export default {
     'courseRegistration.studentNumber': 'Student number',
     'courseRegistration.email': 'Email',
 
-    'group.title': 'Group',
-    'group.empty': 'No groups generated',
-    'group.name': 'Name',
-    'group.studentNumber': 'Student number',
-    'group.email': 'Email',
+    'groups.title': 'Group',
+    'groups.empty': 'No groups generated',
+    'groups.name': 'Name',
+    'groups.studentNumber': 'Student number',
+    'groups.email': 'Email',
+    'groups.loadingError': 'Error loading groups',
+    'groups.addGroupButton': 'Add new group',
+    'groups.removeGroupButton': 'Remove group',
   },
 };
