@@ -66,6 +66,7 @@ const Question = ({ question, hookForm }) => {
           return event;
         }}
         control={hookForm.control}
+        description={question.content}
       />
     );
 

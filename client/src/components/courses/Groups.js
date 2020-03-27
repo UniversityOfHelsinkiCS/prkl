@@ -18,15 +18,17 @@ export default ({ courseId }) => {
       data.courseGroups.forEach(e => {
         tempGroup.push(e.students);
       });
-      console.log('data:', data);
-      console.log('tempGroup:', tempGroup);
       setGroups(tempGroup);
     }
   }, [data, loading]);
 
   if (error !== undefined) {
     console.log('error:', error);
-    return <div>Error loading course</div>;
+    return (
+      <div>
+        <FormattedMessage id="groups.loadingError" />
+      </div>
+    );
   }
 
   const addGroup = () => {
@@ -41,11 +43,22 @@ export default ({ courseId }) => {
     setGroups(newGroups);
   };
 
-  const removeButton = index => {
+  const removeGroupButton = index => {
     if (groups.length > 1 && groups[index].length === 0) {
       return (
         <Button style={{ marginLeft: 10 }} color="red" onClick={() => removeGroup(index)}>
-          Remove group
+          <FormattedMessage id="groups.removeGroupButton" />
+        </Button>
+      );
+    }
+    return null;
+  };
+
+  const addGroupButton = () => {
+    if (groups.length !== 0) {
+      return (
+        <Button style={{ marginTop: 15 }} color="green" onClick={() => addGroup()}>
+          <FormattedMessage id="groups.addGroupButton" />
         </Button>
       );
     }
@@ -69,7 +82,7 @@ export default ({ courseId }) => {
         <div>
           <p />
           <Header as="h3" block>
-            <FormattedMessage id="group.empty" />
+            <FormattedMessage id="groups.empty" />
           </Header>
         </div>
       ) : (
@@ -80,22 +93,22 @@ export default ({ courseId }) => {
               <p />
               <Header as="h3">
                 <div>
-                  <FormattedMessage id="group.title" />
+                  <FormattedMessage id="groups.title" />
                   {tableIndex + 1}
-                  {removeButton(tableIndex)}
+                  {removeGroupButton(tableIndex)}
                 </div>
               </Header>
               <Table singleLine fixed>
                 <Table.Header>
                   <DraggableRow action={swapElements} index={0} tableIndex={tableIndex}>
                     <Table.HeaderCell>
-                      <FormattedMessage id="group.name" />
+                      <FormattedMessage id="groups.name" />
                     </Table.HeaderCell>
                     <Table.HeaderCell>
-                      <FormattedMessage id="group.studentNumber" />
+                      <FormattedMessage id="groups.studentNumber" />
                     </Table.HeaderCell>
                     <Table.HeaderCell>
-                      <FormattedMessage id="group.email" />
+                      <FormattedMessage id="groups.email" />
                     </Table.HeaderCell>
                   </DraggableRow>
                 </Table.Header>
@@ -120,9 +133,7 @@ export default ({ courseId }) => {
           ))}
         </div>
       )}
-      <Button style={{ marginTop: 15 }} color="green" onClick={() => addGroup()}>
-        Add group
-      </Button>
+      {addGroupButton()}
     </div>
   );
 };
