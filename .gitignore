@@ -5,4 +5,4 @@ notes.md
 /server/public
 /client/build
 pg_data*
-/e2e
+/e2e/cypress/videos
