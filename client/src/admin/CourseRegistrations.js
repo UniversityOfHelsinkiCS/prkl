@@ -23,8 +23,6 @@ const CourseRegistration = ({ course, registrations }) => {
       }
     }
 
-    console.log('formattedMultipleAnswers:', formattedMultipleAnswers);
-
     return formattedMultipleAnswers;
   };
 
