@@ -46,12 +46,3 @@ workflows:
               only: master
           requires:
             - run-tests
-
-      - dockerhub/publish:
-          image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
-          tag: 'testing-tests'
-          filters:
-            branches:
-              only: e2e-tests
-          requires:
-            - run-tests
