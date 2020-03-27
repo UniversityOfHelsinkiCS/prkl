@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { useStore } from 'react-hookstore';
 import { Table, Header, Loader, Button } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { COURSE_GROUPS, GENERATE_GROUPS } from '../../GqlQueries';
 import DraggableRow from './DraggableRow';
+import user_roles from '../../util/user_roles';
 
 export default ({ courseId }) => {
   const [groups, setGroups] = useState([]);
+  const [user] = useStore('userStore');
 
   const { loading, error, data } = useQuery(COURSE_GROUPS, {
+    skip: user.role !== user_roles.ADMIN_ROLE,
     variables: { courseId },
   });
 
