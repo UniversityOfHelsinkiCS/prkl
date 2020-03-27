@@ -18,6 +18,10 @@ export default {
     'courseForm.courseMaxGroupForm': 'Maximum group size',
     'courseForm.courseMinGroupForm': 'Minimum group size',
     'courseForm.courseDescriptionForm': 'Course description',
+    'courseForm.includeCalendar': 'Include a time table',
+    'courseForm.timeFormLabel': 'Purpose of the time table',
+    'courseForm.timeQuestionDefault':
+      'Working hours that are okay/unsure/impossible for you, respectively',
     'courseForm.confirmButton': 'Confirm',
     'courseForm.addQuestion': 'Add question',
     'courseForm.removeQuestion': 'Remove question',

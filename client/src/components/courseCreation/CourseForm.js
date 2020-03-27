@@ -15,11 +15,17 @@ const CourseForm = () => {
   const [maxGroup, setMaxGroup] = useState();
   const [minGroup, setMinGroup] = useState();
   const [deadline, setDeadline] = useState();
+  const [calendarToggle, setCalendarToggle] = useState(false);
+
   const [courses, setCourses] = useStore('coursesStore');
 
   const [createCourse] = useMutation(CREATE_COURSE);
 
   const intl = useIntl();
+  const [calendarDescription, setCalendarDescription] = useState(
+    `${intl.formatMessage({ id: 'courseForm.timeQuestionDefault' })}`
+  );
+
   const history = useHistory();
 
   const today = new Date();
@@ -35,6 +41,9 @@ const CourseForm = () => {
   };
 
   const handleSubmit = async () => {
+    if (calendarToggle) {
+      calendarQuestion.content = calendarDescription;
+    }
     if (window.confirm('Confirm course creation?')) {
       const courseObject = {
         title: courseTitle,
@@ -43,9 +52,8 @@ const CourseForm = () => {
         minGroupSize: Number.parseInt(minGroup, 10),
         maxGroupSize: Number.parseInt(maxGroup, 10),
         deadline: new Date(deadline),
-        questions,
+        questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
       };
-      courseObject.questions.push(calendarQuestion);
       const variables = { data: { ...courseObject } };
       try {
         const result = await createCourse({
@@ -116,6 +124,18 @@ const CourseForm = () => {
             onChange={event => setCourseDescription(event.target.value)}
           />
         </Form.Field>
+
+        <Form.Checkbox
+          label={intl.formatMessage({ id: 'courseForm.includeCalendar' })}
+          onClick={event => setCalendarToggle(!calendarToggle)}
+        />
+
+        <Form.Input
+          disabled={!calendarToggle}
+          label={intl.formatMessage({ id: 'courseForm.timeFormLabel' })}
+          value={calendarDescription}
+          onChange={event => setCalendarDescription(event.target.value)}
+        />
 
         <Form.Group>
           <Form.Input
