@@ -3,6 +3,9 @@ import { getCustomRepository } from "typeorm";
 import { UserRepository } from "../repositories/UserRepository";
 import { Request, Response } from "express";
 
+/**
+ * Route to seed the database with mock users.
+ */
 export default (router): void => {
   router.get("/seed", async (req: Request, res: Response) => {
     const repo = getCustomRepository(UserRepository);

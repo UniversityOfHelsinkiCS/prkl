@@ -15,6 +15,7 @@ import { RegistrationResolver } from "./resolvers/RegistrationResolver";
 import shibbCharset from "./middleware/shibbolethHeaders";
 import authorization, { authChecker } from "./middleware/authorization";
 import seeding from "./testUtils/seeding";
+import { switchUser } from "./testUtils/switchUser";
 
 export const app = express();
 const router = promiseRouter();
@@ -57,6 +58,7 @@ const main = async (): Promise<void> => {
   // Register routes for development and testing utilities.
   if (process.env.NODE_ENV !== "production") {
     seeding(router);
+    switchUser(router);
   }
 
   // Serve frontend.
