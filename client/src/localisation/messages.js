@@ -59,6 +59,7 @@ export default {
     'studentInfo.studentNo': 'Student number: {studentNo}',
     'studentInfo.email': 'Email: {email}',
     'studentInfo.course': 'Enrolled courses',
+    'studentInfo.group': 'Groups assigned to',
 
     'forms.errorAnswerAll': 'Please answer all questions!',
     'forms.submitRegistration': 'Register On The Course',

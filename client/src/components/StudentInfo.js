@@ -46,6 +46,31 @@ export default () => {
           </ul>
         </div>
       ) : null}
+      {user.groups ? (
+      <div>
+        <h3>
+          <FormattedMessage id="studentInfo.group" />
+        </h3>
+        <ul>
+          {user.groups.filter((group) => !group.course.deleted).map((group) => (
+            <li key={group.id}>
+              {group.course.title}
+              <ul>
+                {group.students.map((student) => (
+                  <li key={student.id}>
+                    {student.firstname}
+                    {' '}
+                    {student.lastname}
+                    {' '}
+                    {student.email}
+                  </li>
+                )) }
+              </ul>
+            </li>
+          )) }
+        </ul>
+      </div>
+    ) : null}
     </div>
   );
 };
