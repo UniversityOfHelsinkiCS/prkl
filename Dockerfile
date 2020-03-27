@@ -33,8 +33,9 @@ RUN cp -r build/ ../server/public
 WORKDIR /usr/src/app
 COPY server server/
 WORKDIR /usr/src/app/server
-RUN echo $NODE_ENV
+ENV NODE_ENV=""
 RUN npm run build
+ENV NODE_ENV=$NODE_ENV
 
 EXPOSE 3001
 
