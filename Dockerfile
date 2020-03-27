@@ -20,7 +20,9 @@ RUN npm ci
 # Install backend dependencies
 WORKDIR /usr/src/app/server
 COPY server/package.json server/package-lock.json ./
+ENV NODE_ENV=""
 RUN npm ci
+ENV NODE_ENV=$NODE_ENV
 
 # Build frontend.
 WORKDIR /usr/src/app
@@ -33,9 +35,7 @@ RUN cp -r build/ ../server/public
 WORKDIR /usr/src/app
 COPY server server/
 WORKDIR /usr/src/app/server
-ENV NODE_ENV=""
 RUN npm run build
-ENV NODE_ENV=$NODE_ENV
 
 EXPOSE 3001
 
