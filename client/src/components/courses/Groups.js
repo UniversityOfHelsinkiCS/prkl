@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Header, Loader, Button } from 'semantic-ui-react';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { COURSE_GROUPS, GENERATE_GROUPS } from '../../GqlQueries';
 import DraggableRow from './DraggableRow';
@@ -13,7 +13,6 @@ export default ({ courseId }) => {
   });
 
   const [generateGroups] = useMutation(GENERATE_GROUPS);
-  const intl = useIntl();
 
   useEffect(() => {
     if (!loading && data !== undefined) {
