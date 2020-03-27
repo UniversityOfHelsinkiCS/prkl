@@ -2,6 +2,11 @@ FROM node:12.16
 
 # Configure frontend url via --build-arg.
 ARG PUBLIC_URL=/
+ENV PUBLIC_URL=$PUBLIC_URL
+
+# Set build time NODE_ENV.
+ARG NODE_ENV=production
+ENV NODE_ENV=$NODE_ENV
 
 # Set timezone to Europe/Helsinki
 RUN echo "Europe/Helsinki" > /etc/timezone
@@ -17,22 +22,20 @@ WORKDIR /usr/src/app/server
 COPY server/package.json server/package-lock.json ./
 RUN npm ci
 
+# Build frontend.
 WORKDIR /usr/src/app
 COPY client client/
-
-# Build frontend.
 WORKDIR /usr/src/app/client
-ENV PUBLIC_URL=$PUBLIC_URL
 RUN npm run build
 RUN cp -r build/ ../server/public
 
+# Build backend
 WORKDIR /usr/src/app
 COPY server server/
-
-# Build backend
 WORKDIR /usr/src/app/server
+RUN echo $NODE_ENV
 RUN npm run build
 
 EXPOSE 3001
 
-CMD npm start
+CMD npm run start
