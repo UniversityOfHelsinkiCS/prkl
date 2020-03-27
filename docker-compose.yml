@@ -28,6 +28,7 @@ services:
       - NODE_ENV=test
     depends_on:
       - test-db
+    command: npm run start:test
 
   adminer:
     image: adminer

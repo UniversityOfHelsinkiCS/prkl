@@ -6,3 +6,4 @@ notes.md
 /client/build
 pg_data*
 /e2e/cypress/videos
+/e2e/cypress/screenshots
