@@ -5,10 +5,16 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Header, Button, Loader, Icon } from 'semantic-ui-react';
 import { FormattedMessage, FormattedDate } from 'react-intl';
 import roles from '../../util/user_roles';
-import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION, GENERATE_GROUPS } from '../../GqlQueries';
+import {
+  COURSE_BY_ID,
+  DELETE_COURSE,
+  COURSE_REGISTRATION,
+  GENERATE_GROUPS,
+} from '../../GqlQueries';
 import Registration from '../registration/Registration';
 import CourseRegistration from '../../admin/CourseRegistrations';
 import Groups from './Groups';
+import user_roles from '../../util/user_roles';
 
 export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
@@ -24,6 +30,7 @@ export default ({ id }) => {
   });
 
   const { loading: regLoading, data: regData } = useQuery(COURSE_REGISTRATION, {
+    skip: user.role !== user_roles.ADMIN_ROLE,
     variables: { courseId: id },
   });
 
@@ -79,7 +86,7 @@ export default ({ id }) => {
   };
 
   const handleGroupCreation = async () => {
-    const variables = { data: { courseId: id } }
+    const variables = { data: { courseId: id } };
     if (window.confirm('Are you sure you want to generate groups?')) {
       try {
         await generateGroups({
@@ -87,10 +94,10 @@ export default ({ id }) => {
         });
         window.location.reload();
       } catch (groupError) {
-        console.log("error:", groupError);
+        console.log('error:', groupError);
       }
     }
-  }
+  };
 
   const userIsRegistered = () => {
     const found = user.registrations.find(r => r.course.id === course.id);
@@ -123,18 +130,18 @@ export default ({ id }) => {
           </Header.Content>
         </Header>
       ) : (
-          <>
-            <Header as="h4" color="red">
-              <FormattedMessage id="course.deadline" />
-              <FormattedDate value={course.deadline} />
-            </Header>
-            <div>{course.description}</div>
-            <h3>
-              <FormattedMessage id="course.questionsPreface" />
-            </h3>
-            <Registration courseId={course.id} questions={course.questions} />
-          </>
-        )}
+        <>
+          <Header as="h4" color="red">
+            <FormattedMessage id="course.deadline" />
+            <FormattedDate value={course.deadline} />
+          </Header>
+          <div>{course.description}</div>
+          <h3>
+            <FormattedMessage id="course.questionsPreface" />
+          </h3>
+          <Registration courseId={course.id} questions={course.questions} />
+        </>
+      )}
       <div>
         {course.questions && registrations && user.role === roles.ADMIN_ROLE ? (
           <div>
