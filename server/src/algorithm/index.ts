@@ -1,7 +1,9 @@
 import createData from "./mockdata";
 import { Registration } from "../entities/Registration";
+import { WorkingTimes } from "../entities/WorkingTimes";
 import { Course } from "../entities/Course";
 import { GroupInput } from "../inputs/GroupInput";
+import { access } from "fs";
 // kutsumalla createData(n) palauttaa n registrationia listana
 // neljä kysymystä:
 // 1. monivalinta, 4 vaihtoehtoa,
@@ -17,6 +19,27 @@ const shuffle = (arr: Array<string>): Array<string> => {
     arr[j] = temp;
   }
   return arr;
+};
+
+//TODO: parametrise timeslots and value
+const convertTimes = (workingTimes: WorkingTimes[]): Array<number> => {
+  const startingHour = 8;
+  const slotsPerDay = 14;
+  const daysInWeek = 5;
+
+  return workingTimes.reduce((acc, times) => {
+    const startIndex = times.startTime.getDay() - 5 * slotsPerDay + times.startTime.getHours() - startingHour;
+    const endIndex = startIndex + times.endTime.getHours() - startingHour - 1;
+    const value = 10;
+
+    return acc.fill(value, startIndex, endIndex);
+  }, new Array(daysInWeek * slotsPerDay).fill(0));
+};
+
+const convertRegistrations = (registrations: Registration[]): object => {
+  return registrations.reduce((acc, reg) => {
+    return (acc[reg.studentId] = { times: convertTimes(reg.workingTimes) });
+  }, {});
 };
 
 export const formGroups = (course: Course, registrations: Registration[]): GroupInput[] => {
