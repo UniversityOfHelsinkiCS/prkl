@@ -11,7 +11,7 @@ const apolloClient = new ApolloClient({
   uri:
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:3001/graphql/'
-      : '/assembler/graphql/',
+      : `${process.env.PUBLIC_URL}/graphql/`,
 });
 
 ReactDOM.render(
