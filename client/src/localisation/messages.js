@@ -53,6 +53,8 @@ export default {
     'course.userHasRegistered': 'Registered to course!',
     'course.seeGroups': 'Generated groups',
     'course.generateGroups': 'Generate groups',
+    'course.switchGroupsView': 'Switch to Groups view',
+    'course.switchCourseView': 'Switch to Course view',
 
     'studentInfo.header': 'Student Info',
     'studentInfo.fullname': 'Name: {fullname}',
