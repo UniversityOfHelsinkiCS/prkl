@@ -2,19 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
 import { useHistory } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { Header, Button, Loader, Icon } from 'semantic-ui-react';
-import { FormattedMessage, FormattedDate } from 'react-intl';
+import { Button, Loader } from 'semantic-ui-react';
+import { FormattedMessage } from 'react-intl';
 import roles from '../../util/user_roles';
 import {
   COURSE_BY_ID,
   DELETE_COURSE,
   COURSE_REGISTRATION,
-  GENERATE_GROUPS,
 } from '../../GqlQueries';
-import Registration from '../registration/Registration';
-import CourseRegistration from '../../admin/CourseRegistrations';
 import GroupsView from './GroupsView';
 import user_roles from '../../util/user_roles';
+import RegistrationList from './RegistrationList';
 
 export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
@@ -87,7 +85,6 @@ export default ({ id }) => {
 
   const handleGroupsView = () => {
     setGroupsView(!groupsView)
-    console.log(groupsView)
   };
 
   const userIsRegistered = () => {
@@ -107,12 +104,17 @@ export default ({ id }) => {
         <div>
           {!groupsView ? (
             <div>
-              <Button onClick={handleGroupsView} color="blue">
-                <FormattedMessage id="course.switchGroupsView" />
-              </Button>
-              <Button onClick={handleDeletion} color="red">
-                <FormattedMessage id="course.delete" />
-              </Button>
+              <div>
+                <Button onClick={handleGroupsView} color="blue">
+                  <FormattedMessage id="course.switchGroupsView" />
+                </Button>
+              </div>
+              <p />
+              <div>
+                <Button onClick={handleDeletion} color="red">
+                  <FormattedMessage id="course.delete" />
+                </Button>
+              </div>
             </div>
           ) : (
               <Button onClick={handleGroupsView} color="blue">
@@ -123,39 +125,8 @@ export default ({ id }) => {
       ) : null}
       <p />
       {groupsView ? (
-        <GroupsView courseId={id} />
-      ) : (
-          <div>
-            <p />
-            {userIsRegistered() ? (
-              <Header as="h2">
-                <Icon name="thumbs up outline" />
-                <Header.Content>
-                  <FormattedMessage id="course.userHasRegistered" />
-                </Header.Content>
-              </Header>
-            ) : (
-                <>
-                  <Header as="h4" color="red">
-                    <FormattedMessage id="course.deadline" />
-                    <FormattedDate value={course.deadline} />
-                  </Header>
-                  <div>{course.description}</div>
-                  <h3>
-                    <FormattedMessage id="course.questionsPreface" />
-                  </h3>
-                  <Registration courseId={course.id} questions={course.questions} />
-                </>
-              )}
-            <div>
-              {course.questions && registrations && user.role === roles.ADMIN_ROLE ? (
-                <div>
-                  <CourseRegistration course={course} registrations={registrations} />
-                </div>
-              ) : null}
-            </div>
-          </div>
-        )
+        <GroupsView courseId={id} registrations={registrations} />
+      ) : <RegistrationList userIsRegistered={userIsRegistered} course={course} registrations={registrations} user={user} />
       }
     </div>
   );

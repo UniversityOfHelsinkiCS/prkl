@@ -94,5 +94,7 @@ export default {
     'groups.removeGroupButton': 'Remove group',
     'groups.createGroups': 'Create and save groups',
     'groups.createConfirm': 'Confirm group selection',
+
+    'groupsView.noRegistrations' : 'No registrations'
   },
 };

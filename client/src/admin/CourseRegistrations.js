@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Form } from 'semantic-ui-react';
+import { Table } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
 
 const CourseRegistration = ({ course, registrations }) => {
