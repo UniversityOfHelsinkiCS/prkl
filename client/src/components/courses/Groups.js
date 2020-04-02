@@ -5,14 +5,14 @@ import { FormattedMessage } from 'react-intl';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { COURSE_GROUPS, GENERATE_GROUPS } from '../../GqlQueries';
 import DraggableRow from './DraggableRow';
-import user_roles from '../../util/user_roles';
+import userRoles from '../../util/user_roles';
 
 export default ({ courseId }) => {
   const [groups, setGroups] = useState([]);
   const [user] = useStore('userStore');
 
   const { loading, error, data } = useQuery(COURSE_GROUPS, {
-    skip: user.role !== user_roles.ADMIN_ROLE,
+    skip: user.role !== userRoles.ADMIN_ROLE,
     variables: { courseId },
   });
 
