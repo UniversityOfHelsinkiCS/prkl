@@ -5,13 +5,8 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Button, Loader } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
 import roles from '../../util/user_roles';
-import {
-  COURSE_BY_ID,
-  DELETE_COURSE,
-  COURSE_REGISTRATION,
-} from '../../GqlQueries';
+import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
 import GroupsView from './GroupsView';
-import user_roles from '../../util/user_roles';
 import RegistrationList from './RegistrationList';
 
 export default ({ id }) => {
@@ -28,7 +23,7 @@ export default ({ id }) => {
   });
 
   const { loading: regLoading, data: regData } = useQuery(COURSE_REGISTRATION, {
-    skip: user.role !== user_roles.ADMIN_ROLE,
+    skip: user.role !== roles.ADMIN_ROLE,
     variables: { courseId: id },
   });
 
@@ -84,7 +79,7 @@ export default ({ id }) => {
   };
 
   const handleGroupsView = () => {
-    setGroupsView(!groupsView)
+    setGroupsView(!groupsView);
   };
 
   const userIsRegistered = () => {
@@ -117,17 +112,23 @@ export default ({ id }) => {
               </div>
             </div>
           ) : (
-              <Button onClick={handleGroupsView} color="blue">
-                <FormattedMessage id="course.switchCourseView" />
-              </Button>
-            )}
+            <Button onClick={handleGroupsView} color="blue">
+              <FormattedMessage id="course.switchCourseView" />
+            </Button>
+          )}
         </div>
       ) : null}
       <p />
       {groupsView ? (
         <GroupsView courseId={id} registrations={registrations} />
-      ) : <RegistrationList userIsRegistered={userIsRegistered} course={course} registrations={registrations} user={user} />
-      }
+      ) : (
+        <RegistrationList
+          userIsRegistered={userIsRegistered}
+          course={course}
+          registrations={registrations}
+          user={user}
+        />
+      )}
     </div>
   );
 };

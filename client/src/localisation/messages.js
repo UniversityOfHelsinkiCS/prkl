@@ -15,8 +15,6 @@ export default {
     'courseForm.titleForm': 'Title',
     'courseForm.courseCodeForm': 'Course code',
     'courseForm.courseDeadlineForm': 'Enrollment deadline',
-    'courseForm.courseMaxGroupForm': 'Maximum group size',
-    'courseForm.courseMinGroupForm': 'Minimum group size',
     'courseForm.courseDescriptionForm': 'Course description',
     'courseForm.includeCalendar': 'Include a time table',
     'courseForm.timeFormLabel': 'Purpose of the time table',
@@ -97,5 +95,7 @@ export default {
 
     'groupsView.noRegistrations': 'No registrations',
     'groupsView.matchingTimes': 'Matching times',
+    'groupsView.maxGroupSize': 'Maximum group size',
+    'groupsView.minGroupSize': 'Minimum group size',
   },
 };

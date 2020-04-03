@@ -162,3 +162,14 @@ export const GENERATE_GROUPS = gql`
     }
   }
 `;
+
+export const EDIT_MIN_MAX_COURSE = gql`
+  mutation editMinMaxCourse($id: String!, $min: Float!, $max: Float!) {
+    editMinMaxCourse(id: $id, min: $min, max: $max) {
+      id
+      title
+      maxGroupSize
+      minGroupSize
+    }
+  }
+`;
