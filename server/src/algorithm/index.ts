@@ -3,7 +3,6 @@ import { Registration } from "../entities/Registration";
 import { WorkingTimes } from "../entities/WorkingTimes";
 import { Course } from "../entities/Course";
 import { GroupInput } from "../inputs/GroupInput";
-import { access } from "fs";
 // kutsumalla createData(n) palauttaa n registrationia listana
 // neljä kysymystä:
 // 1. monivalinta, 4 vaihtoehtoa,
