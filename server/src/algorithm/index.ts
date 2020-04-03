@@ -1,5 +1,6 @@
 import createData from "./mockdata";
 import { Registration } from "../entities/Registration";
+import { WorkingTimes } from "../entities/WorkingTimes";
 import { Course } from "../entities/Course";
 import { GroupInput } from "../inputs/GroupInput";
 // kutsumalla createData(n) palauttaa n registrationia listana
