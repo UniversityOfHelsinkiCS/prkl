@@ -77,9 +77,9 @@ export default () => {
           {users
             .filter(
               u =>
-                u.firstname.toLowerCase().includes(search.toLowerCase()) ||
-                u.lastname.toLowerCase().includes(search.toLowerCase()) ||
-                u.studentNo.toLowerCase().includes(search.toLowerCase())
+                u.firstname?.toLowerCase().includes(search.toLowerCase()) ||
+                u.lastname?.toLowerCase().includes(search.toLowerCase()) ||
+                u.studentNo?.includes(search.toLowerCase())
             )
             .map(u => (
               <Card key={u.id} raised fluid>
