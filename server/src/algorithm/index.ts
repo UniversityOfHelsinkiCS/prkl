@@ -1,5 +1,4 @@
 import { Registration } from "../entities/Registration";
-import { WorkingTimes } from "../entities/WorkingTimes";
 import { Course } from "../entities/Course";
 import { GroupInput } from "../inputs/GroupInput";
 import { AllTimes, MaxAvailableTimes } from "./types";
@@ -23,7 +22,7 @@ const toTimes = (group: Registration[]): AllTimes => {
   group.forEach(mem => {
     const workingTimes = mem.workingTimes.map(time => {
       const start = time.startTime.getHours();
-      const end = time.endTime.getHours();
+      const diff = time.endTime.getHours() - start;
       let day = time.startTime.getDay();
       // Tämä koska maanantai on 1 ja sunnuntai 0
       if (day === 0) {
@@ -32,7 +31,7 @@ const toTimes = (group: Registration[]): AllTimes => {
       day--;
       return {
         start,
-        end,
+        diff,
         day,
         tentative: time.tentative,
       };
@@ -43,24 +42,13 @@ const toTimes = (group: Registration[]): AllTimes => {
 };
 
 const count = (group: AllTimes, len: number): Array<string[]> => {
-  const times: Array<string[]> = [...Array(7 * hours)].map(e => []);
+  const times: Array<string[]> = [...Array(7 * hours)].map(() => []);
 
   Object.entries(group).forEach(mem => {
     mem[1].forEach(time => {
-      const start = time.start;
-      const end = time.end;
-      let day = time.day;
-
-      if (day === 0) {
-        day = 7;
-      }
-      day--;
-
-      const diff = end - start;
-
-      if (diff >= len) {
-        for (let i = 0; i <= diff - len; i++) {
-          times[day * hours + (start - first) + i].push(mem[0]);
+      if (time.diff >= len) {
+        for (let i = 0; i <= time.diff - len; i++) {
+          times[time.day * hours + (time.start - first) + i].push(mem[0]);
         }
       }
     });
@@ -72,11 +60,11 @@ const count = (group: AllTimes, len: number): Array<string[]> => {
 const divide = (
   len: number,
   size: number,
-  randoms: Registration[],
+  simplifiedRegistrations: AllTimes,
   availabletimes: MaxAvailableTimes,
 ): GroupInput[] => {
   const groups = [];
-  const answers = toTimes(randoms);
+  const answers = { ...simplifiedRegistrations };
 
   let times = count(answers, len);
   const randomizedTimeslots = shuffle([...Array(7 * hours).keys()]);
@@ -98,6 +86,9 @@ const divide = (
       i++;
     }
   }
+  // Adds all remaining students to the last group
+  groups.push({ userIds: Object.keys(answers) });
+
   return groups;
 };
 
@@ -107,8 +98,7 @@ const countAvailable = (group: AllTimes): MaxAvailableTimes => {
   Object.entries(group).forEach(mem => {
     let sum = 0;
     mem[1].forEach(time => {
-      const diff = time.end - time.start;
-      sum += diff;
+      sum += time.diff;
     });
     availabletimes[mem[0]] = sum;
   });
@@ -127,12 +117,14 @@ export const formGroups = (course: Course, registrations: Registration[]): Group
     groupSizes[i % groupSizes.length]++;
   }
 
-  const availableTimes: MaxAvailableTimes = countAvailable(toTimes(registrations));
+  const simplifiedRegistrations = toTimes(registrations);
+
+  const availableTimes: MaxAvailableTimes = countAvailable(simplifiedRegistrations);
   let best = [];
 
   let groups: GroupInput[] = [];
-  for (let i = 0; i < 5; i++) {
-    groups = divide(targetTimeSlot, minSize, registrations, availableTimes);
+  for (let i = 0; i < 1000; i++) {
+    groups = divide(targetTimeSlot, minSize, simplifiedRegistrations, availableTimes);
 
     if (groups.length > best.length) {
       best = groups;

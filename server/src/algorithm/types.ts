@@ -1,6 +1,6 @@
 export interface SimplifiedTime {
   start: number;
-  end: number;
+  diff: number;
   day: number;
   tentative: boolean;
 }
