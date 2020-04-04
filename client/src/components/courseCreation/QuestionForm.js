@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Form, Input, Radio, Segment,
-} from 'semantic-ui-react';
+import { Form, Input, Radio, Segment } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 const QuestionForm = ({ questionId, setQuestions, questions }) => {
@@ -14,7 +12,7 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
     order: questionId,
   });
 
-  const handleOptionChange = (index) => (e, { value }) => {
+  const handleOptionChange = index => (e, { value }) => {
     const newOptions = options;
     newOptions[index] = { ...newOptions[index], content: value };
     setOptions(newOptions);
@@ -30,7 +28,7 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
     setQuestions(newQuestions);
   };
 
-  const handleTypeChange = (value) => {
+  const handleTypeChange = value => {
     const questionObject = { ...question, questionType: value };
     if (value === 'freeForm') {
       delete questionObject.questionChoices;
@@ -126,7 +124,7 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
                   },
                   {
                     number: index + 1,
-                  },
+                  }
                 )}
                 key={`question${questionId}optionsForm${index}`}
                 placeholder={intl.formatMessage(
@@ -135,7 +133,7 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
                   },
                   {
                     number: index + 1,
-                  },
+                  }
                 )}
               />
             ))}

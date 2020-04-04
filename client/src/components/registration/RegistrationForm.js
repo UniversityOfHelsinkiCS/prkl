@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Question from './Question';
@@ -6,6 +6,7 @@ import ConfirmableButton from '../forms/ConfirmableButton';
 import ValidationError from '../forms/ValidationError';
 
 export default ({ questions, formControl, onSubmit }) => {
+  const [checkboxValue, setCheckboxValue] = useState('accepted');
   const { setValue, triggerValidation, errors, register } = formControl;
   const intl = useIntl();
 
@@ -24,11 +25,12 @@ export default ({ questions, formControl, onSubmit }) => {
         label={intl.formatMessage({ id: 'forms.toc' })}
         name="toc"
         onChange={(e, { name, value }) => {
+          setCheckboxValue(checkboxValue === 'accepted' ? undefined : 'accepted');
           setValue(name, value);
           triggerValidation(name);
         }}
         error={!!errors.toc}
-        value="accepted"
+        value={checkboxValue}
       />
 
       <ValidationError errors={formControl.errors}>

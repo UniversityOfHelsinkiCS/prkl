@@ -40,6 +40,18 @@ export default () => {
         </Menu.Item>
       ) : null}
 
+      {user && user.role === 3 ? (
+        <Menu.Item
+          as={Link}
+          to="/usermanagement"
+          name="Users"
+          active={activeItem === 'Users'}
+          onClick={handleItemClick}
+        >
+          <FormattedMessage id="header.userManagement" />
+        </Menu.Item>
+      ) : null}
+
       <Menu.Item
         as={Link}
         to="/user"

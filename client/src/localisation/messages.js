@@ -10,13 +10,12 @@ export default {
     'header.logout': 'Logout',
     'header.courses': 'Courses',
     'header.addCourse': 'Add Course',
+    'header.userManagement': 'Manage Users',
 
     'courseForm.pageTitle': 'Create course',
     'courseForm.titleForm': 'Title',
     'courseForm.courseCodeForm': 'Course code',
     'courseForm.courseDeadlineForm': 'Enrollment deadline',
-    'courseForm.courseMaxGroupForm': 'Maximum group size',
-    'courseForm.courseMinGroupForm': 'Minimum group size',
     'courseForm.courseDescriptionForm': 'Course description',
     'courseForm.includeCalendar': 'Include a time table',
     'courseForm.timeFormLabel': 'Purpose of the time table',
@@ -28,6 +27,12 @@ export default {
 
     'courses.searchPlaceholder': 'Search courses',
     'courses.deadline': 'Enrollment deadline',
+
+    'users.empty': 'No users found',
+    'users.admin': 'Admin user',
+    'users.staff': 'Staff',
+    'users.student': 'Student',
+    'users.searchPlaceholder': 'Search users',
 
     'gradeQuestion.title': 'Select an option that best describes you',
     'gradeQuestion.gradeAnswer1': 'I want a good grade',
@@ -53,6 +58,8 @@ export default {
     'course.userHasRegistered': 'Registered to course!',
     'course.seeGroups': 'Generated groups',
     'course.generateGroups': 'Generate groups',
+    'course.switchGroupsView': 'Switch to Groups view',
+    'course.switchCourseView': 'Switch to Course view',
 
     'studentInfo.header': 'Student Info',
     'studentInfo.fullname': 'Name: {fullname}',
@@ -93,5 +100,10 @@ export default {
     'groups.removeGroupButton': 'Remove group',
     'groups.createGroups': 'Create and save groups',
     'groups.createConfirm': 'Confirm group selection',
+
+    'groupsView.noRegistrations': 'No registrations',
+    'groupsView.matchingTimes': 'Matching times',
+    'groupsView.maxGroupSize': 'Maximum group size',
+    'groupsView.minGroupSize': 'Minimum group size',
   },
 };
