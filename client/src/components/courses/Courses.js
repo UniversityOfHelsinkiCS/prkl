@@ -7,7 +7,7 @@ import { useStore } from 'react-hookstore';
 const Courses = () => {
   const [courses] = useStore('coursesStore');
   const [search, setSearch] = useState('');
-  const handleSearchChange = (event) => {
+  const handleSearchChange = event => {
     setSearch(event.target.value);
   };
 
@@ -23,13 +23,14 @@ const Courses = () => {
 
       <Card.Group itemsPerRow={1}>
         <div className="coursesList">
-          {courses
-            && courses
+          {courses &&
+            courses
               .filter(
-                (course) => course.title.toLowerCase().includes(search.toLowerCase())
-                  || course.code.toLowerCase().includes(search.toLowerCase()),
+                course =>
+                  course.title.toLowerCase().includes(search.toLowerCase()) ||
+                  course.code.toLowerCase().includes(search.toLowerCase())
               )
-              .map((course) => (
+              .map(course => (
                 <Card
                   key={course.id}
                   raised

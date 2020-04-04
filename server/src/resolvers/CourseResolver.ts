@@ -33,7 +33,7 @@ export class CourseResolver {
     await course.save();
     return true;
   }
-  
+
   @Authorized(STAFF)
   @Mutation(() => Course)
   async editMinMaxCourse(@Arg("id") id: string, @Arg("min") min: number, @Arg("max") max: number): Promise<Course> {
