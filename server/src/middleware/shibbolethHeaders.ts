@@ -4,7 +4,7 @@
  * better names to fields.
  */
 import { Response, Request, NextFunction } from "express";
-import mockHeaders from "../utils/mockHeaders";
+import { getActiveMockHeaders } from "../testUtils/switchUser";
 
 // Shibboleth header keys mapped to better names.
 const nameMap = [
@@ -16,8 +16,10 @@ const nameMap = [
 ];
 
 export default (req: Request, res: Response, next: NextFunction): void => {
+  // Apply mock headers if not running in production.
   if (process.env.NODE_ENV !== "production") {
-    mockHeaders(req);
+    const headers = getActiveMockHeaders();
+    Object.keys(headers).forEach(key => (req.headers[key] = headers[key]));
   }
 
   nameMap.forEach(({ oldKey, newKey }) => {

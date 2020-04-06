@@ -44,7 +44,6 @@
     "express-promise-router": "^3.0.3",
     "morgan": "^1.9.1",
     "pg": "^7.17.1",
-    "rc": "^1.2.8",
     "reflect-metadata": "^0.1.10",
     "type-graphql": "^0.17.6",
     "typeorm": "0.2.22"
