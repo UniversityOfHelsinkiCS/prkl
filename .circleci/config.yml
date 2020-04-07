@@ -13,6 +13,11 @@ jobs:
     executor: test-exec
     steps:
       - checkout
+      - run:
+        name: "Update Node.js and npm"
+        command: |
+          curl -sSL "https://nodejs.org/dist/v10.16.0/node-v10.16.0-linux-x64.tar.xz" | sudo tar --strip-components=2 -xJ -C /usr/local/bin/ node-v10.16.0-linux-x64/bin/node
+          curl https://www.npmjs.com/install.sh | sudo bash
       - run: npm run install:e2e
       - run: docker-compose up -d test-app
       - run: timeout 5m bash -c 'until $(curl --output /dev/null --silent --fail http://localhost:3001); do printf .; sleep 5; done'
