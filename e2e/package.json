@@ -11,5 +11,8 @@
   "license": "MIT",
   "devDependencies": {
     "cypress": "^4.3.0"
+  },
+  "engines": {
+    "node": ">=10.16"
   }
 }
