@@ -6,7 +6,7 @@
     "postinstall": "npm run install:all && npm run build-all",
     "install:client": "cd client && npm ci",
     "install:server": "cd server && npm ci",
-    "install:e2e": "node -v && cd e2e && npm ci",
+    "install:e2e": "cd e2e && npm ci",
     "install:all": "npm run install:client && npm run install:server",
     "build:client": "cd client && npm run build && rm -rf ../server/public/ && cp -r build/ ../server/public",
     "build:server": "cd server && npm run build",

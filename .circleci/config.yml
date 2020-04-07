@@ -13,8 +13,6 @@ jobs:
     executor: test-exec
     steps:
       - checkout
-      - run: docker-compose up -d test-app
-      - run: timeout 5m bash -c 'until $(curl --output /dev/null --silent --fail http://localhost:3001); do printf .; sleep 5; done'
       - run: npm run test
       - store_artifacts:
           path: e2e/cypress/videos
