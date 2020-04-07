@@ -12,8 +12,6 @@ const CourseForm = () => {
   const [courseDescription, setCourseDescription] = useState('');
   const [courseCode, setCourseCode] = useState('');
   const [questions, setQuestions] = useState([]);
-  const [maxGroup, setMaxGroup] = useState();
-  const [minGroup, setMinGroup] = useState();
   const [deadline, setDeadline] = useState();
   const [calendarToggle, setCalendarToggle] = useState(false);
 
@@ -49,8 +47,8 @@ const CourseForm = () => {
         title: courseTitle,
         description: courseDescription,
         code: courseCode,
-        minGroupSize: Number.parseInt(minGroup, 10),
-        maxGroupSize: Number.parseInt(maxGroup, 10),
+        minGroupSize: 1,
+        maxGroupSize: 1,
         deadline: new Date(deadline),
         questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
       };
@@ -127,7 +125,7 @@ const CourseForm = () => {
 
         <Form.Checkbox
           label={intl.formatMessage({ id: 'courseForm.includeCalendar' })}
-          onClick={event => setCalendarToggle(!calendarToggle)}
+          onClick={() => setCalendarToggle(!calendarToggle)}
         />
 
         <Form.Input
@@ -136,29 +134,6 @@ const CourseForm = () => {
           value={calendarDescription}
           onChange={event => setCalendarDescription(event.target.value)}
         />
-
-        <Form.Group>
-          <Form.Input
-            required
-            type="number"
-            min="1"
-            max={maxGroup}
-            label={intl.formatMessage({
-              id: 'courseForm.courseMinGroupForm',
-            })}
-            onChange={event => setMinGroup(event.target.value)}
-          />
-
-          <Form.Input
-            required
-            type="number"
-            min={minGroup}
-            label={intl.formatMessage({
-              id: 'courseForm.courseMaxGroupForm',
-            })}
-            onChange={event => setMaxGroup(event.target.value)}
-          />
-        </Form.Group>
 
         <Form.Group>
           <Form.Button type="button" onClick={handleAddForm} color="green">

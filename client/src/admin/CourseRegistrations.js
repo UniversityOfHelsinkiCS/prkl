@@ -1,16 +1,14 @@
 import React from 'react';
-import { Table, Form } from 'semantic-ui-react';
+import { Table } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
 
 const CourseRegistration = ({ course, registrations }) => {
   const mapshit = qa => {
-    console.log('qa:', qa);
     const formattedMultipleAnswers = ['|'];
     let currentAnswer = 0;
 
     if (qa.answerChoices.length !== 0) {
       for (let index = 1; index <= qa.question.questionChoices.length; index += 1) {
-        console.log('currentAnswer:', currentAnswer);
         if (
           currentAnswer >= qa.answerChoices.length ||
           index < qa.answerChoices[currentAnswer].order

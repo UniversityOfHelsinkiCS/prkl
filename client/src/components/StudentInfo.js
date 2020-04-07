@@ -4,7 +4,6 @@ import { useStore } from 'react-hookstore';
 
 export default () => {
   const [user] = useStore('userStore');
-  console.log('user:', user);
 
   return (
     <div>

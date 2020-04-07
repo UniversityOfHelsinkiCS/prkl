@@ -2,19 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
 import { useHistory } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { Header, Button, Loader, Icon } from 'semantic-ui-react';
-import { FormattedMessage, FormattedDate } from 'react-intl';
+import { Button, Loader } from 'semantic-ui-react';
+import { FormattedMessage } from 'react-intl';
 import roles from '../../util/user_roles';
-import {
-  COURSE_BY_ID,
-  DELETE_COURSE,
-  COURSE_REGISTRATION,
-  GENERATE_GROUPS,
-} from '../../GqlQueries';
-import Registration from '../registration/Registration';
-import CourseRegistration from '../../admin/CourseRegistrations';
-import Groups from './Groups';
-import user_roles from '../../util/user_roles';
+import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
+import GroupsView from './GroupsView';
+import RegistrationList from './RegistrationList';
 
 export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
@@ -22,7 +15,7 @@ export default ({ id }) => {
   const [course, setCourse] = useState({});
   const [registrations, setRegistrations] = useState([]);
   const [deleteCourse] = useMutation(DELETE_COURSE);
-  const [generateGroups] = useMutation(GENERATE_GROUPS);
+  const [groupsView, setGroupsView] = useState(false);
   const history = useHistory();
 
   const { loading, error, data } = useQuery(COURSE_BY_ID, {
@@ -30,7 +23,7 @@ export default ({ id }) => {
   });
 
   const { loading: regLoading, data: regData } = useQuery(COURSE_REGISTRATION, {
-    skip: user.role !== user_roles.ADMIN_ROLE,
+    skip: user.role !== roles.ADMIN_ROLE,
     variables: { courseId: id },
   });
 
@@ -85,18 +78,8 @@ export default ({ id }) => {
     }
   };
 
-  const handleGroupCreation = async () => {
-    const variables = { data: { courseId: id } };
-    if (window.confirm('Are you sure you want to generate groups?')) {
-      try {
-        await generateGroups({
-          variables,
-        });
-        window.location.reload();
-      } catch (groupError) {
-        console.log('error:', groupError);
-      }
-    }
+  const handleGroupsView = () => {
+    setGroupsView(!groupsView);
   };
 
   const userIsRegistered = () => {
@@ -114,43 +97,38 @@ export default ({ id }) => {
       <h2>{`${course.code} -${course.title}`}</h2>
       {user && user.role === roles.ADMIN_ROLE ? (
         <div>
-          <Button onClick={handleDeletion} color="red">
-            <FormattedMessage id="course.delete" />
-          </Button>
-          <Button onClick={handleGroupCreation} color="blue">
-            <FormattedMessage id="course.generateGroups" />
-          </Button>
+          {!groupsView ? (
+            <div>
+              <div>
+                <Button onClick={handleGroupsView} color="blue">
+                  <FormattedMessage id="course.switchGroupsView" />
+                </Button>
+              </div>
+              <p />
+              <div>
+                <Button onClick={handleDeletion} color="red">
+                  <FormattedMessage id="course.delete" />
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Button onClick={handleGroupsView} color="blue">
+              <FormattedMessage id="course.switchCourseView" />
+            </Button>
+          )}
         </div>
       ) : null}
-      {userIsRegistered() ? (
-        <Header as="h2">
-          <Icon name="thumbs up outline" />
-          <Header.Content>
-            <FormattedMessage id="course.userHasRegistered" />
-          </Header.Content>
-        </Header>
+      <p />
+      {groupsView ? (
+        <GroupsView courseId={id} registrations={registrations} />
       ) : (
-        <>
-          <Header as="h4" color="red">
-            <FormattedMessage id="course.deadline" />
-            <FormattedDate value={course.deadline} />
-          </Header>
-          <div>{course.description}</div>
-          <h3>
-            <FormattedMessage id="course.questionsPreface" />
-          </h3>
-          <Registration courseId={course.id} questions={course.questions} />
-        </>
+        <RegistrationList
+          userIsRegistered={userIsRegistered}
+          course={course}
+          registrations={registrations}
+          user={user}
+        />
       )}
-      <div>
-        {course.questions && registrations && user.role === roles.ADMIN_ROLE ? (
-          <div>
-            <CourseRegistration course={course} registrations={registrations} />
-            <p />
-            <Groups courseId={id} />
-          </div>
-        ) : null}
-      </div>
     </div>
   );
 };

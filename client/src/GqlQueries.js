@@ -12,6 +12,19 @@ export const ALL_COURSES = gql`
   }
 `;
 
+export const ALL_USERS = gql`
+  {
+    users {
+      id
+      firstname
+      lastname
+      studentNo
+      email
+      role
+    }
+  }
+`;
+
 export const CURRENT_USER = gql`
   {
     currentUser {
@@ -83,6 +96,19 @@ export const CREATE_COURSE = gql`
       description
       code
       deadline
+    }
+  }
+`;
+
+export const EDIT_USER_ROLE = gql`
+  mutation editUserRole($id: String!, $role: Float!) {
+    editUserRole(id: $id, role: $role) {
+      id
+      firstname
+      lastname
+      studentNo
+      email
+      role
     }
   }
 `;
@@ -159,6 +185,17 @@ export const GENERATE_GROUPS = gql`
         firstname
         lastname
       }
+    }
+  }
+`;
+
+export const EDIT_MIN_MAX_COURSE = gql`
+  mutation editMinMaxCourse($id: String!, $min: Float!, $max: Float!) {
+    editMinMaxCourse(id: $id, min: $min, max: $max) {
+      id
+      title
+      maxGroupSize
+      minGroupSize
     }
   }
 `;
