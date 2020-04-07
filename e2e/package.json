@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cypress run"
+    "test": "cypress run",
+    "test:dev": "npx cypress open --config baseUrl=http://localhost:3000 --env API_URL=http://localhost:3001"
   },
   "author": "Team PRKL",
   "license": "MIT",
