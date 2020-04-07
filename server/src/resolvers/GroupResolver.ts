@@ -8,7 +8,17 @@ import { formGroups } from "../algorithm/index";
 import { Registration } from "../entities/Registration";
 
 const formNewGroups = async (courseId: string) => {
-  const registrations = await Registration.find({ where: { courseId: courseId } });
+  const registrations = await Registration.find({
+    where: { courseId: courseId },
+    relations: [
+      "student",
+      "questionAnswers",
+      "questionAnswers.question",
+      "questionAnswers.answerChoices",
+      "questionAnswers.question.questionChoices",
+      "workingTimes",
+    ],
+  });
   const course = await Course.findOne({ where: { id: courseId } });
   return formGroups(course, registrations);
 };
@@ -31,6 +41,7 @@ export class GroupResolver {
     (await Group.find({ where: { courseId: courseId } })).forEach(g => g.remove());
 
     const groups = data.groups && data.groups.length > 0 ? data.groups : await formNewGroups(courseId);
+    console.log("groups in groupResolver:", groups);
 
     return await Promise.all(
       groups.map(async g => {

@@ -14,6 +14,7 @@ import roles from './util/user_roles';
 import userService from './services/userService';
 import './App.css';
 import KeepAlive from './components/misc/KeepAlive';
+import Users from './components/misc/Users';
 
 createStore('coursesStore', []);
 createStore('userStore', {});
@@ -45,20 +46,23 @@ export default () => {
           {courseLoading && user ? (
             <Loader active />
           ) : (
-              <div className="mainContent">
-                <Loader />
-                <Route path="/user" render={() => <StudentInfo />} />
-                {user.role === roles.ADMIN_ROLE ? (
+            <div className="mainContent">
+              <Loader />
+              <Route path="/user" render={() => <StudentInfo />} />
+              {user.role === roles.ADMIN_ROLE ? (
+                <div>
                   <Route path="/addcourse" render={() => <CourseForm />} />
-                ) : null}
-                <Route
-                  exact
-                  path="/course/:id"
-                  render={({ match }) => <Course id={match.params.id} />}
-                />
-                <Route exact path={['/', '/courses']} component={Courses} />
-              </div>
-            )}
+                  <Route path="/usermanagement" render={() => <Users />} />
+                </div>
+              ) : null}
+              <Route
+                exact
+                path="/course/:id"
+                render={({ match }) => <Course id={match.params.id} />}
+              />
+              <Route exact path={['/', '/courses']} component={Courses} />
+            </div>
+          )}
         </Router>
         <KeepAlive />
       </div>

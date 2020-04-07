@@ -10,6 +10,7 @@ export default {
     'header.logout': 'Logout',
     'header.courses': 'Courses',
     'header.addCourse': 'Add Course',
+    'header.userManagement': 'Manage Users',
 
     'courseForm.pageTitle': 'Create course',
     'courseForm.titleForm': 'Title',
@@ -26,6 +27,12 @@ export default {
 
     'courses.searchPlaceholder': 'Search courses',
     'courses.deadline': 'Enrollment deadline',
+
+    'users.empty': 'No users found',
+    'users.admin': 'Admin user',
+    'users.staff': 'Staff',
+    'users.student': 'Student',
+    'users.searchPlaceholder': 'Search users',
 
     'gradeQuestion.title': 'Select an option that best describes you',
     'gradeQuestion.gradeAnswer1': 'I want a good grade',
