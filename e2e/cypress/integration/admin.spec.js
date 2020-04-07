@@ -11,6 +11,6 @@ describe("Admin", () => {
 
     cy.contains("Add Course").click();
 
-    //cy.get("[data-cy='add-course']").click();
+    cy.get("[data-cy='add-course']").click();
   });
 });
