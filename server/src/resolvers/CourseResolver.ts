@@ -6,7 +6,7 @@ import { CourseInput } from "../inputs/CourseInput";
 @Resolver()
 export class CourseResolver {
   @Query(() => [Course])
-  courses(): Promise<Course[]> {
+  async courses(): Promise<Course[]> {
     return Course.find({ where: { deleted: false } });
   }
 

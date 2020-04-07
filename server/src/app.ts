@@ -12,7 +12,7 @@ import { CourseResolver } from "./resolvers/CourseResolver";
 import { UserResolver } from "./resolvers/UserResolver";
 import { GroupResolver } from "./resolvers/GroupResolver";
 import { RegistrationResolver } from "./resolvers/RegistrationResolver";
-import shibbCharset from "./middleware/shibbolethHeaders";
+import shibbolethHeaders from "./middleware/shibbolethHeaders";
 import authorization, { authChecker } from "./middleware/authorization";
 import seeding from "./testUtils/seeding";
 import { switchUser } from "./testUtils/switchUser";
@@ -45,7 +45,7 @@ const main = async (): Promise<void> => {
 
   // Middleware.
   app
-    .use(shibbCharset)
+    .use(shibbolethHeaders)
     .use(authorization)
     .use("/graphql", graphqlHttp({ schema, graphiql: true }))
     .use(bodyParser.json())

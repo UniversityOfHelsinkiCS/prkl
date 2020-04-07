@@ -1,6 +1,4 @@
-import { database as users } from "./mockUsers";
-import { getCustomRepository, getConnection } from "typeorm";
-import { UserRepository } from "../repositories/UserRepository";
+import { getConnection } from "typeorm";
 import { Request, Response } from "express";
 
 /**
@@ -11,15 +9,6 @@ export default (router): void => {
   if (process.env.NODE_ENV === "production") {
     throw new Error("Testing routes must NOT be used in production!");
   }
-
-  /**
-   * Seed users with different roles for testing and development.
-   */
-  router.get("/seed", async (req: Request, res: Response) => {
-    const repo = getCustomRepository(UserRepository);
-    users.forEach(async user => repo.addUser(user));
-    res.status(201).json(await repo.find({}));
-  });
 
   router.get("/reset", async (req: Request, res: Response) => {
     // These must be ordered because the database does not have cascades in place...

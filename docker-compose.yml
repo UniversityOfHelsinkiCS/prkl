@@ -60,6 +60,7 @@ services:
     container_name: prkl-test
     environment:
       - CYPRESS_BASE_URL=http://test-app:3001
+      - API_URL=http://test-app:3001
     depends_on:
       - test-app
     volumes:
