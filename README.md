@@ -43,7 +43,7 @@ cd e2e/
 npm run test:dev
 ```
 
-This command configures Cypress and our tests to use different URL's for client and server requests, enabling you to take advantage of hotloading on both sides of the stack when writing tests.
+This command configures Cypress and our tests to use different URL's for client and server requests, enabling you to take advantage of hotloading on both sides of the stack when writing tests. It is recommended that you have Cypress installed globally (`npm i -g cypress`) for local development.
 
 ### Miscellaneous Commands
 
