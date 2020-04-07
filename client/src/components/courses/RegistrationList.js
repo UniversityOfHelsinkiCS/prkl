@@ -34,9 +34,7 @@ export default ({ userIsRegistered, course, registrations, user }) => {
           <div>
             <CourseRegistration course={course} registrations={registrations} />
           </div>
-        ) : (
-          <div>what</div>
-        )}
+        ) : null}
       </div>
     </div>
   );

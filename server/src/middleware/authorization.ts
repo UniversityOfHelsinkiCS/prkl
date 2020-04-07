@@ -33,7 +33,12 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
 
   // Create a new user with basic roles if none exists.
   if (!user) {
-    user = await repo.addUser({ role: 1, ...data });
+    try {
+      user = await repo.addUser({ role: 1, ...data });
+    } catch (error) {
+      // FIXME: This is a hack to make mocking work.
+      user = await repo.findByShibbolethUid(uid);
+    }
   }
 
   // Update db with new user details, if they have changed.

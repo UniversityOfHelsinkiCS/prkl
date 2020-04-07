@@ -4,7 +4,10 @@
  * better names to fields.
  */
 import { Response, Request, NextFunction } from "express";
-import mockHeaders from "../utils/mockHeaders";
+import { getCustomRepository } from 'typeorm';
+import { getActiveMockHeaders } from "../testUtils/switchUser";
+import { UserRepository } from '../repositories/UserRepository';
+import { database as users } from '../testUtils/mockUsers';
 
 // Shibboleth header keys mapped to better names.
 const nameMap = [
@@ -15,9 +18,22 @@ const nameMap = [
   { oldKey: "sn", newKey: "lastname" },
 ];
 
-export default (req: Request, res: Response, next: NextFunction): void => {
+export default async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  // Apply mock headers if not running in production.
   if (process.env.NODE_ENV !== "production") {
-    mockHeaders(req);
+    // FIXME: This is ugly, I'm sorry.
+    // Make sure mock users exist with proper roles.
+    const repo = getCustomRepository(UserRepository);
+    users.forEach(async user => {
+      try {
+        await repo.addUser(user);
+      } catch (error) {
+        // Fail silently if database already populated.
+      }
+    });
+
+    const headers = getActiveMockHeaders();
+    Object.keys(headers).forEach(key => (req.headers[key] = headers[key]));
   }
 
   nameMap.forEach(({ oldKey, newKey }) => {

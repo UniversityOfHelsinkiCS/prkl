@@ -1,6 +1,6 @@
 import { headers } from "./mockUsers";
 
-let user = null;
+let user = headers[0];
 
 export const switchUser = (router): void => {
   /**
@@ -14,4 +14,4 @@ export const switchUser = (router): void => {
   });
 };
 
-export const getActiveMockUser = () => user;
+export const getActiveMockHeaders = () => user;
