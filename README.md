@@ -13,6 +13,8 @@ Assembler is a tool for automating division of students into project groups. It 
 
 ## Usage
 
+Assembler uses `npm` to configure scripts, including `docker-compose` commands for development and testing. The commands outlined in this section should be run at project root unless preceded with a `cd` command and the directory where the related `package.json` is located.
+
 ### Development
 
 Hot-loading of changes works currently only separately with backend and frontend. I.e., if you are running the backend in development mode, changes in the frontend are not loaded.
@@ -44,6 +46,12 @@ npm run test:dev
 ```
 
 This command configures Cypress and our tests to use different URL's for client and server requests, enabling you to take advantage of hotloading on both sides of the stack when writing tests. It is recommended that you have Cypress installed globally (`npm i -g cypress`) for local development.
+
+#### Run all tests in containers (like they are run on CI)
+
+```bash
+npm test
+```
 
 ### Miscellaneous Commands
 
