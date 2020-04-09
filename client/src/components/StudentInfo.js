@@ -3,14 +3,14 @@ import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import { Table, Header } from 'semantic-ui-react';
 
-const GroupList = (props) => {
+const GroupList = props => {
   return (
     <div>
       {props.groups
         .filter(group => !group.course.deleted)
         .map(group => (
           <div key={group.id}>
-            <Header as='h3' block>
+            <Header as="h3" block>
               {group.course.title}
             </Header>
             <Table>
@@ -25,34 +25,24 @@ const GroupList = (props) => {
                   <Table.HeaderCell>
                     <FormattedMessage id="courseRegistration.email" />
                   </Table.HeaderCell>
-                  <Table.HeaderCell>
-                    Working times
-                  </Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
                 {group.students.map(student => (
                   <Table.Row key={student.id}>
-                    <Table.Cell>
-                      {student.firstname}
-                    </Table.Cell>
-                    <Table.Cell>
-                      {student.lastname}
-                    </Table.Cell>
-                    <Table.Cell>
-                      {student.email}
-                    </Table.Cell>
+                    <Table.Cell>{student.firstname}</Table.Cell>
+                    <Table.Cell>{student.lastname}</Table.Cell>
+                    <Table.Cell>{student.email}</Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
             </Table>
-            <p/>
+            <p />
           </div>
         ))}
-
     </div>
-  )
-}
+  );
+};
 
 export default () => {
   const [user] = useStore('userStore');
