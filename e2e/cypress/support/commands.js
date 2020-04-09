@@ -27,10 +27,11 @@ Cypress.Commands.add('createCourse', () => {
 });
 
 // Commands to switch user roles.
-const switchUser = (index) => {
-  cy.request('POST', `${apiUrl}/switchUser`, { index });
+const switchUser = (role) => {
+  cy.visit('/');
+  cy.get(`[data-cy="switch-to-${role}"]`).click();
 };
 
-Cypress.Commands.add('switchToStudent', () => switchUser(0));
-Cypress.Commands.add('switchToStaff', () => switchUser(1));
-Cypress.Commands.add('switchToAdmin', () => switchUser(2));
+Cypress.Commands.add('switchToStudent', () => switchUser('student'));
+Cypress.Commands.add('switchToStaff', () => switchUser('staff'));
+Cypress.Commands.add('switchToAdmin', () => switchUser('admin'));

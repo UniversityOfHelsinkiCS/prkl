@@ -21,6 +21,7 @@ services:
       context: .
       args:
         NODE_ENV: test
+        REACT_APP_CUSTOM_NODE_ENV: test
     ports:
       - 3001:3001
     container_name: test-app

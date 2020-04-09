@@ -8,6 +8,9 @@ ENV PUBLIC_URL=$PUBLIC_URL
 ARG NODE_ENV=production
 ENV NODE_ENV=$NODE_ENV
 
+ARG REACT_APP_CUSTOM_NODE_ENV=production
+ENV REACT_APP_CUSTOM_NODE_ENV=$REACT_APP_CUSTOM_NODE_ENV
+
 # Set timezone to Europe/Helsinki
 RUN echo "Europe/Helsinki" > /etc/timezone
 RUN dpkg-reconfigure -f noninteractive tzdata

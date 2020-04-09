@@ -7,7 +7,6 @@ describe('Staff', () => {
   });
 
   it('Can create a course with no questions', () => {
-    cy.visit('/');
     cy.get('[data-cy="add-course"]').click();
 
     cy.get('[data-cy="course-title-input"]').type('Course from Cypress');

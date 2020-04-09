@@ -10,8 +10,14 @@ const switchUser = async index => {
 export default () => (
   <Menu className="mainHeader" size="massive" stackable borderless attached inverted>
     <Menu.Item>DEV</Menu.Item>
-    <Menu.Item onClick={() => switchUser(0)}>Student</Menu.Item>
-    <Menu.Item onClick={() => switchUser(1)}>Staff</Menu.Item>
-    <Menu.Item onClick={() => switchUser(2)}>Admin</Menu.Item>
+    <Menu.Item onClick={() => switchUser(0)} data-cy="switch-to-student">
+      Student
+    </Menu.Item>
+    <Menu.Item onClick={() => switchUser(1)} data-cy="switch-to-staff">
+      Staff
+    </Menu.Item>
+    <Menu.Item onClick={() => switchUser(2)} data-cy="switch-to-admin">
+      Admin
+    </Menu.Item>
   </Menu>
 );
