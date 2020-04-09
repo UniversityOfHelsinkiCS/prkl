@@ -1,3 +1,5 @@
+import { GroupInput } from "../inputs/GroupInput";
+
 export interface SimplifiedTime {
   start: number;
   diff: number;
@@ -11,4 +13,9 @@ export interface AllTimes {
 
 export interface MaxAvailableTimes {
   [key: string]: number;
+}
+
+export interface DividedGroup {
+  groups: GroupInput[];
+  score: number;
 }
