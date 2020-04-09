@@ -1,9 +1,9 @@
 import React from 'react';
 import { Menu } from 'semantic-ui-react';
-import axios from 'axios';
+import { setMockHeaders } from '../util/mockHeaders';
 
 const switchUser = async index => {
-  await axios.post('http://localhost:3001/switchUser', { index });
+  setMockHeaders(index);
   window.location.reload();
 };
 
