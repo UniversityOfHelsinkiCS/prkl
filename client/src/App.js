@@ -39,7 +39,7 @@ export default () => {
 
   return (
     <>
-      {process.env.NODE_ENV === 'development' ? <DevBar /> : null}
+      {process.env.REACT_APP_CUSTOM_NODE_ENV !== 'production' ? <DevBar /> : null}
       <div className="App">
         <Router basename={process.env.PUBLIC_URL}>
           <Header />

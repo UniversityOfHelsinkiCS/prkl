@@ -1,7 +1,7 @@
 // / <reference types="Cypress" />
 
-describe('Test for student user', () => {
-  it('Student can see his personal info.', () => {
+describe('Student', () => {
+  it('Can see their personal info.', () => {
     cy.resetDatabase();
     cy.switchToStudent();
     cy.visit('/');
