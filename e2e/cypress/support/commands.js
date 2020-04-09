@@ -7,23 +7,29 @@ Cypress.Commands.add('resetDatabase', () => {
   cy.request('GET', `${apiUrl}/reset`);
 });
 
-Cypress.Commands.add('createCourse', () => {
-  const query = `
-  mutation {
-    createCourse(data: {
-      title: "aaaaa"
-      code: "coooode"
-      deadline: "2020-12-12"
-      description: "bbbbb"
-      maxGroupSize: 1
-      minGroupSize: 1
-      questions: []
-    }) {
-      id
-    }
-  }
-  `;
-  cy.request('POST', `${apiUrl}/graphql`, { query });
+Cypress.Commands.add('createCourse', (index) => {
+  cy.fixture('courses').then((courses) => {
+    const body = {
+      operationName: 'createCourse',
+      variables: {
+        data: courses[index],
+      },
+      query: `
+        mutation createCourse($data: CourseInput!) {
+          createCourse(data: $data) {
+            id
+        }}`,
+    };
+
+    cy.fixture('mockHeaders').then((headers) => {
+      cy.request({
+        method: 'POST',
+        url: `${apiUrl}/graphql`,
+        body,
+        headers: headers[1],
+      });
+    });
+  });
 });
 
 // Commands to switch user roles.
