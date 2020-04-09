@@ -7,6 +7,7 @@
 const users = [
   {
     database: {
+      id: "d1e16bdf-a834-4b1d-90de-a6182fab19db",
       shibbolethUid: "1",
       firstname: "Firstname 1",
       lastname: "Lastname 1",
@@ -24,6 +25,7 @@ const users = [
   },
   {
     database: {
+      id: "45809baa-83ce-440b-96b9-957207720e5b",
       shibbolethUid: "2",
       firstname: "Firstname 2",
       lastname: "Lastname 2",
@@ -41,6 +43,7 @@ const users = [
   },
   {
     database: {
+      id: "7cb9fe26-cec7-429f-b6c0-191a87df6b54",
       shibbolethUid: "3",
       firstname: "Firstname 3",
       lastname: "Lastname 3",
