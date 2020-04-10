@@ -94,7 +94,7 @@ export default ({ id }) => {
 
   return (
     <div>
-      <h2>{`${course.code} -${course.title}`}</h2>
+      <h2>{`${course.code} - ${course.title}`}</h2>
       {user && user.role === roles.ADMIN_ROLE ? (
         <div>
           {!groupsView ? (

@@ -25,13 +25,13 @@ const ConfirmableButton = ({ onClick, prompt, children, formControl, ...rest }) 
   };
 
   const InitialButton = () => (
-    <Button onClick={promptForConfirmation} primary {...rest}>
+    <Button onClick={promptForConfirmation} primary data-cy="submit-button" {...rest}>
       {children}
     </Button>
   );
 
   const PromptButton = () => (
-    <Button onClick={onClick} negative {...rest}>
+    <Button onClick={onClick} negative data-cy="confirm-button" {...rest}>
       {prompt}
     </Button>
   );

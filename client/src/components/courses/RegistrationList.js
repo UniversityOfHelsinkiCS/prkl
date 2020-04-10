@@ -20,12 +20,10 @@ export default ({ userIsRegistered, course, registrations, user }) => {
         <>
           <Header as="h4" color="red">
             <FormattedMessage id="course.deadline" />
+            &nbsp;
             <FormattedDate value={course.deadline} />
           </Header>
           <div>{course.description}</div>
-          <h3>
-            <FormattedMessage id="course.questionsPreface" />
-          </h3>
           <Registration courseId={course.id} questions={course.questions} />
         </>
       )}

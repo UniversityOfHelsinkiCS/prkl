@@ -21,4 +21,16 @@ describe('Student', () => {
     cy.visit('/');
     cy.contains('Test Course 0');
   });
+
+  it.only('Can enrol on a course', () => {
+    cy.createCourse(0);
+    cy.visit('/');
+    cy.contains('Test Course 0').click();
+
+    cy.get('[data-cy="toc-checkbox"]').click();
+    cy.get('[data-cy="submit-button"]').click();
+    cy.get('[data-cy="confirm-button"]').click();
+
+    cy.contains('Great success!');
+  });
 });
