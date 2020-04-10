@@ -1,0 +1,35 @@
+[
+  {
+    "title": "Test Course 0",
+    "code": "TC0",
+    "deadline": "2100-12-12",
+    "description": "Description for a test course.",
+    "maxGroupSize": 1,
+    "minGroupSize": 1,
+    "questions": [
+      {
+        "questionType": "freeForm",
+        "content": "Freeform question",
+        "order": 0
+      },
+      {
+        "questionType": "singleChoice",
+        "content": "Single-choice question",
+        "order": 1,
+        "questionChoices": [
+          { "content": "First choice", "order": 0 },
+          { "content": "Second choice", "order": 1 }
+        ]
+      },
+      {
+        "questionType": "multipleChoice",
+        "content": "Multiple-choice question",
+        "order": 2,
+        "questionChoices": [
+          { "content": "First choice", "order": 0 },
+          { "content": "Second choice", "order": 1 }
+        ]
+      }
+    ]
+  }
+]

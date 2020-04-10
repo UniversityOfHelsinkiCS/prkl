@@ -1,6 +1,48 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
+import { Table, Header } from 'semantic-ui-react';
+
+const GroupList = props => {
+  return (
+    <div>
+      {props.groups
+        .filter(group => !group.course.deleted)
+        .map(group => (
+          <div key={group.id}>
+            <Header as="h3" block>
+              {group.course.title}
+            </Header>
+            <Table>
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>
+                    <FormattedMessage id="courseRegistration.firstName" />
+                  </Table.HeaderCell>
+                  <Table.HeaderCell>
+                    <FormattedMessage id="courseRegistration.lastName" />
+                  </Table.HeaderCell>
+                  <Table.HeaderCell>
+                    <FormattedMessage id="courseRegistration.email" />
+                  </Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {group.students.map(student => (
+                  <Table.Row key={student.id}>
+                    <Table.Cell>{student.firstname}</Table.Cell>
+                    <Table.Cell>{student.lastname}</Table.Cell>
+                    <Table.Cell>{student.email}</Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
+            <p />
+          </div>
+        ))}
+    </div>
+  );
+};
 
 export default () => {
   const [user] = useStore('userStore');
@@ -44,29 +86,7 @@ export default () => {
           <h3>
             <FormattedMessage id="studentInfo.group" />
           </h3>
-          {user.groups.length === 0 ? (
-            <div>
-              <FormattedMessage id="studentInfo.noGroups" />
-            </div>
-          ) : null}
-          <ul>
-            {user.groups
-              .filter(group => !group.course.deleted)
-              .map(group => (
-                <li key={group.id}>
-                  {group.course.title}
-                  <ul>
-                    {group.students.map(student => (
-                      <li key={student.id}>
-                        {student.firstname} {student.lastname}
-                        {' | '}
-                        {student.email}
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
-          </ul>
+          <GroupList groups={user.groups} />
         </div>
       ) : null}
     </div>

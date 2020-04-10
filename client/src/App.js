@@ -39,7 +39,7 @@ export default () => {
 
   return (
     <>
-      {process.env.NODE_ENV === 'development' ? <DevBar /> : null}
+      {process.env.REACT_APP_CUSTOM_NODE_ENV !== 'production' ? <DevBar /> : null}
       <div className="App">
         <Router basename={process.env.PUBLIC_URL}>
           <Header />
@@ -49,11 +49,15 @@ export default () => {
             <div className="mainContent">
               <Loader />
               <Route path="/user" render={() => <StudentInfo />} />
-              {user.role === roles.ADMIN_ROLE ? (
-                <div>
+              {user.role >= roles.STAFF_ROLE ? (
+                <>
                   <Route path="/addcourse" render={() => <CourseForm />} />
+                </>
+              ) : null}
+              {user.role === roles.ADMIN_ROLE ? (
+                <>
                   <Route path="/usermanagement" render={() => <Users />} />
-                </div>
+                </>
               ) : null}
               <Route
                 exact

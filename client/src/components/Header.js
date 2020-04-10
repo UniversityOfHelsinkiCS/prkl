@@ -3,6 +3,7 @@ import { Menu, Button } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
+import roles from '../util/user_roles';
 
 export default () => {
   const [activeItem, setActiveItem] = useState(null);
@@ -28,19 +29,20 @@ export default () => {
         <FormattedMessage id="header.courses" />
       </Menu.Item>
 
-      {user && user.role === 3 ? (
+      {user && user.role >= roles.STAFF_ROLE ? (
         <Menu.Item
           as={Link}
           to="/addcourse"
           name="AddCourse"
           active={activeItem === 'AddCourse'}
           onClick={handleItemClick}
+          data-cy="add-course"
         >
           <FormattedMessage id="header.addCourse" />
         </Menu.Item>
       ) : null}
 
-      {user && user.role === 3 ? (
+      {user && user.role === roles.ADMIN_ROLE ? (
         <Menu.Item
           as={Link}
           to="/usermanagement"

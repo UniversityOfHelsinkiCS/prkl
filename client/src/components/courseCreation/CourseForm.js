@@ -88,6 +88,7 @@ const CourseForm = () => {
               id: 'courseForm.titleForm',
             })}
             onChange={event => setCourseTitle(event.target.value)}
+            data-cy="course-title-input"
           />
         </Form.Field>
 
@@ -98,6 +99,7 @@ const CourseForm = () => {
               id: 'courseForm.courseCodeForm',
             })}
             onChange={event => setCourseCode(event.target.value)}
+            data-cy="course-code-input"
           />
 
           <Form.Input
@@ -110,6 +112,7 @@ const CourseForm = () => {
             onChange={event => {
               setDeadline(event.target.value);
             }}
+            data-cy="course-deadline-input"
           />
         </Form.Group>
 
@@ -120,6 +123,7 @@ const CourseForm = () => {
               id: 'courseForm.courseDescriptionForm',
             })}
             onChange={event => setCourseDescription(event.target.value)}
+            data-cy="course-description-input"
           />
         </Form.Field>
 
@@ -156,7 +160,7 @@ const CourseForm = () => {
           ))}
         </Form.Group>
 
-        <Form.Button primary type="submit">
+        <Form.Button primary type="submit" data-cy="create-course-submit">
           <FormattedMessage id="courseForm.confirmButton" />
         </Form.Button>
       </Form>

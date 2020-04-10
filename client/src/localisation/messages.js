@@ -49,7 +49,7 @@ export default {
     'questionForm.optionTitle': 'Choice {number}',
     'questionForm.questionTypeLabel': 'Question type',
 
-    'course.deadline': 'Deadline to enrol to the course project: ',
+    'course.deadline': 'Enrollment deadline:',
     'course.questionsPreface': 'Answer the questions below',
     'course.multipleChoicePlaceholder': 'Choose',
     'course.freeFormPlaceholder': 'Type your answer',

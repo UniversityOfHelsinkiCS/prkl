@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'semantic-ui-react';
+import { Form, Header } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Question from './Question';
 import ConfirmableButton from '../forms/ConfirmableButton';
@@ -15,7 +15,10 @@ export default ({ questions, formControl, onSubmit }) => {
   });
 
   return (
-    <Form>
+    <Form style={{ marginTop: '2rem' }}>
+      <Header as="h3">
+        <FormattedMessage id="course.questionsPreface" />
+      </Header>
       {questions &&
         questions.map(question => (
           <Question key={question.id} question={question} hookForm={formControl} />
@@ -31,6 +34,7 @@ export default ({ questions, formControl, onSubmit }) => {
         }}
         error={!!errors.toc}
         value={checkboxValue}
+        data-cy="toc-checkbox"
       />
 
       <ValidationError errors={formControl.errors}>

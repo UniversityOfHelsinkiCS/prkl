@@ -18,6 +18,7 @@ const Question = ({ question, hookForm }) => {
             type={Form.Input}
             placeholder={intl.formatMessage({ id: 'course.freeFormPlaceholder' })}
             formControl={hookForm}
+            data-cy={`question-${question.order}`}
           />
         );
       case SINGLE_CHOICE:
@@ -33,6 +34,7 @@ const Question = ({ question, hookForm }) => {
             formControl={hookForm}
             type={Form.Dropdown}
             selection
+            data-cy={`question-${question.order}`}
           />
         );
       case MULTI_CHOICE:
@@ -49,6 +51,7 @@ const Question = ({ question, hookForm }) => {
             type={Form.Dropdown}
             selection
             multiple
+            data-cy={`question-${question.order}`}
           />
         );
 

@@ -1,7 +1,7 @@
 import { Registration } from "../entities/Registration";
 import { Course } from "../entities/Course";
 import { GroupInput } from "../inputs/GroupInput";
-import { AllTimes, MaxAvailableTimes } from "./types";
+import { AllTimes, MaxAvailableTimes, DividedGroup } from "./types";
 
 const hours = 14;
 const first = 6;
@@ -57,14 +57,15 @@ const count = (group: AllTimes, len: number): Array<string[]> => {
   return times;
 };
 
-const divide = (
-  len: number,
-  size: number,
-  simplifiedRegistrations: AllTimes,
-  availabletimes: MaxAvailableTimes,
-): GroupInput[] => {
+const divide = (len: number, size: number, answers: AllTimes, availabletimes: MaxAvailableTimes): DividedGroup => {
   const groups = [];
-  const answers = { ...simplifiedRegistrations };
+
+  if (len === 0) {
+    if (Object.keys(answers).length > 0) {
+      groups.push({ userIds: Object.keys(answers) });
+    }
+    return { groups, score: 0 };
+  }
 
   let times = count(answers, len);
   const randomizedTimeslots = shuffle([...Array(7 * hours).keys()]);
@@ -86,10 +87,19 @@ const divide = (
       i++;
     }
   }
-  // Adds all remaining students to the last group
-  groups.push({ userIds: Object.keys(answers) });
+  // Weight to value better (longer common timeslot) groups more
+  const weight = len * 3;
 
-  return groups;
+  let score = groups.length * weight;
+
+  // Try remaining students with relaxed time constraints
+  const rec = divide(len - 1, size, answers, availabletimes);
+  score += rec.score;
+  rec.groups.forEach(group => {
+    groups.push(group);
+  });
+
+  return { groups, score };
 };
 
 const countAvailable = (group: AllTimes): MaxAvailableTimes => {
@@ -120,16 +130,18 @@ export const formGroups = (course: Course, registrations: Registration[]): Group
   const simplifiedRegistrations = toTimes(registrations);
 
   const availableTimes: MaxAvailableTimes = countAvailable(simplifiedRegistrations);
-  let best = [];
+  let best: DividedGroup = { groups: [], score: 0 };
 
-  let groups: GroupInput[] = [];
+  let groups: DividedGroup = { groups: [], score: 0 };
   for (let i = 0; i < 1000; i++) {
-    groups = divide(targetTimeSlot, minSize, simplifiedRegistrations, availableTimes);
+    const answers = { ...simplifiedRegistrations };
 
-    if (groups.length > best.length) {
+    groups = divide(targetTimeSlot, minSize, answers, availableTimes);
+
+    if (groups.score > best.score) {
       best = groups;
     }
   }
 
-  return best;
+  return best.groups;
 };
