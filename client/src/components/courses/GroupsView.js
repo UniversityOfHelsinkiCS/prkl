@@ -57,6 +57,7 @@ export default ({ courseId, registrations }) => {
         const res = await generateGroups({
           variables,
         });
+        console.log('res:', res);
         setGroups(res.data.createGroups.map(groupObject => groupObject.students));
       } catch (groupError) {
         console.log('error:', groupError);
