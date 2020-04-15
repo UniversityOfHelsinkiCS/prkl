@@ -12,6 +12,7 @@ import { CourseInput } from "../inputs/CourseInput";
  * Seed an empty database with mock data from `../../data`.
  */
 const seed = async (): Promise<void> => {
+  console.log("seeding db");
   const userRepo = getRepository(User);
   const users = userData.map(user => userRepo.create(plainToClass(UserInput, user)));
   await userRepo.save(users);
@@ -19,6 +20,33 @@ const seed = async (): Promise<void> => {
   const courseRepo = getRepository(Course);
   const courses = courseData.map(course => courseRepo.create(plainToClass(CourseInput, course)));
   await courseRepo.save(courses);
+};
+
+/**
+ * Empty the database.
+ */
+const reset = async (): Promise<void> => {
+  const tableNames = [
+    "workingTimes",
+    "answerChoice",
+    "answer",
+    "questionChoice",
+    "question",
+    "registration",
+    "groupStudents",
+    "group",
+    "course",
+    "user",
+  ];
+
+  for (const tableName of tableNames) {
+    console.log("deleting", tableName);
+    await getConnection()
+      .createQueryBuilder()
+      .delete()
+      .from(tableName)
+      .execute();
+  }
 };
 
 /**
@@ -31,38 +59,18 @@ export default (router): void => {
   }
 
   router.get("/reset", async (req: Request, res: Response) => {
-    // These must be ordered because the database does not have cascades in place...
-    // eslint-disable-next-line prettier/prettier
-    const tableNames = [
-      "workingTimes",
-      "answerChoice",
-      "answer",
-      "questionChoice",
-      "question",
-      "registration",
-      "groupStudents",
-      "group",
-      "course",
-      "user",
-    ];
-
-    tableNames.forEach(async tableName => {
-      try {
-        await getConnection()
-          .createQueryBuilder()
-          .delete()
-          .from(tableName)
-          .execute();
-      } catch (error) {
-        res.status(500).send(error);
-      }
-    });
+    try {
+      await reset();
+    } catch (error) {
+      res.status(500).send(error);
+    }
 
     res.send("OK");
   });
 
   router.get("/seed", async (req: Request, res: Response) => {
     try {
+      await reset();
       await seed();
     } catch (error) {
       res.status(500).send(error);
