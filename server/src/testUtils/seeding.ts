@@ -1,17 +1,24 @@
 import { getConnection, getRepository } from "typeorm";
 import { Request, Response } from "express";
-import userData from "../../data/users.js";
-import { User } from "../entities/User";
 import { plainToClass } from "class-transformer";
+import userData from "../../data/users";
+import { User } from "../entities/User";
 import { UserInput } from "../inputs/UserInput";
+import courseData from "../../data/courses.js";
+import { Course } from "../entities/Course";
+import { CourseInput } from "../inputs/CourseInput";
 
 /**
  * Seed an empty database with mock data from `../../data`.
  */
 const seed = async (): Promise<void> => {
-  const repo = getRepository(User);
-  const users = userData.map(user => repo.create(plainToClass(UserInput, user)));
-  await repo.save(users);
+  const userRepo = getRepository(User);
+  const users = userData.map(user => userRepo.create(plainToClass(UserInput, user)));
+  await userRepo.save(users);
+
+  const courseRepo = getRepository(Course);
+  const courses = courseData.map(course => courseRepo.create(plainToClass(CourseInput, course)));
+  await courseRepo.save(courses);
 };
 
 /**
