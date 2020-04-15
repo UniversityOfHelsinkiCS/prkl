@@ -184,6 +184,8 @@ export const GENERATE_GROUPS = gql`
         id
         firstname
         lastname
+        studentNo
+        email
       }
     }
   }

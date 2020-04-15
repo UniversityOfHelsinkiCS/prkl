@@ -1,41 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useStore } from 'react-hookstore';
-import { Table, Header, Loader, Button } from 'semantic-ui-react';
+import { Table, Header, Button } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
-import { useQuery, useMutation } from '@apollo/react-hooks';
-import { COURSE_GROUPS, GENERATE_GROUPS } from '../../GqlQueries';
+import { useMutation } from '@apollo/react-hooks';
+import { GENERATE_GROUPS } from '../../GqlQueries';
+import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import DraggableRow from './DraggableRow';
-import userRoles from '../../util/user_roles';
 
-export default ({ courseId }) => {
-  const [groups, setGroups] = useState([]);
-  const [user] = useStore('userStore');
-
-  const { loading, error, data } = useQuery(COURSE_GROUPS, {
-    skip: user.role !== userRoles.ADMIN_ROLE,
-    variables: { courseId },
-  });
-
+export default ({ courseId, groups, setGroups }) => {
+  const [privacyToggle] = useStore('toggleStore');
   const [generateGroups] = useMutation(GENERATE_GROUPS);
-
-  useEffect(() => {
-    if (!loading && data !== undefined) {
-      const tempGroup = [];
-      data.courseGroups.forEach(e => {
-        tempGroup.push(e.students);
-      });
-      setGroups(tempGroup);
-    }
-  }, [data, loading]);
-
-  if (error !== undefined) {
-    console.log('error:', error);
-    return (
-      <div>
-        <FormattedMessage id="groups.loadingError" />
-      </div>
-    );
-  }
 
   const addGroup = () => {
     const newGroups = [...groups];
@@ -74,7 +48,7 @@ export default ({ courseId }) => {
     const groupObject = [];
     groups.forEach(group => {
       if (group.length > 0) {
-        groupObject.push({ userIds: group.map(user => user.id) });
+        groupObject.push({ userIds: group.map(userObject => userObject.id) });
       }
     });
 
@@ -97,10 +71,6 @@ export default ({ courseId }) => {
     setGroups(newGroups);
     handleGroupCreation();
   };
-
-  if (loading || !groups) {
-    return <Loader active />;
-  }
 
   return (
     <div>
@@ -146,11 +116,11 @@ export default ({ courseId }) => {
                       index={rowIndex}
                       tableIndex={tableIndex}
                     >
+                      <Table.Cell>{`${student.firstname} ${student.lastname}`}</Table.Cell>
                       <Table.Cell>
-                        {student.firstname} {student.lastname}
+                        {privacyToggle ? dummyStudentNumber : student.studentNo}
                       </Table.Cell>
-                      <Table.Cell>{student.studentNo}</Table.Cell>
-                      <Table.Cell>{student.email}</Table.Cell>
+                      <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
                     </DraggableRow>
                   ))}
                 </Table.Body>

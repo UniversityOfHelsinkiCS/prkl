@@ -7,7 +7,7 @@ export default {
       'Please aquaint yourself with the available projects through the courses tab. Happy grouping!',
 
     'header.personalInfo': 'Personal info',
-    'header.logout': 'Logout',
+    'header.toggle': 'Toggle privacy',
     'header.courses': 'Courses',
     'header.addCourse': 'Add Course',
     'header.userManagement': 'Manage Users',
@@ -105,5 +105,7 @@ export default {
     'groupsView.matchingTimes': 'Matching times',
     'groupsView.maxGroupSize': 'Maximum group size',
     'groupsView.minGroupSize': 'Minimum group size',
+    'groupsView.confirmGroupGenration':
+      'Are you sure you want to generate new groups and override existing groups?',
   },
 };

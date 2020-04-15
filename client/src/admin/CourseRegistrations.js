@@ -1,8 +1,11 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
+import { useStore } from 'react-hookstore';
 import { FormattedMessage } from 'react-intl';
+import { dummyEmail, dummyStudentNumber } from '../util/privacyDefaults';
 
 const CourseRegistration = ({ course, registrations }) => {
+  const [privacyToggle] = useStore('toggleStore');
   const mapshit = qa => {
     const formattedMultipleAnswers = ['|'];
     let currentAnswer = 0;
@@ -72,8 +75,10 @@ const CourseRegistration = ({ course, registrations }) => {
               <Table.Row key={reg.id}>
                 <Table.Cell>{reg.student.firstname}</Table.Cell>
                 <Table.Cell>{reg.student.lastname}</Table.Cell>
-                <Table.Cell>{reg.student.studentNo}</Table.Cell>
-                <Table.Cell>{reg.student.email}</Table.Cell>
+                <Table.Cell>
+                  {privacyToggle ? dummyStudentNumber : reg.student.studentNo}
+                </Table.Cell>
+                <Table.Cell>{privacyToggle ? dummyEmail : reg.student.email}</Table.Cell>
                 {reg.questionAnswers.map(qa => (
                   <Table.Cell key={qa.id}>{questionSwitch(qa)}</Table.Cell>
                 ))}

@@ -8,6 +8,7 @@ import roles from '../util/user_roles';
 export default () => {
   const [activeItem, setActiveItem] = useState(null);
   const [user] = useStore('userStore');
+  const [privacyToggle, setPrivacyToggle] = useStore('toggleStore');
 
   const handleItemClick = (e, { name }) => {
     setActiveItem(name);
@@ -64,11 +65,13 @@ export default () => {
         <FormattedMessage id="header.personalInfo" />
       </Menu.Item>
 
-      <Menu.Item position="right">
-        <Button>
-          <FormattedMessage id="header.logout" />
-        </Button>
-      </Menu.Item>
+      {user && user.role >= roles.STAFF_ROLE ? (
+        <Menu.Item position="right">
+          <Button onClick={() => setPrivacyToggle(!privacyToggle)}>
+            <FormattedMessage id="header.toggle" />
+          </Button>
+        </Menu.Item>
+      ) : null}
     </Menu>
   );
 };

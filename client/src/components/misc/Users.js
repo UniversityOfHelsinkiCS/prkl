@@ -1,34 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useStore } from 'react-hookstore';
 import { Header, Loader, Card, Input, Divider, Button } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useQuery, useMutation } from '@apollo/react-hooks';
-import { ALL_USERS, EDIT_USER_ROLE } from '../../GqlQueries';
+import { useMutation } from '@apollo/react-hooks';
+import { EDIT_USER_ROLE } from '../../GqlQueries';
 import roles from '../../util/user_roles';
 
-export default () => {
-  const [users, setUsers] = useState([]);
-  const [user] = useStore('userStore');
+export default ({ allUsersError, allUsersLoading }) => {
+  const [users] = useStore('allUsersStore');
   const [search, setSearch] = useState('');
   const [editUserRole] = useMutation(EDIT_USER_ROLE);
-
-  const { loading: allUsersLoading, error: allUsersError, data: allUsersData } = useQuery(
-    ALL_USERS,
-    {
-      skip: user.role !== roles.ADMIN_ROLE,
-    }
-  );
-
   const intl = useIntl();
-
-  // for some reason, setUsers is being invoked with the new, updated users
-  // after handleRoleButtonClick(). albeit this is the desired behaviour,
-  // i, for one, don't know why or how it happens
-  useEffect(() => {
-    if (!allUsersLoading && allUsersData?.users !== undefined) {
-      setUsers(allUsersData.users);
-    }
-  }, [allUsersData, allUsersLoading]);
 
   const handleSearchChange = event => {
     setSearch(event.target.value);
