@@ -1,8 +1,21 @@
-import { getConnection } from "typeorm";
+import { getConnection, getRepository } from "typeorm";
 import { Request, Response } from "express";
+import userData from "../../data/users.js";
+import { User } from "../entities/User";
+import { plainToClass } from "class-transformer";
+import { UserInput } from "../inputs/UserInput";
 
 /**
- * Route to seed the database with mock users.
+ * Seed an empty database with mock data from `../../data`.
+ */
+const seed = async (): Promise<void> => {
+  const repo = getRepository(User);
+  const users = userData.map(user => repo.create(plainToClass(UserInput, user)));
+  await repo.save(users);
+};
+
+/**
+ * Routes to seed the database with mock data.
  */
 export default (router): void => {
   // Make sure these routes are not mounted in production.
@@ -37,6 +50,16 @@ export default (router): void => {
         res.status(500).send(error);
       }
     });
+
+    res.send("OK");
+  });
+
+  router.get("/seed", async (req: Request, res: Response) => {
+    try {
+      await seed();
+    } catch (error) {
+      res.status(500).send(error);
+    }
 
     res.send("OK");
   });
