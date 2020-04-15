@@ -1,11 +1,14 @@
 import React from 'react';
+import { useStore } from 'react-hookstore';
 import { Table, Header, Button } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
 import { GENERATE_GROUPS } from '../../GqlQueries';
+import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import DraggableRow from './DraggableRow';
 
 export default ({ courseId, groups, setGroups }) => {
+  const [privacyToggle] = useStore('toggleStore');
   const [generateGroups] = useMutation(GENERATE_GROUPS);
 
   const addGroup = () => {
@@ -114,8 +117,10 @@ export default ({ courseId, groups, setGroups }) => {
                       tableIndex={tableIndex}
                     >
                       <Table.Cell>{`${student.firstname} ${student.lastname}`}</Table.Cell>
-                      <Table.Cell>{student.studentNo}</Table.Cell>
-                      <Table.Cell>{student.email}</Table.Cell>
+                      <Table.Cell>
+                        {privacyToggle ? dummyStudentNumber : student.studentNo}
+                      </Table.Cell>
+                      <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
                     </DraggableRow>
                   ))}
                 </Table.Body>

@@ -7,7 +7,7 @@ export default {
       'Please aquaint yourself with the available projects through the courses tab. Happy grouping!',
 
     'header.personalInfo': 'Personal info',
-    'header.logout': 'Logout',
+    'header.toggle': 'Toggle privacy',
     'header.courses': 'Courses',
     'header.addCourse': 'Add Course',
     'header.userManagement': 'Manage Users',
