@@ -2,12 +2,12 @@
 
 describe('Staff', () => {
   beforeEach(() => {
-    cy.resetDatabase();
+    cy.seedDatabase();
     cy.switchToStaff();
   });
 
   it('Can create a course with no questions', () => {
-    cy.get('[data-cy="add-course"]').click();
+    cy.get('[data-cy="menu-item-add-course"]').click();
 
     cy.get('[data-cy="course-title-input"]').type('Course from Cypress');
     cy.get('[data-cy="course-code-input"]').type('CYP999');
