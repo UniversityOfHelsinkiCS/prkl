@@ -1,5 +1,6 @@
 // / <reference types="Cypress" />
 const courses = require('../../../server/data/courses');
+const users = require('../../../server/data/users');
 
 describe('Student', () => {
   beforeEach(() => {
