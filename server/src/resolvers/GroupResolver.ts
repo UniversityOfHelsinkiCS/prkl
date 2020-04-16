@@ -6,6 +6,8 @@ import { STAFF } from "../utils/userRoles";
 import { User } from "../entities/User";
 import { formGroups } from "../algorithm/index";
 import { Registration } from "../entities/Registration";
+import { WorkingTimes } from "../entities/WorkingTimes";
+import { getRepository } from "typeorm";
 
 const formNewGroups = async (courseId: string) => {
   const registrations = await Registration.find({
@@ -32,6 +34,18 @@ export class GroupResolver {
       where: { courseId: courseId },
       relations: ["students"],
     });
+  }
+
+  @Query(() => [WorkingTimes])
+  async groupTimes(@Arg("groupId") groupId: string, @Arg("courseId") courseId: string): Promise<WorkingTimes[]> {
+    return await getRepository(WorkingTimes)
+      .createQueryBuilder("times")
+      .innerJoinAndSelect("times.registration", "registration")
+      .innerJoin("registration.student", "student")
+      .innerJoin("student.groups", "group")
+      .where("group.id = :groupId", { groupId: groupId })
+      .andWhere("registration.courseId = :courseId", { courseId: courseId })
+      .getMany();
   }
 
   @Authorized(STAFF)
