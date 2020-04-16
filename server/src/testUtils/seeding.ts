@@ -12,7 +12,7 @@ import { CourseInput } from "../inputs/CourseInput";
  * Seed an empty database with mock data from `../../data`.
  */
 const seed = async (): Promise<void> => {
-  console.log("seeding db");
+  console.log(userData);
   const userRepo = getRepository(User);
   const users = userData.map(user => userRepo.create(plainToClass(UserInput, user)));
   await userRepo.save(users);
@@ -40,7 +40,6 @@ const reset = async (): Promise<void> => {
   ];
 
   for (const tableName of tableNames) {
-    console.log("deleting", tableName);
     await getConnection()
       .createQueryBuilder()
       .delete()
