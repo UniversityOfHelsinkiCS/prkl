@@ -1,7 +1,8 @@
 import { Registration } from "../entities/Registration";
 import { Course } from "../entities/Course";
 import { GroupInput } from "../inputs/GroupInput";
-import { AllTimes, MaxAvailableTimes, DividedGroup } from "./types";
+import { AllTimes, MaxAvailableTimes, DividedGroup, QuestionsMap } from "./types";
+import { evaluateGroups } from "./evaluate";
 
 const hours = 14;
 const first = 6;
@@ -15,6 +16,24 @@ const shuffle = (arr: Array<number>): Array<number> => {
     arr[j] = temp;
   }
   return arr;
+};
+
+const toQuestions = (group: Registration[]): QuestionsMap => {
+  const result = {};
+  group.forEach(r => {
+    result[r.student.id] = r.questionAnswers.map(a => {
+      if (a.question.questionType === "freeForm") {
+        return null;
+      }
+      const acObject = {
+        type: a.question.questionType,
+        totalChoices: a.question.questionChoices.length,
+        selected: a.answerChoices.map(c => (c instanceof Number ? c.order : Number.parseInt(`${c.order}`, 10))),
+      };
+      return acObject;
+    });
+  });
+  return result;
 };
 
 const toTimes = (group: Registration[]): AllTimes => {
@@ -57,11 +76,35 @@ const count = (group: AllTimes, len: number): Array<string[]> => {
   return times;
 };
 
+const divideByQuestions = (answers: AllTimes, size: number): Array<string[]> => {
+  const leftovers = Object.keys(answers);
+  const randomizedTimeslots = shuffle([...Array(leftovers.length).keys()]);
+  const groups = [];
+
+  let index = 0;
+  let round = -1;
+  while (index < leftovers.length) {
+    if (index % size === 0) {
+      groups.push([]);
+      round++;
+    }
+    groups[round].push(leftovers[randomizedTimeslots[index]]);
+    index++;
+  }
+
+  return groups;
+};
+
 const divide = (len: number, size: number, answers: AllTimes, availabletimes: MaxAvailableTimes): DividedGroup => {
   const groups = [];
 
   if (len === 0) {
-    if (Object.keys(answers).length > 0) {
+    if (Object.keys(answers).length > size) {
+      const res = divideByQuestions(answers, size);
+      res.forEach(group => {
+        groups.push({ userIds: group });
+      });
+    } else if (Object.keys(answers).length > 0) {
       groups.push({ userIds: Object.keys(answers) });
     }
     return { groups, score: 0 };
@@ -118,6 +161,9 @@ const countAvailable = (group: AllTimes): MaxAvailableTimes => {
 export const formGroups = (course: Course, registrations: Registration[]): GroupInput[] => {
   const minSize = course.minGroupSize;
   const numberOfGroups = Math.floor(registrations.length / minSize);
+  const questionMapObject = toQuestions(registrations);
+
+  const questionScoreWeight = 0.2;
 
   const targetTimeSlot = 4;
 
@@ -130,7 +176,7 @@ export const formGroups = (course: Course, registrations: Registration[]): Group
   const simplifiedRegistrations = toTimes(registrations);
 
   const availableTimes: MaxAvailableTimes = countAvailable(simplifiedRegistrations);
-  let best: DividedGroup = { groups: [], score: 0 };
+  let best: DividedGroup = { groups: [], score: -694201337 };
 
   let groups: DividedGroup = { groups: [], score: 0 };
   for (let i = 0; i < 1000; i++) {
@@ -138,10 +184,12 @@ export const formGroups = (course: Course, registrations: Registration[]): Group
 
     groups = divide(targetTimeSlot, minSize, answers, availableTimes);
 
+    const questionScore = evaluateGroups(groups.groups, questionMapObject) * questionScoreWeight;
+    groups.score -= questionScore;
+
     if (groups.score > best.score) {
       best = groups;
     }
   }
-
   return best.groups;
 };

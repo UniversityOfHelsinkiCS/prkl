@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import { Table, Header } from 'semantic-ui-react';
+import { dummyEmail, dummyStudentNumber } from '../util/privacyDefaults';
+import { useQuery } from '@apollo/react-hooks'
+import { GROUP_TIMES } from '../GqlQueries';
+
 
 const GroupList = props => {
+  const [privacyToggle] = useStore('toggleStore');
   return (
     <div>
       {props.groups
@@ -32,7 +37,7 @@ const GroupList = props => {
                   <Table.Row key={student.id}>
                     <Table.Cell>{student.firstname}</Table.Cell>
                     <Table.Cell>{student.lastname}</Table.Cell>
-                    <Table.Cell>{student.email}</Table.Cell>
+                    <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
@@ -46,6 +51,29 @@ const GroupList = props => {
 
 export default () => {
   const [user] = useStore('userStore');
+  // const {getGroupTimes} = useQuery(GROUP_TIMES);
+  // const [groupTimes, setGroupTimes] = useState({});
+
+  // const { loading, error, data } = useQuery(GROUP_TIMES, {
+  //   variables: { groupId: "", courseId: "" }
+  // });
+
+  // useEffect(() => {
+  //   if (!loading && data !== undefined) {
+  //     setGroupTimes(data);
+  //   }
+  // }, [data, loading]);
+
+  // console.log("user", user)
+
+  // if (error !== undefined) {
+  //   console.log('error:', error);
+  //   return (
+  //     <div>
+  //       <FormattedMessage id="groups.loadingError" />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div>

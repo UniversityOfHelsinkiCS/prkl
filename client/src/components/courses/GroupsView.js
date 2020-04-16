@@ -10,7 +10,7 @@ import userRoles from '../../util/user_roles';
 export default ({ courseId, registrations }) => {
   const [generateGroups] = useMutation(GENERATE_GROUPS);
   const [editMinMax] = useMutation(EDIT_MIN_MAX_COURSE);
-  const [matchingTimes, setMatchingTimes] = useState(0);
+  // const [matchingTimes, setMatchingTimes] = useState(0);
   const [minGroupSize, setMinGroupSize] = useState(0);
   const [maxGroupSize, setMaxGroupSize] = useState(0);
   const [groups, setGroups] = useState([]);
@@ -104,18 +104,6 @@ export default ({ courseId, registrations }) => {
                   </h4>
                 }
                 onChange={event => setMaxGroupSize(Number.parseInt(event.target.value, 10))}
-              />
-              <Form.Input
-                required
-                type="number"
-                min="1"
-                max="9999999"
-                label={
-                  <h4>
-                    <FormattedMessage id="groupsView.matchingTimes" />
-                  </h4>
-                }
-                onChange={event => setMatchingTimes(Number.parseInt(event.target.value, 10))}
               />
             </Form.Group>
             <Form.Button color="orange">

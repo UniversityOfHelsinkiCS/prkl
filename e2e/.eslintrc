@@ -1,9 +1,11 @@
 {
   "extends": [
     "airbnb-base",
-    "plugin:cypress/recommended"
+    "plugin:cypress/recommended",
   ],
   "rules": {
-    "func-names": 0
+    "func-names": 0,
+    "no-restricted-syntax": 0,
+    "no-plusplus": 0,
   }
 }
