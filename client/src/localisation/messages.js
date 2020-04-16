@@ -106,5 +106,7 @@ export default {
     'groupsView.minGroupSize': 'Minimum group size',
     'groupsView.confirmGroupGenration':
       'Are you sure you want to generate new groups and override existing groups?',
+
+    'util.notAllowed': 'You do not have the required roles to access this content.',
   },
 };
