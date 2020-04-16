@@ -24,29 +24,54 @@ describe('Student', () => {
   });
 
   it('Can enrol on a course', () => {
+    const course = courses[1];
     cy.visit('/');
     cy.contains(courses[1].title).click();
 
-    cy.get('[data-cy="question-2"]').type('Answer');
     cy.get('[data-cy="question-0"]').click();
-    cy.contains('Second choice').click();
+    const answers = [course.questions[0].questionChoices[1].content];
+    cy.contains(answers[0]).click();
 
     cy.get('[data-cy="question-1"]').click();
-    cy.get('[data-cy="question-1"]').contains('First').then((item) => {
+    answers.push(course.questions[1].questionChoices[1].content);
+    cy.get('[data-cy="question-1"]').contains(answers[1]).then((item) => {
       item.click();
     });
+
+    answers.push('My cool answer');
+    cy.get('[data-cy="question-2"]').type(answers[2]);
 
     cy.get('[data-cy="toc-checkbox"]').click();
     cy.get('[data-cy="submit-button"]').click();
     cy.get('[data-cy="confirm-button"]').click();
 
     cy.contains('Great success!');
+
+    // Admin-role check for correct answers.
+    cy.switchToAdmin();
+    cy.visit(`/course/${course.id}`);
+    for (const answer of answers) {
+      cy.contains(answer);
+    }
   });
 
   it('Can not enrol with answers missing', () => {
     cy.visit('/');
     cy.contains(courses[1].title).click();
 
+    cy.get('[data-cy="submit-button"]').click();
+
+    cy.get('[data-cy="confirm-button"]').should('not.exist');
+    cy.contains('Please answer all questions!');
+  });
+
+  it('Can not enrol without accepting the privacy terms', () => {
+    cy.visit('/');
+    cy.contains(courses[0].title).click();
+
+    // Cycle the checkbox on once to account for a past validation bug.
+    cy.get('[data-cy="toc-checkbox"]').click();
+    cy.get('[data-cy="toc-checkbox"]').click();
     cy.get('[data-cy="submit-button"]').click();
 
     cy.get('[data-cy="confirm-button"]').should('not.exist');
