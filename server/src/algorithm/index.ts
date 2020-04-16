@@ -28,7 +28,7 @@ const toQuestions = (group: Registration[]): QuestionsMap => {
       const acObject = {
         type: a.question.questionType,
         totalChoices: a.question.questionChoices.length,
-        selected: a.answerChoices.map(c => Number.parseInt(c.order, 10)),
+        selected: a.answerChoices.map(c => (c instanceof Number ? c.order : Number.parseInt(`${c.order}`, 10))),
       };
       return acObject;
     });
