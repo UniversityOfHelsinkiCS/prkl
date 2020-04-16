@@ -55,7 +55,7 @@ export default {
     'course.freeFormPlaceholder': 'Type your answer',
     'course.gradeQuestion': 'What are your goals for the project?',
     'course.delete': 'Delete course',
-    'course.userHasRegistered': 'Registered to course!',
+    'course.userHasRegistered': 'Already registered!',
     'course.seeGroups': 'Generated groups',
     'course.generateGroups': 'Generate groups',
     'course.switchGroupsView': 'Switch to Groups view',

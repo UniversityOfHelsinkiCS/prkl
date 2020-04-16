@@ -2,7 +2,7 @@
 
 describe('Staff', () => {
   beforeEach(() => {
-    cy.resetDatabase();
+    cy.seedDatabase();
     cy.switchToStaff();
   });
 

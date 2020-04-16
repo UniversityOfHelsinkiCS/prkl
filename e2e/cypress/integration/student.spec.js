@@ -1,8 +1,9 @@
 // / <reference types="Cypress" />
+const courses = require('../../../server/data/courses');
 
 describe('Student', () => {
   beforeEach(() => {
-    cy.resetDatabase();
+    cy.seedDatabase();
     cy.switchToStudent();
     cy.fixture('courses').as('courses');
   });
@@ -17,24 +18,21 @@ describe('Student', () => {
     cy.contains('Email:');
   });
 
-  it('Can see the course listing', function () {
-    cy.createCourse(0);
+  it('Can see the course listing', () => {
     cy.visit('/');
-    cy.contains(this.courses[0].title);
+    cy.contains(courses[0].title);
   });
 
-  it('Can enrol on a course', function () {
-    cy.createCourse(0);
+  it('Can enrol on a course', () => {
     cy.visit('/');
-    cy.contains(this.courses[0].title).click();
+    cy.contains(courses[1].title).click();
 
-    cy.get('[data-cy="question-0"]').type('Answer');
-    cy.get('[data-cy="question-1"]').click();
+    cy.get('[data-cy="question-2"]').type('Answer');
+    cy.get('[data-cy="question-0"]').click();
     cy.contains('Second choice').click();
 
-    cy.get('[data-cy="question-2"]').click();
-
-    cy.get('[data-cy="question-2"]').contains('First choice').then(item => {
+    cy.get('[data-cy="question-1"]').click();
+    cy.get('[data-cy="question-1"]').contains('First').then((item) => {
       item.click();
     });
 
@@ -45,14 +43,39 @@ describe('Student', () => {
     cy.contains('Great success!');
   });
 
-  it('Can not enrol with answers missing', function () {
-    cy.createCourse(0);
+  it('Can not enrol with answers missing', () => {
     cy.visit('/');
-    cy.contains(this.courses[0].title).click();
+    cy.contains(courses[1].title).click();
 
     cy.get('[data-cy="submit-button"]').click();
 
     cy.get('[data-cy="confirm-button"]').should('not.exist');
     cy.contains('Please answer all questions!');
+  });
+
+  it('Can not enrol twice on the same course', () => {
+    cy.visit('/');
+    cy.contains(courses[0].title).click();
+
+    cy.get('[data-cy="toc-checkbox"]').click();
+    cy.get('[data-cy="submit-button"]').click();
+    cy.get('[data-cy="confirm-button"]').click();
+
+    cy.visit('/');
+    cy.contains(courses[0].title).click();
+    cy.contains('Already registered!');
+    cy.get('[data-cy="submit-button"]').should('not.exist');
+  });
+
+  it('Can see which courses they have enrolled to', () => {
+    cy.visit('/');
+    cy.contains(courses[0].title).click();
+
+    cy.get('[data-cy="toc-checkbox"]').click();
+    cy.get('[data-cy="submit-button"]').click();
+    cy.get('[data-cy="confirm-button"]').click();
+
+    cy.visit('/user');
+    cy.contains(courses[0].title);
   });
 });

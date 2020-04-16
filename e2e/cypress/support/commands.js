@@ -3,8 +3,8 @@
 const apiUrl = Cypress.env('API_URL') || '';
 
 // Database operations.
-Cypress.Commands.add('resetDatabase', () => {
-  cy.request('GET', `${apiUrl}/reset`);
+Cypress.Commands.add('seedDatabase', () => {
+  cy.request('GET', `${apiUrl}/seed`);
 });
 
 Cypress.Commands.add('createCourse', (index) => {
