@@ -103,4 +103,12 @@ describe('Student', () => {
     cy.visit('/user');
     cy.contains(courses[0].title);
   });
+
+  it('Can not see staff and admin views', () => {
+    cy.visit('/addcourse');
+    cy.contains('You do not have the required roles');
+
+    cy.visit('/usermanagement');
+    cy.contains('You do not have the required roles');
+  });
 });
