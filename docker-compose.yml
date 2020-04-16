@@ -66,3 +66,4 @@ services:
       - test-app
     volumes:
       - ./e2e/cypress:/e2e/cypress
+      - ./server/data:/server/data
