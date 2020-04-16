@@ -2,8 +2,10 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import { Table, Header } from 'semantic-ui-react';
+import { dummyEmail, dummyStudentNumber } from '../util/privacyDefaults';
 
 const GroupList = props => {
+  const [privacyToggle] = useStore('toggleStore');
   return (
     <div>
       {props.groups
@@ -32,7 +34,7 @@ const GroupList = props => {
                   <Table.Row key={student.id}>
                     <Table.Cell>{student.firstname}</Table.Cell>
                     <Table.Cell>{student.lastname}</Table.Cell>
-                    <Table.Cell>{student.email}</Table.Cell>
+                    <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
