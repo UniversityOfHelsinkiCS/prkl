@@ -44,7 +44,7 @@ const CourseRegistration = ({ course, registrations }) => {
     <>
       <div>
         <h3>
-          <FormattedMessage id="courseRegistration.title" />
+          <FormattedMessage id="courseRegistration.title" /> {registrations.length}
         </h3>
 
         <Table>
