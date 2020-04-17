@@ -6,6 +6,8 @@ import { STAFF } from "../utils/userRoles";
 import { User } from "../entities/User";
 import { formGroups } from "../algorithm/index";
 import { Registration } from "../entities/Registration";
+import { WorkingTimes } from "../entities/WorkingTimes";
+import { getRepository } from "typeorm";
 
 const formNewGroups = async (courseId: string) => {
   const registrations = await Registration.find({
@@ -34,6 +36,18 @@ export class GroupResolver {
     });
   }
 
+  @Query(() => [WorkingTimes])
+  async groupTimes(@Arg("groupId") groupId: string, @Arg("courseId") courseId: string): Promise<WorkingTimes[]> {
+    return await getRepository(WorkingTimes)
+      .createQueryBuilder("times")
+      .innerJoinAndSelect("times.registration", "registration")
+      .innerJoin("registration.student", "student")
+      .innerJoin("student.groups", "group")
+      .where("group.id = :groupId", { groupId: groupId })
+      .andWhere("registration.courseId = :courseId", { courseId: courseId })
+      .getMany();
+  }
+
   @Authorized(STAFF)
   @Mutation(() => [Group])
   async createGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
@@ -41,7 +55,6 @@ export class GroupResolver {
     (await Group.find({ where: { courseId: courseId } })).forEach(g => g.remove());
 
     const groups = data.groups && data.groups.length > 0 ? data.groups : await formNewGroups(courseId);
-    console.log("groups in groupResolver:", groups);
 
     return await Promise.all(
       groups.map(async g => {

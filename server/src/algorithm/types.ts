@@ -7,6 +7,16 @@ export interface SimplifiedTime {
   tentative: boolean;
 }
 
+interface AnswerChoiceObject {
+  type: string;
+  totalChoices: number;
+  selected: number[];
+}
+
+export interface QuestionsMap {
+  [key: string]: AnswerChoiceObject[];
+}
+
 export interface AllTimes {
   [key: string]: SimplifiedTime[];
 }

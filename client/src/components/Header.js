@@ -26,6 +26,7 @@ export default () => {
         name="Courses"
         active={activeItem === 'Courses'}
         onClick={handleItemClick}
+        data-cy="menu-item-courses"
       >
         <FormattedMessage id="header.courses" />
       </Menu.Item>
@@ -37,7 +38,7 @@ export default () => {
           name="AddCourse"
           active={activeItem === 'AddCourse'}
           onClick={handleItemClick}
-          data-cy="add-course"
+          data-cy="menu-item-add-course"
         >
           <FormattedMessage id="header.addCourse" />
         </Menu.Item>
@@ -50,6 +51,7 @@ export default () => {
           name="Users"
           active={activeItem === 'Users'}
           onClick={handleItemClick}
+          data-cy="menu-item-user-mgmt"
         >
           <FormattedMessage id="header.userManagement" />
         </Menu.Item>
@@ -61,12 +63,13 @@ export default () => {
         name="personalInfo"
         active={activeItem === 'personalInfo'}
         onClick={handleItemClick}
+        data-cy="menu-item-info"
       >
         <FormattedMessage id="header.personalInfo" />
       </Menu.Item>
 
-      {user && user.role >= roles.STAFF_ROLE ? (
-        <Menu.Item position="right">
+      {user && user.role > roles.STAFF_ROLE ? (
+        <Menu.Item position="right" data-cy="menu-item-privacy-toggle">
           <Button onClick={() => setPrivacyToggle(!privacyToggle)}>
             <FormattedMessage id="header.toggle" />
           </Button>

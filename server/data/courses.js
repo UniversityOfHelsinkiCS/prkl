@@ -39,7 +39,7 @@ module.exports = [
         questionChoices: [
           {
             order: 0,
-            content: "First or many choices",
+            content: "First of many choices",
           },
           {
             order: 1,

@@ -55,7 +55,7 @@ export default {
     'course.freeFormPlaceholder': 'Type your answer',
     'course.gradeQuestion': 'What are your goals for the project?',
     'course.delete': 'Delete course',
-    'course.userHasRegistered': 'Registered to course!',
+    'course.userHasRegistered': 'Already registered!',
     'course.seeGroups': 'Generated groups',
     'course.generateGroups': 'Generate groups',
     'course.switchGroupsView': 'Switch to Groups view',
@@ -107,5 +107,7 @@ export default {
     'groupsView.minGroupSize': 'Minimum group size',
     'groupsView.confirmGroupGenration':
       'Are you sure you want to generate new groups and override existing groups?',
+
+    'util.notAllowed': 'You do not have the required roles to access this content.',
   },
 };

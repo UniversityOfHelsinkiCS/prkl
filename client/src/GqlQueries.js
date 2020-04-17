@@ -201,3 +201,13 @@ export const EDIT_MIN_MAX_COURSE = gql`
     }
   }
 `;
+
+export const GROUP_TIMES = gql`
+query groupTimes($groupId: String!, $courseId: String!) {
+  groupTimes(groupId: $groupId, courseId: $courseId) {
+    startTime
+    endTime
+    registrationId
+  }
+}
+`;

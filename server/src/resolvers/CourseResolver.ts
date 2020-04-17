@@ -2,17 +2,29 @@ import { STAFF } from "./../utils/userRoles";
 import { Resolver, Query, Mutation, Arg, Ctx, Authorized } from "type-graphql";
 import { Course } from "../entities/Course";
 import { CourseInput } from "../inputs/CourseInput";
+import { getRepository } from "typeorm";
 
 @Resolver()
 export class CourseResolver {
   @Query(() => [Course])
   async courses(): Promise<Course[]> {
-    return Course.find({ where: { deleted: false } });
+    return getRepository(Course)
+      .createQueryBuilder()
+      .where("deleted = false")
+      .andWhere("deadline > NOW()")
+      .getMany();
   }
 
   @Query(() => Course)
-  course(@Arg("id") id: string): Promise<Course> {
-    return Course.findOne({ where: { id }, relations: ["questions", "questions.questionChoices"] });
+  async course(@Ctx() context, @Arg("id") id: string): Promise<Course> {
+    const { user } = context;
+    const course = await Course.findOne({ where: { id }, relations: ["questions", "questions.questionChoices"] });
+
+    if (course.deadline < new Date() && user.role < STAFF) {
+      throw new Error("The registration deadline for this course has already passed.");
+    }
+
+    return course;
   }
 
   @Authorized(STAFF)

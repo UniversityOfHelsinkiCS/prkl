@@ -16,6 +16,7 @@ import './App.css';
 import KeepAlive from './components/misc/KeepAlive';
 import Users from './components/misc/Users';
 import { dummyEmail, dummyStudentNumber } from './util/privacyDefaults';
+import PrivateRoute from './components/misc/PrivateRoute';
 
 createStore('coursesStore', []);
 createStore('allUsersStore', []);
@@ -74,26 +75,23 @@ export default () => {
         <Router basename={process.env.PUBLIC_URL}>
           <Header />
           {courseLoading && user ? (
-            <Loader active />
+            <Loader active data-cy="loader" />
           ) : (
             <div className="mainContent">
               <Loader />
               <Route path="/user" render={() => <StudentInfo />} />
-              {user.role >= roles.STAFF_ROLE ? (
-                <>
-                  <Route path="/addcourse" render={() => <CourseForm />} />
-                </>
-              ) : null}
-              {user.role === roles.ADMIN_ROLE ? (
-                <>
-                  <Route
-                    path="/usermanagement"
-                    render={() => (
-                      <Users allUsersError={allUsersError} allUsersLoading={allUsersLoading} />
-                    )}
-                  />
-                </>
-              ) : null}
+              <PrivateRoute
+                path="/addcourse"
+                requiredRole={roles.STAFF_ROLE}
+                render={() => <CourseForm />}
+              />
+              <PrivateRoute
+                path="/usermanagement"
+                requiredRole={roles.ADMIN_ROLE}
+                render={() => (
+                  <Users allUsersError={allUsersError} allUsersLoading={allUsersLoading} />
+                )}
+              />
               <Route
                 exact
                 path="/course/:id"
