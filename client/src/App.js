@@ -75,7 +75,7 @@ export default () => {
         <Router basename={process.env.PUBLIC_URL}>
           <Header />
           {courseLoading && user ? (
-            <Loader active />
+            <Loader active data-cy="loader" />
           ) : (
             <div className="mainContent">
               <Loader />
