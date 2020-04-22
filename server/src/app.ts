@@ -12,8 +12,9 @@ import { CourseResolver } from "./resolvers/CourseResolver";
 import { UserResolver } from "./resolvers/UserResolver";
 import { GroupResolver } from "./resolvers/GroupResolver";
 import { RegistrationResolver } from "./resolvers/RegistrationResolver";
-import shibbCharset from "./middleware/shibbolethHeaders";
+import shibbolethHeaders from "./middleware/shibbolethHeaders";
 import authorization, { authChecker } from "./middleware/authorization";
+import seeding from "./testUtils/seeding";
 
 export const app = express();
 const router = promiseRouter();
@@ -43,7 +44,7 @@ const main = async (): Promise<void> => {
 
   // Middleware.
   app
-    .use(shibbCharset)
+    .use(shibbolethHeaders)
     .use(authorization)
     .use("/graphql", graphqlHttp({ schema, graphiql: true }))
     .use(bodyParser.json())
@@ -53,15 +54,18 @@ const main = async (): Promise<void> => {
   // Route for keep-alive polling.
   app.get("/keepalive", (req, res) => res.send("This is the way."));
 
+  // Register routes for development and testing utilities.
+  if (process.env.NODE_ENV !== "production") {
+    seeding(router);
+  }
+
   // Serve frontend.
   app.use(express.static("public"));
   app.get("*", (req, res) => res.sendFile(path.resolve("public", "index.html")));
 
-  // Don't block ports in testing.
-  if (process.env.NODE_ENV !== "test") {
-    app.listen(port);
-    console.log(`Listening to port ${port}`);
-  }
+  // Start the app.
+  app.listen(port);
+  console.log(`Listening to port ${port}`);
 };
 
-main().catch(error => console.error(error));
+main().catch(error => console.log(error));

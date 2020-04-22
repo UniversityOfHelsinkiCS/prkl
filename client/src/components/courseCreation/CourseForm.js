@@ -12,14 +12,18 @@ const CourseForm = () => {
   const [courseDescription, setCourseDescription] = useState('');
   const [courseCode, setCourseCode] = useState('');
   const [questions, setQuestions] = useState([]);
-  const [maxGroup, setMaxGroup] = useState();
-  const [minGroup, setMinGroup] = useState();
   const [deadline, setDeadline] = useState();
+  const [calendarToggle, setCalendarToggle] = useState(false);
+
   const [courses, setCourses] = useStore('coursesStore');
 
   const [createCourse] = useMutation(CREATE_COURSE);
 
   const intl = useIntl();
+  const [calendarDescription, setCalendarDescription] = useState(
+    `${intl.formatMessage({ id: 'courseForm.timeQuestionDefault' })}`
+  );
+
   const history = useHistory();
 
   const today = new Date();
@@ -28,19 +32,27 @@ const CourseForm = () => {
   const yyyy = today.getFullYear();
   const todayParsed = `${yyyy}-${mm}-${dd}`;
 
-  const handleSubmit = async () => {
-    const courseObject = {
-      title: courseTitle,
-      description: courseDescription,
-      code: courseCode,
-      minGroupSize: Number.parseInt(minGroup),
-      maxGroupSize: Number.parseInt(maxGroup),
-      deadline: new Date(deadline),
-      questions,
-    };
-    const variables = { data: { ...courseObject } };
+  const calendarQuestion = {
+    questionType: 'times',
+    content: 'times',
+    order: questions.length + 1,
+  };
 
-    if (window.confirm("Confirm course creation?")) {
+  const handleSubmit = async () => {
+    if (calendarToggle) {
+      calendarQuestion.content = calendarDescription;
+    }
+    if (window.confirm('Confirm course creation?')) {
+      const courseObject = {
+        title: courseTitle,
+        description: courseDescription,
+        code: courseCode,
+        minGroupSize: 1,
+        maxGroupSize: 1,
+        deadline: new Date(deadline),
+        questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
+      };
+      const variables = { data: { ...courseObject } };
       try {
         const result = await createCourse({
           variables,
@@ -53,7 +65,7 @@ const CourseForm = () => {
     }
   };
 
-  const handleAddForm = (e) => {
+  const handleAddForm = e => {
     e.preventDefault();
     setQuestions([...questions, { content: '' }]);
   };
@@ -75,7 +87,8 @@ const CourseForm = () => {
             label={intl.formatMessage({
               id: 'courseForm.titleForm',
             })}
-            onChange={(event) => setCourseTitle(event.target.value)}
+            onChange={event => setCourseTitle(event.target.value)}
+            data-cy="course-title-input"
           />
         </Form.Field>
 
@@ -85,7 +98,8 @@ const CourseForm = () => {
             label={intl.formatMessage({
               id: 'courseForm.courseCodeForm',
             })}
-            onChange={(event) => setCourseCode(event.target.value)}
+            onChange={event => setCourseCode(event.target.value)}
+            data-cy="course-code-input"
           />
 
           <Form.Input
@@ -95,9 +109,10 @@ const CourseForm = () => {
             label={intl.formatMessage({
               id: 'courseForm.courseDeadlineForm',
             })}
-            onChange={(event) => {
+            onChange={event => {
               setDeadline(event.target.value);
             }}
+            data-cy="course-deadline-input"
           />
         </Form.Group>
 
@@ -107,32 +122,22 @@ const CourseForm = () => {
             label={intl.formatMessage({
               id: 'courseForm.courseDescriptionForm',
             })}
-            onChange={(event) => setCourseDescription(event.target.value)}
+            onChange={event => setCourseDescription(event.target.value)}
+            data-cy="course-description-input"
           />
         </Form.Field>
 
-        <Form.Group>
-          <Form.Input
-            required
-            type="number"
-            min="1"
-            max={maxGroup}
-            label={intl.formatMessage({
-              id: 'courseForm.courseMinGroupForm',
-            })}
-            onChange={(event) => setMinGroup(event.target.value)}
-          />
+        <Form.Checkbox
+          label={intl.formatMessage({ id: 'courseForm.includeCalendar' })}
+          onClick={() => setCalendarToggle(!calendarToggle)}
+        />
 
-          <Form.Input
-            required
-            type="number"
-            min={minGroup}
-            label={intl.formatMessage({
-              id: 'courseForm.courseMaxGroupForm',
-            })}
-            onChange={(event) => setMaxGroup(event.target.value)}
-          />
-        </Form.Group>
+        <Form.Input
+          disabled={!calendarToggle}
+          label={intl.formatMessage({ id: 'courseForm.timeFormLabel' })}
+          value={calendarDescription}
+          onChange={event => setCalendarDescription(event.target.value)}
+        />
 
         <Form.Group>
           <Form.Button type="button" onClick={handleAddForm} color="green">
@@ -155,7 +160,7 @@ const CourseForm = () => {
           ))}
         </Form.Group>
 
-        <Form.Button primary type="submit">
+        <Form.Button primary type="submit" data-cy="create-course-submit">
           <FormattedMessage id="courseForm.confirmButton" />
         </Form.Button>
       </Form>

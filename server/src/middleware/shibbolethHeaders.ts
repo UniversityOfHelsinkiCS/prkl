@@ -4,7 +4,6 @@
  * better names to fields.
  */
 import { Response, Request, NextFunction } from "express";
-import mockHeaders from "../utils/mockHeaders";
 
 // Shibboleth header keys mapped to better names.
 const nameMap = [
@@ -15,9 +14,27 @@ const nameMap = [
   { oldKey: "sn", newKey: "lastname" },
 ];
 
-export default (req: Request, res: Response, next: NextFunction): void => {
-  if (process.env.NODE_ENV === "development") {
-    mockHeaders(req);
+const defaultHeaders = {
+  uid: "default",
+  givenname: "Default Firstname",
+  mail: "default@email",
+  schacpersonaluniquecode: "urn:schac:personalUniqueCode:int:studentID:helsinki.fi:011110002",
+  sn: "Default Lastname",
+};
+
+const allHeadersExist = req => {
+  const keys = nameMap.map(name => name.oldKey);
+  return keys.every(key => !!req.headers[key]);
+};
+
+/**
+ * Handle Shibboleth headers.
+ * Applies default headers, if complete set of headers not received. Renames Shibboleth headers
+ * for improved semantics. Attempts to parse student number from Shibboleth's code.
+ */
+export default async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  if (!allHeadersExist(req) && process.env.NODE_ENV !== "production") {
+    Object.keys(defaultHeaders).forEach(key => (req.headers[key] = defaultHeaders[key]));
   }
 
   nameMap.forEach(({ oldKey, newKey }) => {

@@ -1,23 +1,27 @@
 import React from 'react';
 import { Segment, Grid, Form } from 'semantic-ui-react';
 import { useIntl } from 'react-intl';
+import { Controller } from 'react-hook-form';
+import TimeForm from '../forms/TimeForm';
 import ValidatedInput from '../forms/ValidatedInput';
+import { FREEFORM, SINGLE_CHOICE, MULTI_CHOICE, TIMES } from '../../util/questionTypes';
 
 const Question = ({ question, hookForm }) => {
   const intl = useIntl();
 
   const changeType = () => {
     switch (question.questionType) {
-      case 'freeForm':
+      case FREEFORM:
         return (
           <ValidatedInput
             name={question.id}
             type={Form.Input}
             placeholder={intl.formatMessage({ id: 'course.freeFormPlaceholder' })}
             formControl={hookForm}
+            data-cy={`question-${question.order}`}
           />
         );
-      case 'singleChoice':
+      case SINGLE_CHOICE:
         return (
           <ValidatedInput
             name={question.id}
@@ -30,9 +34,10 @@ const Question = ({ question, hookForm }) => {
             formControl={hookForm}
             type={Form.Dropdown}
             selection
+            data-cy={`question-${question.order}`}
           />
         );
-      case 'multipleChoice':
+      case MULTI_CHOICE:
         return (
           <ValidatedInput
             name={question.id}
@@ -46,12 +51,30 @@ const Question = ({ question, hookForm }) => {
             type={Form.Dropdown}
             selection
             multiple
+            data-cy={`question-${question.order}`}
           />
         );
+
       default:
         return null;
     }
   };
+
+  if (question.questionType === TIMES) {
+    return (
+      <Controller
+        as={TimeForm}
+        name={question.id}
+        onChange={([event]) => {
+          return event;
+        }}
+        control={hookForm.control}
+        description={question.content}
+      />
+    );
+
+    // return <TimeForm name={question.id} formControl={hookForm} />;
+  }
 
   return (
     <div style={{ paddingTop: 5, paddingBottom: 5 }}>

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
 import { useHistory } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { Header, Button, Loader, Icon } from 'semantic-ui-react';
-import { FormattedMessage, FormattedDate } from 'react-intl';
+import { Button, Loader } from 'semantic-ui-react';
+import { FormattedMessage } from 'react-intl';
 import roles from '../../util/user_roles';
 import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
-import Registration from '../registration/Registration';
-import CourseRegistration from '../../admin/CourseRegistrations';
+import GroupsView from './GroupsView';
+import RegistrationList from './RegistrationList';
 
 export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
@@ -15,6 +15,7 @@ export default ({ id }) => {
   const [course, setCourse] = useState({});
   const [registrations, setRegistrations] = useState([]);
   const [deleteCourse] = useMutation(DELETE_COURSE);
+  const [groupsView, setGroupsView] = useState(false);
   const history = useHistory();
 
   const { loading, error, data } = useQuery(COURSE_BY_ID, {
@@ -22,6 +23,7 @@ export default ({ id }) => {
   });
 
   const { loading: regLoading, data: regData } = useQuery(COURSE_REGISTRATION, {
+    skip: user.role !== roles.ADMIN_ROLE,
     variables: { courseId: id },
   });
 
@@ -76,6 +78,10 @@ export default ({ id }) => {
     }
   };
 
+  const handleGroupsView = () => {
+    setGroupsView(!groupsView);
+  };
+
   const userIsRegistered = () => {
     const found = user.registrations.find(r => r.course.id === course.id);
 
@@ -88,37 +94,41 @@ export default ({ id }) => {
 
   return (
     <div>
-      <h2>{`${course.code} -${course.title}`}</h2>
+      <h2>{`${course.code} - ${course.title}`}</h2>
       {user && user.role === roles.ADMIN_ROLE ? (
-        <Button onClick={handleDeletion} color="red">
-          <FormattedMessage id="course.delete" />
-        </Button>
+        <div>
+          {!groupsView ? (
+            <div>
+              <div>
+                <Button onClick={handleGroupsView} color="blue">
+                  <FormattedMessage id="course.switchGroupsView" />
+                </Button>
+              </div>
+              <p />
+              <div>
+                <Button onClick={handleDeletion} color="red">
+                  <FormattedMessage id="course.delete" />
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Button onClick={handleGroupsView} color="blue">
+              <FormattedMessage id="course.switchCourseView" />
+            </Button>
+          )}
+        </div>
       ) : null}
-      {userIsRegistered() ? (
-        <Header as="h2">
-          <Icon name="thumbs up outline" />
-          <Header.Content>
-            <FormattedMessage id="course.userHasRegistered" />
-          </Header.Content>
-        </Header>
+      <p />
+      {groupsView ? (
+        <GroupsView courseId={id} registrations={registrations} />
       ) : (
-        <>
-          <Header as="h4" color="red">
-            <FormattedMessage id="course.deadline" />
-            <FormattedDate value={course.deadline} />
-          </Header>
-          <div>{course.description}</div>
-          <h3>
-            <FormattedMessage id="course.questionsPreface" />
-          </h3>
-          <Registration courseId={course.id} questions={course.questions} />
-        </>
+        <RegistrationList
+          userIsRegistered={userIsRegistered}
+          course={course}
+          registrations={registrations}
+          user={user}
+        />
       )}
-      <div>
-        {course.questions && registrations && user.role === roles.ADMIN_ROLE ? (
-          <CourseRegistration course={course} registrations={registrations} />
-        ) : null}
-      </div>
     </div>
   );
 };

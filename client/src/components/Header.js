@@ -3,10 +3,12 @@ import { Menu, Button } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
+import roles from '../util/user_roles';
 
 export default () => {
   const [activeItem, setActiveItem] = useState(null);
   const [user] = useStore('userStore');
+  const [privacyToggle, setPrivacyToggle] = useStore('toggleStore');
 
   const handleItemClick = (e, { name }) => {
     setActiveItem(name);
@@ -24,19 +26,34 @@ export default () => {
         name="Courses"
         active={activeItem === 'Courses'}
         onClick={handleItemClick}
+        data-cy="menu-item-courses"
       >
         <FormattedMessage id="header.courses" />
       </Menu.Item>
 
-      {user && user.role === 3 ? (
+      {user && user.role >= roles.STAFF_ROLE ? (
         <Menu.Item
           as={Link}
           to="/addcourse"
           name="AddCourse"
           active={activeItem === 'AddCourse'}
           onClick={handleItemClick}
+          data-cy="menu-item-add-course"
         >
           <FormattedMessage id="header.addCourse" />
+        </Menu.Item>
+      ) : null}
+
+      {user && user.role === roles.ADMIN_ROLE ? (
+        <Menu.Item
+          as={Link}
+          to="/usermanagement"
+          name="Users"
+          active={activeItem === 'Users'}
+          onClick={handleItemClick}
+          data-cy="menu-item-user-mgmt"
+        >
+          <FormattedMessage id="header.userManagement" />
         </Menu.Item>
       ) : null}
 
@@ -46,15 +63,18 @@ export default () => {
         name="personalInfo"
         active={activeItem === 'personalInfo'}
         onClick={handleItemClick}
+        data-cy="menu-item-info"
       >
         <FormattedMessage id="header.personalInfo" />
       </Menu.Item>
 
-      <Menu.Item position="right">
-        <Button>
-          <FormattedMessage id="header.logout" />
-        </Button>
-      </Menu.Item>
+      {user && user.role > roles.STAFF_ROLE ? (
+        <Menu.Item position="right" data-cy="menu-item-privacy-toggle">
+          <Button onClick={() => setPrivacyToggle(!privacyToggle)}>
+            <FormattedMessage id="header.toggle" />
+          </Button>
+        </Menu.Item>
+      ) : null}
     </Menu>
   );
 };
