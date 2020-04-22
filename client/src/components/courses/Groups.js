@@ -7,8 +7,10 @@ import { GENERATE_GROUPS } from '../../GqlQueries';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import DraggableRow from './DraggableRow';
 
-export default ({ courseId, groups, setGroups }) => {
+export default ({ courseId }) => {
   const [privacyToggle] = useStore('toggleStore');
+  const [groups, setGroups] = useStore('groupsStore');
+
   const [generateGroups] = useMutation(GENERATE_GROUPS);
 
   const addGroup = () => {

@@ -19,6 +19,7 @@ import { dummyEmail, dummyStudentNumber } from './util/privacyDefaults';
 import PrivateRoute from './components/misc/PrivateRoute';
 
 createStore('coursesStore', []);
+createStore('groupsStore', []);
 createStore('allUsersStore', []);
 createStore('userStore', {});
 createStore('toggleStore', false);

@@ -10,7 +10,7 @@ import userRoles from '../../util/user_roles';
 export default ({ courseId, registrations }) => {
   const [generateGroups] = useMutation(GENERATE_GROUPS);
   const [minGroupSize, setMinGroupSize] = useState(0);
-  const [groups, setGroups] = useState([]);
+  const [groups, setGroups] = useStore('groupsStore');
   const [user] = useStore('userStore');
 
   const intl = useIntl();
@@ -21,8 +21,9 @@ export default ({ courseId, registrations }) => {
   });
 
   useEffect(() => {
-    if (!loading && data !== undefined) {
-      setGroups(data.courseGroups.map(e => e.students));
+    if (!loading && data !== undefined && groups.length === 0) {
+      const fetchedGroups = data.courseGroups.map(e => e.students);
+      setGroups(fetchedGroups);
     }
   }, [data, loading]);
 
@@ -85,7 +86,7 @@ export default ({ courseId, registrations }) => {
           </Form>
           <p />
 
-          <Groups courseId={courseId} groups={groups} setGroups={setGroups} />
+          <Groups courseId={courseId} />
         </div>
       )}
     </div>
