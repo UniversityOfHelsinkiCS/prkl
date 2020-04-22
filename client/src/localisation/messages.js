@@ -67,6 +67,7 @@ export default {
     'studentInfo.email': 'Email: {email}',
     'studentInfo.course': 'Enrolled courses',
     'studentInfo.group': 'Groups assigned to',
+    'studentInfo.noGroups': 'Not assigned to a group yet.',
 
     'forms.errorAnswerAll': 'Please answer all questions!',
     'forms.submitRegistration': 'Register On The Course',

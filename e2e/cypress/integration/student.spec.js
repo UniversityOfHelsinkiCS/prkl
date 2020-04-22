@@ -112,4 +112,21 @@ describe('Student', () => {
     cy.visit('/usermanagement');
     cy.contains('You do not have the required roles');
   });
+
+  it('Can not see past courses', () => {
+    cy.switchToStaff();
+    cy.get('[data-cy="menu-item-add-course"]').click();
+
+    cy.get('[data-cy="course-title-input"]').type('Past Course');
+    cy.get('[data-cy="course-code-input"]').type('CYP999');
+    cy.get('[data-cy="course-deadline-input"]').type('2019-12-12');
+    cy.get('[data-cy="course-description-input"]').type('Description for test course.');
+
+    cy.get('[data-cy="create-course-submit"]').click();
+
+    cy.switchToStudent();
+    cy.visit('/courses');
+    cy.get('[data-cy="loader"]').should('not.exist');
+    cy.contains('Past Course').should('not.exist');
+  });
 });
