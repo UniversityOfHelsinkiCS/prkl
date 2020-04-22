@@ -1,12 +1,13 @@
-import { GroupListInput } from "./../inputs/GroupListInput";
 import { Resolver, Query, Mutation, Arg, Authorized } from "type-graphql";
-import { Group } from "../entities/Group";
-import { STAFF } from "../utils/userRoles";
-import { User } from "../entities/User";
-import { formGroups } from "../algorithm/index";
-import { Registration } from "../entities/Registration";
-import { WorkingTimes } from "../entities/WorkingTimes";
 import { getRepository } from "typeorm";
+
+import { Group } from "../entities/Group";
+import { User } from "../entities/User";
+import { Registration } from "../entities/Registration";
+import { GroupListInput } from "./../inputs/GroupListInput";
+
+import { STAFF } from "../utils/userRoles";
+import { formGroups } from "../algorithm/index";
 
 const formNewGroups = async (courseId: string, minGroupSize: number) => {
   const registrations = await Registration.find({
