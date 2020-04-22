@@ -158,18 +158,17 @@ const countAvailable = (group: AllTimes): MaxAvailableTimes => {
   return availabletimes;
 };
 
-export const formGroups = (course: Course, registrations: Registration[]): GroupInput[] => {
-  const minSize = course.minGroupSize;
-  const numberOfGroups = Math.floor(registrations.length / minSize);
+export const formGroups = (minGroupSize: number, registrations: Registration[]): GroupInput[] => {
+  const numberOfGroups = Math.floor(registrations.length / minGroupSize);
   const questionMapObject = toQuestions(registrations);
 
   const questionScoreWeight = 0.2;
 
   const targetTimeSlot = 4;
 
-  const groupSizes = Array(numberOfGroups).fill(minSize);
+  const groupSizes = Array(numberOfGroups).fill(minGroupSize);
 
-  for (let i = 0; i < registrations.length % minSize; i++) {
+  for (let i = 0; i < registrations.length % minGroupSize; i++) {
     groupSizes[i % groupSizes.length]++;
   }
 
@@ -182,7 +181,7 @@ export const formGroups = (course: Course, registrations: Registration[]): Group
   for (let i = 0; i < 1000; i++) {
     const answers = { ...simplifiedRegistrations };
 
-    groups = divide(targetTimeSlot, minSize, answers, availableTimes);
+    groups = divide(targetTimeSlot, minGroupSize, answers, availableTimes);
 
     const questionScore = evaluateGroups(groups.groups, questionMapObject) * questionScoreWeight;
     groups.score -= questionScore;
