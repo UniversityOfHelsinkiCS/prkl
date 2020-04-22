@@ -3,16 +3,13 @@ import { useStore } from 'react-hookstore';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Form, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { GENERATE_GROUPS, EDIT_MIN_MAX_COURSE, COURSE_GROUPS } from '../../GqlQueries';
+import { GENERATE_GROUPS, COURSE_GROUPS } from '../../GqlQueries';
 import Groups from './Groups';
 import userRoles from '../../util/user_roles';
 
 export default ({ courseId, registrations }) => {
   const [generateGroups] = useMutation(GENERATE_GROUPS);
-  const [editMinMax] = useMutation(EDIT_MIN_MAX_COURSE);
-  // const [matchingTimes, setMatchingTimes] = useState(0);
   const [minGroupSize, setMinGroupSize] = useState(0);
-  const [maxGroupSize, setMaxGroupSize] = useState(0);
   const [groups, setGroups] = useState([]);
   const [user] = useStore('userStore');
 
@@ -38,21 +35,9 @@ export default ({ courseId, registrations }) => {
     );
   }
 
-  const editCourseMinMax = async () => {
-    const variables = { id: courseId, min: minGroupSize, max: maxGroupSize };
-    try {
-      await editMinMax({
-        variables,
-      });
-    } catch (courseError) {
-      console.log('error:', courseError);
-    }
-  };
-
   const handleGroupCreation = async () => {
-    const variables = { data: { courseId } };
+    const variables = { data: { courseId, minGroupSize } };
     if (window.confirm(intl.formatMessage({ id: 'groupsView.confirmGroupGenration' }))) {
-      editCourseMinMax();
       try {
         const res = await generateGroups({
           variables,
@@ -92,18 +77,6 @@ export default ({ courseId, registrations }) => {
                   </h4>
                 }
                 onChange={event => setMinGroupSize(Number.parseInt(event.target.value, 10))}
-              />
-              <Form.Input
-                required
-                type="number"
-                min="1"
-                max="9999999"
-                label={
-                  <h4>
-                    <FormattedMessage id="groupsView.maxGroupSize" />
-                  </h4>
-                }
-                onChange={event => setMaxGroupSize(Number.parseInt(event.target.value, 10))}
               />
             </Form.Group>
             <Form.Button color="orange">

@@ -1,4 +1,3 @@
-import { Course } from "./../entities/Course";
 import { GroupListInput } from "./../inputs/GroupListInput";
 import { Resolver, Query, Mutation, Arg, Authorized } from "type-graphql";
 import { Group } from "../entities/Group";
@@ -9,7 +8,7 @@ import { Registration } from "../entities/Registration";
 import { WorkingTimes } from "../entities/WorkingTimes";
 import { getRepository } from "typeorm";
 
-const formNewGroups = async (courseId: string) => {
+const formNewGroups = async (courseId: string, minGroupSize: number) => {
   const registrations = await Registration.find({
     where: { courseId: courseId },
     relations: [
@@ -21,8 +20,7 @@ const formNewGroups = async (courseId: string) => {
       "workingTimes",
     ],
   });
-  const course = await Course.findOne({ where: { id: courseId } });
-  return formGroups(course, registrations);
+  return formGroups(minGroupSize, registrations);
 };
 
 @Resolver()
@@ -51,10 +49,10 @@ export class GroupResolver {
   @Authorized(STAFF)
   @Mutation(() => [Group])
   async createGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
-    const { courseId } = data;
+    const { courseId, minGroupSize } = data;
     (await Group.find({ where: { courseId: courseId } })).forEach(g => g.remove());
 
-    const groups = data.groups && data.groups.length > 0 ? data.groups : await formNewGroups(courseId);
+    const groups = data.groups && data.groups.length > 0 ? data.groups : await formNewGroups(courseId, minGroupSize);
 
     return await Promise.all(
       groups.map(async g => {
