@@ -28,6 +28,10 @@ export default {
     'courses.searchPlaceholder': 'Search courses',
     'courses.deadline': 'Enrollment deadline',
     'courses.showPastCoursesButtonLabel': 'Show past courses',
+    'courses.orderByLabel': 'Order by:',
+    'courses.orderByNameOption': 'Name',
+    'courses.orderByCodeOption': 'Course Code',
+    'courses.orderByDeadlineOption': 'Deadline',
 
     'users.empty': 'No users found',
     'users.admin': 'Admin user',

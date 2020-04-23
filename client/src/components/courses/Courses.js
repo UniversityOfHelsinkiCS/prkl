@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Input, Divider, Menu } from 'semantic-ui-react';
-import { useIntl } from 'react-intl';
+import { Input, Divider, Menu, Select } from 'semantic-ui-react';
+import { useIntl, FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import CourseListStaffControls from './CourseListStaffControls';
 import CourseList from './CourseList';
@@ -9,11 +9,14 @@ export default () => {
   const intl = useIntl();
   const [courses] = useStore('coursesStore');
   const [search, setSearch] = useState('');
+  const [order, setOrder] = useState('name');
   const [showPastCourses, setShowPastCourses] = useState(false);
 
   const handleSearchChange = event => {
     setSearch(event.target.value);
   };
+
+  const changeOrder = (_, { value }) => setOrder(value);
 
   const togglePastCourses = () => {
     setShowPastCourses(prev => !prev);
@@ -31,8 +34,34 @@ export default () => {
       course.title.toLowerCase().includes(search.toLowerCase()) ||
       course.code.toLowerCase().includes(search.toLowerCase());
 
-    return courses.filter(deadlineFilter).filter(searchFilter);
+    const sortByName = (a, b) => (a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1);
+    const sortByCode = (a, b) => (a.code.toLowerCase() < b.code.toLowerCase() ? -1 : 1);
+    const sortByDeadline = (a, b) => (new Date(a.deadline) < new Date(b.deadline) ? -1 : 1);
+
+    const filteredCourses = courses.filter(deadlineFilter).filter(searchFilter);
+
+    switch (order) {
+      case 'name':
+        filteredCourses.sort(sortByName);
+        break;
+      case 'code':
+        filteredCourses.sort(sortByCode);
+        break;
+      case 'deadline':
+        filteredCourses.sort(sortByDeadline);
+        break;
+      default:
+        break;
+    }
+
+    return filteredCourses;
   };
+
+  const orderOptions = [
+    { value: 'name', text: intl.formatMessage({ id: 'courses.orderByNameOption' }) },
+    { value: 'code', text: intl.formatMessage({ id: 'courses.orderByCodeOption' }) },
+    { value: 'deadline', text: intl.formatMessage({ id: 'courses.orderByDeadlineOption' }) },
+  ];
 
   return (
     <div>
@@ -42,6 +71,12 @@ export default () => {
             onChange={handleSearchChange}
             placeholder={intl.formatMessage({ id: 'courses.searchPlaceholder' })}
           />
+        </Menu.Item>
+        <Menu.Item>
+          <div style={{ marginRight: '1rem' }}>
+            <FormattedMessage id="courses.orderByLabel" />
+          </div>
+          <Select options={orderOptions} value={order} onChange={changeOrder} />
         </Menu.Item>
         <Menu.Item>
           <CourseListStaffControls onChange={togglePastCourses} />
