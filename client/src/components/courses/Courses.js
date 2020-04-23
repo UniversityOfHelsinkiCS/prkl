@@ -9,17 +9,25 @@ export default () => {
   const intl = useIntl();
   const [courses] = useStore('coursesStore');
   const [search, setSearch] = useState('');
-  const [order, setOrder] = useState('name');
-  const [showPastCourses, setShowPastCourses] = useState(false);
+  const [order, setOrder] = useState(localStorage.getItem('assembler.courseOrder') || 'name');
+  const [showPastCourses, setShowPastCourses] = useState(
+    localStorage.getItem('assembler.showPastCourses') === 'true'
+  );
 
   const handleSearchChange = event => {
     setSearch(event.target.value);
   };
 
-  const changeOrder = (_, { value }) => setOrder(value);
+  const changeOrder = (_, { value }) => {
+    localStorage.setItem('assembler.courseOrder', value);
+    setOrder(value);
+  };
 
   const togglePastCourses = () => {
-    setShowPastCourses(prev => !prev);
+    setShowPastCourses(prev => {
+      localStorage.setItem('assembler.showPastCourses', !prev);
+      return !prev;
+    });
   };
 
   const visibleCourses = () => {
@@ -79,7 +87,7 @@ export default () => {
           <Select options={orderOptions} value={order} onChange={changeOrder} />
         </Menu.Item>
         <Menu.Item>
-          <CourseListStaffControls onChange={togglePastCourses} />
+          <CourseListStaffControls checked={showPastCourses} onChange={togglePastCourses} />
         </Menu.Item>
       </Menu>
       <Divider />
