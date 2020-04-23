@@ -1,22 +1,33 @@
 import React, { useState } from 'react';
-import { Input, Card, Divider, Menu } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
-import { useIntl } from 'react-intl';
+import { Input, Divider, Menu, Select } from 'semantic-ui-react';
+import { useIntl, FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import CourseListStaffControls from './CourseListStaffControls';
+import CourseList from './CourseList';
 
 export default () => {
   const intl = useIntl();
   const [courses] = useStore('coursesStore');
   const [search, setSearch] = useState('');
-  const [showPastCourses, setShowPastCourses] = useState(false);
+  const [order, setOrder] = useState(localStorage.getItem('assembler.courseOrder') || 'name');
+  const [showPastCourses, setShowPastCourses] = useState(
+    localStorage.getItem('assembler.showPastCourses') === 'true'
+  );
 
   const handleSearchChange = event => {
     setSearch(event.target.value);
   };
 
+  const changeOrder = (_, { value }) => {
+    localStorage.setItem('assembler.courseOrder', value);
+    setOrder(value);
+  };
+
   const togglePastCourses = () => {
-    setShowPastCourses(prev => !prev);
+    setShowPastCourses(prev => {
+      localStorage.setItem('assembler.showPastCourses', !prev);
+      return !prev;
+    });
   };
 
   const visibleCourses = () => {
@@ -27,8 +38,38 @@ export default () => {
     const deadlineFilter = course =>
       showPastCourses ? true : new Date(course.deadline) > new Date();
 
-    return courses.filter(deadlineFilter);
+    const searchFilter = course =>
+      course.title.toLowerCase().includes(search.toLowerCase()) ||
+      course.code.toLowerCase().includes(search.toLowerCase());
+
+    const sortByName = (a, b) => (a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1);
+    const sortByCode = (a, b) => (a.code.toLowerCase() < b.code.toLowerCase() ? -1 : 1);
+    const sortByDeadline = (a, b) => (new Date(a.deadline) < new Date(b.deadline) ? -1 : 1);
+
+    const filteredCourses = courses.filter(deadlineFilter).filter(searchFilter);
+
+    switch (order) {
+      case 'name':
+        filteredCourses.sort(sortByName);
+        break;
+      case 'code':
+        filteredCourses.sort(sortByCode);
+        break;
+      case 'deadline':
+        filteredCourses.sort(sortByDeadline);
+        break;
+      default:
+        break;
+    }
+
+    return filteredCourses;
   };
+
+  const orderOptions = [
+    { value: 'name', text: intl.formatMessage({ id: 'courses.orderByNameOption' }) },
+    { value: 'code', text: intl.formatMessage({ id: 'courses.orderByCodeOption' }) },
+    { value: 'deadline', text: intl.formatMessage({ id: 'courses.orderByDeadlineOption' }) },
+  ];
 
   return (
     <div>
@@ -40,35 +81,17 @@ export default () => {
           />
         </Menu.Item>
         <Menu.Item>
-          <CourseListStaffControls onChange={togglePastCourses} />
+          <div style={{ marginRight: '1rem' }}>
+            <FormattedMessage id="courses.orderByLabel" />
+          </div>
+          <Select options={orderOptions} value={order} onChange={changeOrder} />
+        </Menu.Item>
+        <Menu.Item>
+          <CourseListStaffControls checked={showPastCourses} onChange={togglePastCourses} />
         </Menu.Item>
       </Menu>
       <Divider />
-
-      <Card.Group itemsPerRow={1}>
-        <div className="coursesList">
-          {visibleCourses()
-            .filter(
-              course =>
-                course.title.toLowerCase().includes(search.toLowerCase()) ||
-                course.code.toLowerCase().includes(search.toLowerCase())
-            )
-            .map(course => (
-              <Card
-                key={course.id}
-                raised
-                fluid
-                as={Link}
-                to={`/course/${course.id}`}
-                header={`${course.code} - ${course.title}`}
-                description={`${intl.formatMessage({
-                  id: 'courses.deadline',
-                })} ${intl.formatDate(course.deadline)}`}
-                className={new Date(course.deadline) < new Date() ? 'course-past' : null}
-              />
-            ))}
-        </div>
-      </Card.Group>
+      <CourseList courses={visibleCourses()} />
     </div>
   );
 };
