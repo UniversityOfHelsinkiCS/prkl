@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Input, Card, Divider, Menu } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+import { Input, Divider, Menu } from 'semantic-ui-react';
 import { useIntl } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import CourseListStaffControls from './CourseListStaffControls';
+import CourseList from './CourseList';
 
 export default () => {
   const intl = useIntl();
@@ -27,7 +27,11 @@ export default () => {
     const deadlineFilter = course =>
       showPastCourses ? true : new Date(course.deadline) > new Date();
 
-    return courses.filter(deadlineFilter);
+    const searchFilter = course =>
+      course.title.toLowerCase().includes(search.toLowerCase()) ||
+      course.code.toLowerCase().includes(search.toLowerCase());
+
+    return courses.filter(deadlineFilter).filter(searchFilter);
   };
 
   return (
@@ -44,31 +48,7 @@ export default () => {
         </Menu.Item>
       </Menu>
       <Divider />
-
-      <Card.Group itemsPerRow={1}>
-        <div className="coursesList">
-          {visibleCourses()
-            .filter(
-              course =>
-                course.title.toLowerCase().includes(search.toLowerCase()) ||
-                course.code.toLowerCase().includes(search.toLowerCase())
-            )
-            .map(course => (
-              <Card
-                key={course.id}
-                raised
-                fluid
-                as={Link}
-                to={`/course/${course.id}`}
-                header={`${course.code} - ${course.title}`}
-                description={`${intl.formatMessage({
-                  id: 'courses.deadline',
-                })} ${intl.formatDate(course.deadline)}`}
-                className={new Date(course.deadline) < new Date() ? 'course-past' : null}
-              />
-            ))}
-        </div>
-      </Card.Group>
+      <CourseList courses={visibleCourses()} />
     </div>
   );
 };
