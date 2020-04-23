@@ -27,6 +27,7 @@ export default {
 
     'courses.searchPlaceholder': 'Search courses',
     'courses.deadline': 'Enrollment deadline',
+    'courses.showPastCoursesButtonLabel': 'Show past courses',
 
     'users.empty': 'No users found',
     'users.admin': 'Admin user',
@@ -75,7 +76,7 @@ export default {
     'forms.registrationSuccess': 'Great success! Your registration was received.',
     'forms.toc': 'Assembler may disclose my name and e-mail address to students in my group.',
 
-    'timeForm.time': 'Time',
+    'timeForm.hours': 'Hour',
     'timeForm.monday': 'Mon',
     'timeForm.tuesday': 'Tue',
     'timeForm.wednesday': 'Wed',
@@ -100,6 +101,8 @@ export default {
     'groups.removeGroupButton': 'Remove group',
     'groups.createGroups': 'Create and save groups',
     'groups.createConfirm': 'Confirm group selection',
+    'groups.showTimes': 'Show matching times',
+
 
     'groupsView.noRegistrations': 'No registrations',
     'groupsView.matchingTimes': 'Matching times',

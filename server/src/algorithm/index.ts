@@ -1,5 +1,4 @@
 import { Registration } from "../entities/Registration";
-import { Course } from "../entities/Course";
 import { GroupInput } from "../inputs/GroupInput";
 import { AllTimes, MaxAvailableTimes, DividedGroup, QuestionsMap } from "./types";
 import { evaluateGroups } from "./evaluate";
@@ -8,7 +7,7 @@ const hours = 14;
 const first = 6;
 // Ilmottautuneiden pitunen lista, ilmottautuneelle total kelpaavat ajat
 
-const shuffle = (arr: Array<number>): Array<number> => {
+const shuffle = (arr: any[]): any[] => {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * i);
     const temp = arr[i];
@@ -116,7 +115,7 @@ const divide = (len: number, size: number, answers: AllTimes, availabletimes: Ma
   let i = 0;
 
   while (i < 7 * hours) {
-    const time = times[randomizedTimeslots[i]];
+    const time = shuffle(times[randomizedTimeslots[i]]);
     if (time.length >= size) {
       time.sort((a, b) => availabletimes[b] - availabletimes[a]);
       const group: string[] = time.splice(time.length - size);

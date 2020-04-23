@@ -7,12 +7,17 @@ import { getRepository } from "typeorm";
 @Resolver()
 export class CourseResolver {
   @Query(() => [Course])
-  async courses(): Promise<Course[]> {
-    return getRepository(Course)
-      .createQueryBuilder()
-      .where("deleted = false")
-      .andWhere("deadline > NOW()")
-      .getMany();
+  async courses(@Ctx() context): Promise<Course[]> {
+    const { user } = context;
+    if (user.role < STAFF) {
+      return getRepository(Course)
+        .createQueryBuilder()
+        .where("deleted = false")
+        .andWhere("deadline > NOW()")
+        .getMany();
+    } else {
+      return Course.find({ where: { deleted: false } });
+    }
   }
 
   @Query(() => Course)

@@ -203,11 +203,20 @@ export const EDIT_MIN_MAX_COURSE = gql`
 `;
 
 export const GROUP_TIMES = gql`
-query groupTimes($groupId: String!, $courseId: String!) {
-  groupTimes(groupId: $groupId, courseId: $courseId) {
-    startTime
-    endTime
-    registrationId
+  query groupTimes($studentId: String!) {
+    groupTimes(studentId: $studentId) {
+      id
+      students {
+        firstname
+        registrations {
+          studentId
+          workingTimes {
+            startTime
+            endTime
+            registrationId
+          }
+        }
+      }
+    }
   }
-}
 `;
