@@ -27,6 +27,7 @@ export default {
 
     'courses.searchPlaceholder': 'Search courses',
     'courses.deadline': 'Enrollment deadline',
+    'courses.showPastCoursesButtonLabel': 'Show past courses',
 
     'users.empty': 'No users found',
     'users.admin': 'Admin user',
