@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input, Card, Divider } from 'semantic-ui-react';
+import { Input, Card, Divider, Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import { useStore } from 'react-hookstore';
@@ -32,11 +32,17 @@ export default () => {
 
   return (
     <div>
-      <Input
-        onChange={handleSearchChange}
-        placeholder={intl.formatMessage({ id: 'courses.searchPlaceholder' })}
-      />
-      <CourseListStaffControls onChange={togglePastCourses} />
+      <Menu secondary>
+        <Menu.Item>
+          <Input
+            onChange={handleSearchChange}
+            placeholder={intl.formatMessage({ id: 'courses.searchPlaceholder' })}
+          />
+        </Menu.Item>
+        <Menu.Item>
+          <CourseListStaffControls onChange={togglePastCourses} />
+        </Menu.Item>
+      </Menu>
       <Divider />
 
       <Card.Group itemsPerRow={1}>
@@ -58,6 +64,7 @@ export default () => {
                 description={`${intl.formatMessage({
                   id: 'courses.deadline',
                 })} ${intl.formatDate(course.deadline)}`}
+                className={new Date(course.deadline) < new Date() ? 'course-past' : null}
               />
             ))}
         </div>
