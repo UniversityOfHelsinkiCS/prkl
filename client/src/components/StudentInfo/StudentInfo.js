@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import { useQuery } from '@apollo/react-hooks';
-import { GROUP_TIMES } from '../../GqlQueries';
+import { GROUP_TIMES, CURRENT_USER } from '../../GqlQueries';
 import GroupList from './GroupList';
 
 export default () => {
-  const [user] = useStore('userStore');
+  const [user, setUser] = useStore('userStore');
   const [groupTimes, setGroupTimes] = useState(undefined);
+  
+  const { loading : userLoading, data : userData } = useQuery(CURRENT_USER, {
+    fetchPolicy: 'network-only',
+  });
 
   const { loading, error, data } = useQuery(GROUP_TIMES, {
     variables: { studentId: user.id },
@@ -18,11 +22,11 @@ export default () => {
   const first = 8;
 
   useEffect(() => {
-    if (!loading && data !== undefined) {
+    if (!loading && data !== undefined && !userLoading ) {
       setGroupTimes(timeParse(data.groupTimes));
-      // console.log('data:', data)
+      setUser(userData.currentUser);
     }
-  }, [data, loading]);
+  }, [data, loading, userData, userLoading]);
 
   if (error !== undefined) {
     console.log('error:', error);

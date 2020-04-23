@@ -27,6 +27,7 @@ export default {
 
     'courses.searchPlaceholder': 'Search courses',
     'courses.deadline': 'Enrollment deadline',
+    'courses.showPastCoursesButtonLabel': 'Show past courses',
 
     'users.empty': 'No users found',
     'users.admin': 'Admin user',
@@ -100,7 +101,7 @@ export default {
     'groups.removeGroupButton': 'Remove group',
     'groups.createGroups': 'Create and save groups',
     'groups.createConfirm': 'Confirm group selection',
-    'groups.showTimes': 'Show Times',
+    'groups.showTimes': 'Show matching times',
 
 
     'groupsView.noRegistrations': 'No registrations',

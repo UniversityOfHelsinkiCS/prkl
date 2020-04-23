@@ -11,6 +11,10 @@
   padding: 20px;
 }
 
+.course-past {
+  background-color: #e4e4e4 !important;
+}
+
 .no_highlights {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
