@@ -106,7 +106,7 @@ export default ({ id }) => {
               </div>
               <p />
               <div>
-                <Button onClick={handleDeletion} color="red">
+                <Button onClick={handleDeletion} color="red" data-cy="delete-course-button">
                   <FormattedMessage id="course.delete" />
                 </Button>
               </div>

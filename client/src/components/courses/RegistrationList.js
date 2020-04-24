@@ -6,6 +6,8 @@ import CourseRegistration from '../../admin/CourseRegistrations';
 import roles from '../../util/user_roles';
 
 export default ({ userIsRegistered, course, registrations, user }) => {
+  const paragraphs = course.description ? course.description.split('\n\n') : [];
+
   return (
     <div>
       <p />
@@ -23,7 +25,11 @@ export default ({ userIsRegistered, course, registrations, user }) => {
             &nbsp;
             <FormattedDate value={course.deadline} />
           </Header>
-          <div>{course.description}</div>
+          <div>
+            {paragraphs.map(p => (
+              <p>{p}</p>
+            ))}
+          </div>
           <Registration courseId={course.id} questions={course.questions} />
         </>
       )}
