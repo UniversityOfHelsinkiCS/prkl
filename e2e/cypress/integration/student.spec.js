@@ -129,4 +129,21 @@ describe('Student', () => {
     cy.get('[data-cy="loader"]').should('not.exist');
     cy.contains('Past Course').should('not.exist');
   });
+
+  it('Can not see deleted courses', () => {
+    cy.switchToAdmin();
+    cy.contains(courses[0].title).click();
+    cy.get('[data-cy="delete-course-button"]').click();
+
+    cy.switchToStudent();
+    cy.visit('/courses');
+    cy.get('[data-cy="loader"]').should('not.exist');
+    cy.contains(courses[0].title).should('not.exist');
+  });
+
+  it('Cannot create a course', () => {
+    cy.createCourse(0, 0).then((resp) => {
+      expect(resp.status).to.eq(500);
+    });
+  });
 });
