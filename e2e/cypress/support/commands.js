@@ -7,12 +7,12 @@ Cypress.Commands.add('seedDatabase', () => {
   cy.request('GET', `${apiUrl}/seed`);
 });
 
-Cypress.Commands.add('createCourse', (index) => {
+Cypress.Commands.add('createCourse', (courseIndex, headerIndex) => {
   cy.fixture('courses').then((courses) => {
     const body = {
       operationName: 'createCourse',
       variables: {
-        data: courses[index],
+        data: courses[courseIndex],
       },
       query: `
         mutation createCourse($data: CourseInput!) {
@@ -26,7 +26,8 @@ Cypress.Commands.add('createCourse', (index) => {
         method: 'POST',
         url: `${apiUrl}/graphql`,
         body,
-        headers: headers[1],
+        headers: headers[headerIndex],
+        failOnStatusCode: false,
       });
     });
   });
