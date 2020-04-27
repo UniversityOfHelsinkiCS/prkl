@@ -101,12 +101,13 @@ export default {
     'groups.studentNumber': 'Student number',
     'groups.email': 'Email',
     'groups.loadingError': 'Error loading groups',
-    'groups.addGroupButton': 'Add new group',
+    'groups.showTimes': 'Show matching times',
+    'groups.toggleGroupTimes': 'Toggle group times',
     'groups.removeGroupButton': 'Remove group',
     'groups.createGroups': 'Create and save groups',
     'groups.createConfirm': 'Confirm group selection',
     'groups.showTimes': 'Show matching times',
-
+    'groups.addGroupButton': 'Add new group',
 
     'groupsView.noRegistrations': 'No registrations',
     'groupsView.matchingTimes': 'Matching times',

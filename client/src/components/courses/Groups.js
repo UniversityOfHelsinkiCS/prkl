@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
 import { Table, Header, List, Button, Segment, Grid } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
@@ -15,16 +15,36 @@ export default ({ course, regByStudentId }) => {
 
   const [generateGroups] = useMutation(GENERATE_GROUPS);
 
+  const [showGroupTimes, setShowGroupTimes] = useState([]);
+
+  useEffect(() => {
+    if (groups.length > 0) {
+      setShowGroupTimes(Array(groups.length).fill(false));
+    }
+  }, [groups]);
+
+  // varmaa pitää päivittää noi group funktiois
+
+  console.log('showGroupTimes:', showGroupTimes);
+  console.log('groups.length:', groups.length);
+
   const addGroup = () => {
     const newGroups = [...groups];
     newGroups.push([]);
     setGroups(newGroups);
+    setShowGroupTimes(showGroupTimes.push(false));
   };
 
   const removeGroup = index => {
     const newGroups = [...groups];
     newGroups.splice(index, 1);
+
     setGroups(newGroups);
+
+    const newShowGroups = [...showGroupTimes];
+    newShowGroups.splice(index, 1);
+
+    setShowGroupTimes(newShowGroups);
   };
 
   const removeGroupButton = index => {
@@ -76,6 +96,12 @@ export default ({ course, regByStudentId }) => {
     handleGroupCreation();
   };
 
+  const handleShowGroupTimesClick = index => {
+    let newShowTimes = [...showGroupTimes];
+    newShowTimes[index] = !newShowTimes[index];
+    setShowGroupTimes(newShowTimes);
+  };
+
   return (
     <div>
       {groups.length === 0 ? (
@@ -95,6 +121,9 @@ export default ({ course, regByStudentId }) => {
                 <div>
                   <FormattedMessage id="groups.title" />
                   {tableIndex + 1}
+                  <Button onClick={() => handleShowGroupTimesClick(tableIndex)}>
+                    <FormattedMessage id="groups.toggleGroupTimes" />
+                  </Button>
                   {removeGroupButton(tableIndex)}
                 </div>
               </Header>
@@ -138,29 +167,31 @@ export default ({ course, regByStudentId }) => {
                 </Table.Body>
               </Table>
 
-              <List horizontal verticalAlign="top">
-                <List.Item>
-                  <HourDisplay
-                    header="Combined"
-                    groupId={grop.id}
-                    students={grop.length}
-                    times={count(grop.map(student => regByStudentId[student.studentNo]))}
-                  />
-                </List.Item>
-                {grop.map(student => {
-                  regByStudentId[student.studentNo].questionAnswers.map(qa => questionSwitch(qa));
-                  return (
-                    <List.Item>
-                      <HourDisplay
-                        groupId={student.id}
-                        header={`${student.firstname} ${student.lastname}`}
-                        students={1}
-                        times={count([regByStudentId[student.studentNo]])}
-                      />
-                    </List.Item>
-                  );
-                })}
-              </List>
+              {showGroupTimes[tableIndex] ? (
+                <List horizontal verticalAlign="top">
+                  <List.Item>
+                    <HourDisplay
+                      header={'Combined'}
+                      groupId={grop.id}
+                      students={grop.length}
+                      times={count(grop.map(student => regByStudentId[student.studentNo]))}
+                    />
+                  </List.Item>
+                  {grop.map((student, rowIndex) => {
+                    regByStudentId[student.studentNo].questionAnswers.map(qa => questionSwitch(qa));
+                    return (
+                      <List.Item>
+                        <HourDisplay
+                          groupId={student.id}
+                          header={`${student.firstname} ${student.lastname}`}
+                          students={1}
+                          times={count([regByStudentId[student.studentNo]])}
+                        />
+                      </List.Item>
+                    );
+                  })}
+                </List>
+              ) : null}
             </div>
           ))}
         </div>
