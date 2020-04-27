@@ -6,8 +6,9 @@ import { useMutation } from '@apollo/react-hooks';
 import { GENERATE_GROUPS } from '../../GqlQueries';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import DraggableRow from './DraggableRow';
+import questionSwitch from "../../util/functions"
 
-export default ({ courseId }) => {
+export default ({ course, regByStudentId }) => {
   const [privacyToggle] = useStore('toggleStore');
   const [groups, setGroups] = useStore('groupsStore');
 
@@ -54,7 +55,7 @@ export default ({ courseId }) => {
       }
     });
 
-    const dataObject = { data: { courseId, groups: groupObject } };
+    const dataObject = { data: { courseId: course.id, groups: groupObject } };
     try {
       generateGroups({ variables: dataObject });
     } catch (generationError) {
@@ -108,6 +109,11 @@ export default ({ courseId }) => {
                     <Table.HeaderCell>
                       <FormattedMessage id="groups.email" />
                     </Table.HeaderCell>
+                    {course.questions.map(question =>
+                      question.questionType !== 'times' ? (
+                        <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
+                      ) : null
+                    )}
                   </DraggableRow>
                 </Table.Header>
                 <Table.Body>
@@ -123,6 +129,7 @@ export default ({ courseId }) => {
                         {privacyToggle ? dummyStudentNumber : student.studentNo}
                       </Table.Cell>
                       <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
+                      {regByStudentId[student.studentNo].questionAnswers.map(qa => questionSwitch(qa))}
                     </DraggableRow>
                   ))}
                 </Table.Body>

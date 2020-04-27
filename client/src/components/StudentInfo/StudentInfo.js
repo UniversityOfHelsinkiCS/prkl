@@ -3,10 +3,12 @@ import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import { useQuery } from '@apollo/react-hooks';
 import { GROUP_TIMES, CURRENT_USER } from '../../GqlQueries';
+import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import GroupList from './GroupList';
 
 export default () => {
   const [user, setUser] = useStore('userStore');
+  const [privacyToggle] = useStore('toggleStore');
   const [groupTimes, setGroupTimes] = useState(undefined);
   
   const { loading : userLoading, data : userData } = useQuery(CURRENT_USER, {
@@ -67,11 +69,8 @@ export default () => {
   const timeParse = props => {
     const groupTimesMap = {};
     props.forEach(group => {
-      // console.log('group:', group)
-      // console.log('count:', count(group))
       groupTimesMap[group.id] = count(group);
     });
-    // console.log('groupTimes:', groupTimesMap)
     return groupTimesMap;
   };
 
@@ -88,10 +87,10 @@ export default () => {
       </div>
 
       <div>
-        <FormattedMessage id="studentInfo.studentNo" values={{ studentNo: user.studentNo }} />
+        <FormattedMessage id="studentInfo.studentNo" values={{ studentNo: privacyToggle ? dummyStudentNumber : user.studentNo }} />
       </div>
       <div>
-        <FormattedMessage id="studentInfo.email" values={{ email: user.email }} />
+        <FormattedMessage id="studentInfo.email" values={{ email: privacyToggle ? dummyEmail : user.email }} />
       </div>
       {user.registrations ? (
         <div>

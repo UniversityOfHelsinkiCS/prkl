@@ -7,7 +7,7 @@ import { GENERATE_GROUPS, COURSE_GROUPS } from '../../GqlQueries';
 import Groups from './Groups';
 import userRoles from '../../util/user_roles';
 
-export default ({ courseId, registrations }) => {
+export default ({ course, registrations, regByStudentId }) => {
   const [generateGroups] = useMutation(GENERATE_GROUPS);
   const [minGroupSize, setMinGroupSize] = useState(0);
   const [groups, setGroups] = useStore('groupsStore');
@@ -17,7 +17,7 @@ export default ({ courseId, registrations }) => {
 
   const { loading, error, data } = useQuery(COURSE_GROUPS, {
     skip: user.role !== userRoles.ADMIN_ROLE,
-    variables: { courseId },
+    variables: { courseId: course.id },
   });
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export default ({ courseId, registrations }) => {
   }
 
   const handleGroupCreation = async () => {
-    const variables = { data: { courseId, minGroupSize } };
+    const variables = { data: { courseId: course.id, minGroupSize } };
     if (window.confirm(intl.formatMessage({ id: 'groupsView.confirmGroupGenration' }))) {
       try {
         const res = await generateGroups({
@@ -86,7 +86,7 @@ export default ({ courseId, registrations }) => {
           </Form>
           <p />
 
-          <Groups courseId={courseId} />
+          <Groups course={course} regByStudentId={regByStudentId} />
         </div>
       )}
     </div>
