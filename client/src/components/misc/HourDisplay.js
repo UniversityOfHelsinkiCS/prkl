@@ -1,15 +1,15 @@
 import React from 'react';
-import { Table } from 'semantic-ui-react';
+import { Table, Header } from 'semantic-ui-react';
 import { useIntl } from 'react-intl';
 
-const HourDisplay = ({ times, students, groupId }) => {
+const HourDisplay = ({ header, times, students, groupId }) => {
   const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
   const intl = useIntl();
 
   if (!times) {
     return null;
   }
-  //get the transpose of times
+  // get the transpose of times
   const timesTranspose = times[0].map((col, i) => times.map(row => row[i]));
 
   const hsl_col_perc = (percent, start, end) => {
@@ -21,8 +21,16 @@ const HourDisplay = ({ times, students, groupId }) => {
   };
 
   return (
-    <Table unstackable definition celled collapsing textAlign="center" size="small">
+    <Table unstackable celled collapsing textAlign="center" size="small" style={{ marginRight: 0 }}>
       <Table.Header>
+        {header ? (
+          <Table.Row>
+            <Table.HeaderCell colSpan="8">
+              <Header>{header}</Header>
+            </Table.HeaderCell>
+          </Table.Row>
+        ) : null}
+
         <Table.Row>
           <Table.HeaderCell textAlign="center">
             {intl.formatMessage({ id: `timeForm.hours` })}

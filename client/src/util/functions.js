@@ -21,6 +21,44 @@ const mapshit = qa => {
     return formattedMultipleAnswers;
 };
 
+const hours = 14;
+// joko 8 tai 6 riippuen timezonesta
+const first = 8;
+
+export const count = registrations => {
+  const times = [...Array(7)].map(() => [...Array(hours)].map(() => 0));
+  // console.log('times begin:', times)
+  registrations.forEach(reg => {
+    reg.workingTimes.forEach(time => {
+      const start = new Date(time.startTime).getHours();
+      const diff = new Date(time.endTime).getHours() - start;
+      let day = new Date(time.startTime).getDay();
+
+      // Tämä koska maanantai on 1 ja sunnuntai 0
+      if (day === 0) {
+        day = 7;
+      }
+      day--;
+
+      if (diff >= 1) {
+        for (let i = 0; i <= diff - 1; i++) {
+          times[day][start - first + i]++;
+        }
+      }
+    });
+  });
+  // console.log('times:', times)
+
+  return times;
+};
+
+export const timeParse = props => {
+  const groupTimesMap = {};
+  props.forEach(group => {
+    groupTimesMap[group.id] = count(group.students.map(student => student.registrations[0]));
+  });
+  return groupTimesMap;
+};
 
   
 export default qa => {

@@ -49,7 +49,7 @@ const CourseForm = () => {
         code: courseCode,
         minGroupSize: 1,
         maxGroupSize: 1,
-        deadline: new Date(deadline),
+        deadline: new Date(deadline).setHours(23, 59),
         questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
       };
       const variables = { data: { ...courseObject } };

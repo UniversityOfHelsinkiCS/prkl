@@ -1,12 +1,13 @@
 import React from 'react';
 import { useStore } from 'react-hookstore';
-import { Table, Header, Button } from 'semantic-ui-react';
+import { Table, Header, List, Button, Segment, Grid } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
 import { GENERATE_GROUPS } from '../../GqlQueries';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import DraggableRow from './DraggableRow';
-import questionSwitch from "../../util/functions"
+import questionSwitch, { count } from '../../util/functions';
+import HourDisplay from '../misc/HourDisplay';
 
 export default ({ course, regByStudentId }) => {
   const [privacyToggle] = useStore('toggleStore');
@@ -129,11 +130,37 @@ export default ({ course, regByStudentId }) => {
                         {privacyToggle ? dummyStudentNumber : student.studentNo}
                       </Table.Cell>
                       <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
-                      {regByStudentId[student.studentNo].questionAnswers.map(qa => questionSwitch(qa))}
+                      {regByStudentId[student.studentNo].questionAnswers.map(qa =>
+                        questionSwitch(qa)
+                      )}
                     </DraggableRow>
                   ))}
                 </Table.Body>
               </Table>
+
+              <List horizontal verticalAlign="top">
+                <List.Item>
+                  <HourDisplay
+                    header="Combined"
+                    groupId={grop.id}
+                    students={grop.length}
+                    times={count(grop.map(student => regByStudentId[student.studentNo]))}
+                  />
+                </List.Item>
+                {grop.map(student => {
+                  regByStudentId[student.studentNo].questionAnswers.map(qa => questionSwitch(qa));
+                  return (
+                    <List.Item>
+                      <HourDisplay
+                        groupId={student.id}
+                        header={`${student.firstname} ${student.lastname}`}
+                        students={1}
+                        times={count([regByStudentId[student.studentNo]])}
+                      />
+                    </List.Item>
+                  );
+                })}
+              </List>
             </div>
           ))}
         </div>
