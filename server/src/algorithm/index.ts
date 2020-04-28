@@ -93,55 +93,74 @@ const divideByQuestions = (answers: AllTimes, size: number): Array<string[]> => 
 
   return groups;
 };
-
-const divide = (len: number, size: number, answers: AllTimes, availabletimes: MaxAvailableTimes): DividedGroup => {
+const divide = (size: number, registrations: Registration[]): DividedGroup => {
+  // const divide = (len: number, size: number, answers: AllTimes, availabletimes: MaxAvailableTimes): DividedGroup => {
   const groups = [];
 
-  if (len === 0) {
-    if (Object.keys(answers).length > size) {
-      const res = divideByQuestions(answers, size);
-      res.forEach(group => {
-        groups.push({ userIds: group });
-      });
-    } else if (Object.keys(answers).length > 0) {
-      groups.push({ userIds: Object.keys(answers) });
-    }
-    return { groups, score: 0 };
+  const shuffledStudents = shuffle(registrations.map(reg => reg.studentId));
+
+  const numberOfGroups = Math.floor(registrations.length / size);
+
+  const groupSizes = Array(numberOfGroups).fill(size);
+
+  for (let i = 0; i < registrations.length % size; i++) {
+    groupSizes[i % groupSizes.length]++;
   }
 
-  let times = count(answers, len);
-  const randomizedTimeslots = shuffle([...Array(7 * hours).keys()]);
+  //quick fix if there aren't enough registrations to fill one minimum sized group
+  if (groupSizes.length == 0) groupSizes.push(registrations.length);
 
-  let i = 0;
-
-  while (i < 7 * hours) {
-    const time = shuffle(times[randomizedTimeslots[i]]);
-    if (time.length >= size) {
-      time.sort((a, b) => availabletimes[b] - availabletimes[a]);
-      const group: string[] = time.splice(time.length - size);
-      groups.push({ userIds: group });
-
-      group.forEach(member => {
-        delete answers[member];
-      });
-      times = count(answers, len);
-    } else {
-      i++;
-    }
-  }
-  // Weight to value better (longer common timeslot) groups more
-  const weight = len * 3;
-
-  let score = groups.length * weight;
-
-  // Try remaining students with relaxed time constraints
-  const rec = divide(len - 1, size, answers, availabletimes);
-  score += rec.score;
-  rec.groups.forEach(group => {
+  for (let i = 0; i < groupSizes.length; i++) {
+    const group = new GroupInput();
+    group.userIds = shuffledStudents.splice(0, groupSizes[i]);
     groups.push(group);
-  });
+  }
 
-  return { groups, score };
+  // if (len === 0) {
+  //   if (Object.keys(answers).length > size) {
+  //     const res = divideByQuestions(answers, size);
+  //     res.forEach(group => {
+  //       groups.push({ userIds: group });
+  //     });
+  //   } else if (Object.keys(answers).length > 0) {
+  //     groups.push({ userIds: Object.keys(answers) });
+  //   }
+  //   return { groups, score: 0 };
+  // }
+
+  // let times = count(answers, len);
+  // const randomizedTimeslots = shuffle([...Array(7 * hours).keys()]);
+
+  // let i = 0;
+
+  // while (i < 7 * hours) {
+  //   const time = shuffle(times[randomizedTimeslots[i]]);
+  //   if (time.length >= size) {
+  //     time.sort((a, b) => availabletimes[b] - availabletimes[a]);
+  //     const group: string[] = time.splice(time.length - size);
+  //     groups.push({ userIds: group });
+
+  //     group.forEach(member => {
+  //       delete answers[member];
+  //     });
+  //     times = count(answers, len);
+  //   } else {
+  //     i++;
+  //   }
+  // }
+  // // Weight to value better (longer common timeslot) groups more
+  // const weight = len * 3;
+
+  // let score = groups.length * weight;
+
+  // // Try remaining students with relaxed time constraints
+  // const rec = divide(len - 1, size, answers, availabletimes);
+  // score += rec.score;
+  // rec.groups.forEach(group => {
+  //   groups.push(group);
+  // });
+
+  return { groups, score: 0 };
 };
 
 const countAvailable = (group: AllTimes): MaxAvailableTimes => {
@@ -158,29 +177,30 @@ const countAvailable = (group: AllTimes): MaxAvailableTimes => {
 };
 
 export const formGroups = (minGroupSize: number, registrations: Registration[]): GroupInput[] => {
-  const numberOfGroups = Math.floor(registrations.length / minGroupSize);
+  // const numberOfGroups = Math.floor(registrations.length / minGroupSize);
   const questionMapObject = toQuestions(registrations);
 
   const questionScoreWeight = 0.2;
 
-  const targetTimeSlot = 4;
+  // const targetTimeSlot = 4;
 
-  const groupSizes = Array(numberOfGroups).fill(minGroupSize);
+  // const groupSizes = Array(numberOfGroups).fill(minGroupSize);
 
-  for (let i = 0; i < registrations.length % minGroupSize; i++) {
-    groupSizes[i % groupSizes.length]++;
-  }
+  // for (let i = 0; i < registrations.length % minGroupSize; i++) {
+  //   groupSizes[i % groupSizes.length]++;
+  // }
 
-  const simplifiedRegistrations = toTimes(registrations);
+  // const simplifiedRegistrations = toTimes(registrations);
 
-  const availableTimes: MaxAvailableTimes = countAvailable(simplifiedRegistrations);
+  // const availableTimes: MaxAvailableTimes = countAvailable(simplifiedRegistrations);
   let best: DividedGroup = { groups: [], score: -694201337 };
 
   let groups: DividedGroup = { groups: [], score: 0 };
-  for (let i = 0; i < 1; i++) {
-    const answers = { ...simplifiedRegistrations };
+  for (let i = 0; i < 100; i++) {
+    // const answers = { ...simplifiedRegistrations };
 
-    groups = divide(targetTimeSlot, minGroupSize, answers, availableTimes);
+    // groups = divide(targetTimeSlot, minGroupSize, answers, availableTimes);
+    groups = divide(minGroupSize, registrations);
 
     const questionScore = evaluateGroups(groups.groups, questionMapObject) * questionScoreWeight;
     groups.score -= questionScore;
