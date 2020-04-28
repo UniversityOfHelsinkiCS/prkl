@@ -14,6 +14,7 @@ export default ({ id }) => {
   const [user] = useStore('userStore');
   const [course, setCourse] = useState({});
   const [registrations, setRegistrations] = useState([]);
+  const [regByStudentId, setRegByStudentId] = useState([]);
   const [deleteCourse] = useMutation(DELETE_COURSE);
   const [groupsView, setGroupsView] = useState(false);
   const history = useHistory();
@@ -36,14 +37,17 @@ export default ({ id }) => {
     }
 
     if (!regLoading && regData !== undefined) {
-      setRegistrations(
-        regData.courseRegistrations.map(r => {
+      const reg  = regData.courseRegistrations.map(r => {
           r.questionAnswers.sort((a, b) => a.question.order - b.question.order);
           r.questionAnswers.forEach(qa => qa.answerChoices.sort((a, b) => a.order - b.order));
 
           return r;
         })
-      );
+      setRegistrations(reg);
+      setRegByStudentId(reg.reduce((acc, elem) => {
+        acc[elem.student.studentNo] = elem;
+        return acc;
+      }, {}))
     }
   }, [data, loading, regData, regLoading]);
 
@@ -120,7 +124,7 @@ export default ({ id }) => {
       ) : null}
       <p />
       {groupsView ? (
-        <GroupsView courseId={id} registrations={registrations} />
+        <GroupsView course={course} registrations={registrations} regByStudentId={regByStudentId} />
       ) : (
         <RegistrationList
           userIsRegistered={userIsRegistered}

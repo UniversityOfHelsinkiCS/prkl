@@ -1,28 +1,50 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
-import { Table, Header, Button } from 'semantic-ui-react';
+import { Table, Header, List, Button, Segment, Grid } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
 import { GENERATE_GROUPS } from '../../GqlQueries';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import DraggableRow from './DraggableRow';
+import questionSwitch, { count } from '../../util/functions';
+import HourDisplay from '../misc/HourDisplay';
 
-export default ({ courseId }) => {
+export default ({ course, regByStudentId }) => {
   const [privacyToggle] = useStore('toggleStore');
   const [groups, setGroups] = useStore('groupsStore');
 
   const [generateGroups] = useMutation(GENERATE_GROUPS);
 
+  const [showGroupTimes, setShowGroupTimes] = useState([]);
+
+  useEffect(() => {
+    if (groups.length > 0) {
+      setShowGroupTimes(Array(groups.length).fill(false));
+    }
+  }, [groups]);
+
+  // varmaa pitää päivittää noi group funktiois
+
+  console.log('showGroupTimes:', showGroupTimes);
+  console.log('groups.length:', groups.length);
+
   const addGroup = () => {
     const newGroups = [...groups];
     newGroups.push([]);
     setGroups(newGroups);
+    setShowGroupTimes(showGroupTimes.push(false));
   };
 
   const removeGroup = index => {
     const newGroups = [...groups];
     newGroups.splice(index, 1);
+
     setGroups(newGroups);
+
+    const newShowGroups = [...showGroupTimes];
+    newShowGroups.splice(index, 1);
+
+    setShowGroupTimes(newShowGroups);
   };
 
   const removeGroupButton = index => {
@@ -54,7 +76,7 @@ export default ({ courseId }) => {
       }
     });
 
-    const dataObject = { data: { courseId, groups: groupObject } };
+    const dataObject = { data: { courseId: course.id, groups: groupObject } };
     try {
       generateGroups({ variables: dataObject });
     } catch (generationError) {
@@ -72,6 +94,12 @@ export default ({ courseId }) => {
     }
     setGroups(newGroups);
     handleGroupCreation();
+  };
+
+  const handleShowGroupTimesClick = index => {
+    let newShowTimes = [...showGroupTimes];
+    newShowTimes[index] = !newShowTimes[index];
+    setShowGroupTimes(newShowTimes);
   };
 
   return (
@@ -93,6 +121,9 @@ export default ({ courseId }) => {
                 <div>
                   <FormattedMessage id="groups.title" />
                   {tableIndex + 1}
+                  <Button onClick={() => handleShowGroupTimesClick(tableIndex)}>
+                    <FormattedMessage id="groups.toggleGroupTimes" />
+                  </Button>
                   {removeGroupButton(tableIndex)}
                 </div>
               </Header>
@@ -108,6 +139,11 @@ export default ({ courseId }) => {
                     <Table.HeaderCell>
                       <FormattedMessage id="groups.email" />
                     </Table.HeaderCell>
+                    {course.questions.map(question =>
+                      question.questionType !== 'times' ? (
+                        <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
+                      ) : null
+                    )}
                   </DraggableRow>
                 </Table.Header>
                 <Table.Body>
@@ -123,10 +159,39 @@ export default ({ courseId }) => {
                         {privacyToggle ? dummyStudentNumber : student.studentNo}
                       </Table.Cell>
                       <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
+                      {regByStudentId[student.studentNo].questionAnswers.map(qa =>
+                        questionSwitch(qa)
+                      )}
                     </DraggableRow>
                   ))}
                 </Table.Body>
               </Table>
+
+              {showGroupTimes[tableIndex] ? (
+                <List horizontal verticalAlign="top">
+                  <List.Item>
+                    <HourDisplay
+                      header={'Combined'}
+                      groupId={grop.id}
+                      students={grop.length}
+                      times={count(grop.map(student => regByStudentId[student.studentNo]))}
+                    />
+                  </List.Item>
+                  {grop.map((student, rowIndex) => {
+                    regByStudentId[student.studentNo].questionAnswers.map(qa => questionSwitch(qa));
+                    return (
+                      <List.Item>
+                        <HourDisplay
+                          groupId={student.id}
+                          header={`${student.firstname} ${student.lastname}`}
+                          students={1}
+                          times={count([regByStudentId[student.studentNo]])}
+                        />
+                      </List.Item>
+                    );
+                  })}
+                </List>
+              ) : null}
             </div>
           ))}
         </div>

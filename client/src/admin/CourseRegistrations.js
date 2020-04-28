@@ -3,42 +3,11 @@ import { Table } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage } from 'react-intl';
 import { dummyEmail, dummyStudentNumber } from '../util/privacyDefaults';
+import questionSwitch from "../util/functions"
 
 const CourseRegistration = ({ course, registrations }) => {
   const [privacyToggle] = useStore('toggleStore');
-  const mapshit = qa => {
-    const formattedMultipleAnswers = ['|'];
-    let currentAnswer = 0;
-
-    if (qa.answerChoices.length !== 0) {
-      for (let index = 1; index <= qa.question.questionChoices.length; index += 1) {
-        if (
-          currentAnswer >= qa.answerChoices.length ||
-          index < qa.answerChoices[currentAnswer].order
-        ) {
-          formattedMultipleAnswers.push('|');
-        } else {
-          formattedMultipleAnswers.push(` ${qa.answerChoices[currentAnswer].content} |`);
-          currentAnswer += 1;
-        }
-      }
-    }
-
-    return formattedMultipleAnswers;
-  };
-
-  const questionSwitch = qa => {
-    switch (qa.question.questionType) {
-      case 'multipleChoice':
-        return mapshit(qa);
-      case 'singleChoice':
-        return qa.answerChoices[0].content;
-      case 'freeForm':
-        return qa.content;
-      default:
-        return null;
-    }
-  };
+  
 
   return (
     <>
@@ -79,9 +48,7 @@ const CourseRegistration = ({ course, registrations }) => {
                   {privacyToggle ? dummyStudentNumber : reg.student.studentNo}
                 </Table.Cell>
                 <Table.Cell>{privacyToggle ? dummyEmail : reg.student.email}</Table.Cell>
-                {reg.questionAnswers.map(qa => (
-                  <Table.Cell key={qa.id}>{questionSwitch(qa)}</Table.Cell>
-                ))}
+                {reg.questionAnswers.map(qa => (questionSwitch(qa)))}
               </Table.Row>
             ))}
           </Table.Body>

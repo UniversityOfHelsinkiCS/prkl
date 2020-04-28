@@ -3,13 +3,16 @@ import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import { useQuery } from '@apollo/react-hooks';
 import { GROUP_TIMES, CURRENT_USER } from '../../GqlQueries';
+import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
+import { timeParse } from '../../util/functions';
 import GroupList from './GroupList';
 
 export default () => {
   const [user, setUser] = useStore('userStore');
+  const [privacyToggle] = useStore('toggleStore');
   const [groupTimes, setGroupTimes] = useState(undefined);
-  
-  const { loading : userLoading, data : userData } = useQuery(CURRENT_USER, {
+
+  const { loading: userLoading, data: userData } = useQuery(CURRENT_USER, {
     fetchPolicy: 'network-only',
   });
 
@@ -17,12 +20,8 @@ export default () => {
     variables: { studentId: user.id },
   });
 
-  const hours = 14;
-  // joko 8 tai 6 riippuen timezonesta
-  const first = 8;
-
   useEffect(() => {
-    if (!loading && data !== undefined && !userLoading ) {
+    if (!loading && data !== undefined && !userLoading) {
       setGroupTimes(timeParse(data.groupTimes));
       setUser(userData.currentUser);
     }
@@ -37,44 +36,6 @@ export default () => {
     );
   }
 
-  const count = group => {
-    const times = [...Array(7)].map(() => [...Array(hours)].map(() => 0));
-    // console.log('times begin:', times)
-    group.students.forEach(student => {
-      student.registrations[0].workingTimes.forEach(time => {
-        const start = new Date(time.startTime).getHours();
-        const diff = new Date(time.endTime).getHours() - start;
-        let day = new Date(time.startTime).getDay();
-
-        // Tämä koska maanantai on 1 ja sunnuntai 0
-        if (day === 0) {
-          day = 7;
-        }
-        day--;
-
-        if (diff >= 1) {
-          for (let i = 0; i <= diff - 1; i++) {
-            times[day][start - first + i]++;
-          }
-        }
-      });
-    });
-    // console.log('times:', times)
-
-    return times;
-  };
-
-  const timeParse = props => {
-    const groupTimesMap = {};
-    props.forEach(group => {
-      // console.log('group:', group)
-      // console.log('count:', count(group))
-      groupTimesMap[group.id] = count(group);
-    });
-    // console.log('groupTimes:', groupTimesMap)
-    return groupTimesMap;
-  };
-
   return (
     <div>
       <h3>
@@ -88,10 +49,16 @@ export default () => {
       </div>
 
       <div>
-        <FormattedMessage id="studentInfo.studentNo" values={{ studentNo: user.studentNo }} />
+        <FormattedMessage
+          id="studentInfo.studentNo"
+          values={{ studentNo: privacyToggle ? dummyStudentNumber : user.studentNo }}
+        />
       </div>
       <div>
-        <FormattedMessage id="studentInfo.email" values={{ email: user.email }} />
+        <FormattedMessage
+          id="studentInfo.email"
+          values={{ email: privacyToggle ? dummyEmail : user.email }}
+        />
       </div>
       {user.registrations ? (
         <div>
@@ -103,7 +70,8 @@ export default () => {
               .filter(reg => !reg.course.deleted)
               .map(reg => (
                 <li key={reg.id}>
-                  {reg.course.title} {reg.course.code}
+                  {reg.course.title}
+                  {reg.course.code}
                 </li>
               ))}
           </ul>

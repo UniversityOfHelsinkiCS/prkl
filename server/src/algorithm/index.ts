@@ -20,18 +20,18 @@ const shuffle = (arr: any[]): any[] => {
 const toQuestions = (group: Registration[]): QuestionsMap => {
   const result = {};
   group.forEach(r => {
-    result[r.student.id] = r.questionAnswers.map(a => {
-      if (a.question.questionType === "freeForm") {
-        return null;
-      }
-      const acObject = {
-        type: a.question.questionType,
-        totalChoices: a.question.questionChoices.length,
-        selected: a.answerChoices.map(c => (c instanceof Number ? c.order : Number.parseInt(`${c.order}`, 10))),
-      };
-      return acObject;
-    });
+    result[r.student.id] = r.questionAnswers
+      .filter(a => a.question.questionType !== "freeForm")
+      .map(a => {
+        const acObject = {
+          type: a.question.questionType,
+          totalChoices: a.question.questionChoices.length,
+          selected: a.answerChoices.map(c => (c instanceof Number ? c.order : Number.parseInt(`${c.order}`, 10))),
+        };
+        return acObject;
+      });
   });
+  console.log("result:", result);
   return result;
 };
 

@@ -155,6 +155,11 @@ export const COURSE_REGISTRATION = gql`
           order
         }
       }
+      workingTimes {
+        id
+        startTime
+        endTime
+      }
     }
   }
 `;
