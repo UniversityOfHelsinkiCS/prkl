@@ -159,7 +159,9 @@ export default ({ course, regByStudentId }) => {
                         {privacyToggle ? dummyStudentNumber : student.studentNo}
                       </Table.Cell>
                       <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
-                      {regByStudentId[student.id]?.questionAnswers.map(qa => questionSwitch(qa))}
+                      {regByStudentId[student.studentNo].questionAnswers.map(qa =>
+                        questionSwitch(qa)
+                      )}
                     </DraggableRow>
                   ))}
                 </Table.Body>
@@ -172,18 +174,18 @@ export default ({ course, regByStudentId }) => {
                       header={'Combined'}
                       groupId={grop.id}
                       students={grop.length}
-                      times={count(grop.map(student => regByStudentId[student.id]))}
+                      times={count(grop.map(student => regByStudentId[student.studentNo]))}
                     />
                   </List.Item>
                   {grop.map((student, rowIndex) => {
-                    regByStudentId[student.id].questionAnswers.map(qa => questionSwitch(qa));
+                    regByStudentId[student.studentNo].questionAnswers.map(qa => questionSwitch(qa));
                     return (
                       <List.Item>
                         <HourDisplay
                           groupId={student.id}
                           header={`${student.firstname} ${student.lastname}`}
                           students={1}
-                          times={count([regByStudentId[student.id]])}
+                          times={count([regByStudentId[student.studentNo]])}
                         />
                       </List.Item>
                     );

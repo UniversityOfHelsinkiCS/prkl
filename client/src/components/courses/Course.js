@@ -37,19 +37,17 @@ export default ({ id }) => {
     }
 
     if (!regLoading && regData !== undefined) {
-      const reg = regData.courseRegistrations.map(r => {
-        r.questionAnswers.sort((a, b) => a.question.order - b.question.order);
-        r.questionAnswers.forEach(qa => qa.answerChoices.sort((a, b) => a.order - b.order));
+      const reg  = regData.courseRegistrations.map(r => {
+          r.questionAnswers.sort((a, b) => a.question.order - b.question.order);
+          r.questionAnswers.forEach(qa => qa.answerChoices.sort((a, b) => a.order - b.order));
 
-        return r;
-      });
+          return r;
+        })
       setRegistrations(reg);
-      setRegByStudentId(
-        reg.reduce((acc, elem) => {
-          acc[elem.student.id] = elem;
-          return acc;
-        }, {})
-      );
+      setRegByStudentId(reg.reduce((acc, elem) => {
+        acc[elem.student.studentNo] = elem;
+        return acc;
+      }, {}))
     }
   }, [data, loading, regData, regLoading]);
 
