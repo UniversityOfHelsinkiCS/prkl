@@ -158,40 +158,40 @@ const countAvailable = (group: AllTimes): MaxAvailableTimes => {
 };
 
 export const formGroups = (minGroupSize: number, registrations: Registration[]): GroupInput[] => {
-  // const numberOfGroups = Math.floor(registrations.length / minGroupSize);
-  // const questionMapObject = toQuestions(registrations);
+  const numberOfGroups = Math.floor(registrations.length / minGroupSize);
+  const questionMapObject = toQuestions(registrations);
 
-  // const questionScoreWeight = 0.2;
+  const questionScoreWeight = 0.2;
 
-  // const targetTimeSlot = 4;
+  const targetTimeSlot = 4;
 
-  // const groupSizes = Array(numberOfGroups).fill(minGroupSize);
+  const groupSizes = Array(numberOfGroups).fill(minGroupSize);
 
-  // for (let i = 0; i < registrations.length % minGroupSize; i++) {
-  //   groupSizes[i % groupSizes.length]++;
-  // }
+  for (let i = 0; i < registrations.length % minGroupSize; i++) {
+    groupSizes[i % groupSizes.length]++;
+  }
 
-  // const simplifiedRegistrations = toTimes(registrations);
+  const simplifiedRegistrations = toTimes(registrations);
 
-  // const availableTimes: MaxAvailableTimes = countAvailable(simplifiedRegistrations);
-  // let best: DividedGroup = { groups: [], score: -694201337 };
+  const availableTimes: MaxAvailableTimes = countAvailable(simplifiedRegistrations);
+  let best: DividedGroup = { groups: [], score: -694201337 };
 
-  // let groups: DividedGroup = { groups: [], score: 0 };
-  // for (let i = 0; i < 1000; i++) {
-  //   const answers = { ...simplifiedRegistrations };
+  let groups: DividedGroup = { groups: [], score: 0 };
+  for (let i = 0; i < 1; i++) {
+    const answers = { ...simplifiedRegistrations };
 
-  //   groups = divide(targetTimeSlot, minGroupSize, answers, availableTimes);
+    groups = divide(targetTimeSlot, minGroupSize, answers, availableTimes);
 
-  //   const questionScore = evaluateGroups(groups.groups, questionMapObject) * questionScoreWeight;
-  //   groups.score -= questionScore;
+    const questionScore = evaluateGroups(groups.groups, questionMapObject) * questionScoreWeight;
+    groups.score -= questionScore;
 
-  //   if (groups.score > best.score) {
-  //     best = groups;
-  //   }
-  // }
-  // return best.groups;
+    if (groups.score > best.score) {
+      best = groups;
+    }
+  }
+  return best.groups;
 
-  const bigGroup = registrations.map(reg => reg.studentId);
+  // const bigGroup = registrations.map(reg => reg.studentId);
 
-  return [{ userIds: bigGroup }];
+  // return [{ userIds: bigGroup }];
 };
