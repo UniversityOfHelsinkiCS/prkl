@@ -1,5 +1,12 @@
 import React from "react";
 import {Table} from "semantic-ui-react";
+
+/**
+ * A parser that intakes a student's answer to a question, and outputs a jsx table row -element containing the parsed answer.
+ * eg. an answer to a multiple choice question with all options "yes", "no" and "maybe" could look like
+ * this: "||no|maybe|"
+ * @param{QuestionAnswer} - an answer associated with a given registration
+ */
 const mapshit = qa => {
     const formattedMultipleAnswers = ['|'];
     let currentAnswer = 0;
