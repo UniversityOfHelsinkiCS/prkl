@@ -26,28 +26,13 @@ const formNewGroups = async (courseId: string, minGroupSize: number) => {
 
 @Resolver()
 export class GroupResolver {
-  // @Authorized(STAFF)
+  @Authorized(STAFF)
   @Query(() => [Group])
   courseGroups(@Arg("courseId") courseId: string): Promise<Group[]> {
-    // return getRepository(Group)
-    //   .createQueryBuilder("group")
-    //   .innerJoinAndSelect("group.students", "student")
-    //   .innerJoinAndSelect("student.registrations", "registration")
-    //   .innerJoinAndSelect("registration.workingTimes", "times")
-    //   .innerJoinAndSelect("registration.questionAnswers", "answer")
-    //   .innerJoinAndSelect("answer.question")
-    //   .where("group.courseId = :courseId", { courseId: courseId })
-    //   .andWhere("registration.courseId = group.courseId")
-    //   .getMany();
     return Group.find({
       where: { courseId: courseId },
       relations: ["students"],
     });
-
-    // "questionAnswers",
-    //     "questionAnswers.question",
-    //     "questionAnswers.answerChoices",
-    //     "questionAnswers.question.questionChoices",
   }
 
   @Query(() => [Group])
