@@ -1,30 +1,5 @@
-// const enoughAvalableTimes = (data: object, group: string[], treshold: number): boolean => {
-//   let timeslots = 0;
-//   const groupTimes = new Array();
-//   group.forEach(student => groupTimes.push(data[student].times));
-
 import { GroupInput } from "../inputs/GroupInput";
 import { QuestionsMap } from "./types";
-
-//   for (let i = 0; i < groupTimes[0].length; i++) {
-//     let found = true;
-
-//     for (let j = 0; j < group.length; j++) {
-//       if (groupTimes[j][i] < 10) {
-//         found = false;
-//         break;
-//       }
-//     }
-//     if (found === true) {
-//       timeslots++;
-//       if (timeslots >= treshold) {
-//         return true;
-//       }
-//     }
-//   }
-
-//   return false;
-// };
 
 const sd = (values: number[]): number => {
   const total = values.reduce((a, b) => a + b, 0);
@@ -66,28 +41,22 @@ const toVectors = (group: string[], allAnswers: QuestionsMap): Array<number[]> =
   return actual;
 };
 
-// export const evaluateGroup = (data: object, group: string[], minTime: number): number => {
-//   if (enoughAvalableTimes(data, group, minTime)) {
-//     return 100;
-//   } else {
-//     return 0;
-//   }
-// };
-
 export const evaluateGroup = (group: string[], allAnswers: QuestionsMap): number => {
   const answers = toVectors(group, allAnswers);
 
-  const score = answers.reduce((a, b) => a + sd(b), 0);
+  const score = answers.reduce((sum, b) => sum + sd(b), 0);
 
   return score;
 };
 
-// export const evaluateGroups = (data: object, groups: string[][], minTime: number): number => {
-//   return groups.reduce((a, b) => a + evaluateGroup(data, b, minTime), 0);
-// };
-
+/**
+ * Evaluates the groups based on similarity to answered questions.
+ * @param {[Groupinput]} groups list of groups to be evaluated
+ * @param {QuestionsMap} answers HashMap of question answers, key is student's user id and value is question answers.
+ * @return {number} value of the group
+ */
 export const evaluateGroups = (groups: GroupInput[], answers: QuestionsMap): number => {
-  const total = groups.reduce((a, b) => a + evaluateGroup(b.userIds, answers), 0);
+  const total = groups.reduce((sum, group) => sum + evaluateGroup(group.userIds, answers), 0);
 
   return total;
 };
