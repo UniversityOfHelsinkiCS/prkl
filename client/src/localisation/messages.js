@@ -112,7 +112,7 @@ export default {
     'groupsView.noRegistrations': 'No registrations',
     'groupsView.matchingTimes': 'Matching times',
     'groupsView.maxGroupSize': 'Maximum group size',
-    'groupsView.minGroupSize': 'Minimum group size',
+    'groupsView.targetGroupSize': 'Target group size',
     'groupsView.confirmGroupGenration':
       'Are you sure you want to generate new groups and override existing groups?',
 

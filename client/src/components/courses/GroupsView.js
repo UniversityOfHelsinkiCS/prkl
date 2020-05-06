@@ -74,7 +74,7 @@ export default ({ course, registrations, regByStudentId }) => {
                 max="9999999"
                 label={
                   <h4>
-                    <FormattedMessage id="groupsView.minGroupSize" />
+                    <FormattedMessage id="groupsView.targetGroupSize" />
                   </h4>
                 }
                 onChange={event => setMinGroupSize(Number.parseInt(event.target.value, 10))}
