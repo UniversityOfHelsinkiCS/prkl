@@ -159,7 +159,7 @@ export default ({ course, regByStudentId }) => {
                         {privacyToggle ? dummyStudentNumber : student.studentNo}
                       </Table.Cell>
                       <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
-                      {regByStudentId[student.studentNo].questionAnswers.map(qa =>
+                      {regByStudentId[student.studentNo]?.questionAnswers.map(qa =>
                         questionSwitch(qa)
                       )}
                     </DraggableRow>

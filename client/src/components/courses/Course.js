@@ -87,7 +87,7 @@ export default ({ id }) => {
   };
 
   const userIsRegistered = () => {
-    const found = user.registrations.find(r => r.course.id === course.id);
+    const found = user.registrations?.find(r => r.course.id === course.id);
 
     if (found === undefined) {
       return false;
