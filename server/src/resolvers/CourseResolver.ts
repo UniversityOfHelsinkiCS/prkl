@@ -50,15 +50,4 @@ export class CourseResolver {
     await course.save();
     return true;
   }
-
-  @Authorized(STAFF)
-  @Mutation(() => Course)
-  async editMinMaxCourse(@Arg("id") id: string, @Arg("min") min: number, @Arg("max") max: number): Promise<Course> {
-    const course = await Course.findOne({ where: { id } });
-    if (!course) throw new Error("Course not found!");
-    course.minGroupSize = min;
-    course.maxGroupSize = max;
-    await course.save();
-    return course;
-  }
 }
