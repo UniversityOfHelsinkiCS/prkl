@@ -8,6 +8,7 @@ import CourseList from './CourseList';
 export default () => {
   const intl = useIntl();
   const [courses] = useStore('coursesStore');
+  // const [user] = useStore('userStore');
   const [search, setSearch] = useState('');
   const [order, setOrder] = useState(localStorage.getItem('assembler.courseOrder') || 'name');
   const [showPastCourses, setShowPastCourses] = useState(
@@ -30,10 +31,15 @@ export default () => {
     });
   };
 
+  // Implement filtering by published courser and user role.
   const visibleCourses = () => {
     if (!courses) {
       return [];
     }
+
+    // Check here if course is published or not. Keep only published courses.
+    // const publishFilter = course =>
+    //  course.published = true; ???
 
     const deadlineFilter = course =>
       showPastCourses ? true : new Date(course.deadline) > new Date();
@@ -45,6 +51,15 @@ export default () => {
     const sortByName = (a, b) => (a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1);
     const sortByCode = (a, b) => (a.code.toLowerCase() < b.code.toLowerCase() ? -1 : 1);
     const sortByDeadline = (a, b) => (new Date(a.deadline) < new Date(b.deadline) ? -1 : 1);
+
+    // Filter with role check.
+    // const filteredCourses = () => {
+    //  if (user.role === 1) {
+    //    return courses.filter(publishFilter).filter(deadlineFilter).filter(searchFilter);
+    // } else {
+    //    return courses.filter(deadlineFilter).filter(searchFilter);
+    //  }
+    // };
 
     const filteredCourses = courses.filter(deadlineFilter).filter(searchFilter);
 
