@@ -3,8 +3,8 @@ import { Menu, Button } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
-import roles from '../util/user_roles';
 import axios from 'axios';
+import roles from '../util/user_roles';
 
 export default () => {
   const [activeItem, setActiveItem] = useState(null);
@@ -15,13 +15,14 @@ export default () => {
     setActiveItem(name);
   };
 
+  // Logout feature. Calling Shibboleth headers from backend and redirecting there.
   const handleLogout = () => {
     const url = process.env.NODE_ENV === 'development' ? 'http://localhost:3001/logout' : '/logout';
 
-    axios.get(url).then(function(result) {
+    axios.get(url).then(result => {
       localStorage.clear();
       window.location.replace(result.data);
-    })
+    });
   };
 
   return (
@@ -74,7 +75,7 @@ export default () => {
         active={activeItem === 'personalInfo'}
         onClick={handleItemClick}
         data-cy="menu-item-info"
-      >        
+      >
         <FormattedMessage id="header.personalInfo" />
       </Menu.Item>
 
@@ -85,15 +86,16 @@ export default () => {
           </Button>
         </Menu.Item>
       ) : null}
-    
+
       <Menu.Item
         name="logout"
         active={activeItem === 'logout'}
-        onClick={handleLogout}
         position="right"
         data-cy="menu-item-logout"
       >
-        <FormattedMessage id="header.logout" />
+        <Button color="red" onClick={handleLogout}>
+          <FormattedMessage id="header.logout" />
+        </Button>
       </Menu.Item>
     </Menu>
   );
