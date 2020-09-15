@@ -7,12 +7,15 @@ import CourseList from './CourseList';
 
 export default () => {
   const intl = useIntl();
+  const [user] = useStore('userStore');
   const [courses] = useStore('coursesStore');
-  // const [user] = useStore('userStore');
   const [search, setSearch] = useState('');
   const [order, setOrder] = useState(localStorage.getItem('assembler.courseOrder') || 'name');
   const [showPastCourses, setShowPastCourses] = useState(
     localStorage.getItem('assembler.showPastCourses') === 'true'
+  );
+  const [showMyCourses, setShowMyCourses] = useState(
+    localStorage.getItem('assembler.showMyCourses') === 'true'
   );
 
   const handleSearchChange = event => {
@@ -32,6 +35,15 @@ export default () => {
   };
 
   // Implement filtering by published courser and user role.
+
+  // Function for staff controls
+  const toggleMyCourses = () => {
+    setShowMyCourses(prev => {
+      localStorage.setItem('assembler.showMyCourses', !prev);
+      return !prev;
+    });
+  };
+
   const visibleCourses = () => {
     if (!courses) {
       return [];
@@ -43,6 +55,10 @@ export default () => {
 
     const deadlineFilter = course =>
       showPastCourses ? true : new Date(course.deadline) > new Date();
+
+    // check teacher of the course
+    const teacherFilter = course =>
+      showMyCourses ? course.teacher.id === user.id : true;
 
     const searchFilter = course =>
       course.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -61,7 +77,7 @@ export default () => {
     //  }
     // };
 
-    const filteredCourses = courses.filter(deadlineFilter).filter(searchFilter);
+    const filteredCourses = courses.filter(deadlineFilter).filter(searchFilter).filter(teacherFilter);
 
     switch (order) {
       case 'name':
@@ -86,6 +102,19 @@ export default () => {
     { value: 'deadline', text: intl.formatMessage({ id: 'courses.orderByDeadlineOption' }) },
   ];
 
+  const staffControls = [
+    { 
+      text: intl.formatMessage({ id: 'courses.showPastCoursesButtonLabel' }),
+      onChange: togglePastCourses,
+      checked: showPastCourses
+    },
+    { 
+      text: intl.formatMessage({ id: 'courses.showMyCourses' }),
+      onChange: toggleMyCourses,
+      checked: showMyCourses
+    },
+  ];
+
   return (
     <div>
       <Menu secondary>
@@ -102,7 +131,7 @@ export default () => {
           <Select options={orderOptions} value={order} onChange={changeOrder} />
         </Menu.Item>
         <Menu.Item>
-          <CourseListStaffControls checked={showPastCourses} onChange={togglePastCourses} />
+          <CourseListStaffControls controls={staffControls}/>
         </Menu.Item>
       </Menu>
       <Divider />
