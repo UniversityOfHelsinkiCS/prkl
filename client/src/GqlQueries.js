@@ -8,6 +8,9 @@ export const ALL_COURSES = gql`
       code
       description
       deadline
+      teacher {
+        id
+      }
     }
   }
 `;

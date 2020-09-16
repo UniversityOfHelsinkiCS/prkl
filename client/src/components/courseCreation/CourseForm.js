@@ -63,7 +63,8 @@ const CourseForm = () => {
       } catch (error) {
         console.log('error:', error);
       }
-      history.push('/courses');
+      //history.push('/courses');
+      window.location.replace('/courses');
     }
   };
 

@@ -11,6 +11,7 @@ export default {
     'header.courses': 'Courses',
     'header.addCourse': 'Add Course',
     'header.userManagement': 'Manage Users',
+    'header.logout': 'Logout',
 
     'courseForm.pageTitle': 'Create course',
     'courseForm.titleForm': 'Title',
@@ -29,6 +30,7 @@ export default {
     'courses.searchPlaceholder': 'Search courses',
     'courses.deadline': 'Enrollment deadline',
     'courses.showPastCoursesButtonLabel': 'Show past courses',
+    'courses.showMyCourses': 'Show only my courses',
     'courses.orderByLabel': 'Order by:',
     'courses.orderByNameOption': 'Name',
     'courses.orderByCodeOption': 'Course Code',

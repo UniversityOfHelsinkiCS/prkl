@@ -1,20 +1,32 @@
 import React from 'react';
 import { useStore } from 'react-hookstore';
 import { Checkbox } from 'semantic-ui-react';
-import { useIntl } from 'react-intl';
 import roles from '../../util/user_roles';
 
-export default ({ onChange, checked }) => {
-  const intl = useIntl();
+export default ({ controls }) => {
   const [user] = useStore('userStore');
   const access = user.role >= roles.STAFF_ROLE;
 
+  const createCheckbox = ( text, onChange, checked ) => {
+    return (
+      <Checkbox
+        style={{ marginRight: '1rem' }}
+        key={text}
+        toggle
+        label={text}
+        onChange={onChange}
+        checked={checked}
+      />
+    )
+  }
+
+  const createCheckboxes = () => controls.map(item =>
+    createCheckbox(item.text, item.onChange, item.checked)
+  );
+
   return access ? (
-    <Checkbox
-      toggle
-      label={intl.formatMessage({ id: 'courses.showPastCoursesButtonLabel' })}
-      onChange={onChange}
-      checked={checked}
-    />
+      <div>
+        {createCheckboxes()}
+      </div>
   ) : null;
 };

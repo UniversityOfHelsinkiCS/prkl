@@ -1,22 +1,25 @@
 import { STAFF } from "./../utils/userRoles";
 import { Resolver, Query, Mutation, Arg, Ctx, Authorized } from "type-graphql";
 import { Course } from "../entities/Course";
+import { User } from "../entities/User";
 import { CourseInput } from "../inputs/CourseInput";
 import { getRepository } from "typeorm";
 
 @Resolver()
 export class CourseResolver {
-  @Query(() => [Course])
+  @Query(() => [Course, User])
   async courses(@Ctx() context): Promise<Course[]> {
     const { user } = context;
     if (user.role < STAFF) {
       return getRepository(Course)
-        .createQueryBuilder()
+        .createQueryBuilder("course")
+        .leftJoinAndSelect("course.teacher", "user")
+        .where("teacherId = user.id")
         .where("deleted = false")
         .andWhere("deadline > NOW()")
         .getMany();
     } else {
-      return Course.find({ where: { deleted: false } });
+      return Course.find({ where: { deleted: false }, relations: ["teacher"] });
     }
   }
 
