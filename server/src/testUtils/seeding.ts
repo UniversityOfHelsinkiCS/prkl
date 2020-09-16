@@ -4,7 +4,7 @@ import { plainToClass } from "class-transformer";
 import userData from "../../data/users";
 import { User } from "../entities/User";
 import { UserInput } from "../inputs/UserInput";
-import courseData from "../../data/courses.js";
+import courseData from "../../data/courses";
 import { Course } from "../entities/Course";
 import { CourseInput } from "../inputs/CourseInput";
 

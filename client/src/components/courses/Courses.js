@@ -57,8 +57,7 @@ export default () => {
       showPastCourses ? true : new Date(course.deadline) > new Date();
 
     // check teacher of the course
-    const teacherFilter = course =>
-      showMyCourses ? course.teacher.id === user.id : true;
+    const teacherFilter = course => (showMyCourses ? course.teacher.id === user.id : true);
 
     const searchFilter = course =>
       course.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -77,7 +76,10 @@ export default () => {
     //  }
     // };
 
-    const filteredCourses = courses.filter(deadlineFilter).filter(searchFilter).filter(teacherFilter);
+    const filteredCourses = courses
+      .filter(deadlineFilter)
+      .filter(searchFilter)
+      .filter(teacherFilter);
 
     switch (order) {
       case 'name':
@@ -103,15 +105,15 @@ export default () => {
   ];
 
   const staffControls = [
-    { 
+    {
       text: intl.formatMessage({ id: 'courses.showPastCoursesButtonLabel' }),
       onChange: togglePastCourses,
-      checked: showPastCourses
+      checked: showPastCourses,
     },
-    { 
+    {
       text: intl.formatMessage({ id: 'courses.showMyCourses' }),
       onChange: toggleMyCourses,
-      checked: showMyCourses
+      checked: showMyCourses,
     },
   ];
 
@@ -131,7 +133,7 @@ export default () => {
           <Select options={orderOptions} value={order} onChange={changeOrder} />
         </Menu.Item>
         <Menu.Item>
-          <CourseListStaffControls controls={staffControls}/>
+          <CourseListStaffControls controls={staffControls} />
         </Menu.Item>
       </Menu>
       <Divider />

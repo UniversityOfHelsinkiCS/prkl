@@ -57,9 +57,9 @@ const main = async (): Promise<void> => {
   // Route for logout. Shibboleth gives logout url in headers to server, but not directly to client.
   app.get("/logout", (req, res) => {
     if (process.env.NODE_ENV === "development") {
-        res.send("http://stackoverflow.com");
-    }else {
-        res.send(req.headers.shib_logout_url);
+      res.send("http://stackoverflow.com");
+    } else {
+      res.send(req.headers.shib_logout_url);
     }
   });
 
