@@ -27,6 +27,9 @@ export class CourseInput {
   @Field()
   minGroupSize: number;
 
+  @Field()
+  published: boolean;
+
   @Field(type => [QuestionsInput])
   questions: QuestionsInput[];
 }
