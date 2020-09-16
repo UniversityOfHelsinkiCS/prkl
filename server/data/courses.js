@@ -7,6 +7,7 @@ module.exports = [
     description: "Description for a test course.",
     maxGroupSize: 10,
     minGroupSize: 5,
+    published: true,
   },
   {
     id: "be2a695a-c3a4-4f25-b0b5-ac7d4854a5b1",
@@ -16,6 +17,7 @@ module.exports = [
     description: "Description for a test course.",
     maxGroupSize: 10,
     minGroupSize: 5,
+    published: false,
     questions: [
       {
         questionType: "singleChoice",

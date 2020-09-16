@@ -14,6 +14,7 @@ const CourseForm = () => {
   const [questions, setQuestions] = useState([]);
   const [deadline, setDeadline] = useState();
   const [calendarToggle, setCalendarToggle] = useState(false);
+  const [publishToggle, setPublishToggle] = useState(false);
 
   const [courses, setCourses] = useStore('coursesStore');
 
@@ -50,6 +51,7 @@ const CourseForm = () => {
         minGroupSize: 1,
         maxGroupSize: 1,
         deadline: new Date(deadline).setHours(23, 59),
+        published: publishToggle ? true : false,
         questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
       };
       const variables = { data: { ...courseObject } };
@@ -159,6 +161,11 @@ const CourseForm = () => {
             />
           ))}
         </Form.Group>
+        
+        <Form.Checkbox
+          label={intl.formatMessage({ id: 'courseForm.publishCourse' })}
+          onClick={() => setPublishToggle(!publishToggle)}
+        />
 
         <Form.Button primary type="submit" data-cy="create-course-submit">
           <FormattedMessage id="courseForm.confirmButton" />

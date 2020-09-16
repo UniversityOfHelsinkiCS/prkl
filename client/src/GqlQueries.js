@@ -96,6 +96,7 @@ export const CREATE_COURSE = gql`
       description
       code
       deadline
+      published
     }
   }
 `;

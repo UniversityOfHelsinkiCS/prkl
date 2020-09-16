@@ -23,6 +23,7 @@ export default {
       'Working hours that are okay/unsure/impossible for you, respectively',
     'courseForm.confirmButton': 'Confirm',
     'courseForm.addQuestion': 'Add question',
+    'courseForm.publishCourse': 'Publish course',
     'courseForm.removeQuestion': 'Remove question',
 
     'courses.searchPlaceholder': 'Search courses',
