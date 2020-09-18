@@ -105,6 +105,21 @@ export const CREATE_COURSE = gql`
   }
 `;
 
+export const UPDATE_COURSE = gql`
+  mutation updateCourse($id: String! $data: CourseInput!) {
+    updateCourse(id: $id, data: $data) {
+      id
+      maxGroupSize
+      minGroupSize
+      title
+      description
+      code
+      deadline
+      published
+    }
+  }
+`;
+
 export const EDIT_USER_ROLE = gql`
   mutation editUserRole($id: String!, $role: Float!) {
     editUserRole(id: $id, role: $role) {

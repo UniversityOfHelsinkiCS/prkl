@@ -70,6 +70,7 @@ export default {
     'course.generateGroups': 'Generate groups',
     'course.switchGroupsView': 'Switch to Groups view',
     'course.switchCourseView': 'Switch to Course view',
+    'course.switchEditView': 'Edit course',
 
     'studentInfo.header': 'Student Info',
     'studentInfo.fullname': 'Name: {fullname}',

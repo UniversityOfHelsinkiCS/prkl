@@ -1,4 +1,4 @@
-import { STAFF } from "./../utils/userRoles";
+import { STAFF, ADMIN } from "./../utils/userRoles";
 import { Resolver, Query, Mutation, Arg, Ctx, Authorized } from "type-graphql";
 import { Course } from "../entities/Course";
 import { User } from "../entities/User";
@@ -40,6 +40,23 @@ export class CourseResolver {
   async createCourse(@Ctx() context, @Arg("data") data: CourseInput): Promise<Course> {
     const course = Course.create(data);
     course.teacher = context.user;
+    await course.save();
+    return course;
+  }
+
+  @Authorized(ADMIN)
+  @Mutation(() => Course)
+  async updateCourse(@Ctx() context, @Arg("id") id: string, @Arg("data") data: CourseInput): Promise<Course> {
+    const course = await Course.findOne({ where: { id } });
+    if (!course) {
+      throw new Error("Course with give id not found.");
+    }
+    course.title = data.title;
+    course.description = data.description;
+    course.code = data.code;
+    course.published = data.published;
+    course.deadline = data.deadline;
+    // TODO: Update questions on the server too
     await course.save();
     return course;
   }

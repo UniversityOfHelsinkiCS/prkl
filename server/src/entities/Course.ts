@@ -47,7 +47,7 @@ export class Course extends BaseEntity {
   @Column()
   minGroupSize: number;
 
-  @Field(()=> Boolean)
+  @Field(() => Boolean)
   @Column()
   published: boolean;
 

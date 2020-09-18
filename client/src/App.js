@@ -17,7 +17,6 @@ import KeepAlive from './components/misc/KeepAlive';
 import Users from './components/misc/Users';
 import { dummyEmail, dummyStudentNumber } from './util/privacyDefaults';
 import PrivateRoute from './components/misc/PrivateRoute';
-import ModifyCourse from "./components/modifyCourse/ModifyCourse";
 
 createStore('coursesStore', []);
 createStore('groupsStore', []);
@@ -86,13 +85,6 @@ export default () => {
                 path="/addcourse"
                 requiredRole={roles.STAFF_ROLE}
                 render={() => <CourseForm />}
-              />
-              <Route
-                path="/modifycourse/:id"
-                requiredRole={roles.STAFF_ROLE}
-                render={(params) => {
-                  return <ModifyCourse id={params.match.params.id} />;
-                }}
               />
               <PrivateRoute
                 path="/usermanagement"
