@@ -27,6 +27,8 @@ export default {
     'courseForm.publishCourse': 'Publish course',
     'courseForm.removeQuestion': 'Remove question',
 
+    'modifyCourse.pageTitle': 'Modify Course',
+
     'courses.searchPlaceholder': 'Search courses',
     'courses.deadline': 'Enrollment deadline',
     'courses.showPastCoursesButtonLabel': 'Show past courses',
