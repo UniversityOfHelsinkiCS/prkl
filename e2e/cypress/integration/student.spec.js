@@ -24,12 +24,6 @@ describe('Student', () => {
     cy.contains(courses[0].title);
   });
 
-  it('Can not see an unpublished course', () => {
-    cy.visit('/courses');
-    // eslint-disable-next-line no-unused-expressions
-    !cy.contains(courses[2].title);
-  });
-
   it('Can enrol on a course', () => {
     const course = courses[1];
     cy.visit('/');
@@ -145,6 +139,11 @@ describe('Student', () => {
     cy.visit('/courses');
     cy.get('[data-cy="loader"]').should('not.exist');
     cy.contains(courses[0].title).should('not.exist');
+  });
+
+  it('Can not see unpublished courses', () => {
+    cy.visit('/');
+    cy.contains(courses[2].title).should('not.exist');
   });
 
   it('Cannot create a course', () => {
