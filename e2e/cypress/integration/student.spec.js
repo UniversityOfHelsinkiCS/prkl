@@ -26,7 +26,8 @@ describe('Student', () => {
 
   it('Can not see an unpublished course', () => {
     cy.visit('/courses');
-    cy.contains(courses[2].title).not();
+    // eslint-disable-next-line no-unused-expressions
+    !cy.contains(courses[2].title);
   });
 
   it('Can enrol on a course', () => {
