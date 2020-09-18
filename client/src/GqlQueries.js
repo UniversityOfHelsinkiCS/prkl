@@ -8,6 +8,7 @@ export const ALL_COURSES = gql`
       code
       description
       deadline
+      published
       teacher {
         id
       }

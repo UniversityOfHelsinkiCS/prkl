@@ -21,7 +21,7 @@ const defaultCourses = [
     teacher: userData[2],
     maxGroupSize: 10,
     minGroupSize: 5,
-    published: false,
+    published: true,
     questions: [
       {
         questionType: "singleChoice",
@@ -59,6 +59,17 @@ const defaultCourses = [
         order: 2,
       },
     ],
+  },
+  {
+    id: "e75b4a63-8f1f-4380-869c-87df243a61b6",
+    title: "Test Course 3",
+    deadline: "2100-12-31",
+    code: "TC03",
+    description: "Description for a test course.",
+    teacher: userData[1],
+    maxGroupSize: 10,
+    minGroupSize: 5,
+    published: false,
   },
 ];
 

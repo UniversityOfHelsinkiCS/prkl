@@ -50,8 +50,7 @@ export default () => {
     }
 
     // Check here if course is published or not. Keep only published courses.
-    // const publishFilter = course =>
-    //  course.published = true; ???
+    const publishFilter = course => course.published === true;
 
     const deadlineFilter = course =>
       showPastCourses ? true : new Date(course.deadline) > new Date();
@@ -68,18 +67,19 @@ export default () => {
     const sortByDeadline = (a, b) => (new Date(a.deadline) < new Date(b.deadline) ? -1 : 1);
 
     // Filter with role check.
-    // const filteredCourses = () => {
-    //  if (user.role === 1) {
-    //    return courses.filter(publishFilter).filter(deadlineFilter).filter(searchFilter);
-    // } else {
-    //    return courses.filter(deadlineFilter).filter(searchFilter);
-    //  }
-    // };
-
-    const filteredCourses = courses
-      .filter(deadlineFilter)
-      .filter(searchFilter)
-      .filter(teacherFilter);
+    let filteredCourses = courses;
+    if (user.role === 1) {
+      filteredCourses = courses
+        .filter(publishFilter)
+        .filter(deadlineFilter)
+        .filter(searchFilter)
+        .filter(teacherFilter);
+    } else {
+      filteredCourses = courses
+        .filter(deadlineFilter)
+        .filter(searchFilter)
+        .filter(teacherFilter);
+    }
 
     switch (order) {
       case 'name':
