@@ -109,7 +109,6 @@ export default {
     'groups.removeGroupButton': 'Remove group',
     'groups.createGroups': 'Create and save groups',
     'groups.createConfirm': 'Confirm group selection',
-    'groups.showTimes': 'Show matching times',
     'groups.addGroupButton': 'Add new group',
 
     'groupsView.noRegistrations': 'No registrations',
