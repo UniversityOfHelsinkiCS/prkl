@@ -16,6 +16,7 @@ export default ({ controls }) => {
         label={text}
         onChange={onChange}
         checked={checked}
+        data-cy="checkbox-staff-controls"
       />
     )
   }
