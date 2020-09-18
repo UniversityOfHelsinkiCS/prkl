@@ -23,7 +23,6 @@ const EditView = ({ course }) => {
   //const [course, setCourse] = useState({});
 
   useEffect(() => {
-    console.log('course is ', course);
     setCourseTitle(course.title)
     setCourseDescription(course.description)
     setCourseCode(course.code)

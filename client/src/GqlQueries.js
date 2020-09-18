@@ -76,6 +76,7 @@ export const COURSE_BY_ID = gql`
       description
       code
       deadline
+      published
       questions {
         id
         content
