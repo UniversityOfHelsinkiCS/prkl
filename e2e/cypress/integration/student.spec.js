@@ -38,20 +38,8 @@ describe('Student', () => {
     });
 
     it('Can not see past courses', () => {
-      cy.switchToStaff();
-      cy.get('[data-cy="menu-item-add-course"]').click();
-  
-      cy.get('[data-cy="course-title-input"]').type('Past Course');
-      cy.get('[data-cy="course-code-input"]').type('CYP999');
-      cy.get('[data-cy="course-deadline-input"]').type('2019-12-12');
-      cy.get('[data-cy="course-description-input"]').type('Description for test course.');
-  
-      cy.get('[data-cy="create-course-submit"]').click();
-  
-      cy.switchToStudent();
-      cy.visit('/courses');
-      cy.get('[data-cy="loader"]').should('not.exist');
-      cy.contains('Past Course').should('not.exist');
+      cy.visit('/');
+      cy.contains(courses[3].title).should('not.exist');
     });
   
     it('Can not see deleted courses', () => {
@@ -73,14 +61,14 @@ describe('Student', () => {
   });
 
   describe('personal info', () => {
-    it('Can see their personal info.', () => {
+    it('Can see their personal info', () => {
       cy.visit('/');
       cy.contains('Personal info').click();
       cy.url().should('include', '/user');
   
-      cy.contains('Name:');
-      cy.contains('Student number:');
-      cy.contains('Email:');
+      cy.contains(`Name: ${users[0].firstname} ${users[0].lastname}`);
+      cy.contains(`Student number: ${users[0].studentNo}`);
+      cy.contains(`Email: ${users[0].email}`);
     });
 
     it('Can see which courses they have enrolled to', () => {
