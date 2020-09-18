@@ -24,6 +24,11 @@ describe('Student', () => {
     cy.contains(courses[0].title);
   });
 
+  it('Can not see an unpublished course', () => {
+    cy.visit('/courses');
+    cy.contains(courses[2].title).not();
+  });
+
   it('Can enrol on a course', () => {
     const course = courses[1];
     cy.visit('/');

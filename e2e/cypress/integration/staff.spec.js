@@ -1,9 +1,15 @@
 // / <reference types="Cypress" />
+const courses = require('../../../server/data/courses');
 
 describe('Staff', () => {
   beforeEach(() => {
     cy.seedDatabase();
     cy.switchToStaff();
+  });
+
+  it('Can see an unpublished course', () => {
+    cy.visit('/courses');
+    cy.contains(courses[2].title);
   });
 
   it('Can create a course with no questions', () => {
