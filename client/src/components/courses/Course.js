@@ -112,27 +112,29 @@ export default ({ id }) => {
   return (
     <div>
       <h2>{`${course.code} - ${course.title}`}</h2>
-      {user && user.role === roles.ADMIN_ROLE ? (
+      {user && user.role >= roles.STAFF_ROLE ? (
         <div>
           {view === 'registrations' ? (
             <div>
-              <div>
+              <p>
                 <Button onClick={handleGroupsView} color="blue">
                   <FormattedMessage id="course.switchGroupsView" />
                 </Button>
-              </div>
-              <p/>
-              <div>
-                <Button onClick={handleDeletion} color="red" data-cy="delete-course-button">
-                  <FormattedMessage id="course.delete" />
-                </Button>
-              </div>
-              <p />
-              <p>
-                <Button onClick={handleEditCourse} color="blue">
-                  <FormattedMessage id="course.switchEditView" />
-                </Button>
               </p>
+              {user.role === roles.ADMIN_ROLE && (
+                <p>
+                  <Button onClick={handleDeletion} color="red" data-cy="delete-course-button">
+                    <FormattedMessage id="course.delete" />
+                  </Button>
+                </p>
+              )}
+              {(user.role === roles.ADMIN_ROLE || (user.role === roles.STAFF_ROLE && !course.published)) && (
+                <p>
+                  <Button onClick={handleEditCourse} color="blue">
+                    <FormattedMessage id="course.switchEditView" />
+                  </Button>
+                </p>
+              )}
             </div>
           ) : (
               <Button onClick={handleGroupsView} color="blue">

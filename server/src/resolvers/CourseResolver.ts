@@ -44,12 +44,16 @@ export class CourseResolver {
     return course;
   }
 
-  @Authorized(ADMIN)
+  @Authorized(STAFF)
   @Mutation(() => Course)
   async updateCourse(@Ctx() context, @Arg("id") id: string, @Arg("data") data: CourseInput): Promise<Course> {
+    const { user } = context;
     const course = await Course.findOne({ where: { id } });
     if (!course) {
-      throw new Error("Course with give id not found.");
+      throw new Error("Course with given id not found.");
+    }
+    if (course.published && user.role !== ADMIN) {
+      throw new Error("You do not have authorization to update a published course.");
     }
     course.title = data.title;
     course.description = data.description;
