@@ -70,7 +70,7 @@ const EditView = ({ course }) => {
         minGroupSize: course.minGroupSize,
         maxGroupSize: course.maxGroupSize,
         deadline: new Date(deadline).setHours(23, 59),
-        questions: questions,                          // TODO: needs to be updated too
+        questions: calendarToggle ? questions.concat(calendarQuestion) : questions,                          // TODO: needs to be updated too
         published: published
       };
       const variables = { id: course.id, data: { ...courseObject } };

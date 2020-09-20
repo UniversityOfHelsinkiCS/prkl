@@ -15,7 +15,7 @@ describe('Admin', () => {
 
     it('Can see staffcontrols', () => {
       cy.visit('/courses');
-      cy.get('[data-cy="checkbox-staff-controls"]').should('exist')
+      cy.get('[data-cy="checkbox-staff-controls"]').should('exist');
     });
   
     it('Can toggle to see only own courses', () => {
@@ -44,5 +44,25 @@ describe('Admin', () => {
 
     });
   });
+  describe('course view', () => {
+    it('Edit button exists', () => {
+      const course = courses[1];
+      cy.visit('/');
+      cy.contains(courses[1].title).click();
+      cy.get('[data-cy="edit-course-button"]').should('exist');
+    });
+
+    it('Can edit course title and description', () =>{
+      const course = courses[1];
+      cy.visit('/');
+      cy.contains(courses[0].title).click();
+      cy.get('[data-cy="edit-course-button"]').first().click();
+      cy.get('[data-cy="course-title-input"]').type('Course from Cypress Edited');
+      cy.get('[data-cy="course-description-input"]').type('New description for course');
+      cy.get('[data-cy="create-course-submit"]').first().click();
+      cy.visit('/courses');
+      cy.contains('Test Course 1 by StaffCourse from Cypress Edited');
+    })
+  })
 
 });

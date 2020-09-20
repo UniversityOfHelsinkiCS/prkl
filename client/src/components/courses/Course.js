@@ -130,7 +130,7 @@ export default ({ id }) => {
               )}
               {(user.role === roles.ADMIN_ROLE || (user.role === roles.STAFF_ROLE && !course.published)) && (
                 <p>
-                  <Button onClick={handleEditCourse} color="blue">
+                  <Button onClick={handleEditCourse} color="blue" data-cy="edit-course-button">
                     <FormattedMessage id="course.switchEditView" />
                   </Button>
                 </p>
