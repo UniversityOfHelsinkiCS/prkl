@@ -52,10 +52,10 @@ const main = async (): Promise<void> => {
     .use(router);
 
   // Route for keep-alive polling.
-  app.get("/assembler/keepalive", (req, res) => res.send("This is the way."));
+  app.get("/keepalive", (req, res) => res.send("This is the way."));
 
   // Route for logout. Shibboleth gives logout url in headers to server, but not directly to client.
-  app.get("/assembler/logout", (req, res) => {
+  app.get("/logout", (req, res) => {
     if (process.env.NODE_ENV === "development") {
       res.send("http://stackoverflow.com");
     } else {
