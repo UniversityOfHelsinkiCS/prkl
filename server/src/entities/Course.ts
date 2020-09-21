@@ -48,6 +48,10 @@ export class Course extends BaseEntity {
   minGroupSize: number;
 
   @Field(() => Boolean)
+  @Column()
+  published: boolean;
+
+  @Field(() => Boolean)
   @Column({ default: false })
   deleted: boolean;
 

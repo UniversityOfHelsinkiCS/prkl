@@ -28,4 +28,6 @@ Make sure you are at `/usr/src/app/server` and generate the migrations, replacin
 npx ts-node node_modules/typeorm/cli.js migration:generate -n <NAME>
 ```
 
+Note: if successful, any new migration files will be placed at the root of `/server/` directory!
+
 **Remember to double-check your migrations before committing - undoing them can be a real PITA!**

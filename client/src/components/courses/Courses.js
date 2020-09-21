@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input, Divider, Menu, Select } from 'semantic-ui-react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
@@ -7,11 +7,15 @@ import CourseList from './CourseList';
 
 export default () => {
   const intl = useIntl();
+  const [user] = useStore('userStore');
   const [courses] = useStore('coursesStore');
   const [search, setSearch] = useState('');
   const [order, setOrder] = useState(localStorage.getItem('assembler.courseOrder') || 'name');
   const [showPastCourses, setShowPastCourses] = useState(
     localStorage.getItem('assembler.showPastCourses') === 'true'
+  );
+  const [showMyCourses, setShowMyCourses] = useState(
+    localStorage.getItem('assembler.showMyCourses') === 'true'
   );
 
   const handleSearchChange = event => {
@@ -30,13 +34,29 @@ export default () => {
     });
   };
 
+  // Implement filtering by published courser and user role.
+
+  // Function for staff controls
+  const toggleMyCourses = () => {
+    setShowMyCourses(prev => {
+      localStorage.setItem('assembler.showMyCourses', !prev);
+      return !prev;
+    });
+  };
+
   const visibleCourses = () => {
     if (!courses) {
       return [];
     }
 
+    // Check here if course is published or not. Keep only published courses.
+    const publishFilter = course => course.published === true;
+
     const deadlineFilter = course =>
       showPastCourses ? true : new Date(course.deadline) > new Date();
+
+    // check teacher of the course
+    const teacherFilter = course => (showMyCourses ? course.teacher.id === user.id : true);
 
     const searchFilter = course =>
       course.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -46,7 +66,20 @@ export default () => {
     const sortByCode = (a, b) => (a.code.toLowerCase() < b.code.toLowerCase() ? -1 : 1);
     const sortByDeadline = (a, b) => (new Date(a.deadline) < new Date(b.deadline) ? -1 : 1);
 
-    const filteredCourses = courses.filter(deadlineFilter).filter(searchFilter);
+    // Filter with role check.
+    let filteredCourses = courses;
+    if (user.role === 1) {
+      filteredCourses = courses
+        .filter(publishFilter)
+        .filter(deadlineFilter)
+        .filter(searchFilter)
+        .filter(teacherFilter);
+    } else {
+      filteredCourses = courses
+        .filter(deadlineFilter)
+        .filter(searchFilter)
+        .filter(teacherFilter);
+    }
 
     switch (order) {
       case 'name':
@@ -71,6 +104,19 @@ export default () => {
     { value: 'deadline', text: intl.formatMessage({ id: 'courses.orderByDeadlineOption' }) },
   ];
 
+  const staffControls = [
+    {
+      text: intl.formatMessage({ id: 'courses.showPastCoursesButtonLabel' }),
+      onChange: togglePastCourses,
+      checked: showPastCourses,
+    },
+    {
+      text: intl.formatMessage({ id: 'courses.showMyCourses' }),
+      onChange: toggleMyCourses,
+      checked: showMyCourses,
+    },
+  ];
+
   return (
     <div>
       <Menu secondary>
@@ -87,7 +133,7 @@ export default () => {
           <Select options={orderOptions} value={order} onChange={changeOrder} />
         </Menu.Item>
         <Menu.Item>
-          <CourseListStaffControls checked={showPastCourses} onChange={togglePastCourses} />
+          <CourseListStaffControls controls={staffControls} />
         </Menu.Item>
       </Menu>
       <Divider />

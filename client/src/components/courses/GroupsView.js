@@ -15,13 +15,13 @@ export default ({ course, registrations, regByStudentId }) => {
 
   const intl = useIntl();
 
-  const { loading, error, data } = useQuery(COURSE_GROUPS, {
+  const { loading, error, data, refetch } = useQuery(COURSE_GROUPS, {
     skip: user.role !== userRoles.ADMIN_ROLE,
     variables: { courseId: course.id },
   });
 
   useEffect(() => {
-    if (!loading && data !== undefined && groups.length === 0) {
+    if (!loading && data !== undefined) {
       const fetchedGroups = data.courseGroups.map(e => e.students);
       setGroups(fetchedGroups);
     }
@@ -40,11 +40,10 @@ export default ({ course, registrations, regByStudentId }) => {
     const variables = { data: { courseId: course.id, minGroupSize } };
     if (window.confirm(intl.formatMessage({ id: 'groupsView.confirmGroupGenration' }))) {
       try {
-        const res = await generateGroups({
+        await generateGroups({
           variables,
         });
-        console.log('res:', res);
-        setGroups(res.data.createGroups.map(groupObject => groupObject.students));
+        refetch();
       } catch (groupError) {
         console.log('error:', groupError);
       }

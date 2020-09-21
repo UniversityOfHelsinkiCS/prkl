@@ -1,10 +1,10 @@
 // / <reference types="Cypress" />
 const courses = require('../../../server/data/courses');
 
-describe('Staff', () => {
+describe('Admin', () => {
   beforeEach(() => {
     cy.seedDatabase();
-    cy.switchToStaff();
+    cy.switchToAdmin();
   });
 
   describe('course listing', () => {
@@ -12,7 +12,7 @@ describe('Staff', () => {
       cy.visit('/courses');
       cy.contains(courses[2].title);
     });
-  
+
     it('Can see staffcontrols', () => {
       cy.visit('/courses');
       cy.get('[data-cy="checkbox-staff-controls"]').should('exist');
@@ -21,7 +21,7 @@ describe('Staff', () => {
     it('Can toggle to see only own courses', () => {
       cy.visit('/courses');
       cy.get('[data-cy="checkbox-staff-controls"]').last().click();
-      cy.contains(courses[1].title).should('not.exist');
+      cy.contains(courses[0].title).should('not.exist');
     });
 
     it('Can toggle to see past courses', () => {
@@ -34,35 +34,35 @@ describe('Staff', () => {
       cy.visit('/courses');
 
       cy.get('[data-cy="checkbox-staff-controls"]').first().click();
-      cy.get('[data-cy="checkbox-staff-controls"]').last().click();
-      cy.contains(courses[0].title).should('exist');
-      cy.contains(courses[1].title).should('not.exist');
-      cy.contains(courses[2].title).should('exist');
       cy.contains(courses[3].title).should('exist');
 
-      cy.get('[data-cy="checkbox-staff-controls"]').first().click();
+      cy.get('[data-cy="checkbox-staff-controls"]').last().click();
+      cy.contains(courses[0].title).should('not.exist');
+      cy.contains(courses[1].title).should('exist');
+      cy.contains(courses[2].title).should('not.exist');
       cy.contains(courses[3].title).should('not.exist');
 
-      cy.get('[data-cy="checkbox-staff-controls"]').last().click();
-      cy.contains(courses[1].title).should('exist');
+    });
+  });
+  describe('course view', () => {
+    it('Edit button exists', () => {
+      const course = courses[1];
+      cy.visit('/');
+      cy.contains(courses[1].title).click();
+      cy.get('[data-cy="edit-course-button"]').should('exist');
     });
 
-  });
-
-  describe('create course', () => {
-    it('Can create a course with no questions', () => {
-      cy.get('[data-cy="menu-item-add-course"]').click();
-  
-      cy.get('[data-cy="course-title-input"]').type('Course from Cypress');
-      cy.get('[data-cy="course-code-input"]').type('CYP999');
-      cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
-      cy.get('[data-cy="course-description-input"]').type('Description for test course.');
-  
-      cy.get('[data-cy="create-course-submit"]').click();
-  
+    it('Can edit course title and description', () =>{
+      const course = courses[1];
+      cy.visit('/');
+      cy.contains(courses[0].title).click();
+      cy.get('[data-cy="edit-course-button"]').first().click();
+      cy.get('[data-cy="course-title-input"]').type('Course from Cypress Edited');
+      cy.get('[data-cy="course-description-input"]').type('New description for course');
+      cy.get('[data-cy="create-course-submit"]').first().click();
       cy.visit('/courses');
-      cy.contains('CYP999');
-      cy.contains('Course from Cypress');
-    });
-  });
+      cy.contains('Test Course 1 by StaffCourse from Cypress Edited');
+    })
+  })
+
 });

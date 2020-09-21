@@ -11,6 +11,7 @@ export default {
     'header.courses': 'Courses',
     'header.addCourse': 'Add Course',
     'header.userManagement': 'Manage Users',
+    'header.logout': 'Logout',
 
     'courseForm.pageTitle': 'Create course',
     'courseForm.titleForm': 'Title',
@@ -23,11 +24,15 @@ export default {
       'Working hours that are okay/unsure/impossible for you, respectively',
     'courseForm.confirmButton': 'Confirm',
     'courseForm.addQuestion': 'Add question',
+    'courseForm.publishCourse': 'Publish course',
     'courseForm.removeQuestion': 'Remove question',
+
+    'modifyCourse.pageTitle': 'Modify Course',
 
     'courses.searchPlaceholder': 'Search courses',
     'courses.deadline': 'Enrollment deadline',
     'courses.showPastCoursesButtonLabel': 'Show past courses',
+    'courses.showMyCourses': 'Show only my courses',
     'courses.orderByLabel': 'Order by:',
     'courses.orderByNameOption': 'Name',
     'courses.orderByCodeOption': 'Course Code',
@@ -65,6 +70,7 @@ export default {
     'course.generateGroups': 'Generate groups',
     'course.switchGroupsView': 'Switch to Groups view',
     'course.switchCourseView': 'Switch to Course view',
+    'course.switchEditView': 'Edit course',
 
     'studentInfo.header': 'Student Info',
     'studentInfo.fullname': 'Name: {fullname}',
@@ -106,7 +112,6 @@ export default {
     'groups.removeGroupButton': 'Remove group',
     'groups.createGroups': 'Create and save groups',
     'groups.createConfirm': 'Confirm group selection',
-    'groups.showTimes': 'Show matching times',
     'groups.addGroupButton': 'Add new group',
 
     'groupsView.noRegistrations': 'No registrations',

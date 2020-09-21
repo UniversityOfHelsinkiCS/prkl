@@ -7,6 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import roles from '../../util/user_roles';
 import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
 import GroupsView from './GroupsView';
+import EditView from './EditView'
 import RegistrationList from './RegistrationList';
 
 export default ({ id }) => {
@@ -16,7 +17,7 @@ export default ({ id }) => {
   const [registrations, setRegistrations] = useState([]);
   const [regByStudentId, setRegByStudentId] = useState([]);
   const [deleteCourse] = useMutation(DELETE_COURSE);
-  const [groupsView, setGroupsView] = useState(false);
+  const [view, setView] = useState('registrations')
   const history = useHistory();
 
   const { loading, error, data } = useQuery(COURSE_BY_ID, {
@@ -37,12 +38,12 @@ export default ({ id }) => {
     }
 
     if (!regLoading && regData !== undefined) {
-      const reg  = regData.courseRegistrations.map(r => {
-          r.questionAnswers.sort((a, b) => a.question.order - b.question.order);
-          r.questionAnswers.forEach(qa => qa.answerChoices.sort((a, b) => a.order - b.order));
+      const reg = regData.courseRegistrations.map(r => {
+        r.questionAnswers.sort((a, b) => a.question.order - b.question.order);
+        r.questionAnswers.forEach(qa => qa.answerChoices.sort((a, b) => a.order - b.order));
 
-          return r;
-        })
+        return r;
+      })
       setRegistrations(reg);
       setRegByStudentId(reg.reduce((acc, elem) => {
         acc[elem.student.studentNo] = elem;
@@ -82,12 +83,24 @@ export default ({ id }) => {
     }
   };
 
+  const handleEditCourse = () => {
+    if (view === 'registrations') {
+      setView('edit')
+    } else {
+      setView('registrations')
+    }
+  };
+
   const handleGroupsView = () => {
-    setGroupsView(!groupsView);
+    if (view === 'registrations') {
+      setView('groups');
+    } else {
+      setView('registrations')
+    }
   };
 
   const userIsRegistered = () => {
-    const found = user.registrations.find(r => r.course.id === course.id);
+    const found = user.registrations?.find(r => r.course.id === course.id);
 
     if (found === undefined) {
       return false;
@@ -99,40 +112,49 @@ export default ({ id }) => {
   return (
     <div>
       <h2>{`${course.code} - ${course.title}`}</h2>
-      {user && user.role === roles.ADMIN_ROLE ? (
+      {user && user.role >= roles.STAFF_ROLE ? (
         <div>
-          {!groupsView ? (
+          {view === 'registrations' ? (
             <div>
-              <div>
+              <p>
                 <Button onClick={handleGroupsView} color="blue">
                   <FormattedMessage id="course.switchGroupsView" />
                 </Button>
-              </div>
-              <p />
-              <div>
-                <Button onClick={handleDeletion} color="red" data-cy="delete-course-button">
-                  <FormattedMessage id="course.delete" />
-                </Button>
-              </div>
+              </p>
+              {user.role === roles.ADMIN_ROLE && (
+                <p>
+                  <Button onClick={handleDeletion} color="red" data-cy="delete-course-button">
+                    <FormattedMessage id="course.delete" />
+                  </Button>
+                </p>
+              )}
+              {(user.role === roles.ADMIN_ROLE || (user.role === roles.STAFF_ROLE && !course.published)) && (
+                <p>
+                  <Button onClick={handleEditCourse} color="blue" data-cy="edit-course-button">
+                    <FormattedMessage id="course.switchEditView" />
+                  </Button>
+                </p>
+              )}
             </div>
           ) : (
-            <Button onClick={handleGroupsView} color="blue">
-              <FormattedMessage id="course.switchCourseView" />
-            </Button>
-          )}
+              <Button onClick={handleGroupsView} color="blue">
+                <FormattedMessage id="course.switchCourseView" />
+              </Button>
+            )}
         </div>
       ) : null}
-      <p />
-      {groupsView ? (
+      {view === 'groups' ? (
         <GroupsView course={course} registrations={registrations} regByStudentId={regByStudentId} />
-      ) : (
-        <RegistrationList
-          userIsRegistered={userIsRegistered}
-          course={course}
-          registrations={registrations}
-          user={user}
-        />
-      )}
+      ) : view === 'registrations' ? (
+          <RegistrationList
+            userIsRegistered={userIsRegistered}
+            course={course}
+            registrations={registrations}
+            user={user}
+          />
+        ) : (
+          <EditView course={course} />
+        )}
     </div>
   );
 };

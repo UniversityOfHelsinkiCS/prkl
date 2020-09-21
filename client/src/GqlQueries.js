@@ -8,6 +8,10 @@ export const ALL_COURSES = gql`
       code
       description
       deadline
+      published
+      teacher {
+        id
+      }
     }
   }
 `;
@@ -72,6 +76,7 @@ export const COURSE_BY_ID = gql`
       description
       code
       deadline
+      published
       questions {
         id
         content
@@ -96,6 +101,22 @@ export const CREATE_COURSE = gql`
       description
       code
       deadline
+      published
+    }
+  }
+`;
+
+export const UPDATE_COURSE = gql`
+  mutation updateCourse($id: String! $data: CourseInput!) {
+    updateCourse(id: $id, data: $data) {
+      id
+      maxGroupSize
+      minGroupSize
+      title
+      description
+      code
+      deadline
+      published
     }
   }
 `;
