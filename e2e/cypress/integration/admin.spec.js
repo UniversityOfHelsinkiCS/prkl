@@ -7,6 +7,10 @@ describe('Admin', () => {
     cy.switchToAdmin();
   });
 
+  after(() => {
+    cy.seedDatabase();
+  })
+
   describe('course listing', () => {
     it('Can see an unpublished course', () => {
       cy.visit('/courses');

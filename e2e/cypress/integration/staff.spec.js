@@ -7,6 +7,11 @@ describe('Staff', () => {
     cy.switchToStaff();
   });
 
+  after(() => {
+    cy.seedDatabase();
+    cy.switchToAdmin();
+  })
+
   describe('course listing', () => {
     it('Can see an unpublished course', () => {
       cy.visit('/courses');
@@ -65,4 +70,46 @@ describe('Staff', () => {
       cy.contains('Course from Cypress');
     });
   });
+
+  describe('editing existing course', () => {
+    it('Can edit title, code, deadline and description of an unpublished course', () => {
+      const newTitle = 'Title by staff member';
+      const newCode = 'NewCode123';
+      const newDate = '2050-04-23';
+      const newDescription = 'Description by staff member';
+
+      cy.visit('/courses');
+      cy.contains(courses[2].title).click();
+      cy.get('[data-cy="edit-course-button"]').click();
+
+      cy.get('[data-cy="course-title-input"]').type('{selectall}{backspace}').type(newTitle);
+      cy.get('[data-cy="course-code-input"]').type('{selectall}{backspace}').type(newCode);
+      cy.get('[data-cy="course-deadline-input"]').type(newDate);
+      cy.get('[data-cy="course-description-input"]').type('{selectall}{backspace}').type(newDescription);
+
+      cy.get('[data-cy="create-course-submit"]').click();
+
+      cy.visit('/courses');
+      cy.contains(newTitle).click();
+      cy.contains(newCode);
+      // TODO: test set date too somehow, find a way to do reliably with intl
+      cy.contains(newDescription);
+      cy.get('[data-cy="edit-course-button"]').click();
+      cy.get('[data-cy="course-published-checkbox"]').should('not.have.class', 'checked');
+    })
+
+    it('Can not edit course after publishing it', () => {
+      cy.visit('/courses');
+      cy.contains(courses[2].title).click();
+      cy.get('[data-cy="edit-course-button"]').click();
+
+      cy.get('[data-cy="course-published-checkbox"]').click();
+      cy.get('[data-cy="create-course-submit"]').click();
+
+      cy.visit('/courses');
+      cy.contains(courses[2].title).click();
+      cy.contains('[data-cy="edit-course-button"]').should('not.exist');
+    })
+
+  })
 });

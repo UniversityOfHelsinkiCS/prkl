@@ -1,5 +1,6 @@
 const userData = require("./users.js");
 
+// Data in this file is used for running tests !!
 const defaultCourses = [
   {
     id: "af4f17f3-9e1a-4724-aa5c-e8c5042909ec",

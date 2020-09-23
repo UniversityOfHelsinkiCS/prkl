@@ -196,6 +196,7 @@ const EditView = ({ course }) => {
           label={intl.formatMessage({ id: 'courseForm.publishCourse' })}
           checked={published}
           onClick={() => setPublished(!published)}
+          data-cy="course-published-checkbox"
         />
 
         <Form.Button primary type="submit" data-cy="create-course-submit">

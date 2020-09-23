@@ -9,6 +9,11 @@ describe('Student', () => {
     cy.fixture('courses').as('courses');
   });
 
+  after(() => {
+    cy.seedDatabase();
+    cy.switchToAdmin();
+  })
+
   describe('access', () => {
     it('Can not see staff and admin views', () => {
       cy.visit('/addcourse');
