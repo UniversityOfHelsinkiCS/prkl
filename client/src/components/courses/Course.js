@@ -56,7 +56,9 @@ export default ({ id }) => {
 
   if (error !== undefined) {
     console.log('error:', error);
-    return <div>Error loading course</div>;
+    return (
+      <div>Error loading course. Course might have been removed or it is not published yet.</div>
+    );
   }
 
   if (loading || !course) {

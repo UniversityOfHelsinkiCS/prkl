@@ -4,6 +4,7 @@ import { Course } from "../entities/Course";
 import { User } from "../entities/User";
 import { CourseInput } from "../inputs/CourseInput";
 import { getRepository } from "typeorm";
+import { ApolloError, AuthenticationError } from "apollo-server-express";
 
 @Resolver()
 export class CourseResolver {
@@ -28,6 +29,10 @@ export class CourseResolver {
   async course(@Ctx() context, @Arg("id") id: string): Promise<Course> {
     const { user } = context;
     const course = await Course.findOne({ where: { id }, relations: ["questions", "questions.questionChoices"] });
+
+    if ((course.deleted === true || course.published === false) && user.role < STAFF) {
+      throw new Error("Nothing to see here."); // Viesti on placeholder.
+    }
 
     if (course.deadline < new Date() && user.role < STAFF) {
       throw new Error("The registration deadline for this course has already passed.");

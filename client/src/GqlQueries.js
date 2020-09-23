@@ -107,7 +107,7 @@ export const CREATE_COURSE = gql`
 `;
 
 export const UPDATE_COURSE = gql`
-  mutation updateCourse($id: String! $data: CourseInput!) {
+  mutation updateCourse($id: String!, $data: CourseInput!) {
     updateCourse(id: $id, data: $data) {
       id
       maxGroupSize
