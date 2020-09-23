@@ -54,7 +54,7 @@ export class CourseResolver {
   @Mutation(() => Course)
   async updateCourse(@Ctx() context, @Arg("id") id: string, @Arg("data") data: CourseInput): Promise<Course> {
     const { user } = context;
-    const course = await Course.findOne({ where: { id } });
+    const course = await Course.findOne({ where: { id }, relations: ["teacher"] });
     if (!course) {
       throw new Error("Course with given id not found.");
     }

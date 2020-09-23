@@ -6,6 +6,8 @@ export const ALL_COURSES = gql`
       id
       title
       code
+      maxGroupSize
+      minGroupSize
       description
       deadline
       published
@@ -102,6 +104,9 @@ export const CREATE_COURSE = gql`
       code
       deadline
       published
+      teacher {
+        id
+      }
     }
   }
 `;
@@ -117,6 +122,9 @@ export const UPDATE_COURSE = gql`
       code
       deadline
       published
+      teacher {
+        id
+      }
     }
   }
 `;
