@@ -14,8 +14,9 @@ export class CourseResolver {
       return getRepository(Course)
         .createQueryBuilder("course")
         .leftJoinAndSelect("course.teacher", "user")
-        .where("teacherId = user.id")
+        .where("teacherId = user.id") // Pitääkö kurssin näkyä opiskelijalle, jos hän on luonut sen ollessaan opettaja (roolihan voi muuttua), vaikka kurssi ei olisi enää kurantti?
         .where("deleted = false")
+        .andWhere("published = true")
         .andWhere("deadline > NOW()")
         .getMany();
     } else {
