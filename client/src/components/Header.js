@@ -17,7 +17,10 @@ export default () => {
 
   // Logout feature. Calling Shibboleth headers from backend and redirecting there.
   const handleLogout = () => {
-    const url = process.env.NODE_ENV === 'development' ? 'http://localhost:3001/logout' : `${process.env.PUBLIC_URL}/logout`;
+    const url =
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3001/logout'
+        : `${process.env.PUBLIC_URL}/logout`;
 
     axios.get(url).then(result => {
       localStorage.clear();

@@ -3,8 +3,8 @@ import { useHistory } from 'react-router-dom';
 import { Form } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
+import { useStore } from 'react-hookstore';
 import { UPDATE_COURSE } from '../../GqlQueries';
-import { useStore } from 'react-hookstore'
 import QuestionForm from '../courseCreation/QuestionForm';
 
 const EditView = ({ course }) => {
@@ -13,36 +13,36 @@ const EditView = ({ course }) => {
   const [courseCode, setCourseCode] = useState('');
   const [questions, setQuestions] = useState([]);
   const [deadline, setDeadline] = useState('');
-  const [published, setPublished] = useState(false)
+  const [published, setPublished] = useState(false);
   const [calendarToggle, setCalendarToggle] = useState(false);
   const history = useHistory();
   const intl = useIntl();
-  const [updateCourse] = useMutation(UPDATE_COURSE)
+  const [updateCourse] = useMutation(UPDATE_COURSE);
 
   const [courses, setCourses] = useStore('coursesStore');
-  //const [course, setCourse] = useState({});
-
-  useEffect(() => {
-    setCourseTitle(course.title)
-    setCourseDescription(course.description)
-    setCourseCode(course.code)
-    setQuestions(course.questions)
-    let dateParts = intl.formatDate(course.deadline,
-      { year: 'numeric', month: '2-digit', day: '2-digit' })
-      .split('/');
-    let dateString = dateParts[2] + '-' + dateParts[0] + '-' + dateParts[1];
-    setDeadline(dateString)
-    setPublished(course.published)
-    let calendar = course.questions.find(q => q.questionType === 'times')
-    setCalendarToggle(calendar)
-    if (calendar) {
-      setCalendarDescription(calendar.content)
-    }
-  }, []);
+  // const [course, setCourse] = useState({});
 
   const [calendarDescription, setCalendarDescription] = useState(
     `${intl.formatMessage({ id: 'courseForm.timeQuestionDefault' })}`
   );
+
+  useEffect(() => {
+    setCourseTitle(course.title);
+    setCourseDescription(course.description);
+    setCourseCode(course.code);
+    setQuestions(course.questions);
+    const dateParts = intl
+      .formatDate(course.deadline, { year: 'numeric', month: '2-digit', day: '2-digit' })
+      .split('/');
+    const dateString = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`;
+    setDeadline(dateString);
+    setPublished(course.published);
+    const calendar = course.questions.find(q => q.questionType === 'times');
+    setCalendarToggle(calendar);
+    if (calendar) {
+      setCalendarDescription(calendar.content);
+    }
+  }, []);
 
   const today = new Date();
   const dd = String(today.getDate()).padStart(2, '0');
@@ -61,7 +61,9 @@ const EditView = ({ course }) => {
     if (calendarToggle) {
       calendarQuestion.content = calendarDescription;
     }
-    const promptText = published ? 'Confirm all edits and publish course? Published courses can only be edited by admins!' : 'Confirm all edits?';
+    const promptText = published
+      ? 'Confirm all edits and publish course? Published courses can only be edited by admins!'
+      : 'Confirm all edits?';
     if (window.confirm(promptText)) {
       const courseObject = {
         title: courseTitle,
@@ -70,17 +72,19 @@ const EditView = ({ course }) => {
         minGroupSize: course.minGroupSize,
         maxGroupSize: course.maxGroupSize,
         deadline: new Date(deadline).setHours(23, 59),
-        questions: calendarToggle ? questions.concat(calendarQuestion) : questions,                          // TODO: needs to be updated too
-        published: published
+        questions: calendarToggle ? questions.concat(calendarQuestion) : questions, // TODO: needs to be updated too
+        published,
       };
       const variables = { id: course.id, data: { ...courseObject } };
       try {
         const result = await updateCourse({
           variables,
         });
-        setCourses(courses.map(c => {
-          return c.id !== course.id ? c : result.data.updateCourse
-        }))
+        setCourses(
+          courses.map(c => {
+            return c.id !== course.id ? c : result.data.updateCourse;
+          })
+        );
       } catch (error) {
         console.log('error:', error);
       }
@@ -97,7 +101,7 @@ const EditView = ({ course }) => {
   };
 
   return (
-    <div style={{'marginTop': '15px'}}>
+    <div style={{ marginTop: '15px' }}>
       <h4>
         <FormattedMessage id="modifyCourse.pageTitle" />
       </h4>
@@ -114,7 +118,7 @@ const EditView = ({ course }) => {
             onChange={event => setCourseTitle(event.target.value)}
             data-cy="course-title-input"
           />
-       </Form.Field>
+        </Form.Field>
 
         <Form.Group>
           <Form.Input
@@ -156,7 +160,7 @@ const EditView = ({ course }) => {
 
         <Form.Checkbox
           label={intl.formatMessage({ id: 'courseForm.includeCalendar' })}
-          checked={calendarToggle ? true : false}
+          checked={!!calendarToggle}
           onClick={() => setCalendarToggle(!calendarToggle)}
         />
 
