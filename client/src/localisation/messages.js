@@ -100,6 +100,7 @@ export default {
     'courseRegistration.lastName': 'Last name',
     'courseRegistration.studentNumber': 'Student number',
     'courseRegistration.email': 'Email',
+    'courseRegistration.cancel': 'Cancel registration',
 
     'groups.title': 'Group',
     'groups.empty': 'No groups generated',

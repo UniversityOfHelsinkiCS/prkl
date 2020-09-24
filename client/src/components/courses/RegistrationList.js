@@ -1,5 +1,5 @@
 import React from 'react';
-import { Header, Icon } from 'semantic-ui-react';
+import { Header, Icon, Button } from 'semantic-ui-react';
 import { FormattedMessage, FormattedDate } from 'react-intl';
 import Registration from '../registration/Registration';
 import CourseRegistration from '../../admin/CourseRegistrations';
@@ -13,10 +13,15 @@ export default ({ userIsRegistered, course, registrations, user }) => {
       <p />
       {userIsRegistered() ? (
         <Header as="h2">
-          <Icon name="thumbs up outline" />
-          <Header.Content>
-            <FormattedMessage id="course.userHasRegistered" />
-          </Header.Content>
+          <p>
+            <Icon name="thumbs up outline" />
+            <Header.Content>
+              <FormattedMessage id="course.userHasRegistered" />
+            </Header.Content>
+          </p>
+          <Button color="red">
+            <FormattedMessage id="courseRegistration.cancel" />
+          </Button>
         </Header>
       ) : (
         <>
