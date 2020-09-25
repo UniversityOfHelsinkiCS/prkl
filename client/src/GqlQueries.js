@@ -150,6 +150,12 @@ export const REGISTER_TO_COURSE = gql`
   }
 `;
 
+export const DELETE_REGISTRATION = gql`
+  mutation deleteRegistration($id: String!) {
+    deleteRegistration(id: $id)
+  }
+`;
+
 export const DELETE_COURSE = gql`
   mutation deleteCourse($id: String!) {
     deleteCourse(id: $id)
