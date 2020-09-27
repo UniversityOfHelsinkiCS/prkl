@@ -22,6 +22,37 @@ export class RegistrationResolver {
     });
   }
 
+  @Query(() => Registration)
+  async registration(@Ctx() context, @Arg("studentId") studentId: string, @Arg("courseId") courseId: string): Promise<Registration> {
+    const { user } = context;
+    let registration;
+    let auth = false;
+    
+    console.log('courseId in query: ', courseId);
+    console.log('studentId in query: ', studentId);
+
+    if (studentId === user.id) {
+      auth = true;
+    } else if (user.role === STAFF) {
+      const course = await Course.findOne({
+        where: { id: courseId },
+        relations: ["teacher"],
+      });
+
+      if ( course.teacher.id === user.id){
+        auth = true;
+      }
+    } else if (user.role === ADMIN) {
+      auth = true;
+    }
+
+    if (!auth) throw new Error("Not authorized.");
+    
+    registration = await Registration.findOne({ where: { studentId, courseId }, relations: ["student", "course"] });
+    if (!registration) throw new Error("Registration not found!");
+    return registration;
+  }
+
   @Mutation(() => Registration)
   async createRegistration(@Ctx() context, @Arg("data") data: RegistrationInput): Promise<Registration> {
     const course = await Course.findOne({ where: { id: data.courseId } });
