@@ -22,37 +22,6 @@ export class RegistrationResolver {
     });
   }
 
-  @Query(() => Registration)
-  async registration(@Ctx() context, @Arg("studentId") studentId: string, @Arg("courseId") courseId: string): Promise<Registration> {
-    const { user } = context;
-    let registration;
-    let auth = false;
-    
-    console.log('courseId in query: ', courseId);
-    console.log('studentId in query: ', studentId);
-
-    if (studentId === user.id) {
-      auth = true;
-    } else if (user.role === STAFF) {
-      const course = await Course.findOne({
-        where: { id: courseId },
-        relations: ["teacher"],
-      });
-
-      if ( course.teacher.id === user.id){
-        auth = true;
-      }
-    } else if (user.role === ADMIN) {
-      auth = true;
-    }
-
-    if (!auth) throw new Error("Not authorized.");
-    
-    registration = await Registration.findOne({ where: { studentId, courseId }, relations: ["student", "course"] });
-    if (!registration) throw new Error("Registration not found!");
-    return registration;
-  }
-
   @Mutation(() => Registration)
   async createRegistration(@Ctx() context, @Arg("data") data: RegistrationInput): Promise<Registration> {
     const course = await Course.findOne({ where: { id: data.courseId } });
@@ -70,24 +39,29 @@ export class RegistrationResolver {
   }
 
   @Mutation(() => Boolean)
-  async deleteRegistration(@Ctx() context, @Arg("id") id: string): Promise<boolean> {
-    const registration = await Registration.findOne({ where: { id } });
+  async deleteRegistration(@Ctx() context, @Arg("studentId") studentId: string, @Arg("courseId") courseId: string): Promise<boolean> {
+    const { user } = context;
+    let auth = false;
+
+    if (studentId === user.id) {
+      auth = true;
+    } else if (user.role === STAFF) {
+      const course = await Course.findOne({
+        where: { id: courseId },
+        relations: ["teacher"],
+      });
+      if ( course.teacher.id === user.id){
+        auth = true;
+      }
+    } else if (user.role === ADMIN) {
+      auth = true;
+    };
+    if (!auth) throw new Error("Not authorized.");
+    
+    const registration = await Registration.findOne({ where: { studentId, courseId }, relations: ["student", "course"] });
     if (!registration) throw new Error("Registration not found!");
 
-    const course = await Course.findOne({
-      where: { id: registration.courseId },
-      relations: ["teacher"],
-    });
-
-    if (context.user.role === ADMIN) {
-      await registration.remove();
-    } else if (context.user.role === STAFF && course.teacher.id === context.user.id) {
-      await registration.remove();
-    } else if (context.user.role === USER && registration.studentId === context.user.id) {
-      await registration.remove();
-    } else {
-      throw new Error("No authority.");
-    }
+    await registration.remove();
 
     return true;
   }
