@@ -1,16 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Radio, Segment } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 const QuestionForm = ({ questionId, setQuestions, questions }) => {
   const intl = useIntl();
 
-  const [options, setOptions] = useState([]);
-  const [question, setQuestion] = useState({
+  const defaultQuestion = {
     questionType: 'singleChoice',
     content: '',
-    order: questionId,
-  });
+    order: questionId
+  }
+
+  const [options, setOptions] = useState([]);
+  const [question, setQuestion] = useState(defaultQuestion);
+
+  useEffect(() => {
+    const qstn = questions[questionId]
+      ? {
+        questionType: questions[questionId].questionType
+          ? questions[questionId].questionType 
+          : defaultQuestion.questionType,
+        content: questions[questionId].content,
+        order: questionId
+      }
+      : defaultQuestion;
+    setQuestion(qstn);
+    const opts = questions[questionId]?.questionChoices 
+      ? questions[questionId].questionChoices.map(qc => {
+        return {
+          content: qc.content,
+          order: qc.order
+        }
+      })
+      : options;
+    setOptions(opts);
+  }, []);
 
   const handleOptionChange = index => (e, { value }) => {
     const newOptions = options;
@@ -61,6 +85,7 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
         required
         onChange={handleTitleChange}
         control={Input}
+        value={question.content}
         label={intl.formatMessage({
           id: 'questionForm.title',
         })}
@@ -118,6 +143,7 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
                 onChange={handleOptionChange(index)}
                 control={Input}
                 type="text"
+                value={q.content}
                 label={intl.formatMessage(
                   {
                     id: 'questionForm.optionTitle',

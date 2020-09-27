@@ -30,7 +30,17 @@ const EditView = ({ course }) => {
     setCourseTitle(course.title);
     setCourseDescription(course.description);
     setCourseCode(course.code);
-    setQuestions(course.questions);
+    const qstns = course.questions.filter(q => q.questionType !== 'times').map(q => {
+      return { 
+        order: q.order,
+        content: q.content,
+        questionType: q.questionType,
+        questionChoices: q.questionChoices.map(qc => {
+          return { content: qc.content, order: qc.order };
+        })
+      };
+    });
+    setQuestions(qstns);
     const dateParts = intl
       .formatDate(course.deadline, { year: 'numeric', month: '2-digit', day: '2-digit' })
       .split('/');
@@ -72,7 +82,7 @@ const EditView = ({ course }) => {
         minGroupSize: course.minGroupSize,
         maxGroupSize: course.maxGroupSize,
         deadline: new Date(deadline).setHours(23, 59),
-        questions: calendarToggle ? questions.concat(calendarQuestion) : questions, // TODO: needs to be updated too
+        questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
         published,
       };
       const variables = { id: course.id, data: { ...courseObject } };
@@ -184,7 +194,7 @@ const EditView = ({ course }) => {
         <Form.Group style={{ flexWrap: 'wrap' }}>
           {questions?.map((q, index) => (
             <QuestionForm
-              key={`addQuestionField${q.id}`}
+              key={`addQuestionField${q.order}`}
               setQuestions={setQuestions}
               questions={questions}
               questionId={index}
