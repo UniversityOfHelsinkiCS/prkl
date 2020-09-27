@@ -43,20 +43,19 @@ export class RegistrationResolver {
     const { user } = context;
     let auth = false;
 
-    if (studentId === user.id) {
+    const course = await Course.findOne({
+      where: { id: courseId },
+      relations: ["teacher"],
+    });
+
+    if (studentId === user.id && course.deadline > new Date()) {
       auth = true;
-    } else if (user.role === STAFF) {
-      const course = await Course.findOne({
-        where: { id: courseId },
-        relations: ["teacher"],
-      });
-      if ( course.teacher.id === user.id){
-        auth = true;
-      }
+    } else if (user.role === STAFF && course.teacher.id === user.id ) {
+      auth = true;
     } else if (user.role === ADMIN) {
       auth = true;
     };
-    if (!auth) throw new Error("Not authorized.");
+    if (!auth) throw new Error("You are not authorized to cancel his registration or deadline has passed.");
     
     const registration = await Registration.findOne({ where: { studentId, courseId }, relations: ["student", "course"] });
     if (!registration) throw new Error("Registration not found!");
