@@ -41,7 +41,7 @@ export default ({ userIsRegistered, course, registrations, user }) => {
             </Header.Content>
           </p>
           {new Date(course.deadline) > new Date() ? (
-            <Button onClick={handleRegistrationDeletion} color="red">
+            <Button onClick={handleRegistrationDeletion} color="red" data-cy="cancel-registration-button">
               <FormattedMessage id="courseRegistration.cancel" />
             </Button>
           ) : null}
