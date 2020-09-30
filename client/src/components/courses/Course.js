@@ -25,7 +25,7 @@ export default ({ id }) => {
   });
 
   const { loading: regLoading, data: regData } = useQuery(COURSE_REGISTRATION, {
-    skip: user.role !== roles.ADMIN_ROLE,
+    skip: user.role === roles.STUDENT_ROLE,
     variables: { courseId: id },
   });
 
