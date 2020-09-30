@@ -28,7 +28,7 @@ export class CourseResolver {
   @Query(() => Course)
   async course(@Ctx() context, @Arg("id") id: string): Promise<Course> {
     const { user } = context;
-    const course = await Course.findOne({ where: { id }, relations: ["questions", "questions.questionChoices"] });
+    const course = await Course.findOne({ where: { id }, relations: ["questions", "questions.questionChoices", "teacher"] });
 
     if ((course.deleted === true || course.published === false) && user.role < STAFF) {
       throw new Error("Nothing to see here."); // Viesti on placeholder.
