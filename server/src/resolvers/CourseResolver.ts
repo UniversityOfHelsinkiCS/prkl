@@ -62,6 +62,18 @@ export class CourseResolver {
       throw new Error("You do not have authorization to update a published course.");
     }
 
+    course.title = data.title;
+    course.description = data.description;
+    course.code = data.code;
+    course.published = data.published;
+    course.deadline = data.deadline;
+
+    // Temp fix to ensure published course questions cannot be edited by anyone for now
+    if (course.published) {
+      await course.save();
+      return course;
+    }
+
     // Delete all old questions and their questionChoices
     // Note: This will break things if (when) we need to
     // change existing questions without removing them (by
@@ -75,12 +87,6 @@ export class CourseResolver {
       await q.remove();
     }));
     course.questions = [];
-
-    course.title = data.title;
-    course.description = data.description;
-    course.code = data.code;
-    course.published = data.published;
-    course.deadline = data.deadline;
 
     // Ensure each course has no more than one timetable
     let hasTimetable = false;
