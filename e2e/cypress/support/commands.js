@@ -35,6 +35,31 @@ Cypress.Commands.add('createCourse', (courseIndex, headerIndex) => {
   });
 });
 
+Cypress.Commands.add('courseRegistration', (studentIndex, courseIndex, headerIndex) => {
+  const body = {
+    operationName: 'courseRegistration',
+    variables: {
+      studentId: users[studentIndex].id, courseId: courses[courseIndex].id,
+    },
+    query: `
+    query courseRegistrations($courseId: String!) {
+      courseRegistrations(courseId: $courseId) {
+        id
+      }
+    }`
+  };
+
+  cy.fixture('mockHeaders').then((headers) => {
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/graphql`,
+      body,
+      headers: headers[headerIndex],
+      failOnStatusCode: false,
+    });
+  });
+});
+
 Cypress.Commands.add('deleteRegistration', (studentIndex, courseIndex, headerIndex) => {
   const body = {
     operationName: 'deleteRegistration',

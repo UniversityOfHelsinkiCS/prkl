@@ -27,6 +27,15 @@ const defaultUsers = [
     email: "user-3@email.com",
     role: 3,
   },
+  {
+    id: "e66c4e53-b514-4e82-a6c6-4b8083869a63",
+    shibbolethUid: "4",
+    firstname: "Firstname 4 (Student)",
+    lastname: "Lastname 4",
+    studentNo: "000000004",
+    email: "user-4@email.com",
+    role: 1,
+  },
 ];
 
 const generateUsers = n =>

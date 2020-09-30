@@ -1,5 +1,6 @@
 // / <reference types="Cypress" />
 const courses = require('../../../server/data/courses');
+const users = require('../../../server/data/users');
 
 describe('Staff', () => {
   beforeEach(() => {
@@ -110,6 +111,24 @@ describe('Staff', () => {
       cy.contains(courses[2].title).click();
       cy.contains('[data-cy="edit-course-button"]').should('not.exist');
     })
-
   })
+
+  describe('enroll management', () => {
+    it('Can see enrolled students only on own course', () => {
+      cy.visit('/courses');
+      cy.contains(courses[0].title).click();
+      cy.get('table').contains(users[3].firstname);
+      cy.contains("Students enrolled to the course:");
+
+      cy.visit('/courses');
+      cy.contains(courses[4].title).click();
+      cy.get('table').should('not.exist');
+      cy.contains("Students enrolled to the course:").should('not.exist');
+
+      // Test that restrictions apply to backend too.
+      cy.courseRegistration(1, 4, 0).then((resp) => {
+        expect(resp.status).to.eq(500);
+      });
+    });
+  });
 });

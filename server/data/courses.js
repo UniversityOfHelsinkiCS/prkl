@@ -12,6 +12,12 @@ const defaultCourses = [
     maxGroupSize: 10,
     minGroupSize: 5,
     published: true,
+    registrations: [
+      {
+        id: "5328d54d-a643-4d64-b9ba-ce538167e128",
+        student: userData[3],
+      }
+    ]
   },
   {
     id: "be2a695a-c3a4-4f25-b0b5-ac7d4854a5b1",
@@ -82,6 +88,23 @@ const defaultCourses = [
     maxGroupSize: 10,
     minGroupSize: 5,
     published: true,
+  },
+  {
+    id: "e22a9bbc-42af-4c9d-b6de-8ce322f8734b",
+    title: "Simple test course 5 by Admin",
+    deadline: "2030-12-31",
+    code: "TC05",
+    description: "Course for non-staff persons.",
+    teacher: userData[2],
+    maxGroupSize: 10,
+    minGroupSize: 5,
+    published: true,
+    registrations: [
+      {
+        id: "acae5b2f-3125-49d1-a900-adfdb9b253bf",
+        student: userData[3],
+      }
+    ]
   },
 ];
 
