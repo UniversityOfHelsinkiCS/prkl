@@ -18,6 +18,11 @@ export class UserResolver {
     return await User.find({});
   }
 
+  @Query(() => [User])
+  async usersByRole(@Arg("role") role: number): Promise<User[]>{
+     return await User.find({ where: { role } });
+  }
+
   @Authorized(ADMIN)
   @Mutation(() => User)
   async editUserRole(@Arg("id") id: string, @Arg("role") role: number): Promise<User> {
