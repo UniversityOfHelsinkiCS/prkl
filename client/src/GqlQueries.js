@@ -102,6 +102,9 @@ export const COURSE_BY_ID = gql`
         }
         order
       }
+      teacher {
+        id
+      }
     }
   }
 `;

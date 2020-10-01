@@ -1,4 +1,6 @@
 // / <reference types="Cypress" />
+const users = require('../../../server/data/users');
+const courses = require('../../../server/data/courses');
 
 const apiUrl = Cypress.env('API_URL') || '';
 
@@ -33,6 +35,54 @@ Cypress.Commands.add('createCourse', (courseIndex, headerIndex) => {
   });
 });
 
+Cypress.Commands.add('courseRegistration', (studentIndex, courseIndex, headerIndex) => {
+  const body = {
+    operationName: 'courseRegistration',
+    variables: {
+      studentId: users[studentIndex].id, courseId: courses[courseIndex].id,
+    },
+    query: `
+    query courseRegistrations($courseId: String!) {
+      courseRegistrations(courseId: $courseId) {
+        id
+      }
+    }`
+  };
+
+  cy.fixture('mockHeaders').then((headers) => {
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/graphql`,
+      body,
+      headers: headers[headerIndex],
+      failOnStatusCode: false,
+    });
+  });
+});
+
+Cypress.Commands.add('deleteRegistration', (studentIndex, courseIndex, headerIndex) => {
+  const body = {
+    operationName: 'deleteRegistration',
+    variables: {
+      studentId: users[studentIndex].id, courseId: courses[courseIndex].id,
+    },
+    query: `
+      mutation deleteRegistration($studentId: String!, $courseId: String!) {
+        deleteRegistration(studentId: $studentId, courseId: $courseId)
+      }`,
+  };
+
+  cy.fixture('mockHeaders').then((headers) => {
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/graphql`,
+      body,
+      headers: headers[headerIndex],
+      failOnStatusCode: false,
+    });
+  });
+});
+
 // Commands to switch user roles.
 const switchUser = (role) => {
   cy.visit('/');
@@ -42,3 +92,4 @@ const switchUser = (role) => {
 Cypress.Commands.add('switchToStudent', () => switchUser('student'));
 Cypress.Commands.add('switchToStaff', () => switchUser('staff'));
 Cypress.Commands.add('switchToAdmin', () => switchUser('admin'));
+
