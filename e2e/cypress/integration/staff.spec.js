@@ -22,33 +22,23 @@ describe('Staff', () => {
     it('Can see staffcontrols', () => {
       cy.visit('/courses');
       cy.get('[data-cy="checkbox-staff-controls"]').should('exist');
-    });
-  
-    it('Can toggle to see only own courses', () => {
-      cy.visit('/courses');
+      // only own courses
       cy.get('[data-cy="checkbox-staff-controls"]').last().click();
       cy.contains(courses[1].title).should('not.exist');
-    });
-
-    it('Can toggle to see past courses', () => {
-      cy.visit('/courses');
+      cy.get('[data-cy="checkbox-staff-controls"]').last().click();
+      // past courses
       cy.get('[data-cy="checkbox-staff-controls"]').first().click();
       cy.contains(courses[3].title).should('exist');
-    });
-
-    it('Can toggle combo', () => {
-      cy.visit('/courses');
-
-      cy.get('[data-cy="checkbox-staff-controls"]').first().click();
+      // toggle combo
       cy.get('[data-cy="checkbox-staff-controls"]').last().click();
       cy.contains(courses[0].title).should('exist');
       cy.contains(courses[1].title).should('not.exist');
       cy.contains(courses[2].title).should('exist');
       cy.contains(courses[3].title).should('exist');
-
+  
       cy.get('[data-cy="checkbox-staff-controls"]').first().click();
       cy.contains(courses[3].title).should('not.exist');
-
+  
       cy.get('[data-cy="checkbox-staff-controls"]').last().click();
       cy.contains(courses[1].title).should('exist');
     });
@@ -126,7 +116,20 @@ describe('Staff', () => {
       cy.contains("Students enrolled to the course:").should('not.exist');
 
       // Test that restrictions apply to backend too.
-      cy.courseRegistration(1, 4, 0).then((resp) => {
+      cy.courseRegistration(4, 1).then((resp) => {
+        expect(resp.status).to.eq(500);
+      });
+    });
+
+    it('Can remove enrollments only from own course', () => {  
+      // remove student from own course
+      cy.visit('/courses');
+      cy.contains(courses[0].title).click();
+      cy.get('[data-cy="remove-registration-button"]').first().click();
+      cy.get('table').contains(users[3].firstname).should('not.exist');
+  
+      // can't remove student from other's course
+      cy.deleteRegistration(3, 4, 1).then((resp) => {
         expect(resp.status).to.eq(500);
       });
     });

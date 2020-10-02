@@ -35,11 +35,11 @@ Cypress.Commands.add('createCourse', (courseIndex, headerIndex) => {
   });
 });
 
-Cypress.Commands.add('courseRegistration', (studentIndex, courseIndex, headerIndex) => {
+Cypress.Commands.add('courseRegistration', (courseIndex, headerIndex) => {
   const body = {
     operationName: 'courseRegistration',
     variables: {
-      studentId: users[studentIndex].id, courseId: courses[courseIndex].id,
+      courseId: courses[courseIndex].id,
     },
     query: `
     query courseRegistrations($courseId: String!) {
