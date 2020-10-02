@@ -88,6 +88,12 @@ const defaultCourses = [
     maxGroupSize: 10,
     minGroupSize: 5,
     published: true,
+    registrations: [
+      {
+        id: "c867f368-fa39-4ed4-96b8-d97cecec2c98",
+        student: userData[0],
+      }
+    ]
   },
   {
     id: "e22a9bbc-42af-4c9d-b6de-8ce322f8734b",

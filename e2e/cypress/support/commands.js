@@ -60,6 +60,36 @@ Cypress.Commands.add('courseRegistration', (studentIndex, courseIndex, headerInd
   });
 });
 
+Cypress.Commands.add('createRegistration', (courseIndex, headerIndex) => {
+  const body = {
+    operationName: 'createRegistration',
+    variables: {
+      data: {
+        courseId: courses[courseIndex].id,
+        questionAnswers: [],
+        workingTimes: []
+      }
+    },
+    query: `
+      mutation createRegistration($data: RegistrationInput!) {
+      createRegistration(data: $data) {
+        id
+      }
+    }
+  `,
+  };
+
+  cy.fixture('mockHeaders').then((headers) => {
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/graphql`,
+      body,
+      headers: headers[headerIndex],
+      failOnStatusCode: false,
+    });
+  });
+});
+
 Cypress.Commands.add('deleteRegistration', (studentIndex, courseIndex, headerIndex) => {
   const body = {
     operationName: 'deleteRegistration',
