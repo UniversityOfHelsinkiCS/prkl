@@ -101,6 +101,7 @@ export default {
     'courseRegistration.studentNumber': 'Student number',
     'courseRegistration.email': 'Email',
     'courseRegistration.cancel': 'Cancel registration',
+    'courseRegistration.remove': 'Remove from course',
 
     'groups.title': 'Group',
     'groups.empty': 'No groups generated',

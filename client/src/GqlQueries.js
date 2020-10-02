@@ -182,6 +182,7 @@ export const COURSE_REGISTRATION = gql`
     courseRegistrations(courseId: $courseId) {
       id
       student {
+        id
         firstname
         lastname
         studentNo
