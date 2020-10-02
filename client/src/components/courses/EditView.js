@@ -22,6 +22,7 @@ const EditView = ({ course }) => {
   const [courses, setCourses] = useStore('coursesStore');
   // const [course, setCourse] = useState({});
 
+  const [calendarId, setCalendarId] = useState('');
   const [calendarDescription, setCalendarDescription] = useState(
     `${intl.formatMessage({ id: 'courseForm.timeQuestionDefault' })}`
   );
@@ -31,12 +32,13 @@ const EditView = ({ course }) => {
     setCourseDescription(course.description);
     setCourseCode(course.code);
     const qstns = course.questions.filter(q => q.questionType !== 'times').map(q => {
-      return { 
+      return {
+        id: q.id,
         order: q.order,
         content: q.content,
         questionType: q.questionType,
         questionChoices: q.questionChoices.map(qc => {
-          return { content: qc.content, order: qc.order };
+          return { id: qc.id, content: qc.content, order: qc.order };
         })
       };
     });
@@ -51,6 +53,7 @@ const EditView = ({ course }) => {
     setCalendarToggle(calendar);
     if (calendar) {
       setCalendarDescription(calendar.content);
+      setCalendarId(calendar.id);
     }
   }, []);
 
@@ -69,11 +72,13 @@ const EditView = ({ course }) => {
   const handleSubmit = async () => {
     // TODO: Add logic for checking whether there is actually anything to update
     if (calendarToggle) {
+      calendarQuestion.id = calendarId ? calendarId : undefined;
       calendarQuestion.content = calendarDescription;
+      calendarQuestion.order = questions.length;
     }
-    const promptText = published
-      ? 'Confirm all edits and publish course? Published courses can only be edited by admins!'
-      : 'Confirm all edits?';
+    const promptText = intl.formatMessage({
+      id: published ? 'editView.confirmPublishSubmit' : 'editView.confirmSubmit'
+    });
     if (window.confirm(promptText)) {
       const courseObject = {
         title: courseTitle,
@@ -106,14 +111,11 @@ const EditView = ({ course }) => {
     e.preventDefault();
     setQuestions([...questions, { content: '' }]);
   };
-  const handleRemoveForm = () => {
-    setQuestions(questions.slice(0, questions.length - 1));
-  };
 
   return (
     <div style={{ marginTop: '15px' }}>
       <h4>
-        <FormattedMessage id="modifyCourse.pageTitle" />
+        <FormattedMessage id="editView.pageTitle" />
       </h4>
 
       <Form onSubmit={handleSubmit}>
@@ -169,6 +171,7 @@ const EditView = ({ course }) => {
         </Form.Field>
 
         <Form.Checkbox
+          disabled={course.published}
           label={intl.formatMessage({ id: 'courseForm.includeCalendar' })}
           checked={!!calendarToggle}
           onClick={() => setCalendarToggle(!calendarToggle)}
@@ -181,23 +184,24 @@ const EditView = ({ course }) => {
           onChange={event => setCalendarDescription(event.target.value)}
         />
 
-        <Form.Group>
-          <Form.Button type="button" onClick={handleAddForm} color="green">
-            <FormattedMessage id="courseForm.addQuestion" />
-          </Form.Button>
-
-          <Form.Button type="button" onClick={handleRemoveForm} color="red">
-            <FormattedMessage id="courseForm.removeQuestion" />
-          </Form.Button>
-        </Form.Group>
+        {course.published ? (
+          <p style={{ "color": "#b00" }}> {intl.formatMessage({ id: 'editView.coursePublishedNotification' })} </p>
+        ) : (
+            <Form.Group>
+              <Form.Button type="button" onClick={handleAddForm} color="green">
+                <FormattedMessage id="courseForm.addQuestion" />
+              </Form.Button>
+            </Form.Group>
+          )}
 
         <Form.Group style={{ flexWrap: 'wrap' }}>
           {questions?.map((q, index) => (
             <QuestionForm
-              key={`addQuestionField${q.order}`}
+              key={`addQuestionField${q.id}`}
               setQuestions={setQuestions}
               questions={questions}
-              questionId={index}
+              questionIndex={index}
+              hideAddRemoveButtons={course.published}
             />
           ))}
         </Form.Group>

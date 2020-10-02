@@ -2,39 +2,42 @@ import React, { useEffect, useState } from 'react';
 import { Form, Input, Radio, Segment } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-const QuestionForm = ({ questionId, setQuestions, questions }) => {
+const QuestionForm = ({ questionIndex, setQuestions, questions, hideAddRemoveButtons }) => {
   const intl = useIntl();
 
   const defaultQuestion = {
     questionType: 'singleChoice',
     content: '',
-    order: questionId
+    order: questionIndex
   }
 
   const [options, setOptions] = useState([]);
   const [question, setQuestion] = useState(defaultQuestion);
 
   useEffect(() => {
-    const qstn = questions[questionId]
+    const qstn = questions[questionIndex]
       ? {
-        questionType: questions[questionId].questionType
-          ? questions[questionId].questionType 
+        id: questions[questionIndex].id,
+        questionType: questions[questionIndex].questionType
+          ? questions[questionIndex].questionType 
           : defaultQuestion.questionType,
-        content: questions[questionId].content,
-        order: questionId
+        content: questions[questionIndex].content,
+        questionChoices: questions[questionIndex].questionChoices,
+        order: questionIndex
       }
       : defaultQuestion;
     setQuestion(qstn);
-    const opts = questions[questionId]?.questionChoices 
-      ? questions[questionId].questionChoices.map(qc => {
+    const opts = questions[questionIndex]?.questionChoices 
+      ? questions[questionIndex].questionChoices.map(qc => {
         return {
+          id: qc.id,
           content: qc.content,
           order: qc.order
         }
       })
       : options;
     setOptions(opts);
-  }, []);
+  }, [questions]);
 
   const handleOptionChange = index => (e, { value }) => {
     const newOptions = options;
@@ -47,7 +50,7 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
     };
     const newQuestions = [...questions];
 
-    newQuestions[questionId] = questionObject;
+    newQuestions[questionIndex] = questionObject;
     setQuestion(questionObject);
     setQuestions(newQuestions);
   };
@@ -59,7 +62,7 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
     }
 
     const newQuestions = [...questions];
-    newQuestions[questionId] = questionObject;
+    newQuestions[questionIndex] = questionObject;
     setQuestion(questionObject);
     setQuestions(newQuestions);
   };
@@ -67,7 +70,7 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
   const handleTitleChange = (e, { value }) => {
     const questionObject = { ...question, content: value };
     const newQuestions = [...questions];
-    newQuestions[questionId] = questionObject;
+    newQuestions[questionIndex] = questionObject;
     setQuestion(questionObject);
     setQuestions(newQuestions);
   };
@@ -76,11 +79,32 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
     setOptions([...options, { order: options.length + 1, content: '' }]);
   };
   const handleRemoveForm = () => {
-    setOptions(options.slice(0, options.length - 1));
+    const newOptions = options.slice(0, options.length - 1);
+    const newQuestion = { ...question, questionChoices: newOptions };
+    const newQuestions = [...questions];
+    newQuestions[questionIndex] = newQuestion;
+    setOptions(newOptions);
+    setQuestion(newQuestion);
+    setQuestions(newQuestions);
   };
+
+  const removeQuestion = (e) => {
+    e.preventDefault();
+    const newQuestions = questions.filter((q, i) => {
+      return i !== questionIndex;
+    }).map((q, i) => {
+      return i < questionIndex ? q : { ...q, order: q.order-1 }
+    });
+    setQuestions(newQuestions);
+  }
 
   return (
     <Segment style={{ padding: 15, margin: 10 }}>
+      {!hideAddRemoveButtons && <Form.Button  // TODO: Better styling for this button
+        onClick={removeQuestion}
+        floated="right"
+      >X
+      </Form.Button>}
       <Form.Field
         required
         onChange={handleTitleChange}
@@ -93,7 +117,7 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
           id: 'questionForm.titlePlaceholder',
         })}
       />
-      <Form.Group inline>
+      {!hideAddRemoveButtons && <Form.Group inline>
         <label>
           <FormattedMessage id="questionForm.questionTypeLabel" />
         </label>
@@ -124,9 +148,11 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
           checked={question.questionType === 'freeForm'}
           onChange={() => handleTypeChange('freeForm')}
         />
-      </Form.Group>
+      </Form.Group>}
       {question.questionType !== 'freeForm' ? (
         <>
+
+        {!hideAddRemoveButtons && 
           <Form.Group>
             <Form.Button type="button" onClick={handleAddForm} color="green">
               <FormattedMessage id="questionForm.addQuestion" />
@@ -136,6 +162,7 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
               <FormattedMessage id="questionForm.removeQuestion" />
             </Form.Button>
           </Form.Group>
+          }
 
           <Form.Group style={{ flexWrap: 'wrap' }}>
             {options.map((q, index) => (
@@ -152,7 +179,7 @@ const QuestionForm = ({ questionId, setQuestions, questions }) => {
                     number: index + 1,
                   }
                 )}
-                key={`question${questionId}optionsForm${index}`}
+                key={`question${questionIndex}optionsForm${index}`}
                 placeholder={intl.formatMessage(
                   {
                     id: 'questionForm.optionTitle',

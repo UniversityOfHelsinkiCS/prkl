@@ -64,6 +64,7 @@ const defaultCourses = [
         questionType: "freeForm",
         content: "How do you be?",
         order: 2,
+        questionChoices: []
       },
     ],
   },

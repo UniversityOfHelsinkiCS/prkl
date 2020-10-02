@@ -27,7 +27,10 @@ export default {
     'courseForm.publishCourse': 'Publish course',
     'courseForm.removeQuestion': 'Remove question',
 
-    'modifyCourse.pageTitle': 'Modify Course',
+    'editView.pageTitle': 'Modify Course',
+    'editView.coursePublishedNotification': "Course has been published, adding or removing new questions is not allowed. Texts of existing questions and their answer choices may be edited.",
+    'editView.confirmPublishSubmit': 'Confirm all edits and publish course? Published courses can only be edited by admins!',
+    'editView.confirmSubmit': 'Confirm all edits?',
 
     'courses.searchPlaceholder': 'Search courses',
     'courses.deadline': 'Enrollment deadline',

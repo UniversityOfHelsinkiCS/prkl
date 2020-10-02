@@ -41,7 +41,6 @@ export default ({ id }) => {
       const reg = regData.courseRegistrations.map(r => {
         r.questionAnswers.sort((a, b) => a.question.order - b.question.order);
         r.questionAnswers.forEach(qa => qa.answerChoices.sort((a, b) => a.order - b.order));
-
         return r;
       });
       setRegistrations(reg);

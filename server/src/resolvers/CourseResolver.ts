@@ -5,6 +5,8 @@ import { User } from "../entities/User";
 import { Question } from "../entities/Question";
 import { CourseInput } from "../inputs/CourseInput";
 import { getRepository } from "typeorm";
+import { QuestionChoice } from "../entities/QuestionChoice";
+import _ from 'lodash';
 
 @Resolver()
 export class CourseResolver {
@@ -65,30 +67,38 @@ export class CourseResolver {
     course.title = data.title;
     course.description = data.description;
     course.code = data.code;
-    course.published = data.published;
     course.deadline = data.deadline;
 
-    // Temp fix to ensure published course questions cannot be edited by anyone for now
+    // Published course questions or their choices may not be added or deleted even by admins, as it will likely mess up the algorithm
     if (course.published) {
-      await course.save();
-      return course;
-    }
+      const hasSameQuestionsAndChoices = course.questions.filter(q => {
+        return data.questions.some(dq => {
+          let newChoices = dq.questionChoices?.map(dqChoice => dqChoice.id);
+          let oldChoices = q.questionChoices?.map(qChoice => qChoice.id);
+          if (!newChoices) newChoices = [];
+          if (!oldChoices) oldChoices = [];
+          return dq.id === q.id 
+            && _.isEqual(_.sortBy(newChoices), _.sortBy(oldChoices));
+        });
+      });
+      if (hasSameQuestionsAndChoices.length !== course.questions.length) {
+        throw new Error("Adding or deleting questions or questionChoices is not allowed for a published course.");
+      }
+    };
 
-    // Delete all old questions and their questionChoices
-    // Note: This will break things if (when) we need to
-    // change existing questions without removing them (by
-    // admin after the course has been published). This is a
-    // temp solution to make updating questions to work for now.
-    await Promise.all(course.questions.map(async q => {
-      await Promise.all(q.questionChoices.map(async qc => {
-        await qc.remove();
-      }));
-      q.questionChoices = [];
-      await q.remove();
+    // Really could not come up with a better way to ensure no order conflicts happen during update...
+    // Basically just temporarily bump up all orders of this courses questions to very big numbers so they don't collide
+    // with incoming new order values.
+     await Promise.all(course.questions.map(async (q) => {
+      q.order = 100000 + q.order;
+      await q.save();
     }));
-    course.questions = [];
 
-    // Ensure each course has no more than one timetable
+    const removedQuestionIds = course.questions.filter(q => {
+      return !data.questions.some(dq => dq.id === q.id);
+    }).map(q => q.id);
+
+    // Ensure only one timetable is added per course
     let hasTimetable = false;
     const questions = data.questions.filter(q => {
       if (q.questionType !== 'times') return true;
@@ -98,10 +108,29 @@ export class CourseResolver {
     });
     const qsts = await Promise.all(questions.map(async q => {
       const newQuestion = await Question.create(q);
+      if (!newQuestion.questionChoices)
+        newQuestion.questionChoices = [];
       return newQuestion;
     }));
     course.questions = qsts;
+    course.published = data.published;
+
     await course.save();
+
+    // Cleanup
+    await getRepository(QuestionChoice)
+      .createQueryBuilder("questionChoice")
+      .delete()
+      .where('"questionChoice"."questionId" is NULL')
+      .orWhere('"questionChoice"."questionId" = ANY (:ids)', { ids: removedQuestionIds })
+      .execute();
+
+    await getRepository(Question)
+      .createQueryBuilder("question")
+      .delete()
+      .where('question."courseId" is NULL')
+      .execute();
+
     return course;
   }
 

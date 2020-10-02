@@ -71,9 +71,6 @@ const CourseForm = () => {
     e.preventDefault();
     setQuestions([...questions, { content: '' }]);
   };
-  const handleRemoveForm = () => {
-    setQuestions(questions.slice(0, questions.length - 1));
-  };
 
   return (
     <div>
@@ -145,10 +142,6 @@ const CourseForm = () => {
           <Form.Button type="button" onClick={handleAddForm} color="green">
             <FormattedMessage id="courseForm.addQuestion" />
           </Form.Button>
-
-          <Form.Button type="button" onClick={handleRemoveForm} color="red">
-            <FormattedMessage id="courseForm.removeQuestion" />
-          </Form.Button>
         </Form.Group>
 
         <Form.Group style={{ flexWrap: 'wrap' }}>
@@ -157,7 +150,7 @@ const CourseForm = () => {
               key={`addQuestionField${q.id}`}
               setQuestions={setQuestions}
               questions={questions}
-              questionId={index}
+              questionIndex={index}
             />
           ))}
         </Form.Group>

@@ -128,6 +128,17 @@ export const UPDATE_COURSE = gql`
       teacher {
         id
       }
+      questions {
+        id
+        content
+        questionType
+        questionChoices {
+          content
+          order
+          id
+        }
+        order
+      }
     }
   }
 `;
