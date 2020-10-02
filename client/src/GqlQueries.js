@@ -31,6 +31,18 @@ export const ALL_USERS = gql`
   }
 `;
 
+export const USERS_BY_ROLE = gql`
+  query usersByRole($role: Float!){
+    usersByRole(role: $role){
+      id
+      firstname
+      lastname
+      studentNo
+      email
+      role
+    }
+  }
+`;
 export const CURRENT_USER = gql`
   {
     currentUser {
@@ -181,6 +193,7 @@ export const COURSE_REGISTRATION = gql`
     courseRegistrations(courseId: $courseId) {
       id
       student {
+        id
         firstname
         lastname
         studentNo

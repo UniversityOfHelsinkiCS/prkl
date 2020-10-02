@@ -32,6 +32,7 @@ export default ({ userIsRegistered, course, registrations, user }) => {
   return (
     <div>
       <p />
+      <div>
       {userIsRegistered() ? (
         <Header as="h2">
           <p>
@@ -46,8 +47,10 @@ export default ({ userIsRegistered, course, registrations, user }) => {
             </Button>
           ) : null}
         </Header>
-      ) : (
-        <>
+      ) : ( 
+        <div>
+        {new Date(course.deadline) > new Date() ? (
+          <div>
           <Header as="h4" color="red">
             <FormattedMessage id="course.deadline" />
             &nbsp;
@@ -57,10 +60,13 @@ export default ({ userIsRegistered, course, registrations, user }) => {
             {paragraphs.map(p => (
               <p>{p}</p>
             ))}
+            </div>
+            <Registration courseId={course.id} questions={course.questions} />
           </div>
-          <Registration courseId={course.id} questions={course.questions} />
-        </>
+            ) : null}
+            </div>
       )}
+      </div>
       <div>
         {course.questions && registrations && (user.role === roles.ADMIN_ROLE || (user.role === roles.STAFF_ROLE && user.id === course.teacher.id)) ? (
           <div>

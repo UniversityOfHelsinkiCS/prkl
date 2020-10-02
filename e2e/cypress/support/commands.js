@@ -35,11 +35,11 @@ Cypress.Commands.add('createCourse', (courseIndex, headerIndex) => {
   });
 });
 
-Cypress.Commands.add('courseRegistration', (studentIndex, courseIndex, headerIndex) => {
+Cypress.Commands.add('courseRegistration', (courseIndex, headerIndex) => {
   const body = {
     operationName: 'courseRegistration',
     variables: {
-      studentId: users[studentIndex].id, courseId: courses[courseIndex].id,
+      courseId: courses[courseIndex].id,
     },
     query: `
     query courseRegistrations($courseId: String!) {
@@ -47,6 +47,36 @@ Cypress.Commands.add('courseRegistration', (studentIndex, courseIndex, headerInd
         id
       }
     }`
+  };
+
+  cy.fixture('mockHeaders').then((headers) => {
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/graphql`,
+      body,
+      headers: headers[headerIndex],
+      failOnStatusCode: false,
+    });
+  });
+});
+
+Cypress.Commands.add('createRegistration', (courseIndex, headerIndex) => {
+  const body = {
+    operationName: 'createRegistration',
+    variables: {
+      data: {
+        courseId: courses[courseIndex].id,
+        questionAnswers: [],
+        workingTimes: []
+      }
+    },
+    query: `
+      mutation createRegistration($data: RegistrationInput!) {
+      createRegistration(data: $data) {
+        id
+      }
+    }
+  `,
   };
 
   cy.fixture('mockHeaders').then((headers) => {
