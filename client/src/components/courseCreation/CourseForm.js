@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Checkbox, Form, Table, TableHeader } from 'semantic-ui-react';
+import { Checkbox, Form, Table, Icon, Popup } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useStore} from 'react-hookstore';
@@ -167,6 +167,16 @@ const CourseForm = () => {
           <Form.Button type="button" onClick={handleRemoveForm} color="red">
             <FormattedMessage id="courseForm.removeQuestion" />
           </Form.Button>
+          <Popup
+            trigger={
+              <Icon name="info circle" size="large" color="blue" />
+            } wide="very"
+          >
+            <Popup.Content>
+              <FormattedMessage id="courseForm.infoBox" />
+            </Popup.Content>
+          </Popup>
+
         </Form.Group>
 
         <Form.Group style={{ flexWrap: 'wrap' }}>

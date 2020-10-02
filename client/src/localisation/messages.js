@@ -26,6 +26,10 @@ export default {
     'courseForm.addQuestion': 'Add question',
     'courseForm.publishCourse': 'Publish course',
     'courseForm.removeQuestion': 'Remove question',
+    'courseForm.infoBox':
+      'Answer options in single choice questions are assumed to be on a continuum '
+      + '(ie. choices 1 and 2 are more similar than 1 and 3), give options in order. '
+      + 'In multiple choice question the order does not matter.',
 
     'modifyCourse.pageTitle': 'Modify Course',
 
