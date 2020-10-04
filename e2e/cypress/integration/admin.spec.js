@@ -75,6 +75,35 @@ describe('Admin', () => {
       cy.get('table').contains(users[3].firstname);
       cy.get('[data-cy="remove-registration-button"]').first().click();
       cy.get('table').contains(users[3].firstname).should('not.exist');
+
+      // remove student from course which contains questions and working times
+      // gotta enroll to such course first... could make this easier
+      cy.visit('/courses');
+      cy.switchToStudent();
+      const course = courses[1];
+      cy.contains(courses[1].title).click();
+      cy.get('[data-cy="question-0"]').click();
+      const answers = [course.questions[0].questionChoices[1].content];
+      cy.contains(answers[0]).click();
+  
+      cy.get('[data-cy="question-1"]').click();
+      answers.push(course.questions[1].questionChoices[1].content);
+      cy.get('[data-cy="question-1"]').contains(answers[1]).then((item) => {
+        item.click();
+      });
+
+      answers.push('My cool answer');
+      cy.get('[data-cy="question-2"]').type(answers[2]); 
+      cy.get('[data-cy="toc-checkbox"]').click();
+      cy.get('[data-cy="submit-button"]').click();
+      cy.get('[data-cy="confirm-button"]').click();
+
+      cy.visit('/courses');
+      cy.switchToAdmin();
+      cy.contains(courses[1].title).click();
+      cy.get('[data-cy="remove-registration-button"]').first().click();
+      cy.get('table').contains(users[0].firstname).should('not.exist');
+
     });
   });
 });
