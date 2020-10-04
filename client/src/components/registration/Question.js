@@ -78,7 +78,7 @@ const Question = ({ question, hookForm }) => {
 
   return (
     <div style={{ paddingTop: 5, paddingBottom: 5 }}>
-      <Segment key={question.content} raised>
+      <Segment key={question.content} raised data-cy="coursepage-question" >
         <Grid>
           <Grid.Row columns={2}>
             <Grid.Column verticalAlign="middle">

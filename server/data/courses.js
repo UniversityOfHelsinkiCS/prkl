@@ -94,7 +94,7 @@ const defaultCourses = [
         id: "c867f368-fa39-4ed4-96b8-d97cecec2c98",
         student: userData[0],
       }
-    ]
+    ],
   },
   {
     id: "e22a9bbc-42af-4c9d-b6de-8ce322f8734b",
@@ -123,6 +123,53 @@ const defaultCourses = [
     maxGroupSize: 10,
     minGroupSize: 5,
     published: false,
+  },
+  {
+    id: "201768a6-0653-11eb-adc1-0242ac120002",
+    title: "Test Course 7 unpublished by staff",
+    deadline: "2100-12-31",
+    code: "TC07",
+    description: "Another mock course by staff.",
+    teacher: userData[1],
+    maxGroupSize: 10,
+    minGroupSize: 5,
+    published: false,
+    questions: [
+      {
+        questionType: "singleChoice",
+        content: "Please choose one",
+        order: 0,
+        questionChoices: [
+          {
+            order: 0,
+            content: "Choice 1",
+          },
+          {
+            order: 1,
+            content: "Choice 2",
+          },
+        ],
+      },
+      {
+        questionType: "multipleChoice",
+        content: "Choose one or more",
+        order: 1,
+        questionChoices: [
+          {
+            order: 0,
+            content: "First of many",
+          },
+          {
+            order: 1,
+            content: "Second of many",
+          },
+          {
+            order: 2,
+            content: "Third of many",
+          },
+        ],
+      },
+    ],
   },
 ];
 
