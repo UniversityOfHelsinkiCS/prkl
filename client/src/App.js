@@ -8,7 +8,7 @@ import StudentInfo from './components/StudentInfo/StudentInfo';
 import CourseForm from './components/courseCreation/CourseForm';
 import Courses from './components/courses/Courses';
 import Course from './components/courses/Course';
-import { ALL_COURSES, ALL_USERS } from './GqlQueries';
+import { ALL_COURSES, ALL_USERS, USERS_BY_ROLE } from './GqlQueries';
 import DevBar from './admin/DevBar';
 import roles from './util/user_roles';
 import userService from './services/userService';
@@ -21,6 +21,7 @@ import PrivateRoute from './components/misc/PrivateRoute';
 createStore('coursesStore', []);
 createStore('groupsStore', []);
 createStore('allUsersStore', []);
+createStore('teacherStore', []);
 createStore('userStore', {});
 createStore('toggleStore', false);
 
@@ -28,6 +29,7 @@ export default () => {
   const [courses, setCourses] = useStore('coursesStore');
   const [allUsers, setAllUsers] = useStore('allUsersStore');
   const [user, setUser] = useStore('userStore');
+  const [allTeachers, setAllTeachers] = useStore('teacherStore')
   const [privacyToggle] = useStore('toggleStore');
 
   const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
@@ -37,6 +39,12 @@ export default () => {
       skip: user.role !== roles.ADMIN_ROLE,
     }
   );
+  const { loading:loadingStaff, error:errorStaff, data:dataStaff } = useQuery(USERS_BY_ROLE, {
+    variables:{role:2}
+  });
+  const { loading:loadingAdmin, error:errorAdmin, data:dataAdmin } = useQuery(USERS_BY_ROLE, {
+    variables:{role:3}
+  });
 
   userService(useQuery, useEffect, setUser);
 
@@ -58,6 +66,12 @@ export default () => {
         : allUsersData.users;
       setAllUsers(usersToSet);
     }
+    if (!loadingAdmin && !loadingStaff && dataAdmin?.usersByRole !== undefined && dataStaff?.usersByRole !== undefined) {
+      const admins = dataAdmin.usersByRole;
+      const staff = dataStaff.usersByRole;
+      const allTeachers = staff.concat(admins);
+      setAllTeachers(allTeachers);      
+    }  
   }, [
     courseData,
     courseError,
@@ -67,6 +81,11 @@ export default () => {
     allUsersData,
     allUsersLoading,
     privacyToggle,
+    dataAdmin,
+    dataStaff,
+    loadingAdmin,
+    loadingStaff,
+    setAllTeachers
   ]);
 
   return (

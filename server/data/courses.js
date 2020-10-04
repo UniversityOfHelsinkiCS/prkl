@@ -8,7 +8,7 @@ const defaultCourses = [
     deadline: "2100-12-31",
     code: "TC01",
     description: "Description for a test course.",
-    teacher: userData[1],
+    teacher: [userData[1]],
     maxGroupSize: 10,
     minGroupSize: 5,
     published: true,

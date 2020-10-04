@@ -6,7 +6,6 @@ import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useStore} from 'react-hookstore';
 import { CREATE_COURSE, USERS_BY_ROLE } from '../../GqlQueries';
 import QuestionForm from './QuestionForm';
-import roles from '../../util/user_roles';
 
 const CourseForm = () => {
   const [courseTitle, setCourseTitle] = useState('');
@@ -17,33 +16,17 @@ const CourseForm = () => {
   const [calendarToggle, setCalendarToggle] = useState(false);
   const [publishToggle, setPublishToggle] = useState(false);
   const [courseTeachers, setCourseTeachers] = useState([]);
-  const [usersByRole, setUsersByRole] = useState([]);
 
   const [courses, setCourses] = useStore('coursesStore');
+  const [teachers, setTeachers] = useStore('teacherStore');
 
   const [createCourse] = useMutation(CREATE_COURSE);
-  const staff = roles.STAFF_ROLE;
-  const admin = roles.ADMIN_ROLE;
   const intl = useIntl();
   const [calendarDescription, setCalendarDescription] = useState(
     `${intl.formatMessage({ id: 'courseForm.timeQuestionDefault' })}`
   );
+
   
-  const { loading:loadingStaff, error:errorStaff, data:dataStaff } = useQuery(USERS_BY_ROLE, {
-    variables:{role:roles.STAFF_ROLE}
-  });
-  const { loading:loadingAdmin, error:errorAdmin, data:dataAdmin } = useQuery(USERS_BY_ROLE, {
-    variables:{role:admin}
-  });
-  useEffect(() =>{
-    if (!loadingAdmin && !loadingStaff && dataAdmin?.usersByRole !== undefined && dataStaff?.usersByRole !== undefined) {
-      const admins = dataAdmin.usersByRole;
-      const staff = dataStaff.usersByRole;
-      const allTeachers = staff.concat(admins);
-      setUsersByRole(allTeachers);      
-    }    
-  }, [])
-  console.log(usersByRole);
   const history = useHistory();
   const today = new Date();
   const dd = String(today.getDate()).padStart(2, '0');
@@ -68,6 +51,7 @@ const CourseForm = () => {
         code: courseCode,
         minGroupSize: 1,
         maxGroupSize: 1,
+        teacher: courseTeachers,
         deadline: new Date(deadline).setHours(23, 59),
         published: publishToggle ? true : false,
         questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
@@ -84,6 +68,10 @@ const CourseForm = () => {
       history.push('/courses');
     }
   };
+
+  const handleTeacherToggle = () => {
+
+  }
 
   const handleAddForm = e => {
     e.preventDefault();
@@ -192,11 +180,15 @@ const CourseForm = () => {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {usersByRole.map(u => (
+              {teachers.map(u => (
                 <Table.Row key={u.id}>
                   <Table.Cell>{u.firstname}</Table.Cell>
                   <Table.Cell>{u.lastname}</Table.Cell>
-                  <Checkbox slider />
+                  <Checkbox 
+                    slider
+                    checked
+                    onChange={}
+                  />
                 </Table.Row>
               ))}
             </Table.Body>

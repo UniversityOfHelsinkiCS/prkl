@@ -5,9 +5,11 @@ import {
   ManyToOne,
   BaseEntity,
   OneToMany,
+  ManyToMany,
   Timestamp,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinTable,
 } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 
@@ -61,12 +63,14 @@ export class Course extends BaseEntity {
   @UpdateDateColumn({ type: "timestamptz", nullable: true })
   updatedAt: Date;
 
-  @Field(type => User)
-  @ManyToOne(
+  @Field(type => [User])
+  @ManyToMany(
     type => User,
     user => user.coursesTeached,
+    { cascade: ["remove", "insert", "update"], onDelete: "CASCADE" },
   )
-  teacher: User;
+  @JoinTable({ name: "courseTeachers" })
+  teacher: User[];
 
   @Field(type => [Question])
   @OneToMany(
