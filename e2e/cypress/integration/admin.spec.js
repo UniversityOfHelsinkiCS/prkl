@@ -60,6 +60,22 @@ describe('Admin', () => {
     });
   });
 
+  describe('course management', () => {
+    it('Can delete any course', () => {
+      cy.visit('/courses');
+      cy.contains(courses[0].title).click();
+      cy.get('[data-cy="delete-course-button"]').click();
+      cy.visit('/courses');
+      cy.contains(courses[0].title).should('not.exist');
+    
+      cy.visit('/courses');
+      cy.contains(courses[4].title).click();
+      cy.get('[data-cy="delete-course-button"]').click();
+      cy.visit('/courses');
+      cy.contains(courses[4].title).should('not.exist');
+    });
+  });
+
   describe('enrollment management', () => {   
     it('Can remove enrollments from any course', () => {  
       // remove student from own course

@@ -113,6 +113,17 @@ const defaultCourses = [
       }
     ]
   },
+  {
+    id: "94de6cec-44f1-4c20-96b0-5ad09abbb052",
+    title: "Test Course 6 unpublished by admin",
+    deadline: "2100-12-31",
+    code: "TC06",
+    description: "Unpublished mock course by admin.",
+    teacher: userData[2],
+    maxGroupSize: 10,
+    minGroupSize: 5,
+    published: false,
+  },
 ];
 
 module.exports = defaultCourses;

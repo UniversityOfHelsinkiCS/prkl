@@ -100,8 +100,24 @@ describe('Staff', () => {
       cy.visit('/courses');
       cy.contains(courses[2].title).click();
       cy.contains('[data-cy="edit-course-button"]').should('not.exist');
+    });
+
+    it('Can delete only own, unpublished course', () => {
+      cy.visit('/courses');
+      cy.contains(courses[2].title).click();
+      cy.get('[data-cy="delete-course-button"]').click();
+      cy.visit('/courses');
+      cy.contains(courses[2].title).should('not.exist');
+
+      // check that deleting other's courses won't work even from backend
+      cy.deleteCourse(1, 1).then((resp) => {
+        expect(resp.status).to.eq(500);
+      });
+      cy.deleteCourse(5, 1).then((resp) => {
+        expect(resp.status).to.eq(500);
+      });
     })
-  })
+  });
 
   describe('enroll management', () => {
     it('Can see enrolled students only on own course', () => {

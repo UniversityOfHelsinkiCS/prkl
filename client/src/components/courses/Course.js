@@ -124,7 +124,8 @@ export default ({ id }) => {
                   <FormattedMessage id="course.switchGroupsView" />
                 </Button>
               </p>
-              {user.role === roles.ADMIN_ROLE && (
+              {(user.role === roles.ADMIN_ROLE ||
+                (user.role === roles.STAFF_ROLE && !course.published && user.id === data.course.teacher.id)) && (
                 <p>
                   <Button onClick={handleDeletion} color="red" data-cy="delete-course-button">
                     <FormattedMessage id="course.delete" />

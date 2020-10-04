@@ -113,6 +113,29 @@ Cypress.Commands.add('deleteRegistration', (studentIndex, courseIndex, headerInd
   });
 });
 
+Cypress.Commands.add('deleteCourse', (courseIndex, headerIndex) => {
+  const body = {
+    operationName: 'deleteCourse',
+    variables: {
+      id: courses[courseIndex].id,
+    },
+    query: `
+      mutation deleteCourse($id: String!) {
+        deleteCourse(id: $id)
+      }`,
+  };
+
+  cy.fixture('mockHeaders').then((headers) => {
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/graphql`,
+      body,
+      headers: headers[headerIndex],
+      failOnStatusCode: false,
+    });
+  });
+});
+
 // Commands to switch user roles.
 const switchUser = (role) => {
   cy.visit('/');
