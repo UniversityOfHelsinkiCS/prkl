@@ -26,8 +26,15 @@ export default {
     'courseForm.addQuestion': 'Add question',
     'courseForm.publishCourse': 'Publish course',
     'courseForm.removeQuestion': 'Remove question',
+    'courseForm.infoBox':
+      'Answer options in single choice questions are assumed to be on a continuum '
+      + '(ie. choices 1 and 2 are more similar than 1 and 3), give options in order. '
+      + 'In multiple choice question the order does not matter.',
 
-    'modifyCourse.pageTitle': 'Modify Course',
+    'editView.pageTitle': 'Modify Course',
+    'editView.coursePublishedNotification': "Course has been published, adding or removing new questions is not allowed. Texts of existing questions and their answer choices may be edited.",
+    'editView.confirmPublishSubmit': 'Confirm all edits and publish course? Published courses can only be edited by admins!',
+    'editView.confirmSubmit': 'Confirm all edits?',
 
     'courses.searchPlaceholder': 'Search courses',
     'courses.deadline': 'Enrollment deadline',
@@ -100,6 +107,8 @@ export default {
     'courseRegistration.lastName': 'Last name',
     'courseRegistration.studentNumber': 'Student number',
     'courseRegistration.email': 'Email',
+    'courseRegistration.cancel': 'Cancel registration',
+    'courseRegistration.remove': 'Remove from course',
 
     'groups.title': 'Group',
     'groups.empty': 'No groups generated',

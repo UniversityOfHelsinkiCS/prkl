@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import roles from '../../util/user_roles';
 import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
 import GroupsView from './GroupsView';
-import EditView from './EditView'
+import EditView from './EditView';
 import RegistrationList from './RegistrationList';
 
 export default ({ id }) => {
@@ -17,7 +17,7 @@ export default ({ id }) => {
   const [registrations, setRegistrations] = useState([]);
   const [regByStudentId, setRegByStudentId] = useState([]);
   const [deleteCourse] = useMutation(DELETE_COURSE);
-  const [view, setView] = useState('registrations')
+  const [view, setView] = useState('registrations');
   const history = useHistory();
 
   const { loading, error, data } = useQuery(COURSE_BY_ID, {
@@ -25,7 +25,7 @@ export default ({ id }) => {
   });
 
   const { loading: regLoading, data: regData } = useQuery(COURSE_REGISTRATION, {
-    skip: user.role !== roles.ADMIN_ROLE,
+    skip: user.role === roles.STUDENT_ROLE,
     variables: { courseId: id },
   });
 
@@ -41,20 +41,23 @@ export default ({ id }) => {
       const reg = regData.courseRegistrations.map(r => {
         r.questionAnswers.sort((a, b) => a.question.order - b.question.order);
         r.questionAnswers.forEach(qa => qa.answerChoices.sort((a, b) => a.order - b.order));
-
         return r;
-      })
+      });
       setRegistrations(reg);
-      setRegByStudentId(reg.reduce((acc, elem) => {
-        acc[elem.student.studentNo] = elem;
-        return acc;
-      }, {}))
+      setRegByStudentId(
+        reg.reduce((acc, elem) => {
+          acc[elem.student.studentNo] = elem;
+          return acc;
+        }, {})
+      );
     }
   }, [data, loading, regData, regLoading]);
 
   if (error !== undefined) {
     console.log('error:', error);
-    return <div>Error loading course</div>;
+    return (
+      <div>Error loading course. Course might have been removed or it is not published yet.</div>
+    );
   }
 
   if (loading || !course) {
@@ -85,9 +88,9 @@ export default ({ id }) => {
 
   const handleEditCourse = () => {
     if (view === 'registrations') {
-      setView('edit')
+      setView('edit');
     } else {
-      setView('registrations')
+      setView('registrations');
     }
   };
 
@@ -95,7 +98,7 @@ export default ({ id }) => {
     if (view === 'registrations') {
       setView('groups');
     } else {
-      setView('registrations')
+      setView('registrations');
     }
   };
 
@@ -128,7 +131,8 @@ export default ({ id }) => {
                   </Button>
                 </p>
               )}
-              {(user.role === roles.ADMIN_ROLE || (user.role === roles.STAFF_ROLE && !course.published)) && (
+              {(user.role === roles.ADMIN_ROLE ||
+                (user.role === roles.STAFF_ROLE && !course.published)) && (
                 <p>
                   <Button onClick={handleEditCourse} color="blue" data-cy="edit-course-button">
                     <FormattedMessage id="course.switchEditView" />
@@ -137,24 +141,24 @@ export default ({ id }) => {
               )}
             </div>
           ) : (
-              <Button onClick={handleGroupsView} color="blue">
-                <FormattedMessage id="course.switchCourseView" />
-              </Button>
-            )}
+            <Button onClick={handleGroupsView} color="blue">
+              <FormattedMessage id="course.switchCourseView" />
+            </Button>
+          )}
         </div>
       ) : null}
       {view === 'groups' ? (
         <GroupsView course={course} registrations={registrations} regByStudentId={regByStudentId} />
       ) : view === 'registrations' ? (
-          <RegistrationList
-            userIsRegistered={userIsRegistered}
-            course={course}
-            registrations={registrations}
-            user={user}
-          />
-        ) : (
-          <EditView course={course} />
-        )}
+        <RegistrationList
+          userIsRegistered={userIsRegistered}
+          course={course}
+          registrations={registrations}
+          user={user}
+        />
+      ) : (
+        <EditView course={course} />
+      )}
     </div>
   );
 };

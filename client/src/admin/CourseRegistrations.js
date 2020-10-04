@@ -1,13 +1,34 @@
 import React from 'react';
-import { Table } from 'semantic-ui-react';
+import { useHistory } from 'react-router-dom';
+import { Table, Button } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage } from 'react-intl';
+import { useMutation } from 'react-apollo';
 import { dummyEmail, dummyStudentNumber } from '../util/privacyDefaults';
+import { DELETE_REGISTRATION } from '../GqlQueries';
 import questionSwitch from "../util/functions"
 
 const CourseRegistration = ({ course, registrations }) => {
+  const history = useHistory();
   const [privacyToggle] = useStore('toggleStore');
+  const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
+  const courseId = course.id;
   
+  const handleRegistrationDeletion = async (student) => {
+    const studentId = student.id
+    const studentNo = student.studentNo
+    const variables = { studentId, courseId };
+    if (window.confirm(`Remove ${studentNo} from course?`)) {
+      try {
+        await deleteRegistration({
+          variables
+        });
+        history.go();
+      } catch (deletionError) {
+        console.log('error:', deletionError);
+      }
+    }
+  }
 
   return (
     <>
@@ -36,6 +57,7 @@ const CourseRegistration = ({ course, registrations }) => {
                   <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
                 ) : null
               )}
+              <Table.HeaderCell></Table.HeaderCell>
             </Table.Row>
           </Table.Header>
 
@@ -49,6 +71,11 @@ const CourseRegistration = ({ course, registrations }) => {
                 </Table.Cell>
                 <Table.Cell>{privacyToggle ? dummyEmail : reg.student.email}</Table.Cell>
                 {reg.questionAnswers.map(qa => (questionSwitch(qa)))}
+                <Table.Cell>
+                  <Button onClick={() => handleRegistrationDeletion(reg.student)} color="red" data-cy="remove-registration-button">
+                    <FormattedMessage id="courseRegistration.remove" />
+                  </Button>
+                </Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>

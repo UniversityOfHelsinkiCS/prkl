@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Form } from 'semantic-ui-react';
+import { Checkbox, Form, Table, Icon, Popup } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useMutation } from '@apollo/react-hooks';
-import { useStore } from 'react-hookstore';
-import { CREATE_COURSE } from '../../GqlQueries';
+import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useStore} from 'react-hookstore';
+import { CREATE_COURSE, USERS_BY_ROLE } from '../../GqlQueries';
 import QuestionForm from './QuestionForm';
+import roles from '../../util/user_roles';
 
 const CourseForm = () => {
   const [courseTitle, setCourseTitle] = useState('');
@@ -15,18 +16,35 @@ const CourseForm = () => {
   const [deadline, setDeadline] = useState();
   const [calendarToggle, setCalendarToggle] = useState(false);
   const [publishToggle, setPublishToggle] = useState(false);
+  const [courseTeachers, setCourseTeachers] = useState([]);
+  const [usersByRole, setUsersByRole] = useState([]);
 
   const [courses, setCourses] = useStore('coursesStore');
 
   const [createCourse] = useMutation(CREATE_COURSE);
-
+  const staff = roles.STAFF_ROLE;
+  const admin = roles.ADMIN_ROLE;
   const intl = useIntl();
   const [calendarDescription, setCalendarDescription] = useState(
     `${intl.formatMessage({ id: 'courseForm.timeQuestionDefault' })}`
   );
-
+  
+  const { loading:loadingStaff, error:errorStaff, data:dataStaff } = useQuery(USERS_BY_ROLE, {
+    variables:{role:roles.STAFF_ROLE}
+  });
+  const { loading:loadingAdmin, error:errorAdmin, data:dataAdmin } = useQuery(USERS_BY_ROLE, {
+    variables:{role:admin}
+  });
+  useEffect(() =>{
+    if (!loadingAdmin && !loadingStaff && dataAdmin?.usersByRole !== undefined && dataStaff?.usersByRole !== undefined) {
+      const admins = dataAdmin.usersByRole;
+      const staff = dataStaff.usersByRole;
+      const allTeachers = staff.concat(admins);
+      setUsersByRole(allTeachers);      
+    }    
+  }, [])
+  console.log(usersByRole);
   const history = useHistory();
-
   const today = new Date();
   const dd = String(today.getDate()).padStart(2, '0');
   const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -63,17 +81,13 @@ const CourseForm = () => {
       } catch (error) {
         console.log('error:', error);
       }
-      //history.push('/courses');
-      window.location.replace('/courses');
+      history.push('/courses');
     }
   };
 
   const handleAddForm = e => {
     e.preventDefault();
     setQuestions([...questions, { content: '' }]);
-  };
-  const handleRemoveForm = () => {
-    setQuestions(questions.slice(0, questions.length - 1));
   };
 
   return (
@@ -147,9 +161,15 @@ const CourseForm = () => {
             <FormattedMessage id="courseForm.addQuestion" />
           </Form.Button>
 
-          <Form.Button type="button" onClick={handleRemoveForm} color="red">
-            <FormattedMessage id="courseForm.removeQuestion" />
-          </Form.Button>
+          <Popup
+            trigger={
+              <Icon name="info circle" size="large" color="blue" />
+            } wide="very"
+          >
+            <Popup.Content>
+              <FormattedMessage id="courseForm.infoBox" />
+            </Popup.Content>
+          </Popup>
         </Form.Group>
 
         <Form.Group style={{ flexWrap: 'wrap' }}>
@@ -158,11 +178,29 @@ const CourseForm = () => {
               key={`addQuestionField${q.id}`}
               setQuestions={setQuestions}
               questions={questions}
-              questionId={index}
+              questionIndex={index}
             />
           ))}
         </Form.Group>
 
+        <Table size='small'>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>Firstname</Table.HeaderCell>
+                <Table.HeaderCell>Lastname</Table.HeaderCell>
+                <Table.HeaderCell />
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {usersByRole.map(u => (
+                <Table.Row key={u.id}>
+                  <Table.Cell>{u.firstname}</Table.Cell>
+                  <Table.Cell>{u.lastname}</Table.Cell>
+                  <Checkbox slider />
+                </Table.Row>
+              ))}
+            </Table.Body>
+        </Table>    
         <Form.Checkbox
           label={intl.formatMessage({ id: 'courseForm.publishCourse' })}
           onClick={() => setPublishToggle(!publishToggle)}

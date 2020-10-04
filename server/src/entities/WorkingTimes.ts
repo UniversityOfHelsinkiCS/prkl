@@ -34,6 +34,7 @@ export class WorkingTimes extends BaseEntity {
   @ManyToOne(
     type => Registration,
     registration => registration.workingTimes,
+    { onDelete: "CASCADE"}
   )
   @JoinColumn({ name: "registrationId" })
   registration: Registration;

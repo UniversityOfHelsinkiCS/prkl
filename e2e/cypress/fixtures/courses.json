@@ -6,6 +6,7 @@
     "description": "Description for a test course.",
     "maxGroupSize": 1,
     "minGroupSize": 1,
+    "published": false,
     "questions": [
       {
         "questionType": "freeForm",

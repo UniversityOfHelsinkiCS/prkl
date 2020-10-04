@@ -9,6 +9,11 @@ describe('Student', () => {
     cy.fixture('courses').as('courses');
   });
 
+  after(() => {
+    cy.seedDatabase();
+    cy.switchToAdmin();
+  })
+
   describe('access', () => {
     it('Can not see staff and admin views', () => {
       cy.visit('/addcourse');
@@ -32,17 +37,16 @@ describe('Student', () => {
       cy.contains(courses[0].title);
     });
     
-    it('Can not see an unpublished course', () => {
+    it('Can not see non-valid courses', () => {
+      // unpublished course
       cy.visit('/');
       cy.contains(courses[2].title).should('not.exist');
-    });
 
-    it('Can not see past courses', () => {
+      // past course
       cy.visit('/');
       cy.contains(courses[3].title).should('not.exist');
-    });
   
-    it('Can not see deleted courses', () => {
+      // deleted course
       cy.switchToAdmin();
       cy.contains(courses[0].title).click();
       cy.get('[data-cy="delete-course-button"]').click();
@@ -155,4 +159,47 @@ describe('Student', () => {
     });
   });
 
+  describe('cancel registration', () => {
+    it('Can cancel registration before deadline, frontend', () => {
+      //frontend
+      cy.visit('/');
+      cy.contains(courses[0].title).click();
+  
+      cy.get('[data-cy="toc-checkbox"]').click();
+      cy.get('[data-cy="submit-button"]').click();
+      cy.get('[data-cy="confirm-button"]').should('exist');
+      cy.get('[data-cy="confirm-button"]').click();
+      cy.contains('Great success!');
+
+      cy.visit('/');
+      cy.contains(courses[0].title).click();
+      cy.get('[data-cy="cancel-registration-button"]').should('exist');
+      cy.get('[data-cy="cancel-registration-button"]').click();
+
+      cy.visit('/');
+      cy.contains(courses[0].title).click();
+      cy.get('[data-cy="submit-button"]').should('exist');
+
+      // backend 
+      cy.createRegistration(0, 0).then((resp) => {
+        expect(resp.status).to.eq(200);
+      })
+      
+      cy.deleteRegistration(0, 0, 0).then((resp) => {
+        expect(resp.status).to.eq(200);
+      }); 
+    });
+
+    it('Can not cancel registration after deadline', () => {
+      cy.deleteRegistration(0, 3, 0).then((resp) => {
+        expect(resp.status).to.eq(500);
+      }); 
+    });
+
+    it('Can not cancel someone elses registration', () => {
+      cy.deleteRegistration(3, 0, 0).then((resp) => {
+        expect(resp.status).to.eq(500);
+      }); 
+    });
+  });
 });

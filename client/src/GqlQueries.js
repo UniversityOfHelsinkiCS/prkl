@@ -6,6 +6,8 @@ export const ALL_COURSES = gql`
       id
       title
       code
+      maxGroupSize
+      minGroupSize
       description
       deadline
       published
@@ -29,6 +31,18 @@ export const ALL_USERS = gql`
   }
 `;
 
+export const USERS_BY_ROLE = gql`
+  query usersByRole($role: Float!){
+    usersByRole(role: $role){
+      id
+      firstname
+      lastname
+      studentNo
+      email
+      role
+    }
+  }
+`;
 export const CURRENT_USER = gql`
   {
     currentUser {
@@ -88,6 +102,9 @@ export const COURSE_BY_ID = gql`
         }
         order
       }
+      teacher {
+        id
+      }
     }
   }
 `;
@@ -102,12 +119,15 @@ export const CREATE_COURSE = gql`
       code
       deadline
       published
+      teacher {
+        id
+      }
     }
   }
 `;
 
 export const UPDATE_COURSE = gql`
-  mutation updateCourse($id: String! $data: CourseInput!) {
+  mutation updateCourse($id: String!, $data: CourseInput!) {
     updateCourse(id: $id, data: $data) {
       id
       maxGroupSize
@@ -117,6 +137,20 @@ export const UPDATE_COURSE = gql`
       code
       deadline
       published
+      teacher {
+        id
+      }
+      questions {
+        id
+        content
+        questionType
+        questionChoices {
+          content
+          order
+          id
+        }
+        order
+      }
     }
   }
 `;
@@ -142,6 +176,12 @@ export const REGISTER_TO_COURSE = gql`
   }
 `;
 
+export const DELETE_REGISTRATION = gql`
+  mutation deleteRegistration($studentId: String!, $courseId: String!) {
+    deleteRegistration(studentId: $studentId, courseId: $courseId)
+  }
+`;
+
 export const DELETE_COURSE = gql`
   mutation deleteCourse($id: String!) {
     deleteCourse(id: $id)
@@ -153,6 +193,7 @@ export const COURSE_REGISTRATION = gql`
     courseRegistrations(courseId: $courseId) {
       id
       student {
+        id
         firstname
         lastname
         studentNo

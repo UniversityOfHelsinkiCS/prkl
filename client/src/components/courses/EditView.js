@@ -3,8 +3,8 @@ import { useHistory } from 'react-router-dom';
 import { Form } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
+import { useStore } from 'react-hookstore';
 import { UPDATE_COURSE } from '../../GqlQueries';
-import { useStore } from 'react-hookstore'
 import QuestionForm from '../courseCreation/QuestionForm';
 
 const EditView = ({ course }) => {
@@ -13,36 +13,49 @@ const EditView = ({ course }) => {
   const [courseCode, setCourseCode] = useState('');
   const [questions, setQuestions] = useState([]);
   const [deadline, setDeadline] = useState('');
-  const [published, setPublished] = useState(false)
+  const [published, setPublished] = useState(false);
   const [calendarToggle, setCalendarToggle] = useState(false);
   const history = useHistory();
   const intl = useIntl();
-  const [updateCourse] = useMutation(UPDATE_COURSE)
+  const [updateCourse] = useMutation(UPDATE_COURSE);
 
   const [courses, setCourses] = useStore('coursesStore');
-  //const [course, setCourse] = useState({});
+  // const [course, setCourse] = useState({});
 
-  useEffect(() => {
-    setCourseTitle(course.title)
-    setCourseDescription(course.description)
-    setCourseCode(course.code)
-    setQuestions(course.questions)
-    let dateParts = intl.formatDate(course.deadline,
-      { year: 'numeric', month: '2-digit', day: '2-digit' })
-      .split('/');
-    let dateString = dateParts[2] + '-' + dateParts[0] + '-' + dateParts[1];
-    setDeadline(dateString)
-    setPublished(course.published)
-    let calendar = course.questions.find(q => q.questionType === 'times')
-    setCalendarToggle(calendar)
-    if (calendar) {
-      setCalendarDescription(calendar.content)
-    }
-  }, []);
-
+  const [calendarId, setCalendarId] = useState('');
   const [calendarDescription, setCalendarDescription] = useState(
     `${intl.formatMessage({ id: 'courseForm.timeQuestionDefault' })}`
   );
+
+  useEffect(() => {
+    setCourseTitle(course.title);
+    setCourseDescription(course.description);
+    setCourseCode(course.code);
+    const qstns = course.questions.filter(q => q.questionType !== 'times').map(q => {
+      return {
+        id: q.id,
+        order: q.order,
+        content: q.content,
+        questionType: q.questionType,
+        questionChoices: q.questionChoices.map(qc => {
+          return { id: qc.id, content: qc.content, order: qc.order };
+        })
+      };
+    });
+    setQuestions(qstns);
+    const dateParts = intl
+      .formatDate(course.deadline, { year: 'numeric', month: '2-digit', day: '2-digit' })
+      .split('/');
+    const dateString = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`;
+    setDeadline(dateString);
+    setPublished(course.published);
+    const calendar = course.questions.find(q => q.questionType === 'times');
+    setCalendarToggle(calendar);
+    if (calendar) {
+      setCalendarDescription(calendar.content);
+      setCalendarId(calendar.id);
+    }
+  }, []);
 
   const today = new Date();
   const dd = String(today.getDate()).padStart(2, '0');
@@ -59,9 +72,13 @@ const EditView = ({ course }) => {
   const handleSubmit = async () => {
     // TODO: Add logic for checking whether there is actually anything to update
     if (calendarToggle) {
+      calendarQuestion.id = calendarId ? calendarId : undefined;
       calendarQuestion.content = calendarDescription;
+      calendarQuestion.order = questions.length;
     }
-    const promptText = published ? 'Confirm all edits and publish course? Published courses can only be edited by admins!' : 'Confirm all edits?';
+    const promptText = intl.formatMessage({
+      id: published ? 'editView.confirmPublishSubmit' : 'editView.confirmSubmit'
+    });
     if (window.confirm(promptText)) {
       const courseObject = {
         title: courseTitle,
@@ -70,17 +87,19 @@ const EditView = ({ course }) => {
         minGroupSize: course.minGroupSize,
         maxGroupSize: course.maxGroupSize,
         deadline: new Date(deadline).setHours(23, 59),
-        questions: calendarToggle ? questions.concat(calendarQuestion) : questions,                          // TODO: needs to be updated too
-        published: published
+        questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
+        published,
       };
       const variables = { id: course.id, data: { ...courseObject } };
       try {
         const result = await updateCourse({
           variables,
         });
-        setCourses(courses.map(c => {
-          return c.id !== course.id ? c : result.data.updateCourse
-        }))
+        setCourses(
+          courses.map(c => {
+            return c.id !== course.id ? c : result.data.updateCourse;
+          })
+        );
       } catch (error) {
         console.log('error:', error);
       }
@@ -92,14 +111,11 @@ const EditView = ({ course }) => {
     e.preventDefault();
     setQuestions([...questions, { content: '' }]);
   };
-  const handleRemoveForm = () => {
-    setQuestions(questions.slice(0, questions.length - 1));
-  };
 
   return (
-    <div style={{'marginTop': '15px'}}>
+    <div style={{ marginTop: '15px' }}>
       <h4>
-        <FormattedMessage id="modifyCourse.pageTitle" />
+        <FormattedMessage id="editView.pageTitle" />
       </h4>
 
       <Form onSubmit={handleSubmit}>
@@ -114,7 +130,7 @@ const EditView = ({ course }) => {
             onChange={event => setCourseTitle(event.target.value)}
             data-cy="course-title-input"
           />
-       </Form.Field>
+        </Form.Field>
 
         <Form.Group>
           <Form.Input
@@ -155,8 +171,9 @@ const EditView = ({ course }) => {
         </Form.Field>
 
         <Form.Checkbox
+          disabled={course.published}
           label={intl.formatMessage({ id: 'courseForm.includeCalendar' })}
-          checked={calendarToggle ? true : false}
+          checked={!!calendarToggle}
           onClick={() => setCalendarToggle(!calendarToggle)}
         />
 
@@ -167,15 +184,15 @@ const EditView = ({ course }) => {
           onChange={event => setCalendarDescription(event.target.value)}
         />
 
-        <Form.Group>
-          <Form.Button type="button" onClick={handleAddForm} color="green">
-            <FormattedMessage id="courseForm.addQuestion" />
-          </Form.Button>
-
-          <Form.Button type="button" onClick={handleRemoveForm} color="red">
-            <FormattedMessage id="courseForm.removeQuestion" />
-          </Form.Button>
-        </Form.Group>
+        {course.published ? (
+          <p style={{ "color": "#b00" }}> {intl.formatMessage({ id: 'editView.coursePublishedNotification' })} </p>
+        ) : (
+            <Form.Group>
+              <Form.Button type="button" onClick={handleAddForm} color="green">
+                <FormattedMessage id="courseForm.addQuestion" />
+              </Form.Button>
+            </Form.Group>
+          )}
 
         <Form.Group style={{ flexWrap: 'wrap' }}>
           {questions?.map((q, index) => (
@@ -183,7 +200,8 @@ const EditView = ({ course }) => {
               key={`addQuestionField${q.id}`}
               setQuestions={setQuestions}
               questions={questions}
-              questionId={index}
+              questionIndex={index}
+              hideAddRemoveButtons={course.published}
             />
           ))}
         </Form.Group>
@@ -192,6 +210,7 @@ const EditView = ({ course }) => {
           label={intl.formatMessage({ id: 'courseForm.publishCourse' })}
           checked={published}
           onClick={() => setPublished(!published)}
+          data-cy="course-published-checkbox"
         />
 
         <Form.Button primary type="submit" data-cy="create-course-submit">

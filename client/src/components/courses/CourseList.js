@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';

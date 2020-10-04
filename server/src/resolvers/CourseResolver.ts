@@ -2,8 +2,11 @@ import { STAFF, ADMIN } from "./../utils/userRoles";
 import { Resolver, Query, Mutation, Arg, Ctx, Authorized } from "type-graphql";
 import { Course } from "../entities/Course";
 import { User } from "../entities/User";
+import { Question } from "../entities/Question";
 import { CourseInput } from "../inputs/CourseInput";
 import { getRepository } from "typeorm";
+import { QuestionChoice } from "../entities/QuestionChoice";
+import _ from 'lodash';
 
 @Resolver()
 export class CourseResolver {
@@ -14,8 +17,9 @@ export class CourseResolver {
       return getRepository(Course)
         .createQueryBuilder("course")
         .leftJoinAndSelect("course.teacher", "user")
-        .where("teacherId = user.id")
+        .where("teacherId = user.id") // Pitääkö kurssin näkyä opiskelijalle, jos hän on luonut sen ollessaan opettaja (roolihan voi muuttua), vaikka kurssi ei olisi enää kurantti?
         .where("deleted = false")
+        .andWhere("published = true")
         .andWhere("deadline > NOW()")
         .getMany();
     } else {
@@ -26,7 +30,11 @@ export class CourseResolver {
   @Query(() => Course)
   async course(@Ctx() context, @Arg("id") id: string): Promise<Course> {
     const { user } = context;
-    const course = await Course.findOne({ where: { id }, relations: ["questions", "questions.questionChoices"] });
+    const course = await Course.findOne({ where: { id }, relations: ["questions", "questions.questionChoices", "teacher"] });
+
+    if ((course.deleted === true || course.published === false) && user.role < STAFF) {
+      throw new Error("Nothing to see here."); // Viesti on placeholder.
+    }
 
     if (course.deadline < new Date() && user.role < STAFF) {
       throw new Error("The registration deadline for this course has already passed.");
@@ -48,20 +56,81 @@ export class CourseResolver {
   @Mutation(() => Course)
   async updateCourse(@Ctx() context, @Arg("id") id: string, @Arg("data") data: CourseInput): Promise<Course> {
     const { user } = context;
-    const course = await Course.findOne({ where: { id } });
+    const course = await Course.findOne({ where: { id }, relations: ["teacher", "questions", "questions.questionChoices"] });
     if (!course) {
       throw new Error("Course with given id not found.");
     }
     if (course.published && user.role !== ADMIN) {
       throw new Error("You do not have authorization to update a published course.");
     }
+
     course.title = data.title;
     course.description = data.description;
     course.code = data.code;
-    course.published = data.published;
     course.deadline = data.deadline;
-    // TODO: Update questions on the server too
+
+    // Published course questions or their choices may not be added or deleted even by admins, as it will likely mess up the algorithm
+    if (course.published) {
+      const hasSameQuestionsAndChoices = course.questions.filter(q => {
+        return data.questions.some(dq => {
+          let newChoices = dq.questionChoices?.map(dqChoice => dqChoice.id);
+          let oldChoices = q.questionChoices?.map(qChoice => qChoice.id);
+          if (!newChoices) newChoices = [];
+          if (!oldChoices) oldChoices = [];
+          return dq.id === q.id 
+            && _.isEqual(_.sortBy(newChoices), _.sortBy(oldChoices));
+        });
+      });
+      if (hasSameQuestionsAndChoices.length !== course.questions.length) {
+        throw new Error("Adding or deleting questions or questionChoices is not allowed for a published course.");
+      }
+    };
+
+    // Really could not come up with a better way to ensure no order conflicts happen during update...
+    // Basically just temporarily bump up all orders of this courses questions to very big numbers so they don't collide
+    // with incoming new order values.
+     await Promise.all(course.questions.map(async (q) => {
+      q.order = 100000 + q.order;
+      await q.save();
+    }));
+
+    const removedQuestionIds = course.questions.filter(q => {
+      return !data.questions.some(dq => dq.id === q.id);
+    }).map(q => q.id);
+
+    // Ensure only one timetable is added per course
+    let hasTimetable = false;
+    const questions = data.questions.filter(q => {
+      if (q.questionType !== 'times') return true;
+      if (hasTimetable) return false;
+      hasTimetable = true;
+      return true;
+    });
+    const qsts = await Promise.all(questions.map(async q => {
+      const newQuestion = await Question.create(q);
+      if (!newQuestion.questionChoices)
+        newQuestion.questionChoices = [];
+      return newQuestion;
+    }));
+    course.questions = qsts;
+    course.published = data.published;
+
     await course.save();
+
+    // Cleanup
+    await getRepository(QuestionChoice)
+      .createQueryBuilder("questionChoice")
+      .delete()
+      .where('"questionChoice"."questionId" is NULL')
+      .orWhere('"questionChoice"."questionId" = ANY (:ids)', { ids: removedQuestionIds })
+      .execute();
+
+    await getRepository(Question)
+      .createQueryBuilder("question")
+      .delete()
+      .where('question."courseId" is NULL')
+      .execute();
+
     return course;
   }
 

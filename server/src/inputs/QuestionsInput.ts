@@ -4,6 +4,9 @@ import { QuestionChoiceInput } from "./QuestionChoiceInput";
 
 @InputType()
 export class QuestionsInput {
+  @Field({ nullable: true })
+  id: string;
+
   @Field()
   content: string;
 
