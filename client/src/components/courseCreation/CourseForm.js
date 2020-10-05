@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Checkbox, Form, Table, Icon, Popup } from 'semantic-ui-react';
+import { Form, Icon, Popup } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import { useStore} from 'react-hookstore';
-import { CREATE_COURSE, USERS_BY_ROLE } from '../../GqlQueries';
+import { CREATE_COURSE } from '../../GqlQueries';
 import QuestionForm from './QuestionForm';
+import TeacherList from '../courses/TeacherList';
 
 const CourseForm = () => {
   const [courseTitle, setCourseTitle] = useState('');
@@ -171,28 +172,8 @@ const CourseForm = () => {
           ))}
         </Form.Group>
 
-        <Table size='small'>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Firstname</Table.HeaderCell>
-                <Table.HeaderCell>Lastname</Table.HeaderCell>
-                <Table.HeaderCell />
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {teachers.map(u => (
-                <Table.Row key={u.id}>
-                  <Table.Cell>{u.firstname}</Table.Cell>
-                  <Table.Cell>{u.lastname}</Table.Cell>
-                  <Checkbox 
-                    slider
-                    checked
-                    onChange={}
-                  />
-                </Table.Row>
-              ))}
-            </Table.Body>
-        </Table>    
+        <TeacherList teachers={teachers} /> 
+
         <Form.Checkbox
           label={intl.formatMessage({ id: 'courseForm.publishCourse' })}
           onClick={() => setPublishToggle(!publishToggle)}
