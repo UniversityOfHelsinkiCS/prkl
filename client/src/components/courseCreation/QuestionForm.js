@@ -103,6 +103,7 @@ const QuestionForm = ({ questionIndex, setQuestions, questions, hideAddRemoveBut
       {!hideAddRemoveButtons && <Form.Button  // TODO: Better styling for this button
         onClick={removeQuestion}
         floated="right"
+        data-cy="question-remove-button"
       >X
       </Form.Button>}
       <Form.Field
@@ -116,6 +117,7 @@ const QuestionForm = ({ questionIndex, setQuestions, questions, hideAddRemoveBut
         placeholder={intl.formatMessage({
           id: 'questionForm.titlePlaceholder',
         })}
+        data-cy="question-title"
       />
       {!hideAddRemoveButtons && <Form.Group inline>
         <label>
@@ -129,6 +131,7 @@ const QuestionForm = ({ questionIndex, setQuestions, questions, hideAddRemoveBut
           value="singleChoice"
           checked={question.questionType === 'singleChoice'}
           onChange={() => handleTypeChange('singleChoice')}
+          data-cy="question-type-single"
         />
         <Form.Field
           control={Radio}
@@ -138,6 +141,7 @@ const QuestionForm = ({ questionIndex, setQuestions, questions, hideAddRemoveBut
           value="multipleChoice"
           checked={question.questionType === 'multipleChoice'}
           onChange={() => handleTypeChange('multipleChoice')}
+          data-cy="question-type-multi"
         />
         <Form.Field
           control={Radio}
@@ -147,6 +151,7 @@ const QuestionForm = ({ questionIndex, setQuestions, questions, hideAddRemoveBut
           value="freeForm"
           checked={question.questionType === 'freeForm'}
           onChange={() => handleTypeChange('freeForm')}
+          data-cy="question-type-freeform"
         />
       </Form.Group>}
       {question.questionType !== 'freeForm' ? (
@@ -154,11 +159,11 @@ const QuestionForm = ({ questionIndex, setQuestions, questions, hideAddRemoveBut
 
         {!hideAddRemoveButtons && 
           <Form.Group>
-            <Form.Button type="button" onClick={handleAddForm} color="green">
+            <Form.Button type="button" onClick={handleAddForm} color="green" data-cy="add-question-choice-button">
               <FormattedMessage id="questionForm.addQuestion" />
             </Form.Button>
 
-            <Form.Button type="button" onClick={handleRemoveForm} color="red">
+            <Form.Button type="button" onClick={handleRemoveForm} color="red" data-cy="remove-question-choice-button">
               <FormattedMessage id="questionForm.removeQuestion" />
             </Form.Button>
           </Form.Group>
@@ -188,6 +193,7 @@ const QuestionForm = ({ questionIndex, setQuestions, questions, hideAddRemoveBut
                     number: index + 1,
                   }
                 )}
+                data-cy={`question-${questionIndex}-choice-${index}`}
               />
             ))}
           </Form.Group>

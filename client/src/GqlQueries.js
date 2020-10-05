@@ -91,6 +91,9 @@ export const COURSE_BY_ID = gql`
       code
       deadline
       published
+      teacher {
+        id
+      }
       questions {
         id
         content
@@ -102,12 +105,10 @@ export const COURSE_BY_ID = gql`
         }
         order
       }
-      teacher {
-        id
-      }
     }
   }
 `;
+
 export const CREATE_COURSE = gql`
   mutation createCourse($data: CourseInput!) {
     createCourse(data: $data) {

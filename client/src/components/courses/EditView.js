@@ -188,7 +188,7 @@ const EditView = ({ course }) => {
           <p style={{ "color": "#b00" }}> {intl.formatMessage({ id: 'editView.coursePublishedNotification' })} </p>
         ) : (
             <Form.Group>
-              <Form.Button type="button" onClick={handleAddForm} color="green">
+              <Form.Button type="button" onClick={handleAddForm} color="green" data-cy="add-question-button" >
                 <FormattedMessage id="courseForm.addQuestion" />
               </Form.Button>
             </Form.Group>

@@ -7,6 +7,7 @@ import { CourseInput } from "../inputs/CourseInput";
 import { getRepository } from "typeorm";
 import { QuestionChoice } from "../entities/QuestionChoice";
 import _ from 'lodash';
+import { isContext } from "vm";
 
 @Resolver()
 export class CourseResolver {
@@ -136,11 +137,16 @@ export class CourseResolver {
 
   @Authorized(STAFF)
   @Mutation(() => Boolean)
-  async deleteCourse(@Arg("id") id: string): Promise<boolean> {
-    const course = await Course.findOne({ where: { id } });
+  async deleteCourse(@Ctx() context, @Arg("id") id: string): Promise<boolean> {
+    const { user } = context;
+    const course = await Course.findOne({ where: { id }, relations: ["teacher"] });
     if (!course) throw new Error("Course not found!");
-    course.deleted = true;
-    await course.save();
-    return true;
+    // Staff member can only delete own, unpublished course. Error handling might require improvements.
+    if (user.role === ADMIN || (user.id === course.teacher.id && course.published === false)) {
+      course.deleted = true;
+      await course.save();
+      return true;
+    }
+    throw new Error("No authorization to delete course.");
   }
 }
