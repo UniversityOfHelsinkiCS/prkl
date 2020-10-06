@@ -11,7 +11,7 @@ export class RegistrationResolver {
     const { user } = context;
     const course = await Course.findOne({ where: { id: courseId }, relations: ["teacher"] });
 
-    if (user.role === ADMIN || course.teacher.find(user.id) !== undefined) {
+    if (user.role === ADMIN || course.teacher.find(t => t.id === user.id) !== undefined) {
       return Registration.find({
         where: { courseId: courseId },
         relations: [
