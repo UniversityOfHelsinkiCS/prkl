@@ -1,4 +1,5 @@
 import React from 'react';
+import { useStore } from 'react-hookstore';
 import { Header, Icon, Button } from 'semantic-ui-react';
 import { FormattedMessage, FormattedDate } from 'react-intl';
 import Registration from '../registration/Registration';
@@ -8,9 +9,10 @@ import { DELETE_REGISTRATION } from '../../GqlQueries';
 import { useMutation } from 'react-apollo';
 import { useHistory } from 'react-router-dom';
 
-export default ({ userIsRegistered, course, registrations, user }) => {
+export default ({ userIsRegistered, course, registrations }) => {
   const paragraphs = course.description ? course.description.split('\n\n') : [];
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
+  const [user, setUser] = useStore('userStore');
   const history = useHistory();
   const studentId = user.id;
   const courseId = course.id;
@@ -22,6 +24,10 @@ export default ({ userIsRegistered, course, registrations, user }) => {
         await deleteRegistration({
           variables
         });
+        const updatedUser = user;
+        const regs = updatedUser.registrations.filter(r => r.course.id !== courseId);
+        updatedUser.registrations = regs;
+        setUser(updatedUser);
       } catch (deletionError) {
         console.log('error:', deletionError);
       }
@@ -61,7 +67,7 @@ export default ({ userIsRegistered, course, registrations, user }) => {
               <p>{p}</p>
             ))}
             </div>
-            <Registration courseId={course.id} questions={course.questions} />
+            <Registration course={course} courseId={course.id} questions={course.questions} />
           </div>
             ) : null}
             </div>
