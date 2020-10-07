@@ -8,7 +8,7 @@ import { FormattedMessage } from 'react-intl';
 
 const NotAllowed = () => (
   <Message icon negative>
-    <Icon name="ban" />
+    <Icon name="ban" data-cy="not-allowed" />
     <Message.Content>
       <Message.Header>
         <FormattedMessage id="util.notAllowed" />

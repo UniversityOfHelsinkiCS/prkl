@@ -17,10 +17,10 @@ describe('Student', () => {
   describe('access', () => {
     it('Can not see staff and admin views', () => {
       cy.visit('/addcourse');
-      cy.contains('You do not have the required roles');
+      cy.get('[data-cy="not-allowed"]').should('exist');
   
       cy.visit('/usermanagement');
-      cy.contains('You do not have the required roles');
+      cy.get('[data-cy="not-allowed"]').should('exist');
     });
 
     it('Cannot create a course', () => {
@@ -111,7 +111,7 @@ describe('Student', () => {
       cy.get('[data-cy="submit-button"]').click();
       cy.get('[data-cy="confirm-button"]').click();
   
-      cy.contains('Great success!');
+      cy.get('[data-cy="registered"]').should('exist');
   
       // Admin-role check for correct answers.
       cy.switchToAdmin();
@@ -128,7 +128,8 @@ describe('Student', () => {
       cy.get('[data-cy="submit-button"]').click();
   
       cy.get('[data-cy="confirm-button"]').should('not.exist');
-      cy.contains('Please answer all questions!');
+      cy.get('[data-cy="warning"]').should('exist');
+      cy.get('[data-cy="submit-button"]').should('exist');
     });
   
     it('Can not enrol without accepting the privacy terms', () => {
@@ -141,7 +142,8 @@ describe('Student', () => {
       cy.get('[data-cy="submit-button"]').click();
   
       cy.get('[data-cy="confirm-button"]').should('not.exist');
-      cy.contains('Please answer all questions!');
+      cy.get('[data-cy="warning"]').should('exist');
+      cy.get('[data-cy="submit-button"]').should('exist');
     });
   
     it('Can not enrol twice on the same course', () => {
@@ -154,13 +156,13 @@ describe('Student', () => {
   
       cy.visit('/');
       cy.contains(courses[0].title).click();
-      cy.contains('Already registered!');
+      cy.get('[data-cy="registered"]').should('exist');
       cy.get('[data-cy="submit-button"]').should('not.exist');
     });
   });
 
   describe('cancel registration', () => {
-    it('Can cancel registration before deadline, frontend', () => {
+    it('Can cancel registration before deadline', () => {
       //frontend
       cy.visit('/');
       cy.contains(courses[0].title).click();
@@ -169,7 +171,7 @@ describe('Student', () => {
       cy.get('[data-cy="submit-button"]').click();
       cy.get('[data-cy="confirm-button"]').should('exist');
       cy.get('[data-cy="confirm-button"]').click();
-      cy.contains('Great success!');
+      cy.get('[data-cy="registered"]').should('exist');
 
       cy.visit('/');
       cy.contains(courses[0].title).click();

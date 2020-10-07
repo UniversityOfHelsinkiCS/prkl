@@ -4,7 +4,7 @@ import { Message, Icon } from 'semantic-ui-react';
 export default ({ children, errors }) =>
   Object.keys(errors).length !== 0 ? (
     <Message icon negative>
-      <Icon name="warning sign" />
+      <Icon name="warning sign" data-cy="warning"/>
       <Message.Content>
         <Message.Header>{children}</Message.Header>
       </Message.Content>
