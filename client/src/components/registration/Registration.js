@@ -1,18 +1,27 @@
 import React, { useState } from 'react';
+import { useStore } from 'react-hookstore';
 import { useForm } from 'react-hook-form';
+import { Button, Header, Icon } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
 import { useMutation } from 'react-apollo';
 import { FREEFORM, SINGLE_CHOICE, MULTI_CHOICE, TIMES } from '../../util/questionTypes';
-import { REGISTER_TO_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
-import SuccessMessage from '../forms/SuccessMessage';
+import { REGISTER_TO_COURSE, DELETE_REGISTRATION } from '../../GqlQueries';
 import RegistrationForm from './RegistrationForm';
 import timeChoices from '../../util/timeFormChoices';
+import { useHistory } from 'react-router-dom';
 
-export default ({ courseId, questions }) => {
+export default ({ course }) => {
+  const [user, setUser] = useStore('userStore');
+
+  const courseId = course.id;
   const hookForm = useForm({ mode: 'onChange' });
   const { handleSubmit } = hookForm;
   const [createRegistration] = useMutation(REGISTER_TO_COURSE);
-  const [success, setSuccess] = useState(false);
+
+  const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
+  const history = useHistory();
+  const studentId = user.id;
+  const variables = { studentId, courseId };
 
   const parseDay = (day, dayIndex, key) => {
     let prev = [1, timeChoices.no];
@@ -72,7 +81,7 @@ export default ({ courseId, questions }) => {
 
     answer.questionAnswers = Object.keys(data).map(key => {
       const res = { questionId: key };
-      const type = questions.filter(q => q.id === key)[0].questionType;
+      const type = course.questions.filter(q => q.id === key)[0].questionType;
 
       switch (type) {
         case FREEFORM:
@@ -100,25 +109,82 @@ export default ({ courseId, questions }) => {
     });
 
     try {
-      // TODO: Add spinner before next line and disable the submit button on click.
-      await createRegistration({ variables: { data: answer } });
-      setSuccess(true);
+      const result = await createRegistration({ variables: { data: answer } });
+      const updated = user
+
+      const reg = {
+        id: result.data.createRegistration,
+        course: {
+          ...course
+        }
+      }
+      const regs = updated.registrations.concat(reg);
+      updated.registrations = regs;
+      setUser(updated);
+      // TODO: add timeout success alert
     } catch (err) {
       // TODO: Handle errors.
       console.log(err);
     }
   };
 
-  return success ? (
-    <SuccessMessage>
-      <FormattedMessage id="forms.registrationSuccess" />
-    </SuccessMessage>
-  ) : (
-    <RegistrationForm
-      onSubmit={handleSubmit(onSubmit)}
-      questions={questions}
-      formControl={hookForm}
-    />
+  const handleRegistrationDeletion = async () => {
+    if (window.confirm('Cancel registration?')) {
+      try {
+        await deleteRegistration({
+          variables
+        });
+        const updatedUser = user;
+        const regs = updatedUser.registrations?.filter(r => r.course.id !== course.id);
+        updatedUser.registrations = regs;
+        setUser(updatedUser);
+      } catch (deletionError) {
+        console.log('error:', deletionError);
+      }
+      history.push('/courses');
+    }
+  }
+
+  const userIsRegistered = () => {
+    const found = user.registrations?.find(r => r.course.id === course.id);
+
+    if (found === undefined) {
+      return false;
+    }
+
+    return true;
+  };
+
+  return (
+    <div>
+      {userIsRegistered() ? (
+      <div>
+        <br></br>
+        <Header as="h2">
+            <p>
+              <Icon name="thumbs up outline" data-cy="registered"/>
+              <Header.Content>
+                <FormattedMessage id="course.userHasRegistered" />
+              </Header.Content>
+            </p>
+        </Header>
+        {new Date(course.deadline) > new Date() ? (
+          <Button onClick={handleRegistrationDeletion} color="red" data-cy="cancel-registration-button">
+            <FormattedMessage id="courseRegistration.cancel" />
+          </Button>
+        ) : null}
+      </div>
+    ) : (
+      <div>
+        {new Date(course.deadline) > new Date() ? (
+          <RegistrationForm
+            onSubmit={handleSubmit(onSubmit)}
+            questions={course.questions}
+            formControl={hookForm}
+          />
+        ) : null}
+      </div>
+    )}
+  </div>
   );
-  // TODO: Add TOC checkbox.
 };

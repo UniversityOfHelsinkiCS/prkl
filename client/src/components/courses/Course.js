@@ -9,6 +9,7 @@ import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION } from '../../GqlQueri
 import GroupsView from './GroupsView';
 import EditView from './EditView';
 import RegistrationList from './RegistrationList';
+import Registration from '../registration/Registration';
 
 export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
@@ -102,16 +103,6 @@ export default ({ id }) => {
     }
   };
 
-  const userIsRegistered = () => {
-    const found = user.registrations?.find(r => r.course.id === course.id);
-
-    if (found === undefined) {
-      return false;
-    }
-
-    return true;
-  };
-
   return (
     <div>
       <h2>{`${course.code} - ${course.title}`}</h2>
@@ -152,7 +143,6 @@ export default ({ id }) => {
         <GroupsView course={course} registrations={registrations} regByStudentId={regByStudentId} />
       ) : view === 'registrations' ? (
         <RegistrationList
-          userIsRegistered={userIsRegistered}
           course={course}
           registrations={registrations}
           user={user}
@@ -160,6 +150,7 @@ export default ({ id }) => {
       ) : (
         <EditView course={course} />
       )}
+      <Registration course={course} />
     </div>
   );
 };
