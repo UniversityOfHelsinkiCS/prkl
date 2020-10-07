@@ -156,6 +156,7 @@ export default ({ id }) => {
           userIsRegistered={userIsRegistered}
           course={course}
           registrations={registrations}
+          setRegistrations={setRegistrations}
           user={user}
         />
       ) : (

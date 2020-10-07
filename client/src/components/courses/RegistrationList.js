@@ -9,7 +9,7 @@ import { DELETE_REGISTRATION } from '../../GqlQueries';
 import { useMutation } from 'react-apollo';
 import { useHistory } from 'react-router-dom';
 
-export default ({ userIsRegistered, course, registrations }) => {
+export default ({ userIsRegistered, course, registrations, setRegistrations }) => {
   const paragraphs = course.description ? course.description.split('\n\n') : [];
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
   const [user, setUser] = useStore('userStore');
@@ -76,7 +76,7 @@ export default ({ userIsRegistered, course, registrations }) => {
       <div>
         {course.questions && registrations && (user.role === roles.ADMIN_ROLE || (user.role === roles.STAFF_ROLE && user.id === course.teacher.id)) ? (
           <div>
-            <CourseRegistration course={course} registrations={registrations} />
+            <CourseRegistration course={course} registrations={registrations} setRegistrations={setRegistrations} />
           </div>
         ) : null}
       </div>
