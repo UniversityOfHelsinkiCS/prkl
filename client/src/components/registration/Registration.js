@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useStore } from 'react-hookstore';
 import { useForm } from 'react-hook-form';
 import { FormattedMessage } from 'react-intl';
 import { useMutation } from 'react-apollo';
@@ -8,11 +9,13 @@ import SuccessMessage from '../forms/SuccessMessage';
 import RegistrationForm from './RegistrationForm';
 import timeChoices from '../../util/timeFormChoices';
 
-export default ({ courseId, questions }) => {
+// Fix: do not bring whole course or do not bring id and questions...
+export default ({ course, courseId, questions }) => {
   const hookForm = useForm({ mode: 'onChange' });
   const { handleSubmit } = hookForm;
   const [createRegistration] = useMutation(REGISTER_TO_COURSE);
   const [success, setSuccess] = useState(false);
+  const [user, setUser] = useStore('userStore');
 
   const parseDay = (day, dayIndex, key) => {
     let prev = [1, timeChoices.no];
@@ -101,7 +104,23 @@ export default ({ courseId, questions }) => {
 
     try {
       // TODO: Add spinner before next line and disable the submit button on click.
-      await createRegistration({ variables: { data: answer } });
+      const response = await createRegistration({ variables: { data: answer } });
+  
+      const updatedUser = user;
+      const newReg = {
+        course: { 
+          id: course.id,
+          title: course.title,
+          code: course.code,
+          deleted: course.deleted,
+          __typename: course.__typename,
+        },
+        id: response.data.createRegistration.id,
+        __typename: response.data.createRegistration.__typename,
+      };
+      const regs = updatedUser.registrations.concat(newReg);
+      updatedUser.registrations = regs;
+      setUser(updatedUser);
       setSuccess(true);
     } catch (err) {
       // TODO: Handle errors.

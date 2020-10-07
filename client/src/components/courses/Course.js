@@ -14,6 +14,7 @@ export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
   const [user] = useStore('userStore');
   const [course, setCourse] = useState({});
+  
   const [registrations, setRegistrations] = useState([]);
   const [regByStudentId, setRegByStudentId] = useState([]);
   const [deleteCourse] = useMutation(DELETE_COURSE);
@@ -155,6 +156,7 @@ export default ({ id }) => {
           userIsRegistered={userIsRegistered}
           course={course}
           registrations={registrations}
+          setRegistrations={setRegistrations}
           user={user}
         />
       ) : (

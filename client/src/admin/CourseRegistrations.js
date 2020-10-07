@@ -8,7 +8,7 @@ import { dummyEmail, dummyStudentNumber } from '../util/privacyDefaults';
 import { DELETE_REGISTRATION } from '../GqlQueries';
 import questionSwitch from "../util/functions"
 
-const CourseRegistration = ({ course, registrations }) => {
+const CourseRegistration = ({ course, registrations, setRegistrations }) => {
   const history = useHistory();
   const [privacyToggle] = useStore('toggleStore');
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
@@ -23,7 +23,8 @@ const CourseRegistration = ({ course, registrations }) => {
         await deleteRegistration({
           variables
         });
-        history.go();
+        const newRegs = registrations.filter(r => r.student.id !== studentId);
+        setRegistrations(newRegs);
       } catch (deletionError) {
         console.log('error:', deletionError);
       }
