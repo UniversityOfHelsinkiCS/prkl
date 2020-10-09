@@ -67,8 +67,8 @@ export default () => {
         : allUsersData.users;
       setAllUsers(usersToSet);
     }
-    if (!loadingFaculty && dataFaculty?.facultyUsers !== undefined) {
-      const teachers = dataFaculty?.facultyUsers;
+    if (!facultyLoading && facultyData?.facultyUsers !== undefined) {
+      const teachers = facultyData?.facultyUsers;
       setAllTeachers(teachers);      
     }  
   }, [
