@@ -8,7 +8,7 @@ import StudentInfo from './components/StudentInfo/StudentInfo';
 import CourseForm from './components/courseCreation/CourseForm';
 import Courses from './components/courses/Courses';
 import Course from './components/courses/Course';
-import { ALL_COURSES, ALL_USERS, USERS_BY_ROLE } from './GqlQueries';
+import { ALL_COURSES, ALL_USERS, FACULTY_USERS } from './GqlQueries';
 import DevBar from './admin/DevBar';
 import roles from './util/user_roles';
 import userService from './services/userService';
@@ -39,12 +39,13 @@ export default () => {
       skip: user.role !== roles.ADMIN_ROLE,
     }
   );
-  const { loading:loadingStaff, error:errorStaff, data:dataStaff } = useQuery(USERS_BY_ROLE, {
-    variables:{role:2}
-  });
-  const { loading:loadingAdmin, error:errorAdmin, data:dataAdmin } = useQuery(USERS_BY_ROLE, {
-    variables:{role:3}
-  });
+  const { loading:facultyLoading, error:facultyError, data:facultyData } = useQuery(
+    FACULTY_USERS,
+    {
+      skip: user.role === roles.STUDENT_ROLE,
+    }
+  );
+
 
   userService(useQuery, useEffect, setUser);
 
@@ -66,11 +67,9 @@ export default () => {
         : allUsersData.users;
       setAllUsers(usersToSet);
     }
-    if (!loadingAdmin && !loadingStaff && dataAdmin?.usersByRole !== undefined && dataStaff?.usersByRole !== undefined) {
-      const admins = dataAdmin.usersByRole;
-      const staff = dataStaff.usersByRole;
-      const allTeachers = staff.concat(admins);
-      setAllTeachers(allTeachers);      
+    if (!loadingFaculty && dataFaculty?.facultyUsers !== undefined) {
+      const teachers = dataFaculty?.facultyUsers;
+      setAllTeachers(teachers);      
     }  
   }, [
     courseData,
@@ -81,10 +80,9 @@ export default () => {
     allUsersData,
     allUsersLoading,
     privacyToggle,
-    dataAdmin,
-    dataStaff,
-    loadingAdmin,
-    loadingStaff,
+    facultyData,
+    facultyError,
+    facultyLoading,
     setAllTeachers
   ]);
 

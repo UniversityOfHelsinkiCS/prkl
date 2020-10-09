@@ -20,8 +20,8 @@ export class UserResolver {
 
   @Authorized(STAFF)
   @Query(() => [User])
-  async usersByRole(@Arg("role") role: number): Promise<User[]>{
-    return await User.find({ where: { role } });
+  async facultyUsers(): Promise<User[]>{
+    return await User.find({ where: [{role:2},{role:3}] });
   }
 
   @Authorized(ADMIN)

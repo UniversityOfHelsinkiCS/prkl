@@ -68,7 +68,7 @@ export default ({ userIsRegistered, course, registrations, user }) => {
       )}
       </div>
       <div>
-        {course.questions && registrations && (user.role === roles.ADMIN_ROLE || (user.role === roles.STAFF_ROLE && course.teacher.find(t => t.id === user.id) !== undefined)) ? (
+        {course.questions && registrations && (user.role === roles.ADMIN_ROLE || (user.role === roles.STAFF_ROLE && course.teachers.find(t => t.id === user.id) !== undefined)) ? (
           <div>
             <CourseRegistration course={course} registrations={registrations} />
           </div>

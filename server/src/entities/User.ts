@@ -39,7 +39,7 @@ export class User extends BaseEntity {
   @Field(type => [Course])
   @ManyToMany(
     type => Course,
-    course => course.teacher,
+    course => course.teachers,
   )
   coursesTeached: Course[];
 

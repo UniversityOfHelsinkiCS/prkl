@@ -52,7 +52,7 @@ const CourseForm = () => {
         code: courseCode,
         minGroupSize: 1,
         maxGroupSize: 1,
-        teacher: courseTeachers,
+        teachers: courseTeachers,
         deadline: new Date(deadline).setHours(23, 59),
         published: publishToggle ? true : false,
         questions: calendarToggle ? questions.concat(calendarQuestion) : questions,

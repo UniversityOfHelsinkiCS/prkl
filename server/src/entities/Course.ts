@@ -70,7 +70,7 @@ export class Course extends BaseEntity {
     { cascade: ["remove", "insert", "update"], onDelete: "CASCADE" },
   )
   @JoinTable({ name: "courseTeachers" })
-  teacher: User[];
+  teachers: User[];
 
   @Field(type => [Question])
   @OneToMany(

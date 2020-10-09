@@ -11,7 +11,7 @@ export const ALL_COURSES = gql`
       description
       deadline
       published
-      teacher {
+      teachers {
         id
       }
     }
@@ -31,9 +31,9 @@ export const ALL_USERS = gql`
   }
 `;
 
-export const USERS_BY_ROLE = gql`
-  query usersByRole($role: Float!){
-    usersByRole(role: $role){
+export const FACULTY_USERS = gql`
+  {
+    facultyUsers {
       id
       firstname
       lastname
@@ -102,7 +102,7 @@ export const COURSE_BY_ID = gql`
         }
         order
       }
-      teacher {
+      teachers {
         id
       }
     }
@@ -119,7 +119,7 @@ export const CREATE_COURSE = gql`
       code
       deadline
       published
-      teacher {
+      teachers {
         id
       }
     }
@@ -137,7 +137,7 @@ export const UPDATE_COURSE = gql`
       code
       deadline
       published
-      teacher {
+      teachers {
         id
       }
       questions {
