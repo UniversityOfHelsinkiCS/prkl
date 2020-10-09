@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Checkbox, Form, Table, Icon, Popup } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { useStore} from 'react-hookstore';
+import { useStore } from 'react-hookstore';
 import { CREATE_COURSE, USERS_BY_ROLE } from '../../GqlQueries';
 import QuestionForm from './QuestionForm';
 import roles from '../../util/user_roles';
@@ -28,21 +28,26 @@ const CourseForm = () => {
   const [calendarDescription, setCalendarDescription] = useState(
     `${intl.formatMessage({ id: 'courseForm.timeQuestionDefault' })}`
   );
-  
-  const { loading:loadingStaff, error:errorStaff, data:dataStaff } = useQuery(USERS_BY_ROLE, {
-    variables:{role:roles.STAFF_ROLE}
+
+  const { loading: loadingStaff, error: errorStaff, data: dataStaff } = useQuery(USERS_BY_ROLE, {
+    variables: { role: roles.STAFF_ROLE },
   });
-  const { loading:loadingAdmin, error:errorAdmin, data:dataAdmin } = useQuery(USERS_BY_ROLE, {
-    variables:{role:admin}
+  const { loading: loadingAdmin, error: errorAdmin, data: dataAdmin } = useQuery(USERS_BY_ROLE, {
+    variables: { role: admin },
   });
-  useEffect(() =>{
-    if (!loadingAdmin && !loadingStaff && dataAdmin?.usersByRole !== undefined && dataStaff?.usersByRole !== undefined) {
+  useEffect(() => {
+    if (
+      !loadingAdmin &&
+      !loadingStaff &&
+      dataAdmin?.usersByRole !== undefined &&
+      dataStaff?.usersByRole !== undefined
+    ) {
       const admins = dataAdmin.usersByRole;
       const staff = dataStaff.usersByRole;
       const allTeachers = staff.concat(admins);
-      setUsersByRole(allTeachers);      
-    }    
-  }, [])
+      setUsersByRole(allTeachers);
+    }
+  }, [dataAdmin, dataStaff, loadingAdmin, loadingStaff]);
   console.log(usersByRole);
   const history = useHistory();
   const today = new Date();
@@ -61,7 +66,12 @@ const CourseForm = () => {
     if (calendarToggle) {
       calendarQuestion.content = calendarDescription;
     }
-    if (window.confirm('Confirm course creation?')) {
+
+    const promptText = intl.formatMessage({
+      id: publishToggle ? 'courseForm.confirmPublishSubmit' : 'courseForm.confirmSubmit',
+    });
+
+    if (window.confirm(promptText)) {
       const courseObject = {
         title: courseTitle,
         description: courseDescription,
@@ -69,7 +79,7 @@ const CourseForm = () => {
         minGroupSize: 1,
         maxGroupSize: 1,
         deadline: new Date(deadline).setHours(23, 59),
-        published: publishToggle ? true : false,
+        published: !!publishToggle,
         questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
       };
       const variables = { data: { ...courseObject } };
@@ -161,11 +171,7 @@ const CourseForm = () => {
             <FormattedMessage id="courseForm.addQuestion" />
           </Form.Button>
 
-          <Popup
-            trigger={
-              <Icon name="info circle" size="large" color="blue" />
-            } wide="very"
-          >
+          <Popup trigger={<Icon name="info circle" size="large" color="blue" />} wide="very">
             <Popup.Content>
               <FormattedMessage id="courseForm.infoBox" />
             </Popup.Content>
@@ -183,24 +189,24 @@ const CourseForm = () => {
           ))}
         </Form.Group>
 
-        <Table size='small'>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Firstname</Table.HeaderCell>
-                <Table.HeaderCell>Lastname</Table.HeaderCell>
-                <Table.HeaderCell />
+        <Table size="small">
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Firstname</Table.HeaderCell>
+              <Table.HeaderCell>Lastname</Table.HeaderCell>
+              <Table.HeaderCell />
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {usersByRole.map(u => (
+              <Table.Row key={u.id}>
+                <Table.Cell>{u.firstname}</Table.Cell>
+                <Table.Cell>{u.lastname}</Table.Cell>
+                <Checkbox slider />
               </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {usersByRole.map(u => (
-                <Table.Row key={u.id}>
-                  <Table.Cell>{u.firstname}</Table.Cell>
-                  <Table.Cell>{u.lastname}</Table.Cell>
-                  <Checkbox slider />
-                </Table.Row>
-              ))}
-            </Table.Body>
-        </Table>    
+            ))}
+          </Table.Body>
+        </Table>
         <Form.Checkbox
           label={intl.formatMessage({ id: 'courseForm.publishCourse' })}
           onClick={() => setPublishToggle(!publishToggle)}
