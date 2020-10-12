@@ -46,13 +46,19 @@ const CourseForm = () => {
       calendarQuestion.content = calendarDescription;
     }
     if (window.confirm('Confirm course creation?')) {
+      const teachersWithMockSibIds = courseTeachers.map(t => {
+        const newT = { ...t }
+        delete newT.__typename;
+        return newT;
+      });
+
       const courseObject = {
         title: courseTitle,
         description: courseDescription,
         code: courseCode,
         minGroupSize: 1,
         maxGroupSize: 1,
-        teachers: courseTeachers,
+        teachers: teachersWithMockSibIds,
         deadline: new Date(deadline).setHours(23, 59),
         published: publishToggle ? true : false,
         questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
@@ -172,7 +178,7 @@ const CourseForm = () => {
           ))}
         </Form.Group>
 
-        <TeacherList teachers={teachers} /> 
+        <TeacherList teachers={teachers} courseTeachers={courseTeachers} setCourseTeachers={setCourseTeachers} /> 
 
         <Form.Checkbox
           label={intl.formatMessage({ id: 'courseForm.publishCourse' })}

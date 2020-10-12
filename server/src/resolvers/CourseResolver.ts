@@ -47,6 +47,7 @@ export class CourseResolver {
   @Mutation(() => Course)
   async createCourse(@Ctx() context, @Arg("data") data: CourseInput): Promise<Course> {
     const course = Course.create(data);
+    console.log('course is:', course);
     await course.save();
     return course;
   }

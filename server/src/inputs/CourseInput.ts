@@ -36,5 +36,4 @@ export class CourseInput {
 
   @Field(type => [UserInput])
   teachers: UserInput[];
-
 }
