@@ -18,6 +18,7 @@ const EditView = ({ course }) => {
   const history = useHistory();
   const intl = useIntl();
   const [updateCourse] = useMutation(UPDATE_COURSE);
+  const [courseTeachers, setCourseTeachers] = useState([]);
 
   const [courses, setCourses] = useStore('coursesStore');
   // const [course, setCourse] = useState({});
@@ -49,6 +50,8 @@ const EditView = ({ course }) => {
     const dateString = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`;
     setDeadline(dateString);
     setPublished(course.published);
+    const teachersCurrently = course.teachers;
+    setCourseTeachers(teachersCurrently);
     const calendar = course.questions.find(q => q.questionType === 'times');
     setCalendarToggle(calendar);
     if (calendar) {
@@ -79,7 +82,15 @@ const EditView = ({ course }) => {
     const promptText = intl.formatMessage({
       id: published ? 'editView.confirmPublishSubmit' : 'editView.confirmSubmit'
     });
+
+    
     if (window.confirm(promptText)) {
+      const teacherRemoveType = courseTeachers.map(t => {
+        const newT = { ...t }
+        delete newT.__typename;
+        return newT;
+      });
+
       const courseObject = {
         title: courseTitle,
         description: courseDescription,
@@ -87,6 +98,7 @@ const EditView = ({ course }) => {
         minGroupSize: course.minGroupSize,
         maxGroupSize: course.maxGroupSize,
         deadline: new Date(deadline).setHours(23, 59),
+        teachers: teacherRemoveType,
         questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
         published,
       };

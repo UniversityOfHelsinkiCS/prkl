@@ -126,7 +126,7 @@ export default ({ id }) => {
                 </Button>
               </p>
               {(user.role === roles.ADMIN_ROLE ||
-                (user.role === roles.STAFF_ROLE && !course.published && data.course.teachers.some(t => t.id === user.is))) && (
+                (user.role === roles.STAFF_ROLE && !course.published && data.course.teachers.some(t => t.id === user.id))) && (
                 <p>
                   <Button onClick={handleDeletion} color="red" data-cy="delete-course-button">
                     <FormattedMessage id="course.delete" />

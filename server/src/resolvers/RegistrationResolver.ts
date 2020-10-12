@@ -55,7 +55,7 @@ export class RegistrationResolver {
 
     if (studentId === user.id && course.deadline > new Date()) {
       auth = true;
-    } else if (user.role === STAFF && course.teachers.find(user.id) !== undefined) {
+    } else if (user.role === STAFF && course.teachers.find(t => t.id === user.id) !== undefined) {
       auth = true;
     } else if (user.role === ADMIN) {
       auth = true;

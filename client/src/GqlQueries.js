@@ -104,6 +104,11 @@ export const COURSE_BY_ID = gql`
       }
       teachers {
         id
+        firstname
+        lastname
+        studentNo
+        email
+        role
       }
     }
   }

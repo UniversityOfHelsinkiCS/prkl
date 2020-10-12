@@ -71,7 +71,7 @@ const CourseForm = () => {
     });
 
     if (window.confirm(promptText)) {
-      const teachersWithMockSibIds = courseTeachers.map(t => {
+      const teachersRemoveType = courseTeachers.map(t => {
         const newT = { ...t }
         delete newT.__typename;
         return newT;
@@ -83,7 +83,7 @@ const CourseForm = () => {
         code: courseCode,
         minGroupSize: 1,
         maxGroupSize: 1,
-        teachers: teachersWithMockSibIds,
+        teachers: teachersRemoveType,
         deadline: new Date(deadline).setHours(23, 59),
         published: !!publishToggle,
         questions: calendarToggle ? questions.concat(calendarQuestion) : questions,

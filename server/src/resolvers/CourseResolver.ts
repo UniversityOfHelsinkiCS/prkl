@@ -139,10 +139,10 @@ export class CourseResolver {
   @Mutation(() => Boolean)
   async deleteCourse(@Ctx() context, @Arg("id") id: string): Promise<boolean> {
     const { user } = context;
-    const course = await Course.findOne({ where: { id }, relations: ["teacher"] });
+    const course = await Course.findOne({ where: { id }, relations: ["teachers"] });
     if (!course) throw new Error("Course not found!");
     // Staff member can only delete own, unpublished course. Error handling might require improvements.
-    if (user.role === ADMIN || (user.id === course.teacher.id && course.published === false)) {
+    if (user.role === ADMIN || (course.teachers.find(t => t.id === user.id) !== undefined && course.published === false)) {
       course.deleted = true;
       await course.save();
       return true;
