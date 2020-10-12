@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Arg, Ctx, Authorized } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Ctx, Authorized, UnauthorizedError } from "type-graphql";
 import { Registration } from "../entities/Registration";
 import { RegistrationInput } from "../inputs/RegistrationInput";
 import { USER, STAFF, ADMIN } from "../utils/userRoles";
@@ -9,9 +9,9 @@ export class RegistrationResolver {
   @Query(() => [Registration])
   async courseRegistrations(@Ctx() context, @Arg("courseId") courseId: string): Promise<Registration[]> {
     const { user } = context;
-    const course = await Course.findOne({ where: { id: courseId }, relations: ["teacher"] });
+    const course = await Course.findOne({ where: { id: courseId }, relations: ["teachers"] });
 
-    if (user.role === ADMIN || user.id === course.teacher.id) {
+    if (user.role === ADMIN || course.teachers.find(t => t.id === user.id) !== undefined) {
       return Registration.find({
         where: { courseId: courseId },
         relations: [
@@ -50,12 +50,12 @@ export class RegistrationResolver {
 
     const course = await Course.findOne({
       where: { id: courseId },
-      relations: ["teacher"],
+      relations: ["teachers"],
     });
 
     if (studentId === user.id && course.deadline > new Date()) {
       auth = true;
-    } else if (user.role === STAFF && course.teacher.id === user.id ) {
+    } else if (user.role === STAFF && course.teachers.find(user.id) !== undefined) {
       auth = true;
     } else if (user.role === ADMIN) {
       auth = true;

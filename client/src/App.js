@@ -8,7 +8,7 @@ import StudentInfo from './components/StudentInfo/StudentInfo';
 import CourseForm from './components/courseCreation/CourseForm';
 import Courses from './components/courses/Courses';
 import Course from './components/courses/Course';
-import { ALL_COURSES, ALL_USERS } from './GqlQueries';
+import { ALL_COURSES, ALL_USERS, FACULTY_USERS } from './GqlQueries';
 import DevBar from './admin/DevBar';
 import roles from './util/user_roles';
 import userService from './services/userService';
@@ -21,6 +21,7 @@ import PrivateRoute from './components/misc/PrivateRoute';
 createStore('coursesStore', []);
 createStore('groupsStore', []);
 createStore('allUsersStore', []);
+createStore('teacherStore', []);
 createStore('userStore', {});
 createStore('toggleStore', false);
 
@@ -28,6 +29,7 @@ export default () => {
   const [courses, setCourses] = useStore('coursesStore');
   const [allUsers, setAllUsers] = useStore('allUsersStore');
   const [user, setUser] = useStore('userStore');
+  const [allTeachers, setAllTeachers] = useStore('teacherStore')
   const [privacyToggle] = useStore('toggleStore');
 
   const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
@@ -37,6 +39,13 @@ export default () => {
       skip: user.role !== roles.ADMIN_ROLE,
     }
   );
+  const { loading:facultyLoading, error:facultyError, data:facultyData } = useQuery(
+    FACULTY_USERS,
+    {
+      skip: user.role === roles.STUDENT_ROLE,
+    }
+  );
+
 
   userService(useQuery, useEffect, setUser);
 
@@ -58,6 +67,10 @@ export default () => {
         : allUsersData.users;
       setAllUsers(usersToSet);
     }
+    if (!facultyLoading && facultyData?.facultyUsers !== undefined) {
+      const teachers = facultyData?.facultyUsers;
+      setAllTeachers(teachers);      
+    }  
   }, [
     courseData,
     courseError,
@@ -67,6 +80,10 @@ export default () => {
     allUsersData,
     allUsersLoading,
     privacyToggle,
+    facultyData,
+    facultyError,
+    facultyLoading,
+    setAllTeachers
   ]);
 
   return (

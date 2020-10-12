@@ -6,7 +6,8 @@ export class UserInput {
   @Field()
   id: string;
 
-  @Field()
+  @Field({ nullable: true })
+  @IsOptional()
   shibbolethUid: string;
 
   @Field()
