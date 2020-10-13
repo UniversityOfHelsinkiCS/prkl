@@ -37,7 +37,7 @@ export default ({ teachers, courseTeachers, setCourseTeachers }) => {
             <Table.Row key={u.id}>
               <Table.Cell>{u.firstname}</Table.Cell>
               <Table.Cell>{u.lastname}</Table.Cell>
-              {createCheckbox(() => handleTeacherToggle(u))}
+              <Table.Cell>{createCheckbox(() => handleTeacherToggle(u))}</Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>

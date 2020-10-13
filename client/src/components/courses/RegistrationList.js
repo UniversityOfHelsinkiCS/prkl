@@ -42,19 +42,19 @@ export default ({ userIsRegistered, course, registrations, setRegistrations }) =
       <div>
       {userIsRegistered() ? (
         <Header as="h2">
-          <p>
+          <div>
             <Icon name="thumbs up outline" />
             <Header.Content>
               <FormattedMessage id="course.userHasRegistered" />
             </Header.Content>
-          </p>
+          </div>
           {new Date(course.deadline) > new Date() ? (
             <Button onClick={handleRegistrationDeletion} color="red" data-cy="cancel-registration-button">
               <FormattedMessage id="courseRegistration.cancel" />
             </Button>
           ) : null}
         </Header>
-      ) : ( 
+      ) : (
         <div>
         {new Date(course.deadline) > new Date() ? (
           <div>
@@ -65,7 +65,7 @@ export default ({ userIsRegistered, course, registrations, setRegistrations }) =
           </Header>
           <div>
             {paragraphs.map(p => (
-              <p>{p}</p>
+              <p key={p}>{p}</p>
             ))}
             </div>
             <Registration course={course} courseId={course.id} questions={course.questions} />

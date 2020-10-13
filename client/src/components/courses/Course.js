@@ -160,7 +160,7 @@ export default ({ id }) => {
           user={user}
         />
       ) : (
-        <EditView course={course} />
+        <EditView course={course} user={user} />
       )}
     </div>
   );
