@@ -47,6 +47,9 @@ export class CourseResolver {
   @Authorized(STAFF)
   @Mutation(() => Course)
   async createCourse(@Ctx() context, @Arg("data") data: CourseInput): Promise<Course> {
+    if (data.teachers.length === 0) {
+      throw new Error("Course must have at least one teacher.");
+    }
     const course = Course.create(data);
     console.log('course is:', course);
     await course.save();
