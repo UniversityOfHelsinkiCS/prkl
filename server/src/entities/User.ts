@@ -37,10 +37,9 @@ export class User extends BaseEntity {
   email: string;
 
   @Field(type => [Course])
-  @OneToMany(
+  @ManyToMany(
     type => Course,
-    course => course.teacher,
-    { cascade: true },
+    course => course.teachers,
   )
   coursesTeached: Course[];
 

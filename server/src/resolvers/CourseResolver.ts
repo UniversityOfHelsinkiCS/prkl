@@ -17,21 +17,21 @@ export class CourseResolver {
     if (user.role < STAFF) {
       return getRepository(Course)
         .createQueryBuilder("course")
-        .leftJoinAndSelect("course.teacher", "user")
+        .leftJoinAndSelect("course.teachers", "user")
         .where("teacherId = user.id") // Pitääkö kurssin näkyä opiskelijalle, jos hän on luonut sen ollessaan opettaja (roolihan voi muuttua), vaikka kurssi ei olisi enää kurantti?
         .where("deleted = false")
         .andWhere("published = true")
         .andWhere("deadline > NOW()")
         .getMany();
     } else {
-      return Course.find({ where: { deleted: false }, relations: ["teacher"] });
+      return Course.find({ where: { deleted: false }, relations: ["teachers"] });
     }
   }
 
   @Query(() => Course)
   async course(@Ctx() context, @Arg("id") id: string): Promise<Course> {
     const { user } = context;
-    const course = await Course.findOne({ where: { id }, relations: ["questions", "questions.questionChoices", "teacher"] });
+    const course = await Course.findOne({ where: { id }, relations: ["questions", "questions.questionChoices", "teachers"] });
 
     if ((course.deleted === true || course.published === false) && user.role < STAFF) {
       throw new Error("Nothing to see here."); // Viesti on placeholder.
@@ -48,7 +48,7 @@ export class CourseResolver {
   @Mutation(() => Course)
   async createCourse(@Ctx() context, @Arg("data") data: CourseInput): Promise<Course> {
     const course = Course.create(data);
-    course.teacher = context.user;
+    console.log('course is:', course);
     await course.save();
     return course;
   }
@@ -57,7 +57,7 @@ export class CourseResolver {
   @Mutation(() => Course)
   async updateCourse(@Ctx() context, @Arg("id") id: string, @Arg("data") data: CourseInput): Promise<Course> {
     const { user } = context;
-    const course = await Course.findOne({ where: { id }, relations: ["teacher", "questions", "questions.questionChoices"] });
+    const course = await Course.findOne({ where: { id }, relations: ["teachers", "questions", "questions.questionChoices"] });
     if (!course) {
       throw new Error("Course with given id not found.");
     }
@@ -139,10 +139,10 @@ export class CourseResolver {
   @Mutation(() => Boolean)
   async deleteCourse(@Ctx() context, @Arg("id") id: string): Promise<boolean> {
     const { user } = context;
-    const course = await Course.findOne({ where: { id }, relations: ["teacher"] });
+    const course = await Course.findOne({ where: { id }, relations: ["teachers"] });
     if (!course) throw new Error("Course not found!");
     // Staff member can only delete own, unpublished course. Error handling might require improvements.
-    if (user.role === ADMIN || (user.id === course.teacher.id && course.published === false)) {
+    if (user.role === ADMIN || (course.teachers.find(t => t.id === user.id) !== undefined && course.published === false)) {
       course.deleted = true;
       await course.save();
       return true;

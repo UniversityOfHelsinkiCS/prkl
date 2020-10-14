@@ -2,9 +2,11 @@ import { getConnection, getRepository } from "typeorm";
 import { Request, Response } from "express";
 import { plainToClass } from "class-transformer";
 import userData from "../../data/users";
+import demoUserData from "../../data/demoUsers";
 import { User } from "../entities/User";
 import { UserInput } from "../inputs/UserInput";
 import courseData from "../../data/courses";
+import demoCourseData from "../../data/demoCourses";
 import { Course } from "../entities/Course";
 import { CourseInput } from "../inputs/CourseInput";
 
@@ -20,6 +22,17 @@ const seed = async (): Promise<void> => {
   const courseRepo = getRepository(Course);
   const courses = courseData.map(course => courseRepo.create(plainToClass(CourseInput, course)));
   await courseRepo.save(courses);
+};
+
+// Seed an empty database with demo mock data.
+const demoseed = async (): Promise<void> => {
+  const userRepo = getRepository(User);
+  const demoUsers = demoUserData.map(demoUser => userRepo.create(plainToClass(UserInput, demoUser)));
+  await userRepo.save(demoUsers);
+
+  const courseRepo = getRepository(Course);
+  const demoCourses = demoCourseData.map(demoCourse => courseRepo.create(plainToClass(CourseInput, demoCourse)));
+  await courseRepo.save(demoCourses);
 };
 
 /**
@@ -71,6 +84,17 @@ export default (router): void => {
     try {
       await reset();
       await seed();
+    } catch (error) {
+      res.status(500).send(error);
+    }
+
+    res.send("OK");
+  });
+
+  router.get("/demoseed", async (req: Request, res: Response) => {
+    try {
+      await reset();
+      await demoseed();
     } catch (error) {
       res.status(500).send(error);
     }

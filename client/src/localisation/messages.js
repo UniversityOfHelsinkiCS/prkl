@@ -30,11 +30,16 @@ export default {
       'Answer options in single choice questions are assumed to be on a continuum '
       + '(ie. choices 1 and 2 are more similar than 1 and 3), give options in order. '
       + 'In multiple choice question the order does not matter.',
+    'courseForm.confirmSubmit': 'Confirm course creation?',
+    'courseForm.confirmPublishSubmit': 'Warning: After course is published you cannot edit the course anymore. Are you sure you want to publish the course?',
 
     'editView.pageTitle': 'Modify Course',
     'editView.coursePublishedNotification': "Course has been published, adding or removing new questions is not allowed. Texts of existing questions and their answer choices may be edited.",
     'editView.confirmPublishSubmit': 'Confirm all edits and publish course? Published courses can only be edited by admins!',
     'editView.confirmSubmit': 'Confirm all edits?',
+    'editView.closeRegistrationLabel': 'Immediately close registration (for admin)',
+    'editView.closeRegistrationBtn': 'Close registration',
+    'editView.pastDeadlineWarning': 'Warning: You have set a registration deadline that has already passed. Registration will be effectively closed.',
 
     'courses.searchPlaceholder': 'Search courses',
     'courses.deadline': 'Enrollment deadline',

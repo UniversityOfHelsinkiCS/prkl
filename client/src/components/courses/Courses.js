@@ -56,7 +56,7 @@ export default () => {
       showPastCourses ? true : new Date(course.deadline) > new Date();
 
     // check teacher of the course
-    const teacherFilter = course => (showMyCourses ? course.teacher.id === user.id : true);
+    const teacherFilter = course => (showMyCourses ? course.teachers.find(t => t.id === user.id) : true);
 
     const searchFilter = course =>
       course.title.toLowerCase().includes(search.toLowerCase()) ||

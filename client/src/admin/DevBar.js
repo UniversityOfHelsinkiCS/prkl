@@ -21,6 +21,11 @@ const seedDatabase = async () => {
   window.location.reload();
 };
 
+const seedDemoDatabase = async () => {
+  await axios.get(`${apiUrl}/demoseed`);
+  window.location.reload();
+};
+
 export default () => (
   <Menu className="mainHeader" size="massive" stackable borderless attached inverted>
     <Menu.Item>DEV</Menu.Item>
@@ -36,7 +41,10 @@ export default () => (
     <Menu.Item>
       <Icon name="cogs" style={{ color: '#fbbd08' }} />
     </Menu.Item>
-    <Menu.Item onClick={resetDatabase}>Empty DB</Menu.Item>
-    <Menu.Item onClick={seedDatabase}>Seed DB</Menu.Item>
-  </Menu>
+      <Menu.Item onClick={resetDatabase}>Empty DB</Menu.Item>
+      <Menu.Item onClick={seedDatabase}>Seed DB</Menu.Item>
+      <Menu.Item onClick={seedDemoDatabase}>Demo DB</Menu.Item>
+    </Menu>
 );
+
+

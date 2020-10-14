@@ -5,9 +5,10 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
 import { UPDATE_COURSE } from '../../GqlQueries';
+import roles from '../../util/user_roles';
 import QuestionForm from '../courseCreation/QuestionForm';
 
-const EditView = ({ course }) => {
+const EditView = ({ course, user }) => {
   const [courseTitle, setCourseTitle] = useState('');
   const [courseDescription, setCourseDescription] = useState('');
   const [courseCode, setCourseCode] = useState('');
@@ -18,6 +19,7 @@ const EditView = ({ course }) => {
   const history = useHistory();
   const intl = useIntl();
   const [updateCourse] = useMutation(UPDATE_COURSE);
+  const [courseTeachers, setCourseTeachers] = useState([]);
 
   const [courses, setCourses] = useStore('coursesStore');
   // const [course, setCourse] = useState({});
@@ -49,6 +51,8 @@ const EditView = ({ course }) => {
     const dateString = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`;
     setDeadline(dateString);
     setPublished(course.published);
+    const teachersCurrently = course.teachers;
+    setCourseTeachers(teachersCurrently);
     const calendar = course.questions.find(q => q.questionType === 'times');
     setCalendarToggle(calendar);
     if (calendar) {
@@ -57,11 +61,19 @@ const EditView = ({ course }) => {
     }
   }, []);
 
-  const today = new Date();
-  const dd = String(today.getDate()).padStart(2, '0');
-  const mm = String(today.getMonth() + 1).padStart(2, '0');
-  const yyyy = today.getFullYear();
-  const todayParsed = `${yyyy}-${mm}-${dd}`;
+  const getFormattedDate = (setYesterday) => {
+    const date = new Date();
+    if (setYesterday) date.setDate(date.getDate() - 1);
+    const dd = String(date.getDate()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  const closeRegistration = e => {
+    e.preventDefault();
+    setDeadline(getFormattedDate(true));
+  }
 
   const calendarQuestion = {
     questionType: 'times',
@@ -79,7 +91,15 @@ const EditView = ({ course }) => {
     const promptText = intl.formatMessage({
       id: published ? 'editView.confirmPublishSubmit' : 'editView.confirmSubmit'
     });
+
+
     if (window.confirm(promptText)) {
+      const teacherRemoveType = courseTeachers.map(t => {
+        const newT = { ...t }
+        delete newT.__typename;
+        return newT;
+      });
+
       const courseObject = {
         title: courseTitle,
         description: courseDescription,
@@ -87,6 +107,7 @@ const EditView = ({ course }) => {
         minGroupSize: course.minGroupSize,
         maxGroupSize: course.maxGroupSize,
         deadline: new Date(deadline).setHours(23, 59),
+        teachers: teacherRemoveType,
         questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
         published,
       };
@@ -146,7 +167,7 @@ const EditView = ({ course }) => {
           <Form.Input
             required
             type="date"
-            min={todayParsed}
+            min={user.role === roles.ADMIN_ROLE ? null : getFormattedDate()}
             label={intl.formatMessage({
               id: 'courseForm.courseDeadlineForm',
             })}
@@ -156,6 +177,15 @@ const EditView = ({ course }) => {
             }}
             data-cy="course-deadline-input"
           />
+
+          {user.role === roles.ADMIN_ROLE &&
+            <Form.Button 
+              onClick={closeRegistration} 
+              label={intl.formatMessage({id: 'editView.closeRegistrationLabel'})}
+            >
+              {intl.formatMessage({id: 'editView.closeRegistrationBtn'})}
+            </Form.Button>
+          }
         </Form.Group>
 
         <Form.Field>
@@ -213,6 +243,10 @@ const EditView = ({ course }) => {
           data-cy="course-published-checkbox"
         />
 
+        {user.role === roles.ADMIN_ROLE &&
+         new Date(deadline).getTime() <= new Date().getTime() &&
+         <p style={{ "color": "#b00" }}> {intl.formatMessage({ id: 'editView.pastDeadlineWarning' })} </p>
+        }
         <Form.Button primary type="submit" data-cy="create-course-submit">
           <FormattedMessage id="courseForm.confirmButton" />
         </Form.Button>

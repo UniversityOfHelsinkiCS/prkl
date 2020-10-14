@@ -1,6 +1,6 @@
 import { Resolver, Query, Arg, Ctx, Authorized, Mutation } from "type-graphql";
 import { User } from "../entities/User";
-import { ADMIN } from "../utils/userRoles";
+import { ADMIN, STAFF } from "../utils/userRoles";
 
 @Resolver()
 export class UserResolver {
@@ -18,9 +18,10 @@ export class UserResolver {
     return await User.find({});
   }
 
+  @Authorized(STAFF)
   @Query(() => [User])
-  async usersByRole(@Arg("role") role: number): Promise<User[]>{
-     return await User.find({ where: { role } });
+  async facultyUsers(): Promise<User[]>{
+    return await User.find({ where: [{role:2},{role:3}] });
   }
 
   @Authorized(ADMIN)

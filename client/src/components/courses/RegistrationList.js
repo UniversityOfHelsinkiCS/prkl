@@ -42,19 +42,19 @@ export default ({ userIsRegistered, course, registrations, setRegistrations }) =
       <div>
       {userIsRegistered() ? (
         <Header as="h2">
-          <p>
+          <div>
             <Icon name="thumbs up outline" />
             <Header.Content>
               <FormattedMessage id="course.userHasRegistered" />
             </Header.Content>
-          </p>
+          </div>
           {new Date(course.deadline) > new Date() ? (
             <Button onClick={handleRegistrationDeletion} color="red" data-cy="cancel-registration-button">
               <FormattedMessage id="courseRegistration.cancel" />
             </Button>
           ) : null}
         </Header>
-      ) : ( 
+      ) : (
         <div>
         {new Date(course.deadline) > new Date() ? (
           <div>
@@ -65,7 +65,7 @@ export default ({ userIsRegistered, course, registrations, setRegistrations }) =
           </Header>
           <div>
             {paragraphs.map(p => (
-              <p>{p}</p>
+              <p key={p}>{p}</p>
             ))}
             </div>
             <Registration course={course} courseId={course.id} questions={course.questions} />
@@ -75,7 +75,7 @@ export default ({ userIsRegistered, course, registrations, setRegistrations }) =
       )}
       </div>
       <div>
-        {course.questions && registrations && (user.role === roles.ADMIN_ROLE || (user.role === roles.STAFF_ROLE && user.id === course.teacher.id)) ? (
+        {course.questions && registrations && (user.role === roles.ADMIN_ROLE || (user.role === roles.STAFF_ROLE && course.teachers.find(t => t.id === user.id) !== undefined)) ? (
           <div>
             <CourseRegistration course={course} registrations={registrations} setRegistrations={setRegistrations} />
           </div>
