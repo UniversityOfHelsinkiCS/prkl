@@ -80,6 +80,8 @@ export default {
     'course.userHasRegistered': 'Already registered!',
     'course.seeGroups': 'Generated groups',
     'course.generateGroups': 'Generate groups',
+    'course.hideTeachers': 'Hide teachers',
+    'course.showTeachers': 'Show teachers',
     'course.switchGroupsView': 'Switch to Groups view',
     'course.switchCourseView': 'Switch to Course view',
     'course.switchEditView': 'Edit course',

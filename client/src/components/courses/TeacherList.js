@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Checkbox, Table } from 'semantic-ui-react';
+import { useStore } from 'react-hookstore';
 
-export default ({ teachers, courseTeachers, setCourseTeachers }) => {
+export default ({ courseTeachers, setCourseTeachers }) => {
+  const [teachers, setTeachers] = useStore('teacherStore');
+
   const createCheckbox = (onChange) => {
     return (
       <Checkbox

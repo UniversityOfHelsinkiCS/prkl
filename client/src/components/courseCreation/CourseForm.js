@@ -16,10 +16,10 @@ const CourseForm = () => {
   const [deadline, setDeadline] = useState();
   const [calendarToggle, setCalendarToggle] = useState(false);
   const [publishToggle, setPublishToggle] = useState(false);
+  const [showTeachers, setShowTeachers] = useState(false);
   const [courseTeachers, setCourseTeachers] = useState([]);
 
   const [courses, setCourses] = useStore('coursesStore');
-  const [teachers, setTeachers] = useStore('teacherStore');
 
   const [createCourse] = useMutation(CREATE_COURSE);
   const intl = useIntl();
@@ -101,8 +101,8 @@ const CourseForm = () => {
     }
   };
 
-  const handleTeacherToggle = () => {
-
+  const handleShowTeachers = () => {
+    setShowTeachers(!showTeachers);
   }
 
   const handleAddForm = e => {
@@ -199,7 +199,18 @@ const CourseForm = () => {
           ))}
         </Form.Group>
 
-        <TeacherList teachers={teachers} courseTeachers={courseTeachers} setCourseTeachers={setCourseTeachers} /> 
+        {!showTeachers ? (
+          <Form.Button type="button" onClick={handleShowTeachers} color="blue">
+            <FormattedMessage id="course.showTeachers" />
+          </Form.Button>
+        ) : (
+          <div>
+            <Form.Button type="button" onClick={handleShowTeachers} color="blue">
+              <FormattedMessage id="course.hideTeachers" />
+            </Form.Button>
+            <TeacherList courseTeachers={courseTeachers} setCourseTeachers={setCourseTeachers} /> 
+          </div>
+        )}
 
         <Form.Checkbox
           label={intl.formatMessage({ id: 'courseForm.publishCourse' })}
