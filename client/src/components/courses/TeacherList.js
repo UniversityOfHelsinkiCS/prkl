@@ -11,6 +11,7 @@ export default ({ courseTeachers, setCourseTeachers }) => {
         style={{ marginRight: '1rem' }}
         toggle
         onChange={onChange}
+        data-cy="checkbox-course-teachers"
       />
     )
   }

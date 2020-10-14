@@ -200,7 +200,7 @@ const CourseForm = () => {
         </Form.Group>
 
         {!showTeachers ? (
-          <Form.Button type="button" onClick={handleShowTeachers} color="blue">
+          <Form.Button type="button" onClick={handleShowTeachers} color="blue" data-cy="show-teacher-list-button">
             <FormattedMessage id="course.showTeachers" />
           </Form.Button>
         ) : (

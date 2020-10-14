@@ -53,6 +53,8 @@ describe('Staff', () => {
       cy.get('[data-cy="course-code-input"]').type('CYP999');
       cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
       cy.get('[data-cy="course-description-input"]').type('Description for test course.');
+      cy.get('[data-cy="show-teacher-list-button"]').click();
+      cy.get('[data-cy="checkbox-course-teachers"]').first().click();
 
       cy.get('[data-cy="create-course-submit"]').click();
 
