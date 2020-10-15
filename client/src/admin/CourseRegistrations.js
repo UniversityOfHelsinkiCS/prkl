@@ -38,7 +38,7 @@ const CourseRegistration = ({ course, registrations, setRegistrations }) => {
           <FormattedMessage id="courseRegistration.title" /> {registrations.length}
         </h3>
 
-        <Table>
+        <Table data-cy="registration-table">
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>

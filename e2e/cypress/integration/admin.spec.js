@@ -100,6 +100,17 @@ describe('Admin', () => {
       cy.visit('/courses');
       cy.contains(courses[4].title).should('not.exist');
     });
+
+    it('Can make deadline past immediately', () => {
+      // deadline is past
+      cy.visit('/courses');
+      cy.contains(courses[0].title).click();
+      cy.get('[data-cy="edit-course-button"]').click();
+      cy.get('[data-cy="course-deadline-control"]').click();
+
+      cy.visit('/courses');
+      cy.contains(courses[0].title).should('not.exist');
+    }); 
   });
 
   describe('enrollment management', () => {   

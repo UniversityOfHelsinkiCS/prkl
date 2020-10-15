@@ -62,6 +62,52 @@ describe('Staff', () => {
       cy.contains('CYP999');
       cy.contains('Course from Cypress');
     });
+
+    it('Cannot create course without teachers', () => {
+      cy.get('[data-cy="menu-item-add-course"]').click();
+
+      cy.get('[data-cy="course-title-input"]').type('Course without teachers');
+      cy.get('[data-cy="course-code-input"]').type('CWT123');
+      cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
+      cy.get('[data-cy="course-description-input"]').type('Description for test course.');
+
+      cy.get('[data-cy="create-course-submit"]').click();
+
+      cy.visit('/courses');
+      cy.contains('CWT123').should('not.exist');
+      cy.contains('Course without teachers').should('not.exist');
+    });
+
+    it('Correct teachers are added to the course', () => {
+      // create course as admin
+      cy.switchToAdmin();
+      cy.get('[data-cy="menu-item-add-course"]').click();
+
+      cy.get('[data-cy="course-title-input"]').type('Course with multiple teachers');
+      cy.get('[data-cy="course-code-input"]').type('CWMT123');
+      cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
+      cy.get('[data-cy="course-description-input"]').type('Description for test course.');
+      // set staff and admin as teachers
+      cy.get('[data-cy="show-teacher-list-button"]').click();
+      cy.get('[data-cy="checkbox-course-teachers"]').first().click();
+      cy.get('[data-cy="checkbox-course-teachers"]').last().click();
+
+      cy.get('[data-cy="create-course-submit"]').click();
+
+      //check that course is created 
+      cy.visit('/courses');
+      cy.contains('CWMT123');
+      cy.contains('Course with multiple teachers').click();
+
+      cy.get('[data-cy="registration-table"]').should('exist');
+
+      // check that registration table exists for staff (staff is a teacher on this course)
+      cy.switchToStaff();
+      cy.visit('/courses');
+      cy.contains('Course with multiple teachers').click();
+
+      cy.get('[data-cy="registration-table"]').should('exist');
+    });
   });
 
   describe('editing existing course', () => {
@@ -204,6 +250,13 @@ describe('Staff', () => {
       cy.deleteCourse(5, 1).then((resp) => {
         expect(resp.status).to.eq(500);
       });
+    });
+
+    it('Cannot make deadline past immediately', () => {
+      cy.visit('/courses');
+      cy.contains(courses[2].title).click();
+      cy.get('[data-cy="edit-course-button"]').click();
+      cy.get('[data-cy="course-deadline-control"]').should('not.exist');
     })
   });
 

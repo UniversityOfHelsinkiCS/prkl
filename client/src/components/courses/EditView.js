@@ -182,6 +182,7 @@ const EditView = ({ course, user }) => {
             <Form.Button 
               onClick={closeRegistration} 
               label={intl.formatMessage({id: 'editView.closeRegistrationLabel'})}
+              data-cy="course-deadline-control"
             >
               {intl.formatMessage({id: 'editView.closeRegistrationBtn'})}
             </Form.Button>
