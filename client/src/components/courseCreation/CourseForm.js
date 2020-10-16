@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Form, Icon, Popup } from 'semantic-ui-react';
+import { Form, Icon, Popup, Message } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
@@ -216,6 +216,19 @@ const CourseForm = () => {
           label={intl.formatMessage({ id: 'courseForm.publishCourse' })}
           onClick={() => setPublishToggle(!publishToggle)}
         />
+
+        {publishToggle ? (
+          <Message icon info>
+            <Icon name="info" />
+            <Message.Content>
+              <Message.Header>
+                <FormattedMessage id="courseForm.publishAlert" />
+              </Message.Header>
+            </Message.Content>
+          </Message>
+        ) : (
+          null
+        )}
 
         <Form.Button primary type="submit" data-cy="create-course-submit">
           <FormattedMessage id="courseForm.confirmButton" />
