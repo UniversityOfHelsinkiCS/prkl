@@ -111,6 +111,10 @@ export default {
     'timeForm.saturday': 'Sat',
     'timeForm.sunday': 'Sun',
 
+    'tag.own': 'Own Course',
+    'tag.unpublished': 'Unpublished',
+    'tag.dl': 'DL passed',
+
     'courseRegistration.title': 'Students enrolled to the course:',
     'courseRegistration.firstName': 'First name',
     'courseRegistration.lastName': 'Last name',
