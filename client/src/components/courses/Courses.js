@@ -137,7 +137,7 @@ export default () => {
         </Menu.Item>
       </Menu>
       <Divider />
-      <CourseList courses={visibleCourses()} />
+      <CourseList courses={visibleCourses()} user={user} />
     </div>
   );
 };
