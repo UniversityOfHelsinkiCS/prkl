@@ -30,6 +30,7 @@ export default {
       'Answer options in single choice questions are assumed to be on a continuum '
       + '(ie. choices 1 and 2 are more similar than 1 and 3), give options in order. '
       + 'In multiple choice question the order does not matter.',
+    'courseForm.publishAlert':'Published course cannot be edited',
     'courseForm.confirmSubmit': 'Confirm course creation?',
     'courseForm.confirmPublishSubmit': 'Warning: After course is published you cannot edit the course anymore. Are you sure you want to publish the course?',
 
