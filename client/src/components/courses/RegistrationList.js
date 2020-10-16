@@ -53,7 +53,7 @@ export default ({ userIsRegistered, course, registrations, setRegistrations }) =
               <ConfirmationButton
                 onConfirm={handleRegistrationDeletion}
                 modalMessage={intl.formatMessage({ id: "courseRegistration.cancelConfirmation" })}
-                data-cy="cancel-registration-button"
+                buttonDataCy="cancel-registration-button"
                 color="red"
               >
                 <FormattedMessage id="courseRegistration.cancel" />

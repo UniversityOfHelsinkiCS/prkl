@@ -1,14 +1,34 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Icon, Modal } from 'semantic-ui-react'
 
-function ConfirmationButton(
+const ConfirmationButton = (
   { onConfirm, 
     modalMessage='Confirm action?', 
     children, 
     confirmButtonText='Confirm',
     cancelButtonText='Cancel',
-    color='primary'}) {
+    color='primary',
+    buttonDataCy,
+    formControl }) => {
   const [open, setOpen] = React.useState(false)
+
+  const formIsValidated = async () => {
+    const { triggerValidation, errors } = formControl;
+    await triggerValidation();
+
+    if (Object.keys(errors).length !== 0) {
+      return false;
+    }
+    return true;
+  };
+
+  const triggetClick = async e => {
+    e.preventDefault();
+    if (formControl && !await formIsValidated()) {
+      return;
+    }
+    setOpen(true);
+  }
 
   const cancel = e => {
     e.preventDefault();
@@ -24,10 +44,10 @@ function ConfirmationButton(
   return (
     <Modal
       onClose={() => setOpen(false)}
-      onOpen={() => setOpen(true)}
+      //nOpen={() => setOpen(true)}
       open={open}
       size='small'
-      trigger={<Button color={color} onClick={e => e.preventDefault()}>{children}</Button>}
+      trigger={<Button data-cy={buttonDataCy} color={color} onClick={triggetClick}>{children}</Button>}
     >
       <Modal.Header>
         <Icon name='exclamation circle' /> {modalMessage}
@@ -44,4 +64,4 @@ function ConfirmationButton(
   )
 }
 
-export default ConfirmationButton
+export default ConfirmationButton;

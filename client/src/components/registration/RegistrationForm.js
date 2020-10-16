@@ -44,18 +44,11 @@ export default ({ questions, formControl, onSubmit }) => {
       <ConfirmationButton
         onConfirm={onSubmit}
         modalMessage={intl.formatMessage({ id: "forms.confirmRegistration" })}
-        data-cy="delete-course-button"
+        buttonDataCy="register-on-course-button"
+        formControl={formControl}
       >
         <FormattedMessage id="forms.submitRegistration" />
       </ConfirmationButton>
-
-      {/*<ConfirmableButton
-        formControl={formControl}
-        onClick={onSubmit}
-        prompt={<FormattedMessage id="forms.confirmRegistration" />}
-      >
-        <FormattedMessage id="forms.submitRegistration" />
-      </ConfirmableButton>*/}
     </Form>
   );
 };

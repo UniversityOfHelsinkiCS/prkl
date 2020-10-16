@@ -131,7 +131,7 @@ export default ({ id }) => {
                     <ConfirmationButton
                       onConfirm={handleDeletion}
                       modalMessage={intl.formatMessage({ id: "course.confirmDelete" })}
-                      data-cy="delete-course-button"
+                      buttonDataCy="delete-course-button"
                       color="red"
                     >
                       <FormattedMessage id="course.delete" />

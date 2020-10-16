@@ -57,6 +57,7 @@ describe('Staff', () => {
       cy.get('[data-cy="checkbox-course-teachers"]').first().click();
 
       cy.get('[data-cy="create-course-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       cy.visit('/courses');
       cy.contains('CYP999');
@@ -72,6 +73,7 @@ describe('Staff', () => {
       cy.get('[data-cy="course-description-input"]').type('Description for test course.');
 
       cy.get('[data-cy="create-course-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       cy.visit('/courses');
       cy.contains('CWT123').should('not.exist');
@@ -93,6 +95,7 @@ describe('Staff', () => {
       cy.get('[data-cy="checkbox-course-teachers"]').last().click();
 
       cy.get('[data-cy="create-course-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       //check that course is created 
       cy.visit('/courses');
@@ -127,6 +130,7 @@ describe('Staff', () => {
       cy.get('[data-cy="course-description-input"]').type('{selectall}{backspace}').type(newDescription);
 
       cy.get('[data-cy="create-course-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       cy.visit('/courses');
       cy.contains(newTitle).click();
@@ -146,6 +150,7 @@ describe('Staff', () => {
 
       cy.get('[data-cy="question-remove-button"]').eq(1).click();
       cy.get('[data-cy="create-course-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       cy.visit('/courses');
       cy.contains(course.title).click();
@@ -173,6 +178,7 @@ describe('Staff', () => {
         cy.get(`[data-cy="question-${course.questions.length}-choice-${i}"]`).type(qc);
       });
       cy.get('[data-cy="create-course-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       cy.visit('/courses');
       cy.contains(course.title).click();
@@ -208,6 +214,7 @@ describe('Staff', () => {
       });
       cy.get(`[data-cy="question-1-choice-1"]`).type('{selectall}{backspace}').type(q2newChoices[1]);
       cy.get('[data-cy="create-course-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       cy.visit('/courses');
       cy.contains(course.title).click();
@@ -230,6 +237,7 @@ describe('Staff', () => {
 
       cy.get('[data-cy="course-published-checkbox"]').click();
       cy.get('[data-cy="create-course-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       cy.visit('/courses');
       cy.contains(courses[2].title).click();
@@ -283,6 +291,7 @@ describe('Staff', () => {
       cy.visit('/courses');
       cy.contains(courses[0].title).click();
       cy.get('[data-cy="remove-registration-button"]').first().click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.get('table').contains(users[3].firstname).should('not.exist');
 
       // can't remove student from other's course

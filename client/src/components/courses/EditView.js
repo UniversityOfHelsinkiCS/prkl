@@ -249,7 +249,7 @@ const EditView = ({ course, user }) => {
         <ConfirmationButton 
           onConfirm={handleSubmit}
           modalMessage={promptText}
-          data-cy="create-course-submit"
+          buttonDataCy="create-course-submit"
         >
           <FormattedMessage id="courseForm.confirmButton" />
         </ConfirmationButton>

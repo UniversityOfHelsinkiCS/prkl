@@ -79,7 +79,7 @@ const CourseRegistration = ({ course, registrations, setRegistrations }) => {
                   <ConfirmationButton
                     onConfirm={() => handleRegistrationDeletion(reg.student)}
                     modalMessage={intl.formatMessage({ id: "courseRegistration.removeConfirmation" }) + ' (' + reg.student.firstname + ' ' + reg.student.lastname + ')'}
-                    data-cy="remove-registration-button"
+                    buttonDataCy="remove-registration-button"
                     color="red"
                   >
                     <FormattedMessage id="courseRegistration.remove" />
