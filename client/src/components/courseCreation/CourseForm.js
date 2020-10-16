@@ -177,6 +177,10 @@ const CourseForm = () => {
           ))}
         </Form.Group>
 
+        <h3>
+          <FormattedMessage id="courseForm.teacherInfo" />
+        </h3>
+
         {!showTeachers ? (
           <Form.Button type="button" onClick={handleShowTeachers} color="blue" data-cy="show-teacher-list-button">
             <FormattedMessage id="course.showTeachers" />

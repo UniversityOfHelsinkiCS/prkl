@@ -33,6 +33,7 @@ export default {
     'courseForm.publishAlert':'Published course cannot be edited',
     'courseForm.confirmSubmit': 'Confirm course creation?',
     'courseForm.confirmPublishSubmit': 'Create and publish course?',
+    'courseForm.teacherInfo': 'Choose teachers for your course from this list',
 
     'editView.pageTitle': 'Modify Course',
     'editView.coursePublishedNotification': "Course has been published, adding or removing new questions is not allowed. Texts of existing questions and their answer choices may be edited.",
