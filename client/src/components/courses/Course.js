@@ -3,23 +3,25 @@ import { useStore } from 'react-hookstore';
 import { useHistory } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Button, Loader } from 'semantic-ui-react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import roles from '../../util/user_roles';
 import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
 import GroupsView from './GroupsView';
 import EditView from './EditView';
 import RegistrationList from './RegistrationList';
+import ConfirmationButton from '../misc/ConfirmationButton';
 
 export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
   const [user] = useStore('userStore');
   const [course, setCourse] = useState({});
-  
+
   const [registrations, setRegistrations] = useState([]);
   const [regByStudentId, setRegByStudentId] = useState([]);
   const [deleteCourse] = useMutation(DELETE_COURSE);
   const [view, setView] = useState('registrations');
   const history = useHistory();
+  const intl = useIntl();
 
   const { loading, error, data } = useQuery(COURSE_BY_ID, {
     variables: { id },
@@ -67,24 +69,22 @@ export default ({ id }) => {
 
   const handleDeletion = async () => {
     const variables = { id };
-    if (window.confirm('Delete course?')) {
-      try {
-        await deleteCourse({
-          variables,
-        });
-        const trimmedCourses = [];
+    try {
+      await deleteCourse({
+        variables,
+      });
+      const trimmedCourses = [];
 
-        courses.forEach(remainingCourse => {
-          if (remainingCourse.id !== id) {
-            trimmedCourses.push(remainingCourse);
-          }
-        });
-        setCourses(trimmedCourses);
-      } catch (deletionError) {
-        console.log('error:', deletionError);
-      }
-      history.push('/courses');
+      courses.forEach(remainingCourse => {
+        if (remainingCourse.id !== id) {
+          trimmedCourses.push(remainingCourse);
+        }
+      });
+      setCourses(trimmedCourses);
+    } catch (deletionError) {
+      console.log('error:', deletionError);
     }
+    history.push('/courses');
   };
 
   const handleEditCourse = () => {
@@ -127,26 +127,31 @@ export default ({ id }) => {
               </p>
               {(user.role === roles.ADMIN_ROLE ||
                 (user.role === roles.STAFF_ROLE && !course.published && data.course.teachers.some(t => t.id === user.id))) && (
-                <p>
-                  <Button onClick={handleDeletion} color="red" data-cy="delete-course-button">
-                    <FormattedMessage id="course.delete" />
-                  </Button>
-                </p>
-              )}
+                  <p>
+                    <ConfirmationButton
+                      onConfirm={handleDeletion}
+                      modalMessage={intl.formatMessage({ id: "course.confirmDelete" })}
+                      data-cy="delete-course-button"
+                      color="red"
+                    >
+                      <FormattedMessage id="course.delete" />
+                    </ConfirmationButton>
+                  </p>
+                )}
               {(user.role === roles.ADMIN_ROLE ||
                 (user.role === roles.STAFF_ROLE && !course.published)) && (
-                <p>
-                  <Button onClick={handleEditCourse} color="blue" data-cy="edit-course-button">
-                    <FormattedMessage id="course.switchEditView" />
-                  </Button>
-                </p>
-              )}
+                  <p>
+                    <Button onClick={handleEditCourse} color="blue" data-cy="edit-course-button">
+                      <FormattedMessage id="course.switchEditView" />
+                    </Button>
+                  </p>
+                )}
             </div>
           ) : (
-            <Button onClick={handleGroupsView} color="blue">
-              <FormattedMessage id="course.switchCourseView" />
-            </Button>
-          )}
+              <Button onClick={handleGroupsView} color="blue">
+                <FormattedMessage id="course.switchCourseView" />
+              </Button>
+            )}
         </div>
       ) : null}
       {view === 'groups' ? (
@@ -160,8 +165,8 @@ export default ({ id }) => {
           user={user}
         />
       ) : (
-        <EditView course={course} user={user} />
-      )}
+            <EditView course={course} user={user} />
+          )}
     </div>
   );
 };

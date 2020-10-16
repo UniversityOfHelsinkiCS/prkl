@@ -7,6 +7,7 @@ import { useStore } from 'react-hookstore';
 import { CREATE_COURSE } from '../../GqlQueries';
 import QuestionForm from './QuestionForm';
 import TeacherList from '../courses/TeacherList';
+import ConfirmationButton from '../misc/ConfirmationButton';
 
 const CourseForm = () => {
   const [courseTitle, setCourseTitle] = useState('');
@@ -27,26 +28,9 @@ const CourseForm = () => {
     `${intl.formatMessage({ id: 'courseForm.timeQuestionDefault' })}`
   );
 
-  /*const { loading: loadingStaff, error: errorStaff, data: dataStaff } = useQuery(USERS_BY_ROLE, {
-    variables: { role: roles.STAFF_ROLE },
-  });*/
-  /*const { loading: loadingAdmin, error: errorAdmin, data: dataAdmin } = useQuery(USERS_BY_ROLE, {
-    variables: { role: admin },
-  });*/
-  /*useEffect(() => {
-    if (
-      !loadingAdmin &&
-      !loadingStaff &&
-      dataAdmin?.usersByRole !== undefined &&
-      dataStaff?.usersByRole !== undefined
-    ) {
-      const admins = dataAdmin.usersByRole;
-      const staff = dataStaff.usersByRole;
-      const allTeachers = staff.concat(admins);
-      setUsersByRole(allTeachers);
-    }
-  }, [dataAdmin, dataStaff, loadingAdmin, loadingStaff]);
-  console.log(usersByRole);*/
+  const promptText = intl.formatMessage({
+    id: publishToggle ? 'courseForm.confirmPublishSubmit' : 'courseForm.confirmSubmit',
+  });
   
   const history = useHistory();
   const today = new Date();
@@ -66,39 +50,33 @@ const CourseForm = () => {
       calendarQuestion.content = calendarDescription;
     }
 
-    const promptText = intl.formatMessage({
-      id: publishToggle ? 'courseForm.confirmPublishSubmit' : 'courseForm.confirmSubmit',
+    const teachersRemoveType = courseTeachers.map(t => {
+      const newT = { ...t }
+      delete newT.__typename;
+      return newT;
     });
 
-    if (window.confirm(promptText)) {
-      const teachersRemoveType = courseTeachers.map(t => {
-        const newT = { ...t }
-        delete newT.__typename;
-        return newT;
+    const courseObject = {
+      title: courseTitle,
+      description: courseDescription,
+      code: courseCode,
+      minGroupSize: 1,
+      maxGroupSize: 1,
+      teachers: teachersRemoveType,
+      deadline: new Date(deadline).setHours(23, 59),
+      published: !!publishToggle,
+      questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
+    };
+    const variables = { data: { ...courseObject } };
+    try {
+      const result = await createCourse({
+        variables,
       });
-
-      const courseObject = {
-        title: courseTitle,
-        description: courseDescription,
-        code: courseCode,
-        minGroupSize: 1,
-        maxGroupSize: 1,
-        teachers: teachersRemoveType,
-        deadline: new Date(deadline).setHours(23, 59),
-        published: !!publishToggle,
-        questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
-      };
-      const variables = { data: { ...courseObject } };
-      try {
-        const result = await createCourse({
-          variables,
-        });
-        setCourses(courses.concat(result.data.createCourse));
-      } catch (error) {
-        console.log('error:', error);
-      }
-      history.push('/courses');
+      setCourses(courses.concat(result.data.createCourse));
+    } catch (error) {
+      console.log('error:', error);
     }
+    history.push('/courses');
   };
 
   const handleShowTeachers = () => {
@@ -230,9 +208,13 @@ const CourseForm = () => {
           null
         )}
 
-        <Form.Button primary type="submit" data-cy="create-course-submit">
+        <ConfirmationButton 
+          onConfirm={handleSubmit}
+          modalMessage={promptText}
+          data-cy="create-course-submit"
+        >
           <FormattedMessage id="courseForm.confirmButton" />
-        </Form.Button>
+        </ConfirmationButton>
       </Form>
     </div>
   );

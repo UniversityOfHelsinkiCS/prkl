@@ -32,7 +32,7 @@ export default {
       + 'In multiple choice question the order does not matter.',
     'courseForm.publishAlert':'Published course cannot be edited',
     'courseForm.confirmSubmit': 'Confirm course creation?',
-    'courseForm.confirmPublishSubmit': 'Warning: After course is published you cannot edit the course anymore. Are you sure you want to publish the course?',
+    'courseForm.confirmPublishSubmit': 'Create and publish course?',
 
     'editView.pageTitle': 'Modify Course',
     'editView.coursePublishedNotification': "Course has been published, adding or removing new questions is not allowed. Texts of existing questions and their answer choices may be edited.",
@@ -78,6 +78,7 @@ export default {
     'course.freeFormPlaceholder': 'Type your answer',
     'course.gradeQuestion': 'What are your goals for the project?',
     'course.delete': 'Delete course',
+    'course.confirmDelete': 'Delete this course?',
     'course.userHasRegistered': 'Already registered!',
     'course.seeGroups': 'Generated groups',
     'course.generateGroups': 'Generate groups',
@@ -117,6 +118,8 @@ export default {
     'courseRegistration.email': 'Email',
     'courseRegistration.cancel': 'Cancel registration',
     'courseRegistration.remove': 'Remove from course',
+    'courseRegistration.cancelConfirmation': 'Confirm registration cancelation?',
+    'courseRegistration.removeConfirmation': 'Remove student from this course?',
 
     'groups.title': 'Group',
     'groups.empty': 'No groups generated',

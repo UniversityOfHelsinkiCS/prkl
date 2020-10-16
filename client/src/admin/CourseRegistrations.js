@@ -1,22 +1,25 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { Table, Button } from 'semantic-ui-react';
+import { Table } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from 'react-apollo';
 import { dummyEmail, dummyStudentNumber } from '../util/privacyDefaults';
 import { DELETE_REGISTRATION } from '../GqlQueries';
-import questionSwitch from "../util/functions"
+import questionSwitch from "../util/functions";
+import ConfirmationButton from '../components/misc/ConfirmationButton';
+
 
 const CourseRegistration = ({ course, registrations, setRegistrations }) => {
   const history = useHistory();
+  const intl = useIntl();
   const [privacyToggle] = useStore('toggleStore');
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
   const courseId = course.id;
-  
+
   const handleRegistrationDeletion = async (student) => {
-    const studentId = student.id
-    const studentNo = student.studentNo
+    const studentId = student.id;
+    const studentNo = student.studentNo;
     const variables = { studentId, courseId };
     if (window.confirm(`Remove ${studentNo} from course?`)) {
       try {
@@ -73,9 +76,14 @@ const CourseRegistration = ({ course, registrations, setRegistrations }) => {
                 <Table.Cell>{privacyToggle ? dummyEmail : reg.student.email}</Table.Cell>
                 {reg.questionAnswers.map(qa => (questionSwitch(qa)))}
                 <Table.Cell>
-                  <Button onClick={() => handleRegistrationDeletion(reg.student)} color="red" data-cy="remove-registration-button">
+                  <ConfirmationButton
+                    onConfirm={() => handleRegistrationDeletion(reg.student)}
+                    modalMessage={intl.formatMessage({ id: "courseRegistration.removeConfirmation" }) + ' (' + reg.student.firstname + ' ' + reg.student.lastname + ')'}
+                    data-cy="remove-registration-button"
+                    color="red"
+                  >
                     <FormattedMessage id="courseRegistration.remove" />
-                  </Button>
+                  </ConfirmationButton>
                 </Table.Cell>
               </Table.Row>
             ))}
