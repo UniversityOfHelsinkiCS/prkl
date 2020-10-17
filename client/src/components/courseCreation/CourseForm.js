@@ -18,7 +18,11 @@ const CourseForm = () => {
   const [calendarToggle, setCalendarToggle] = useState(false);
   const [publishToggle, setPublishToggle] = useState(false);
   const [showTeachers, setShowTeachers] = useState(false);
-  const [courseTeachers, setCourseTeachers] = useState([]);
+  const [user] = useStore('userStore');
+  //pick needed fields from current user. 
+  const {id, firstname, lastname, studentNo, email, role} = user;
+  const currentUser = {id, firstname, lastname, studentNo, email, role};
+  const [courseTeachers, setCourseTeachers] = useState([currentUser]);
 
   const [courses, setCourses] = useStore('coursesStore');
 

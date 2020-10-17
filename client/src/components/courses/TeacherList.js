@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { Checkbox, Table } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
+import { COURSE_BY_ID } from '../../GqlQueries';
 
 export default ({ courseTeachers, setCourseTeachers }) => {
   const [teachers, setTeachers] = useStore('teacherStore');
+  const [user] = useStore('userStore');
 
-  const createCheckbox = (onChange) => {
+  const createCheckbox = (onChange, checked) => {
     return (
       <Checkbox
         style={{ marginRight: '1rem' }}
         toggle
+        defaultChecked={checked}
         onChange={onChange}
         data-cy="checkbox-course-teachers"
       />
@@ -17,7 +20,7 @@ export default ({ courseTeachers, setCourseTeachers }) => {
   }
 
   const handleTeacherToggle = teacher => {
-    if (courseTeachers.includes(teacher)) {
+    if (courseTeachers.filter(t => t.id === teacher.id).length !== 0) {
       const newTeachers = courseTeachers.filter(t => t.id !== teacher.id);
       setCourseTeachers(newTeachers);
     } else {
@@ -41,7 +44,7 @@ export default ({ courseTeachers, setCourseTeachers }) => {
             <Table.Row key={u.id}>
               <Table.Cell>{u.firstname}</Table.Cell>
               <Table.Cell>{u.lastname}</Table.Cell>
-              <Table.Cell>{createCheckbox(() => handleTeacherToggle(u))}</Table.Cell>
+              <Table.Cell>{createCheckbox(() => handleTeacherToggle(u), u.id === user.id)}</Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
