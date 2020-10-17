@@ -88,6 +88,7 @@ export default {
     'course.switchGroupsView': 'Switch to Groups view',
     'course.switchCourseView': 'Switch to Course view',
     'course.switchEditView': 'Edit course',
+    'course.noTeachers': 'This course has no teachers. You will be set as a teacher',
 
     'studentInfo.header': 'Student Info',
     'studentInfo.fullname': 'Name: {fullname}',

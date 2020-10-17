@@ -81,7 +81,7 @@ const CourseForm = () => {
 
   const handleShowTeachers = () => {
     setShowTeachers(!showTeachers);
-  }
+  };
 
   const handleAddForm = e => {
     e.preventDefault();
@@ -192,6 +192,19 @@ const CourseForm = () => {
             </Form.Button>
             <TeacherList courseTeachers={courseTeachers} setCourseTeachers={setCourseTeachers} /> 
           </div>
+        )}
+
+        {courseTeachers.length === 0 ? (
+          <Message icon info>
+            <Icon name="info" />
+            <Message.Content>
+              <Message.Header>
+                <FormattedMessage id="course.noTeachers" />
+              </Message.Header>
+            </Message.Content>
+          </Message>
+        ) : (
+          null
         )}
 
         <Form.Checkbox
