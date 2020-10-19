@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Form } from 'semantic-ui-react';
+import { Form, Icon, Message } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
@@ -240,6 +240,19 @@ const EditView = ({ course, user }) => {
           onClick={() => setPublished(!published)}
           data-cy="course-published-checkbox"
         />
+
+        {published ? (
+          <Message icon info>
+            <Icon name="info" />
+            <Message.Content>
+              <Message.Header>
+                <FormattedMessage id="courseForm.publishAlert" />
+              </Message.Header>
+            </Message.Content>
+          </Message>
+        ) : (
+          null
+        )}
 
         {user.role === roles.ADMIN_ROLE &&
          new Date(deadline).getTime() <= new Date().getTime() &&
