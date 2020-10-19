@@ -107,8 +107,19 @@ export default ({ id }) => {
     }
   };
 
+  // function to check if logged in user is teacher of this course or admin
+  const userHasAccess = () => {
+    const inTeachers = data.course.teachers.some(t => t.id === user.id);
+    if (user.role === roles.ADMIN_ROLE || inTeachers) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   return (
     <div>
+      {/* course info */}
       <div>
         <h2>{`${course.code} - ${course.title}`}</h2>
         <Header as="h4" color="red">
@@ -123,56 +134,61 @@ export default ({ id }) => {
         </div>
         &nbsp;
       </div>
-      {user && user.role >= roles.STAFF_ROLE ? (
-        <div>
-          {view === 'registrations' ? (
-            <div>
-              <p>
-                <Button onClick={handleGroupsView} color="blue">
-                  <FormattedMessage id="course.switchGroupsView" />
-                </Button>
-              </p>
-              {(user.role === roles.ADMIN_ROLE ||
-                (user.role === roles.STAFF_ROLE && !course.published && data.course.teachers.some(t => t.id === user.id))) && (
-                  <p>
-                    <ConfirmationButton
-                      onConfirm={handleDeletion}
-                      modalMessage={intl.formatMessage({ id: "course.confirmDelete" })}
-                      buttonDataCy="delete-course-button"
-                      color="red"
-                    >
-                      <FormattedMessage id="course.delete" />
-                    </ConfirmationButton>
-                  </p>
-                )}
-              {(user.role === roles.ADMIN_ROLE ||
-                (user.role === roles.STAFF_ROLE && !course.published)) && (
-                  <p>
-                    <Button onClick={handleEditCourse} color="blue" data-cy="edit-course-button">
-                      <FormattedMessage id="course.switchEditView" />
-                    </Button>
-                  </p>
-                )}
-            </div>
-          ) : (
-              <Button onClick={handleGroupsView} color="blue">
-                <FormattedMessage id="course.switchCourseView" />
-              </Button>
-            )}
-        </div>
-      ) : null}
-      {view === 'groups' ? (
-        <GroupsView course={course} registrations={registrations} regByStudentId={regByStudentId} />
-      ) : view === 'registrations' ? (
-        <RegistrationList
-          course={course}
-          registrations={registrations}
-          setRegistrations={setRegistrations}
-          user={user}
-        />
-      ) : (
+
+      <div>
+        {userHasAccess() ? (
+          <div>
+          { view === 'edit' ? (
             <EditView course={course} user={user} />
+          ) : (
+          <div>
+            <div> {/* control buttons */}
+            {/* only admin can edit or delete after publish */}
+            {( !course.published || user.role === roles.ADMIN_ROLE ) ? (
+              <div>
+                <div>
+                <Button onClick={handleEditCourse} color="blue" data-cy="edit-course-button">
+                  <FormattedMessage id="course.switchEditView" />
+                </Button>
+                <ConfirmationButton
+                  onConfirm={handleDeletion}
+                  modalMessage={intl.formatMessage({ id: "course.confirmDelete" })}
+                  buttonDataCy="delete-course-button"
+                  color="red"
+                >
+                  <FormattedMessage id="course.delete" />
+                </ConfirmationButton>
+                </div>
+                &nbsp;
+              </div>
+            ) : null}
+            {/* groupView available regardles of publish */}
+            <Button onClick={handleGroupsView} color="blue">
+              <FormattedMessage id="course.switchGroupsView" />
+            </Button>
+            </div>
+            <div>
+            { view === 'groups' ? (
+              <GroupsView 
+                course={course}
+                registrations={registrations}
+                regByStudentId={regByStudentId} 
+              />
+            ) : (
+              <RegistrationList
+                course={course}
+                registrations={registrations}
+                setRegistrations={setRegistrations}
+                user={user}
+              />
+            )}
+            </div>
+          </div>
           )}
+        </div>
+      ) : null } {/* when !userHasAccess() */}
+      </div>
+
       <Registration course={course} />
     </div>
   );
