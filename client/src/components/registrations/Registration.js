@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { useMutation } from 'react-apollo';
 import { FREEFORM, SINGLE_CHOICE, MULTI_CHOICE, TIMES } from '../../util/questionTypes';
 import { REGISTER_TO_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
-import SuccessMessage from '../forms/SuccessMessage';
+import SuccessMessage from '../ui/SuccessMessage';
 import RegistrationForm from './RegistrationForm';
 import timeChoices from '../../util/timeFormChoices';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import GroupItem from './GroupItem'
+import GroupItem from './UserGroupItem'
 
 export default ({ groups, groupTimes }) => {
 

@@ -4,10 +4,10 @@ import { Table } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from 'react-apollo';
-import { dummyEmail, dummyStudentNumber } from '../util/privacyDefaults';
-import { DELETE_REGISTRATION } from '../GqlQueries';
-import questionSwitch from "../util/functions";
-import ConfirmationButton from '../components/misc/ConfirmationButton';
+import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
+import { DELETE_REGISTRATION } from '../../GqlQueries';
+import questionSwitch from "../../util/functions";
+import ConfirmationButton from '../ui/ConfirmationButton';
 
 
 const CourseRegistration = ({ course, registrations, setRegistrations }) => {

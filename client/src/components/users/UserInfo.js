@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { GROUP_TIMES, CURRENT_USER } from '../../GqlQueries';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import { timeParse } from '../../util/functions';
-import GroupList from './GroupList';
+import GroupList from './UserGroups';
 
 export default () => {
   const [user, setUser] = useStore('userStore');

@@ -5,9 +5,9 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
 import { CREATE_COURSE } from '../../GqlQueries';
-import QuestionForm from './QuestionForm';
-import TeacherList from '../courses/TeacherList';
-import ConfirmationButton from '../misc/ConfirmationButton';
+import QuestionForm from '../questions/QuestionForm';
+import TeacherList from './TeacherList';
+import ConfirmationButton from '../ui/ConfirmationButton';
 
 const CourseForm = () => {
   const [courseTitle, setCourseTitle] = useState('');

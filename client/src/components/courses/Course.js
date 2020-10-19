@@ -4,12 +4,12 @@ import { useHistory } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Button, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import roles from '../../util/user_roles';
+import roles from '../../util/userRoles';
 import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
-import GroupsView from './GroupsView';
-import EditView from './EditView';
-import RegistrationList from './RegistrationList';
-import ConfirmationButton from '../misc/ConfirmationButton';
+import GroupsView from '../groups/GroupsView';
+import EditView from './CourseEdit';
+import RegistrationList from '../registrations/RegistrationList';
+import ConfirmationButton from '../ui/ConfirmationButton';
 
 export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');

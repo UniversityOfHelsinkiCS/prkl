@@ -5,10 +5,10 @@ import { Header, Icon, Button } from 'semantic-ui-react';
 import { FormattedMessage, FormattedDate, useIntl } from 'react-intl';
 import { useMutation } from 'react-apollo';
 import { useHistory } from 'react-router-dom';
-import Registration from '../registration/Registration';
-import CourseRegistration from '../../admin/CourseRegistrations';
-import ConfirmationButton from '../misc/ConfirmationButton';
-import roles from '../../util/user_roles';
+import Registration from './Registration';
+import CourseRegistration from './CourseRegistrations';
+import ConfirmationButton from '../ui/ConfirmationButton';
+import roles from '../../util/userRoles';
 import { DELETE_REGISTRATION } from '../../GqlQueries';
 
 export default ({ userIsRegistered, course, registrations, setRegistrations }) => {
