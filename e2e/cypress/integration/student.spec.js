@@ -112,7 +112,7 @@ describe('Student', () => {
       cy.get('[data-cy="register-on-course-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
   
-      cy.contains('Great success!');
+      cy.get('[data-cy="registered"]').should('exist');
   
       // Admin-role check for correct answers.
       cy.switchToAdmin();
@@ -169,7 +169,7 @@ describe('Student', () => {
       cy.get('[data-cy="toc-checkbox"]').click();
       cy.get('[data-cy="register-on-course-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.contains('Great success!');
+      cy.get('[data-cy="registered"]').should('exist');
 
       cy.visit('/');
       cy.contains(courses[0].title).click();
