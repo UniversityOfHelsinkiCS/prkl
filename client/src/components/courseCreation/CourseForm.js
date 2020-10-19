@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Form, Icon, Popup } from 'semantic-ui-react';
+import { Form, Icon, Popup, Message } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
 import { CREATE_COURSE } from '../../GqlQueries';
 import QuestionForm from './QuestionForm';
 import TeacherList from '../courses/TeacherList';
+import ConfirmationButton from '../misc/ConfirmationButton';
 
 const CourseForm = () => {
   const [courseTitle, setCourseTitle] = useState('');
@@ -16,10 +17,14 @@ const CourseForm = () => {
   const [deadline, setDeadline] = useState();
   const [calendarToggle, setCalendarToggle] = useState(false);
   const [publishToggle, setPublishToggle] = useState(false);
-  const [courseTeachers, setCourseTeachers] = useState([]);
+  const [showTeachers, setShowTeachers] = useState(false);
+  const [user] = useStore('userStore');
+  //pick needed fields from current user. 
+  const {id, firstname, lastname, studentNo, email, role} = user;
+  const currentUser = {id, firstname, lastname, studentNo, email, role};
+  const [courseTeachers, setCourseTeachers] = useState([currentUser]);
 
   const [courses, setCourses] = useStore('coursesStore');
-  const [teachers, setTeachers] = useStore('teacherStore');
 
   const [createCourse] = useMutation(CREATE_COURSE);
   const intl = useIntl();
@@ -27,26 +32,9 @@ const CourseForm = () => {
     `${intl.formatMessage({ id: 'courseForm.timeQuestionDefault' })}`
   );
 
-  /*const { loading: loadingStaff, error: errorStaff, data: dataStaff } = useQuery(USERS_BY_ROLE, {
-    variables: { role: roles.STAFF_ROLE },
-  });*/
-  /*const { loading: loadingAdmin, error: errorAdmin, data: dataAdmin } = useQuery(USERS_BY_ROLE, {
-    variables: { role: admin },
-  });*/
-  /*useEffect(() => {
-    if (
-      !loadingAdmin &&
-      !loadingStaff &&
-      dataAdmin?.usersByRole !== undefined &&
-      dataStaff?.usersByRole !== undefined
-    ) {
-      const admins = dataAdmin.usersByRole;
-      const staff = dataStaff.usersByRole;
-      const allTeachers = staff.concat(admins);
-      setUsersByRole(allTeachers);
-    }
-  }, [dataAdmin, dataStaff, loadingAdmin, loadingStaff]);
-  console.log(usersByRole);*/
+  const promptText = intl.formatMessage({
+    id: publishToggle ? 'courseForm.confirmPublishSubmit' : 'courseForm.confirmSubmit',
+  });
   
   const history = useHistory();
   const today = new Date();
@@ -66,44 +54,38 @@ const CourseForm = () => {
       calendarQuestion.content = calendarDescription;
     }
 
-    const promptText = intl.formatMessage({
-      id: publishToggle ? 'courseForm.confirmPublishSubmit' : 'courseForm.confirmSubmit',
+    const teachersRemoveType = courseTeachers.map(t => {
+      const newT = { ...t }
+      delete newT.__typename;
+      return newT;
     });
 
-    if (window.confirm(promptText)) {
-      const teachersRemoveType = courseTeachers.map(t => {
-        const newT = { ...t }
-        delete newT.__typename;
-        return newT;
+    const courseObject = {
+      title: courseTitle,
+      description: courseDescription,
+      code: courseCode,
+      minGroupSize: 1,
+      maxGroupSize: 1,
+      teachers: teachersRemoveType,
+      deadline: new Date(deadline).setHours(23, 59),
+      published: !!publishToggle,
+      questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
+    };
+    const variables = { data: { ...courseObject } };
+    try {
+      const result = await createCourse({
+        variables,
       });
-
-      const courseObject = {
-        title: courseTitle,
-        description: courseDescription,
-        code: courseCode,
-        minGroupSize: 1,
-        maxGroupSize: 1,
-        teachers: teachersRemoveType,
-        deadline: new Date(deadline).setHours(23, 59),
-        published: !!publishToggle,
-        questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
-      };
-      const variables = { data: { ...courseObject } };
-      try {
-        const result = await createCourse({
-          variables,
-        });
-        setCourses(courses.concat(result.data.createCourse));
-      } catch (error) {
-        console.log('error:', error);
-      }
-      history.push('/courses');
+      setCourses(courses.concat(result.data.createCourse));
+    } catch (error) {
+      console.log('error:', error);
     }
+    history.push('/courses');
   };
 
-  const handleTeacherToggle = () => {
-
-  }
+  const handleShowTeachers = () => {
+    setShowTeachers(!showTeachers);
+  };
 
   const handleAddForm = e => {
     e.preventDefault();
@@ -199,16 +181,61 @@ const CourseForm = () => {
           ))}
         </Form.Group>
 
-        <TeacherList teachers={teachers} courseTeachers={courseTeachers} setCourseTeachers={setCourseTeachers} /> 
+        <h3>
+          <FormattedMessage id="courseForm.teacherInfo" />
+        </h3>
+
+        {!showTeachers ? (
+          <Form.Button type="button" onClick={handleShowTeachers} color="blue" data-cy="show-teacher-list-button">
+            <FormattedMessage id="course.showTeachers" />
+          </Form.Button>
+        ) : (
+          <div>
+            <Form.Button type="button" onClick={handleShowTeachers} color="blue">
+              <FormattedMessage id="course.hideTeachers" />
+            </Form.Button>
+            <TeacherList courseTeachers={courseTeachers} setCourseTeachers={setCourseTeachers} /> 
+          </div>
+        )}
+
+        {courseTeachers.length === 0 ? (
+          <Message icon info>
+            <Icon name="info" />
+            <Message.Content>
+              <Message.Header>
+                <FormattedMessage id="course.noTeachers" />
+              </Message.Header>
+            </Message.Content>
+          </Message>
+        ) : (
+          null
+        )}
 
         <Form.Checkbox
           label={intl.formatMessage({ id: 'courseForm.publishCourse' })}
           onClick={() => setPublishToggle(!publishToggle)}
         />
 
-        <Form.Button primary type="submit" data-cy="create-course-submit">
+        {publishToggle ? (
+          <Message icon info>
+            <Icon name="info" />
+            <Message.Content>
+              <Message.Header>
+                <FormattedMessage id="courseForm.publishAlert" />
+              </Message.Header>
+            </Message.Content>
+          </Message>
+        ) : (
+          null
+        )}
+
+        <ConfirmationButton 
+          onConfirm={handleSubmit}
+          modalMessage={promptText}
+          buttonDataCy="create-course-submit"
+        >
           <FormattedMessage id="courseForm.confirmButton" />
-        </Form.Button>
+        </ConfirmationButton>
       </Form>
     </div>
   );

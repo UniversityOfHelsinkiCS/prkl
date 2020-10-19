@@ -54,6 +54,7 @@ describe('Admin', () => {
       cy.get('[data-cy="course-title-input"]').type('{selectall}{backspace}').type('Course from Cypress Edited');
       cy.get('[data-cy="course-description-input"]').type('{selectall}{backspace}').type('New description for course');
       cy.get('[data-cy="create-course-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.visit('/courses');
       cy.contains('Course from Cypress Edited').click();
       cy.contains('New description for course');
@@ -77,6 +78,7 @@ describe('Admin', () => {
     cy.get('[data-cy="question-title"]').first().type('{selectall}{backspace}').type(testTitle);
     cy.get(`[data-cy="question-1-choice-1"]`).type('{selectall}{backspace}').type(testChoice);
     cy.get('[data-cy="create-course-submit"]').click();
+    cy.get('[data-cy="confirmation-button-confirm"]').click();
 
     cy.visit('/courses');
     cy.contains(course.title).click();
@@ -97,9 +99,21 @@ describe('Admin', () => {
       cy.visit('/courses');
       cy.contains(courses[4].title).click();
       cy.get('[data-cy="delete-course-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.visit('/courses');
       cy.contains(courses[4].title).should('not.exist');
     });
+
+    it('Can make deadline past immediately', () => {
+      // deadline is past
+      cy.visit('/courses');
+      cy.contains(courses[0].title).click();
+      cy.get('[data-cy="edit-course-button"]').click();
+      cy.get('[data-cy="course-deadline-control"]').click();
+
+      cy.visit('/courses');
+      cy.contains(courses[0].title).should('not.exist');
+    }); 
   });
 
   describe('enrollment management', () => {   
@@ -108,6 +122,7 @@ describe('Admin', () => {
       cy.visit('/courses');
       cy.contains(courses[4].title).click();
       cy.get('[data-cy="remove-registration-button"]').first().click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.get('table').contains(users[3].firstname).should('not.exist');
 
       // remove student from other's course
@@ -116,6 +131,7 @@ describe('Admin', () => {
       // check that admin sees list of enrollments
       cy.get('table').contains(users[3].firstname);
       cy.get('[data-cy="remove-registration-button"]').first().click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.get('table').contains(users[3].firstname).should('not.exist');
 
       // remove student from course which contains questions and working times
@@ -137,15 +153,15 @@ describe('Admin', () => {
       answers.push('My cool answer');
       cy.get('[data-cy="question-2"]').type(answers[2]); 
       cy.get('[data-cy="toc-checkbox"]').click();
-      cy.get('[data-cy="submit-button"]').click();
-      cy.get('[data-cy="confirm-button"]').click();
+      cy.get('[data-cy="register-on-course-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       cy.visit('/courses');
       cy.switchToAdmin();
       cy.contains(courses[1].title).click();
       cy.get('[data-cy="remove-registration-button"]').first().click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.get('table').contains(users[0].firstname).should('not.exist');
-
     });
   });
 });

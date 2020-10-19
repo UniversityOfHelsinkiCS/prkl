@@ -50,6 +50,7 @@ describe('Student', () => {
       cy.switchToAdmin();
       cy.contains(courses[0].title).click();
       cy.get('[data-cy="delete-course-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
   
       cy.switchToStudent();
       cy.visit('/courses');
@@ -80,8 +81,8 @@ describe('Student', () => {
       cy.contains(courses[0].title).click();
   
       cy.get('[data-cy="toc-checkbox"]').click();
-      cy.get('[data-cy="submit-button"]').click();
-      cy.get('[data-cy="confirm-button"]').click();
+      cy.get('[data-cy="register-on-course-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
   
       cy.visit('/user');
       cy.contains(courses[0].title);
@@ -108,8 +109,8 @@ describe('Student', () => {
       cy.get('[data-cy="question-2"]').type(answers[2]);
   
       cy.get('[data-cy="toc-checkbox"]').click();
-      cy.get('[data-cy="submit-button"]').click();
-      cy.get('[data-cy="confirm-button"]').click();
+      cy.get('[data-cy="register-on-course-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
   
       cy.contains('Great success!');
   
@@ -125,9 +126,9 @@ describe('Student', () => {
       cy.visit('/');
       cy.contains(courses[1].title).click();
   
-      cy.get('[data-cy="submit-button"]').click();
-  
-      cy.get('[data-cy="confirm-button"]').should('not.exist');
+      cy.get('[data-cy="register-on-course-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').should('not.exist');
+
       cy.contains('Please answer all questions!');
     });
   
@@ -138,9 +139,9 @@ describe('Student', () => {
       // Cycle the checkbox on once to account for a past validation bug.
       cy.get('[data-cy="toc-checkbox"]').click();
       cy.get('[data-cy="toc-checkbox"]').click();
-      cy.get('[data-cy="submit-button"]').click();
-  
-      cy.get('[data-cy="confirm-button"]').should('not.exist');
+      cy.get('[data-cy="register-on-course-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').should('not.exist');
+
       cy.contains('Please answer all questions!');
     });
   
@@ -149,13 +150,13 @@ describe('Student', () => {
       cy.contains(courses[0].title).click();
   
       cy.get('[data-cy="toc-checkbox"]').click();
-      cy.get('[data-cy="submit-button"]').click();
-      cy.get('[data-cy="confirm-button"]').click();
+      cy.get('[data-cy="register-on-course-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
   
       cy.visit('/');
       cy.contains(courses[0].title).click();
       cy.contains('Already registered!');
-      cy.get('[data-cy="submit-button"]').should('not.exist');
+      cy.get('[data-cy="register-on-course-button"]').should('not.exist');
     });
   });
 
@@ -166,19 +167,19 @@ describe('Student', () => {
       cy.contains(courses[0].title).click();
   
       cy.get('[data-cy="toc-checkbox"]').click();
-      cy.get('[data-cy="submit-button"]').click();
-      cy.get('[data-cy="confirm-button"]').should('exist');
-      cy.get('[data-cy="confirm-button"]').click();
+      cy.get('[data-cy="register-on-course-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.contains('Great success!');
 
       cy.visit('/');
       cy.contains(courses[0].title).click();
       cy.get('[data-cy="cancel-registration-button"]').should('exist');
       cy.get('[data-cy="cancel-registration-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       cy.visit('/');
       cy.contains(courses[0].title).click();
-      cy.get('[data-cy="submit-button"]').should('exist');
+      cy.get('[data-cy="register-on-course-button"]').should('exist');
 
       // backend 
       cy.createRegistration(0, 0).then((resp) => {

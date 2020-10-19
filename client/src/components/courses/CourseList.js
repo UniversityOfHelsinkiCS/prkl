@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { Card } from 'semantic-ui-react';
+import { Card, Label } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';
+import CourseTag from './CourseTag';
 
-export default ({ courses }) => {
+export default ({ courses, user }) => {
   const intl = useIntl();
 
   return (
@@ -21,6 +22,7 @@ export default ({ courses }) => {
               id: 'courses.deadline',
             })} ${intl.formatDate(course.deadline)}`}
             className={new Date(course.deadline) < new Date() ? 'course-past' : null}
+            extra={<CourseTag course={course} user={user} />}
           />
         ))}
       </div>

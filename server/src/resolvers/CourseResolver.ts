@@ -7,7 +7,6 @@ import { CourseInput } from "../inputs/CourseInput";
 import { getRepository } from "typeorm";
 import { QuestionChoice } from "../entities/QuestionChoice";
 import _ from 'lodash';
-import { isContext } from "vm";
 
 @Resolver()
 export class CourseResolver {
@@ -47,7 +46,15 @@ export class CourseResolver {
   @Authorized(STAFF)
   @Mutation(() => Course)
   async createCourse(@Ctx() context, @Arg("data") data: CourseInput): Promise<Course> {
+    // if (data.teachers.length === 0) {
+    //   throw new Error("Course must have at least one teacher.");
+    // }
+
     const course = Course.create(data);
+    if (data.teachers.length === 0) {
+      const { user } = context;
+      course.teachers = [user];
+    }
     console.log('course is:', course);
     await course.save();
     return course;

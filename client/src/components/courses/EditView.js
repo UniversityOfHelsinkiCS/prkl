@@ -7,6 +7,7 @@ import { useStore } from 'react-hookstore';
 import { UPDATE_COURSE } from '../../GqlQueries';
 import roles from '../../util/user_roles';
 import QuestionForm from '../courseCreation/QuestionForm';
+import ConfirmationButton from '../misc/ConfirmationButton';
 
 const EditView = ({ course, user }) => {
   const [courseTitle, setCourseTitle] = useState('');
@@ -22,12 +23,14 @@ const EditView = ({ course, user }) => {
   const [courseTeachers, setCourseTeachers] = useState([]);
 
   const [courses, setCourses] = useStore('coursesStore');
-  // const [course, setCourse] = useState({});
 
   const [calendarId, setCalendarId] = useState('');
   const [calendarDescription, setCalendarDescription] = useState(
     `${intl.formatMessage({ id: 'courseForm.timeQuestionDefault' })}`
   );
+  const promptText = intl.formatMessage({
+    id: published ? 'editView.confirmPublishSubmit' : 'editView.confirmSubmit'
+  });
 
   useEffect(() => {
     setCourseTitle(course.title);
@@ -88,44 +91,38 @@ const EditView = ({ course, user }) => {
       calendarQuestion.content = calendarDescription;
       calendarQuestion.order = questions.length;
     }
-    const promptText = intl.formatMessage({
-      id: published ? 'editView.confirmPublishSubmit' : 'editView.confirmSubmit'
+
+    const teacherRemoveType = courseTeachers.map(t => {
+      const newT = { ...t }
+      delete newT.__typename;
+      return newT;
     });
 
-
-    if (window.confirm(promptText)) {
-      const teacherRemoveType = courseTeachers.map(t => {
-        const newT = { ...t }
-        delete newT.__typename;
-        return newT;
+    const courseObject = {
+      title: courseTitle,
+      description: courseDescription,
+      code: courseCode,
+      minGroupSize: course.minGroupSize,
+      maxGroupSize: course.maxGroupSize,
+      deadline: new Date(deadline).setHours(23, 59),
+      teachers: teacherRemoveType,
+      questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
+      published,
+    };
+    const variables = { id: course.id, data: { ...courseObject } };
+    try {
+      const result = await updateCourse({
+        variables,
       });
-
-      const courseObject = {
-        title: courseTitle,
-        description: courseDescription,
-        code: courseCode,
-        minGroupSize: course.minGroupSize,
-        maxGroupSize: course.maxGroupSize,
-        deadline: new Date(deadline).setHours(23, 59),
-        teachers: teacherRemoveType,
-        questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
-        published,
-      };
-      const variables = { id: course.id, data: { ...courseObject } };
-      try {
-        const result = await updateCourse({
-          variables,
-        });
-        setCourses(
-          courses.map(c => {
-            return c.id !== course.id ? c : result.data.updateCourse;
-          })
-        );
-      } catch (error) {
-        console.log('error:', error);
-      }
-      history.push('/courses');
+      setCourses(
+        courses.map(c => {
+          return c.id !== course.id ? c : result.data.updateCourse;
+        })
+      );
+    } catch (error) {
+      console.log('error:', error);
     }
+    history.push('/courses');
   };
 
   const handleAddForm = e => {
@@ -182,6 +179,7 @@ const EditView = ({ course, user }) => {
             <Form.Button 
               onClick={closeRegistration} 
               label={intl.formatMessage({id: 'editView.closeRegistrationLabel'})}
+              data-cy="course-deadline-control"
             >
               {intl.formatMessage({id: 'editView.closeRegistrationBtn'})}
             </Form.Button>
@@ -247,9 +245,14 @@ const EditView = ({ course, user }) => {
          new Date(deadline).getTime() <= new Date().getTime() &&
          <p style={{ "color": "#b00" }}> {intl.formatMessage({ id: 'editView.pastDeadlineWarning' })} </p>
         }
-        <Form.Button primary type="submit" data-cy="create-course-submit">
+
+        <ConfirmationButton 
+          onConfirm={handleSubmit}
+          modalMessage={promptText}
+          buttonDataCy="create-course-submit"
+        >
           <FormattedMessage id="courseForm.confirmButton" />
-        </Form.Button>
+        </ConfirmationButton>
       </Form>
     </div>
   );

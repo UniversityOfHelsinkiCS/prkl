@@ -4,6 +4,8 @@ import { Button } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
 /**
+ * THIS IS NOT IN USE ANYMORE!!! FELT CUTE, MIGHT DELETE LATER!!!
+ * 
  * Semantic UI `Button` with confirmation prompt.
  * If the prop `formControl` is passed, it will be used to trigger validation before the button
  * prompts for confirmation. Extra props are passed to the child component.

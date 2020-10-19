@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Form, Header } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Question from './Question';
-import ConfirmableButton from '../forms/ConfirmableButton';
+import ConfirmationButton from '../misc/ConfirmationButton';
 import ValidationError from '../forms/ValidationError';
 
 export default ({ questions, formControl, onSubmit }) => {
@@ -41,13 +41,14 @@ export default ({ questions, formControl, onSubmit }) => {
         <FormattedMessage id="forms.errorAnswerAll" />
       </ValidationError>
 
-      <ConfirmableButton
+      <ConfirmationButton
+        onConfirm={onSubmit}
+        modalMessage={intl.formatMessage({ id: "forms.confirmRegistration" })}
+        buttonDataCy="register-on-course-button"
         formControl={formControl}
-        onClick={onSubmit}
-        prompt={<FormattedMessage id="forms.confirmRegistration" />}
       >
         <FormattedMessage id="forms.submitRegistration" />
-      </ConfirmableButton>
+      </ConfirmationButton>
     </Form>
   );
 };
