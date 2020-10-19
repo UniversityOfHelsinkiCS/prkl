@@ -5,9 +5,9 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
 import { UPDATE_COURSE } from '../../GqlQueries';
-import roles from '../../util/user_roles';
-import QuestionForm from '../courseCreation/QuestionForm';
-import ConfirmationButton from '../misc/ConfirmationButton';
+import roles from '../../util/userRoles';
+import QuestionForm from '../questions/QuestionForm';
+import ConfirmationButton from '../ui/ConfirmationButton';
 
 const EditView = ({ course, user }) => {
   const [courseTitle, setCourseTitle] = useState('');

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Checkbox, Table } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
-import { COURSE_BY_ID } from '../../GqlQueries';
 
 export default ({ courseTeachers, setCourseTeachers }) => {
   const [teachers, setTeachers] = useStore('teacherStore');

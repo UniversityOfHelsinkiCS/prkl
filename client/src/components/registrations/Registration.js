@@ -8,7 +8,7 @@ import { useHistory } from 'react-router-dom';
 import { FREEFORM, SINGLE_CHOICE, MULTI_CHOICE, TIMES } from '../../util/questionTypes';
 import { REGISTER_TO_COURSE, DELETE_REGISTRATION } from '../../GqlQueries';
 import RegistrationForm from './RegistrationForm';
-import ConfirmationButton from '../misc/ConfirmationButton';
+import ConfirmationButton from '../ui/ConfirmationButton';
 import timeChoices from '../../util/timeFormChoices';
 
 export default ({ course }) => {
@@ -161,37 +161,39 @@ export default ({ course }) => {
     return true;
   };
 
-  return userIsRegistered() ? (
-    <div>
-      <br></br>
-      <Header as="h2">
-        <div>
-          <Icon name="thumbs up outline" data-cy="registered" />
-          <Header.Content>
-            <FormattedMessage id="course.userHasRegistered" />
-          </Header.Content>
-        </div>
-      </Header>
-      {new Date(course.deadline) > new Date() ? (
-        <ConfirmationButton
-          onConfirm={handleRegistrationDeletion}
-          modalMessage={intl.formatMessage({ id: "courseRegistration.cancelConfirmation" })}
-          buttonDataCy="cancel-registration-button"
-          color="red"
-        >
-          <FormattedMessage id="courseRegistration.cancel" />
-        </ConfirmationButton>
-      ) : null}
-    </div>
-  ) : (
-    <div>
-      {new Date(course.deadline) > new Date() ? (
-        <RegistrationForm
-          onSubmit={handleSubmit(onSubmit)}
-          questions={course.questions}
-          formControl={hookForm}
-        />
-      ) : null}
-    </div>
+  return (
+    userIsRegistered() ? (
+      <div>
+        <br></br>
+        <Header as="h2">
+          <div>
+            <Icon name="thumbs up outline" data-cy="registered" />
+            <Header.Content>
+              <FormattedMessage id="course.userHasRegistered" />
+            </Header.Content>
+          </div>
+        </Header>
+        {new Date(course.deadline) > new Date() ? (
+          <ConfirmationButton
+            onConfirm={handleRegistrationDeletion}
+            modalMessage={intl.formatMessage({ id: "courseRegistration.cancelConfirmation" })}
+            buttonDataCy="cancel-registration-button"
+            color="red"
+          >
+            <FormattedMessage id="courseRegistration.cancel" />
+          </ConfirmationButton>
+        ) : null}
+      </div>
+    ) : (
+      <div>
+        {new Date(course.deadline) > new Date() ? (
+          <RegistrationForm
+            onSubmit={handleSubmit(onSubmit)}
+            questions={course.questions}
+            formControl={hookForm}
+          />
+        ) : null}
+      </div>
+    )
   );
 };

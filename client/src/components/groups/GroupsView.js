@@ -5,7 +5,7 @@ import { Form, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { GENERATE_GROUPS, COURSE_GROUPS } from '../../GqlQueries';
 import Groups from './Groups';
-import userRoles from '../../util/user_roles';
+import userRoles from '../../util/userRoles';
 
 export default ({ course, registrations, regByStudentId }) => {
   const [generateGroups] = useMutation(GENERATE_GROUPS);

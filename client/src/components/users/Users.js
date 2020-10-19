@@ -4,7 +4,7 @@ import { Header, Loader, Card, Input, Divider, Button } from 'semantic-ui-react'
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
 import { EDIT_USER_ROLE } from '../../GqlQueries';
-import roles from '../../util/user_roles';
+import roles from '../../util/userRoles';
 
 export default ({ allUsersError, allUsersLoading }) => {
   const [users] = useStore('allUsersStore');

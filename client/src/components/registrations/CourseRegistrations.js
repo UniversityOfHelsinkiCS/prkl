@@ -4,14 +4,13 @@ import { Table } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from 'react-apollo';
-import { dummyEmail, dummyStudentNumber } from '../util/privacyDefaults';
-import { DELETE_REGISTRATION } from '../GqlQueries';
-import questionSwitch from "../util/functions";
-import ConfirmationButton from '../components/misc/ConfirmationButton';
+import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
+import { DELETE_REGISTRATION } from '../../GqlQueries';
+import questionSwitch from "../../util/functions";
+import ConfirmationButton from '../ui/ConfirmationButton';
 
 
-const CourseRegistration = ({ course, registrations, setRegistrations }) => {
-  const history = useHistory();
+const CourseRegistrations = ({ course, registrations, setRegistrations }) => {
   const intl = useIntl();
   const [privacyToggle] = useStore('toggleStore');
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
@@ -19,18 +18,15 @@ const CourseRegistration = ({ course, registrations, setRegistrations }) => {
 
   const handleRegistrationDeletion = async (student) => {
     const studentId = student.id;
-    const studentNo = student.studentNo;
     const variables = { studentId, courseId };
-    if (window.confirm(`Remove ${studentNo} from course?`)) {
-      try {
-        await deleteRegistration({
-          variables
-        });
-        const newRegs = registrations.filter(r => r.student.id !== studentId);
-        setRegistrations(newRegs);
-      } catch (deletionError) {
-        console.log('error:', deletionError);
-      }
+    try {
+      await deleteRegistration({
+        variables
+      });
+      const newRegs = registrations.filter(r => r.student.id !== studentId);
+      setRegistrations(newRegs);
+    } catch (deletionError) {
+      console.log('error:', deletionError);
     }
   }
 
@@ -94,4 +90,4 @@ const CourseRegistration = ({ course, registrations, setRegistrations }) => {
   );
 };
 
-export default CourseRegistration;
+export default CourseRegistrations;

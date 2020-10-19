@@ -1,7 +1,7 @@
 import React from 'react';
 import { useStore } from 'react-hookstore';
 import { Checkbox } from 'semantic-ui-react';
-import roles from '../../util/user_roles';
+import roles from '../../util/userRoles';
 
 export default ({ controls }) => {
   const [user] = useStore('userStore');

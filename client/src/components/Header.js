@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
 import axios from 'axios';
-import roles from '../util/user_roles';
+import roles from '../util/userRoles';
 
 export default () => {
   const [activeItem, setActiveItem] = useState(null);
