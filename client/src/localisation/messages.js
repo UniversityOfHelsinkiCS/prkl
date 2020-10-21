@@ -30,7 +30,7 @@ export default {
       'Answer options in single choice questions are assumed to be on a continuum '
       + '(ie. choices 1 and 2 are more similar than 1 and 3), give options in order. '
       + 'In multiple choice question the order does not matter.',
-    'courseForm.publishAlert':'If you publish this course now, admin priviledges are required to make edits',
+    'courseForm.publishAlert':'Note: Admin privileges are required to edit published courses!',
     'courseForm.confirmSubmit': 'Confirm course creation?',
     'courseForm.confirmPublishSubmit': 'Create and publish course?',
     'courseForm.teacherInfo': 'Choose teachers for your course from this list',
@@ -42,6 +42,8 @@ export default {
     'editView.closeRegistrationLabel': 'Immediately close registration (for admin)',
     'editView.closeRegistrationBtn': 'Close registration',
     'editView.pastDeadlineWarning': 'Warning: You have set a registration deadline that has already passed. Registration will be effectively closed.',
+    'editView.cancelEditsButton': 'Cancel',
+    'editView.confirmCancelEdits': 'Discard all changes?',
 
     'courses.searchPlaceholder': 'Search courses',
     'courses.deadline': 'Enrollment deadline',
@@ -86,7 +88,7 @@ export default {
     'course.hideTeachers': 'Hide teachers',
     'course.showTeachers': 'Show teachers',
     'course.switchGroupsView': 'Switch to Groups view',
-    'course.switchCourseView': 'Switch to Course view',
+    'course.switchRegistrationsView': 'Switch to Registrations view',
     'course.switchEditView': 'Edit course',
     'course.noTeachers': 'This course has no teachers. You will be set as a teacher',
 

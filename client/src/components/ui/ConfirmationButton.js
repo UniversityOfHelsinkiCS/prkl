@@ -22,7 +22,7 @@ const ConfirmationButton = (
     return true;
   };
 
-  const triggetClick = async e => {
+  const triggerClick = async e => {
     e.preventDefault();
     if (formControl && !await formIsValidated()) {
       return;
@@ -47,7 +47,7 @@ const ConfirmationButton = (
       //nOpen={() => setOpen(true)}
       open={open}
       size='small'
-      trigger={<Button data-cy={buttonDataCy} color={color} onClick={triggetClick}>{children}</Button>}
+      trigger={<Button data-cy={buttonDataCy} color={color} onClick={triggerClick}>{children}</Button>}
     >
       <Modal.Header>
         <Icon name='exclamation circle' /> {modalMessage}

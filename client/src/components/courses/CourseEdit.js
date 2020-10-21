@@ -9,7 +9,7 @@ import roles from '../../util/userRoles';
 import QuestionForm from '../questions/QuestionForm';
 import ConfirmationButton from '../ui/ConfirmationButton';
 
-const EditView = ({ course, user }) => {
+const EditView = ({ course, user, onCancelEdit }) => {
   const [courseTitle, setCourseTitle] = useState('');
   const [courseDescription, setCourseDescription] = useState('');
   const [courseCode, setCourseCode] = useState('');
@@ -28,7 +28,7 @@ const EditView = ({ course, user }) => {
   const [calendarDescription, setCalendarDescription] = useState(
     `${intl.formatMessage({ id: 'courseForm.timeQuestionDefault' })}`
   );
-  const promptText = intl.formatMessage({
+  const confirmPromptText = intl.formatMessage({
     id: published ? 'editView.confirmPublishSubmit' : 'editView.confirmSubmit'
   });
 
@@ -256,15 +256,24 @@ const EditView = ({ course, user }) => {
 
         {user.role === roles.ADMIN_ROLE &&
          new Date(deadline).getTime() <= new Date().getTime() &&
-         <p style={{ "color": "#b00" }}> {intl.formatMessage({ id: 'editView.pastDeadlineWarning' })} </p>
+         <p style={{ "color": "#b00" }}> { intl.formatMessage({ id: 'editView.pastDeadlineWarning' }) } </p>
         }
 
         <ConfirmationButton 
           onConfirm={handleSubmit}
-          modalMessage={promptText}
+          modalMessage={confirmPromptText}
           buttonDataCy="create-course-submit"
         >
           <FormattedMessage id="courseForm.confirmButton" />
+        </ConfirmationButton>
+        
+        <ConfirmationButton 
+          onConfirm={onCancelEdit}
+          modalMessage={ intl.formatMessage({ id: 'editView.confirmCancelEdits' }) }
+          buttonDataCy="create-course-cancel"
+          color="red"
+        >
+          <FormattedMessage id="editView.cancelEditsButton" />
         </ConfirmationButton>
       </Form>
     </div>

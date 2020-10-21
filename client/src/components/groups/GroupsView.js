@@ -6,6 +6,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { GENERATE_GROUPS, COURSE_GROUPS } from '../../GqlQueries';
 import Groups from './Groups';
 import userRoles from '../../util/userRoles';
+import ConfirmationButton from '../ui/ConfirmationButton';
 
 export default ({ course, registrations, regByStudentId }) => {
   const [generateGroups] = useMutation(GENERATE_GROUPS);
@@ -38,7 +39,6 @@ export default ({ course, registrations, regByStudentId }) => {
 
   const handleGroupCreation = async () => {
     const variables = { data: { courseId: course.id, minGroupSize } };
-    if (window.confirm(intl.formatMessage({ id: 'groupsView.confirmGroupGenration' }))) {
       try {
         await generateGroups({
           variables,
@@ -47,7 +47,6 @@ export default ({ course, registrations, regByStudentId }) => {
       } catch (groupError) {
         console.log('error:', groupError);
       }
-    }
   };
 
   if (loading || !groups) {
@@ -56,6 +55,7 @@ export default ({ course, registrations, regByStudentId }) => {
 
   return (
     <div>
+      &nbsp;
       {registrations.length === 0 ? (
         <div>
           <h3>
@@ -64,7 +64,7 @@ export default ({ course, registrations, regByStudentId }) => {
         </div>
       ) : (
         <div>
-          <Form onSubmit={handleGroupCreation}>
+          <Form>
             <Form.Group>
               <Form.Input
                 required
@@ -79,9 +79,14 @@ export default ({ course, registrations, regByStudentId }) => {
                 onChange={event => setMinGroupSize(Number.parseInt(event.target.value, 10))}
               />
             </Form.Group>
-            <Form.Button color="orange">
+            <ConfirmationButton 
+              onConfirm={handleGroupCreation}
+              modalMessage={ intl.formatMessage({ id: 'groupsView.confirmGroupGenration' }) }
+              buttonDataCy="create-groups-submit"
+              color="orange"
+            >
               <FormattedMessage id="course.generateGroups" />
-            </Form.Button>
+            </ConfirmationButton>
           </Form>
           <p />
 
