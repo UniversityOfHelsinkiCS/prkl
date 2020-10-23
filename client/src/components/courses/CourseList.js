@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Card, Label } from 'semantic-ui-react';
+import React from 'react';
+import { Card } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import CourseTag from './CourseTag';
@@ -12,6 +12,7 @@ export default ({ courses, user }) => {
       <div className="coursesList">
         {courses.map(course => (
           <Card
+            data-cy={course.code}
             key={course.id}
             raised
             fluid
