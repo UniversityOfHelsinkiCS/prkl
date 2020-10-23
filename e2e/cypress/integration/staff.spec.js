@@ -43,6 +43,12 @@ describe('Staff', () => {
       cy.contains(courses[1].title).should('exist');
     });
 
+    /*
+    it('Can see tags on course listing', () => {
+        cy.visit('/courses');
+        cy.contains(courses[0].title)
+      });
+    */  
   });
 
   describe('create course', () => {
