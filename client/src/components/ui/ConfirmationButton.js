@@ -7,7 +7,7 @@ const ConfirmationButton = (
     children, 
     confirmButtonText='Confirm',
     cancelButtonText='Cancel',
-    color='primary',
+    color='blue',
     buttonDataCy,
     formControl }) => {
   const [open, setOpen] = React.useState(false)
