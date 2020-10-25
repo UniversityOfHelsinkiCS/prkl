@@ -8,6 +8,7 @@ import { UPDATE_COURSE } from '../../GqlQueries';
 import roles from '../../util/userRoles';
 import QuestionForm from '../questions/QuestionForm';
 import ConfirmationButton from '../ui/ConfirmationButton';
+import TeacherList from './TeacherList';
 
 const EditView = ({ course, user, onCancelEdit }) => {
   const [courseTitle, setCourseTitle] = useState('');
@@ -20,7 +21,11 @@ const EditView = ({ course, user, onCancelEdit }) => {
   const history = useHistory();
   const intl = useIntl();
   const [updateCourse] = useMutation(UPDATE_COURSE);
+
+  const {id, firstname, lastname, studentNo, email, role} = user;
+  const currentUser = {id, firstname, lastname, studentNo, email, role};
   const [courseTeachers, setCourseTeachers] = useState([]);
+  const [showTeachers, setShowTeachers] = useState(false);
 
   const [courses, setCourses] = useStore('coursesStore');
 
@@ -124,6 +129,10 @@ const EditView = ({ course, user, onCancelEdit }) => {
     }
     history.push('/courses');
   };
+
+  const handleShowTeachers = () => {
+    setShowTeachers(!showTeachers);
+  }
 
   const handleAddForm = e => {
     e.preventDefault();
@@ -233,6 +242,32 @@ const EditView = ({ course, user, onCancelEdit }) => {
             />
           ))}
         </Form.Group>
+
+        {!showTeachers ? (
+          <Form.Button type="button" onClick={handleShowTeachers} color="blue" data-cy="show-teacher-list-button">
+            <FormattedMessage id="course.showTeachers" />
+          </Form.Button>
+        ) : (
+          <div>
+            <Form.Button type="button" onClick={handleShowTeachers} color="blue">
+              <FormattedMessage id="course.hideTeachers" />
+            </Form.Button>
+            <TeacherList courseTeachers={courseTeachers} setCourseTeachers={setCourseTeachers} /> 
+          </div>
+        )}
+
+        {courseTeachers.length === 0 ? (
+          <Message icon info>
+            <Icon name="info" />
+            <Message.Content>
+              <Message.Header>
+                <FormattedMessage id="course.noTeachers" />
+              </Message.Header>
+            </Message.Content>
+          </Message>
+        ) : (
+          null
+        )}
 
         <Form.Checkbox
           label={intl.formatMessage({ id: 'courseForm.publishCourse' })}

@@ -43,7 +43,7 @@ export default ({ courseTeachers, setCourseTeachers }) => {
             <Table.Row key={u.id}>
               <Table.Cell>{u.firstname}</Table.Cell>
               <Table.Cell>{u.lastname}</Table.Cell>
-              <Table.Cell>{createCheckbox(() => handleTeacherToggle(u), u.id === user.id)}</Table.Cell>
+              <Table.Cell>{createCheckbox(() => handleTeacherToggle(u), courseTeachers.map(t => t.id).includes(u.id))}</Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
