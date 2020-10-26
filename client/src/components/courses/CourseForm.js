@@ -74,7 +74,9 @@ const CourseForm = () => {
     });
 
     const questionsWOKeys = questions.map(q => {
-      const opts = q.questionChoices.map(qc => _.omit(qc, 'oName'));
+      const opts = q.questionChoices 
+        ? q.questionChoices.map(qc => _.omit(qc, 'oName'))
+        : [];
       const newQ = _.omit(q, 'qKey')
       newQ.questionChoices = opts;
       return newQ;
