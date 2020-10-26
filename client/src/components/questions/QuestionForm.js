@@ -28,7 +28,7 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
     } else {
       clearErrors(missingChoicesErr);
     }
-  }, [options]);
+  }, [options, question]);
 
   useEffect(() => {
     const qstn = questions[questionIndex]
@@ -82,10 +82,12 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
 
   const handleTypeChange = value => {
     const questionObject = { ...question, questionType: value };
-    // Remove options on question type change
-    delete questionObject.questionChoices;
-    options.forEach(o => unregister(o.oName));
-    setOptions([]);
+    // Remove options on type change to freeForm
+    if (questionType === 'freeForm') {
+      delete questionObject.questionChoices;
+      options.forEach(o => unregister(o.oName));
+      setOptions([]);
+    }
     setQuestionType(value);
 
     const newQuestions = [...questions];
