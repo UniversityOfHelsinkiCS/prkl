@@ -12,7 +12,7 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
     qKey: qName
   }
 
-  const [questionType, setQuesitonType] = useState('singleChoice');
+  const [questionType, setQuestionType] = useState('singleChoice');
   const [options, setOptions] = useState([]);
   const [question, setQuestion] = useState(defaultQuestion);
   const [init, setInit] = useState(true);
@@ -82,12 +82,11 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
 
   const handleTypeChange = value => {
     const questionObject = { ...question, questionType: value };
-    if (value === 'freeForm') {
-      delete questionObject.questionChoices;
-      options.forEach(o => unregister(o.oName));
-      setOptions([]);
-    }
-    setQuesitonType(value);
+    // Remove options on question type change
+    delete questionObject.questionChoices;
+    options.forEach(o => unregister(o.oName));
+    setOptions([]);
+    setQuestionType(value);
 
     const newQuestions = [...questions];
     newQuestions[questionIndex] = questionObject;
@@ -110,6 +109,7 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
   };
 
   const handleRemoveForm = () => {
+    if (options.length === 0) return;
     if (options) unregister(options[options.length-1].oName);
     const newOptions = options.slice(0, options.length - 1);
     const newQuestion = { ...question, questionChoices: newOptions };
