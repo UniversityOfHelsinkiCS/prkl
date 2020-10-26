@@ -10,7 +10,7 @@ import ConfirmationButton from '../ui/ConfirmationButton';
 
 export default ({ course, registrations, regByStudentId }) => {
   const [generateGroups] = useMutation(GENERATE_GROUPS);
-  const [minGroupSize, setMinGroupSize] = useState(0);
+  const [minGroupSize, setMinGroupSize] = useState(1);
   const [groups, setGroups] = useStore('groupsStore');
   const [user] = useStore('userStore');
 
@@ -38,7 +38,8 @@ export default ({ course, registrations, regByStudentId }) => {
   }
 
   const handleGroupCreation = async () => {
-    const variables = { data: { courseId: course.id, minGroupSize } };
+    const minGroupS = minGroupSize ? minGroupSize : 1;
+    const variables = { data: { courseId: course.id, minGroupSize: minGroupS } };
       try {
         await generateGroups({
           variables,
@@ -68,6 +69,7 @@ export default ({ course, registrations, regByStudentId }) => {
             <Form.Group>
               <Form.Input
                 required
+                value={minGroupSize}
                 type="number"
                 min="1"
                 max="9999999"
@@ -76,7 +78,9 @@ export default ({ course, registrations, regByStudentId }) => {
                     <FormattedMessage id="groupsView.targetGroupSize" />
                   </h4>
                 }
-                onChange={event => setMinGroupSize(Number.parseInt(event.target.value, 10))}
+                onChange={event => setMinGroupSize(Number.parseInt(event.target.value, 10) 
+                  ? Number.parseInt(event.target.value, 10)
+                  : 1)}
               />
             </Form.Group>
             <ConfirmationButton 
