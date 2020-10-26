@@ -7,15 +7,14 @@ const ConfirmationButton = (
     children, 
     confirmButtonText='Confirm',
     cancelButtonText='Cancel',
-    color='primary',
+    color='blue',
     buttonDataCy,
     formControl }) => {
   const [open, setOpen] = React.useState(false)
 
   const formIsValidated = async () => {
-    const { triggerValidation, errors } = formControl;
-    await triggerValidation();
-
+    const { trigger, errors } = formControl;
+    await trigger();
     if (Object.keys(errors).length !== 0) {
       return false;
     }

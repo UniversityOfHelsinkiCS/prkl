@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
  * inner Semantic component.
  */
 const ValidatedInput = ({ name, type, formControl, ...rest }) => {
-  const { setValue, triggerValidation, errors, register } = formControl;
+  const { setValue, trigger, errors, register } = formControl;
   const Inner = type;
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const ValidatedInput = ({ name, type, formControl, ...rest }) => {
       fluid
       onChange={(e, { value }) => {
         setValue(name, value);
-        triggerValidation(name);
+        trigger(name);
       }}
       error={!!errors[name]}
       {...rest}
@@ -40,7 +40,7 @@ ValidatedInput.propTypes = {
   /** Form control object generated with `react-hook-form`'s `useForm()`. */
   formControl: PropTypes.shape({
     setValue: PropTypes.func.isRequired,
-    triggerValidation: PropTypes.func.isRequired,
+    trigger: PropTypes.func.isRequired,
     register: PropTypes.func.isRequired,
   }).isRequired,
 };

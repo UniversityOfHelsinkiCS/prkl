@@ -8,7 +8,11 @@ import { UPDATE_COURSE } from '../../GqlQueries';
 import roles from '../../util/userRoles';
 import QuestionForm from '../questions/QuestionForm';
 import ConfirmationButton from '../ui/ConfirmationButton';
+import { useForm } from 'react-hook-form';
+import _ from 'lodash';
 
+// Form validation currently not working in this view!
+// Furthermore, this view should me merged with CourseForm
 const EditView = ({ course, user, onCancelEdit }) => {
   const [courseTitle, setCourseTitle] = useState('');
   const [courseDescription, setCourseDescription] = useState('');
@@ -31,6 +35,9 @@ const EditView = ({ course, user, onCancelEdit }) => {
   const confirmPromptText = intl.formatMessage({
     id: published ? 'editView.confirmPublishSubmit' : 'editView.confirmSubmit'
   });
+
+  const hookForm = useForm();
+  const { setValue, trigger, errors, register } = hookForm;
 
   useEffect(() => {
     setCourseTitle(course.title);
@@ -98,6 +105,14 @@ const EditView = ({ course, user, onCancelEdit }) => {
       return newT;
     });
 
+    const questionsWOKeys = questions.map(q => {
+      const opts = q.questionChoices.map(qc => _.omit(qc, 'oName'));
+      const newQ = _.omit(q, 'qKey')
+      newQ.questionChoices = opts;
+      return newQ;
+    }
+    );
+
     const courseObject = {
       title: courseTitle,
       description: courseDescription,
@@ -106,7 +121,7 @@ const EditView = ({ course, user, onCancelEdit }) => {
       maxGroupSize: course.maxGroupSize,
       deadline: new Date(deadline).setHours(23, 59),
       teachers: teacherRemoveType,
-      questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
+      questions: calendarToggle ? questionsWOKeys.concat(calendarQuestion) : questionsWOKeys,
       published,
     };
     const variables = { id: course.id, data: { ...courseObject } };
@@ -127,7 +142,7 @@ const EditView = ({ course, user, onCancelEdit }) => {
 
   const handleAddForm = e => {
     e.preventDefault();
-    setQuestions([...questions, { content: '' }]);
+    setQuestions([...questions, { content: '', qKey: new Date().getTime().toString() }]);
   };
 
   return (
@@ -226,10 +241,12 @@ const EditView = ({ course, user, onCancelEdit }) => {
           {questions?.map((q, index) => (
             <QuestionForm
               key={`addQuestionField${q.id}`}
+              qName={q.qKey ? q.qKey : q.id}
               setQuestions={setQuestions}
               questions={questions}
               questionIndex={index}
               hideAddRemoveButtons={course.published}
+              hookForm={hookForm}
             />
           ))}
         </Form.Group>

@@ -7,7 +7,7 @@ import ValidationError from '../ui/ValidationError';
 
 export default ({ questions, formControl, onSubmit }) => {
   const [checkboxValue, setCheckboxValue] = useState('accepted');
-  const { setValue, triggerValidation, errors, register } = formControl;
+  const { setValue, trigger, errors, register } = formControl;
   const intl = useIntl();
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default ({ questions, formControl, onSubmit }) => {
         onChange={(e, { name, value }) => {
           setCheckboxValue(checkboxValue === 'accepted' ? undefined : 'accepted');
           setValue(name, value);
-          triggerValidation(name);
+          trigger(name);
         }}
         error={!!errors.toc}
         value={checkboxValue}

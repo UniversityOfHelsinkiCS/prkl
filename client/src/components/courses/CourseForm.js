@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Form, Icon, Popup, Message } from 'semantic-ui-react';
+import { Form, Icon, Popup, Message, Input } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
@@ -8,6 +8,8 @@ import { CREATE_COURSE } from '../../GqlQueries';
 import QuestionForm from '../questions/QuestionForm';
 import TeacherList from './TeacherList';
 import ConfirmationButton from '../ui/ConfirmationButton';
+import { useForm } from 'react-hook-form';
+import _ from 'lodash';
 
 const CourseForm = () => {
   const [courseTitle, setCourseTitle] = useState('');
@@ -20,8 +22,8 @@ const CourseForm = () => {
   const [showTeachers, setShowTeachers] = useState(false);
   const [user] = useStore('userStore');
   //pick needed fields from current user. 
-  const {id, firstname, lastname, studentNo, email, role} = user;
-  const currentUser = {id, firstname, lastname, studentNo, email, role};
+  const { id, firstname, lastname, studentNo, email, role } = user;
+  const currentUser = { id, firstname, lastname, studentNo, email, role };
   const [courseTeachers, setCourseTeachers] = useState([currentUser]);
 
   const [courses, setCourses] = useStore('coursesStore');
@@ -35,7 +37,7 @@ const CourseForm = () => {
   const promptText = intl.formatMessage({
     id: publishToggle ? 'courseForm.confirmPublishSubmit' : 'courseForm.confirmSubmit',
   });
-  
+
   const history = useHistory();
   const today = new Date();
   const dd = String(today.getDate()).padStart(2, '0');
@@ -49,6 +51,17 @@ const CourseForm = () => {
     order: questions.length + 1,
   };
 
+  useEffect(() => {
+    // TODO: remove hardcoded messages from these register functions and elsewhere
+    register({ name: 'nameTitle' }, { required: 'Title required' });
+    register({ name: 'nameCode' }, { required: 'Course code required' });
+    register({ name: 'nameDeadline' }, { required: 'Deadline required', min: {value: todayParsed, message: 'Date passed'} });
+    register({ name: 'nameDescription' }, { required: 'Description required' });
+  }, []);
+
+  const hookForm = useForm();
+  const { setValue, trigger, errors, register } = hookForm;
+
   const handleSubmit = async () => {
     if (calendarToggle) {
       calendarQuestion.content = calendarDescription;
@@ -60,6 +73,14 @@ const CourseForm = () => {
       return newT;
     });
 
+    const questionsWOKeys = questions.map(q => {
+      const opts = q.questionChoices.map(qc => _.omit(qc, 'oName'));
+      const newQ = _.omit(q, 'qKey')
+      newQ.questionChoices = opts;
+      return newQ;
+    }
+    );
+
     const courseObject = {
       title: courseTitle,
       description: courseDescription,
@@ -69,7 +90,7 @@ const CourseForm = () => {
       teachers: teachersRemoveType,
       deadline: new Date(deadline).setHours(23, 59),
       published: !!publishToggle,
-      questions: calendarToggle ? questions.concat(calendarQuestion) : questions,
+      questions: calendarToggle ? questionsWOKeys.concat(calendarQuestion) : questionsWOKeys
     };
     const variables = { data: { ...courseObject } };
     try {
@@ -89,7 +110,7 @@ const CourseForm = () => {
 
   const handleAddForm = e => {
     e.preventDefault();
-    setQuestions([...questions, { content: '' }]);
+    setQuestions([...questions, { content: '', qKey: new Date().getTime().toString() }]);
   };
 
   return (
@@ -101,47 +122,64 @@ const CourseForm = () => {
       <Form onSubmit={handleSubmit}>
         <Form.Field>
           <Form.Input
-            required
+            name='nameTitle'
             fluid
             label={intl.formatMessage({
               id: 'courseForm.titleForm',
             })}
-            onChange={event => setCourseTitle(event.target.value)}
+            onChange={async (e, { name, value }) => {
+              setCourseTitle(e.target.value);
+              setValue(name, value);
+              await trigger(name);
+            }}
+            error={errors.nameTitle?.message}
             data-cy="course-title-input"
           />
         </Form.Field>
 
         <Form.Group>
           <Form.Input
-            required
+            name='nameCode'
             label={intl.formatMessage({
               id: 'courseForm.courseCodeForm',
             })}
-            onChange={event => setCourseCode(event.target.value)}
+            onChange={async (e, { name, value }) => {
+              setCourseCode(e.target.value);
+              setValue(name, value);
+              await trigger(name);
+            }}
+            error={errors.nameCode?.message}
             data-cy="course-code-input"
           />
 
           <Form.Input
-            required
+            name='nameDeadline'
             type="date"
-            min={todayParsed}
             label={intl.formatMessage({
               id: 'courseForm.courseDeadlineForm',
             })}
-            onChange={event => {
-              setDeadline(event.target.value);
+            onChange={async (e, { name, value }) => {
+              setDeadline(e.target.value);
+              setValue(name, value);
+              await trigger(name);
             }}
+            error={errors.nameDeadline?.message}
             data-cy="course-deadline-input"
           />
         </Form.Group>
 
         <Form.Field>
           <Form.TextArea
-            required
+            name='nameDescription'
             label={intl.formatMessage({
               id: 'courseForm.courseDescriptionForm',
             })}
-            onChange={event => setCourseDescription(event.target.value)}
+            onChange={async (e, { name, value }) => {
+              setCourseDescription(e.target.value);
+              setValue(name, value);
+              await trigger(name);
+            }}
+            error={errors.nameDescription?.message}
             data-cy="course-description-input"
           />
         </Form.Field>
@@ -173,10 +211,12 @@ const CourseForm = () => {
         <Form.Group style={{ flexWrap: 'wrap' }}>
           {questions.map((q, index) => (
             <QuestionForm
-              key={`addQuestionField${q.id}`}
+              key={q.qkey}
+              qName={q.qKey}
               setQuestions={setQuestions}
               questions={questions}
               questionIndex={index}
+              hookForm={hookForm}
             />
           ))}
         </Form.Group>
@@ -190,13 +230,13 @@ const CourseForm = () => {
             <FormattedMessage id="course.showTeachers" />
           </Form.Button>
         ) : (
-          <div>
-            <Form.Button type="button" onClick={handleShowTeachers} color="blue">
-              <FormattedMessage id="course.hideTeachers" />
-            </Form.Button>
-            <TeacherList courseTeachers={courseTeachers} setCourseTeachers={setCourseTeachers} /> 
-          </div>
-        )}
+            <div>
+              <Form.Button type="button" onClick={handleShowTeachers} color="blue">
+                <FormattedMessage id="course.hideTeachers" />
+              </Form.Button>
+              <TeacherList courseTeachers={courseTeachers} setCourseTeachers={setCourseTeachers} />
+            </div>
+          )}
 
         {courseTeachers.length === 0 ? (
           <Message icon info>
@@ -208,8 +248,8 @@ const CourseForm = () => {
             </Message.Content>
           </Message>
         ) : (
-          null
-        )}
+            null
+          )}
 
         <Form.Checkbox
           label={intl.formatMessage({ id: 'courseForm.publishCourse' })}
@@ -226,13 +266,14 @@ const CourseForm = () => {
             </Message.Content>
           </Message>
         ) : (
-          null
-        )}
+            null
+          )}
 
-        <ConfirmationButton 
+        <ConfirmationButton
           onConfirm={handleSubmit}
           modalMessage={promptText}
           buttonDataCy="create-course-submit"
+          formControl={hookForm}
         >
           <FormattedMessage id="courseForm.confirmButton" />
         </ConfirmationButton>
