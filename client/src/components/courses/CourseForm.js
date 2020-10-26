@@ -254,6 +254,7 @@ const CourseForm = () => {
         <Form.Checkbox
           label={intl.formatMessage({ id: 'courseForm.publishCourse' })}
           onClick={() => setPublishToggle(!publishToggle)}
+          data-cy="publish-checkbox"
         />
 
         {publishToggle ? (

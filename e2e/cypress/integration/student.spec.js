@@ -63,6 +63,16 @@ describe('Student', () => {
       cy.get('[data-cy="checkbox-staff-controls"]').should('not.exist');
     });
   
+    it('Can see tag `enrolled` when registered on course', () => {
+      cy.visit('/courses');
+      cy.contains('Enrolled').should('not.exist');
+      cy.contains(courses[0].title).click();
+      cy.get('[data-cy="toc-checkbox"]').click();
+      cy.get('[data-cy="register-on-course-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.visit('/courses');
+      cy.contains('Enrolled');
+    });
   });
 
   describe('personal info', () => {

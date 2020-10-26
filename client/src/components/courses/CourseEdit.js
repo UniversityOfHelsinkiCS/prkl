@@ -10,6 +10,7 @@ import QuestionForm from '../questions/QuestionForm';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import { useForm } from 'react-hook-form';
 import _ from 'lodash';
+import TeacherList from './TeacherList';
 
 // Form validation currently not working in this view!
 // Furthermore, this view should me merged with CourseForm
@@ -24,7 +25,11 @@ const EditView = ({ course, user, onCancelEdit }) => {
   const history = useHistory();
   const intl = useIntl();
   const [updateCourse] = useMutation(UPDATE_COURSE);
+
+  const {id, firstname, lastname, studentNo, email, role} = user;
+  const currentUser = {id, firstname, lastname, studentNo, email, role};
   const [courseTeachers, setCourseTeachers] = useState([]);
+  const [showTeachers, setShowTeachers] = useState(false);
 
   const [courses, setCourses] = useStore('coursesStore');
 
@@ -140,6 +145,10 @@ const EditView = ({ course, user, onCancelEdit }) => {
     history.push('/courses');
   };
 
+  const handleShowTeachers = () => {
+    setShowTeachers(!showTeachers);
+  }
+
   const handleAddForm = e => {
     e.preventDefault();
     setQuestions([...questions, { content: '', qKey: new Date().getTime().toString() }]);
@@ -250,6 +259,32 @@ const EditView = ({ course, user, onCancelEdit }) => {
             />
           ))}
         </Form.Group>
+
+        {!showTeachers ? (
+          <Form.Button type="button" onClick={handleShowTeachers} color="blue" data-cy="show-teacher-list-button">
+            <FormattedMessage id="course.showTeachers" />
+          </Form.Button>
+        ) : (
+          <div>
+            <Form.Button type="button" onClick={handleShowTeachers} color="blue">
+              <FormattedMessage id="course.hideTeachers" />
+            </Form.Button>
+            <TeacherList courseTeachers={courseTeachers} setCourseTeachers={setCourseTeachers} /> 
+          </div>
+        )}
+
+        {courseTeachers.length === 0 ? (
+          <Message icon info>
+            <Icon name="info" />
+            <Message.Content>
+              <Message.Header>
+                <FormattedMessage id="course.noTeachers" />
+              </Message.Header>
+            </Message.Content>
+          </Message>
+        ) : (
+          null
+        )}
 
         <Form.Checkbox
           label={intl.formatMessage({ id: 'courseForm.publishCourse' })}

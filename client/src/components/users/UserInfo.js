@@ -8,24 +8,24 @@ import { timeParse } from '../../util/functions';
 import GroupList from './UserGroups';
 
 export default () => {
-  const [user, setUser] = useStore('userStore');
+  const [user] = useStore('userStore');
   const [privacyToggle] = useStore('toggleStore');
   const [groupTimes, setGroupTimes] = useState(undefined);
 
-  const { loading: userLoading, data: userData } = useQuery(CURRENT_USER, {
+ /* const { loading: userLoading, data: userData } = useQuery(CURRENT_USER, {
     fetchPolicy: 'network-only',
-  });
+  });*/
+
 
   const { loading, error, data } = useQuery(GROUP_TIMES, {
     variables: { studentId: user.id },
   });
 
   useEffect(() => {
-    if (!loading && data !== undefined && !userLoading) {
+    if (!loading && data !== undefined ) {
       setGroupTimes(timeParse(data.groupTimes));
-      setUser(userData.currentUser);
     }
-  }, [data, loading, userData, userLoading]);
+  }, [data, loading]);
 
   if (error !== undefined) {
     console.log('error:', error);
