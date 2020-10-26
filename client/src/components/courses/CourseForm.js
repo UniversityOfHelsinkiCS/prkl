@@ -21,7 +21,7 @@ const CourseForm = () => {
   const [publishToggle, setPublishToggle] = useState(false);
   const [showTeachers, setShowTeachers] = useState(false);
   const [user] = useStore('userStore');
-  //pick needed fields from current user. 
+  //pick needed fields from current user.
   const { id, firstname, lastname, studentNo, email, role } = user;
   const currentUser = { id, firstname, lastname, studentNo, email, role };
   const [courseTeachers, setCourseTeachers] = useState([currentUser]);
@@ -51,6 +51,17 @@ const CourseForm = () => {
     order: questions.length + 1,
   };
 
+  const hookForm = useForm();
+  const { setValue, trigger, errors, register, unregister } = hookForm;
+
+  useEffect(() => {
+    if (calendarToggle) {
+      register({ name: 'nameCalendarDesc' }, { required: 'Calendar description required' });
+    } else {
+      unregister('nameCalendarDesc');
+    }
+  }, [calendarToggle]);
+
   useEffect(() => {
     // TODO: remove hardcoded messages from these register functions and elsewhere
     register({ name: 'nameTitle' }, { required: 'Title required' });
@@ -58,9 +69,6 @@ const CourseForm = () => {
     register({ name: 'nameDeadline' }, { required: 'Deadline required', min: {value: todayParsed, message: 'Date passed'} });
     register({ name: 'nameDescription' }, { required: 'Description required' });
   }, []);
-
-  const hookForm = useForm();
-  const { setValue, trigger, errors, register } = hookForm;
 
   const handleSubmit = async () => {
     if (calendarToggle) {
@@ -192,10 +200,17 @@ const CourseForm = () => {
         />
 
         <Form.Input
+          name='nameCalendarDesc'
           disabled={!calendarToggle}
           label={intl.formatMessage({ id: 'courseForm.timeFormLabel' })}
           value={calendarDescription}
-          onChange={event => setCalendarDescription(event.target.value)}
+          onChange={async (e, { name, value }) => {
+            setCalendarDescription(e.target.value);
+            setValue(name, value);
+            await trigger(name);
+          }}
+          error={errors.nameCalendarDesc?.message}
+          data-cy="course-calendar-description-input"
         />
 
         <Form.Group>
