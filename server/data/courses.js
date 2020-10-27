@@ -171,6 +171,17 @@ const defaultCourses = [
       },
     ],
   },
+  {
+    id: "4f6c1320-7f30-40d7-aac3-3a3800a0a7d3",
+    title: "Test Course 8 unpublished by Staff and Admin",
+    deadline: "2100-12-31",
+    code: "TC08",
+    description: "Description for a test course.",
+    teachers: [userData[1], userData[2]],
+    maxGroupSize: 10,
+    minGroupSize: 5,
+    published: false
+  },
 ];
 
 module.exports = defaultCourses;

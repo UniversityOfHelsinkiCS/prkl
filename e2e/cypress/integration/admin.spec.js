@@ -92,6 +92,29 @@ describe('Admin', () => {
       cy.contains('Course from Cypress Edited').click();
       cy.contains('New description for course');
     });
+
+    it('Correct teachers are chosen in advance when course is being edited', () => {
+      cy.visit('/courses');
+      cy.contains(courses[0].title).click();
+      cy.get('[data-cy="edit-course-button"]').click();
+      cy.get('[data-cy="show-teacher-list-button"]').click();
+      cy.get('[data-cy="checkbox-course-teachers"]').first().should('have.class', 'checked');
+      cy.get('[data-cy="checkbox-course-teachers"]').last().should('not.have.class', 'checked');
+
+      cy.visit('/courses');
+      cy.contains(courses[1].title).click();
+      cy.get('[data-cy="edit-course-button"]').click();
+      cy.get('[data-cy="show-teacher-list-button"]').click();
+      cy.get('[data-cy="checkbox-course-teachers"]').first().should('not.have.class', 'checked');
+      cy.get('[data-cy="checkbox-course-teachers"]').last().should('have.class', 'checked');
+
+      cy.visit('/courses');
+      cy.contains(courses[7].title).click();
+      cy.get('[data-cy="edit-course-button"]').click();
+      cy.get('[data-cy="show-teacher-list-button"]').click();
+      cy.get('[data-cy="checkbox-course-teachers"]').first().should('have.class', 'checked');
+      cy.get('[data-cy="checkbox-course-teachers"]').last().should('have.class', 'checked');
+    });
   });
 
   it('Can only edit textual content of existing questions in a published course', () => {

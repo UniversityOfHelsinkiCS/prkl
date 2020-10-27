@@ -123,6 +123,14 @@ export class CourseResolver {
     course.questions = qsts;
     course.published = data.published;
 
+    const courseTeachers = [];
+    const t = data.teachers.map(teacher => teacher.id);
+    for (let index in t) {
+      const id = t[index];
+      const user = await User.findOne({ where: { id } });
+      courseTeachers.push(user);
+    }
+    course.teachers = courseTeachers;
     await course.save();
 
     // Cleanup

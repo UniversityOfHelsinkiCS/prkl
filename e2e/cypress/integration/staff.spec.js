@@ -280,6 +280,75 @@ describe('Staff', () => {
       });
     });
 
+    it('Can add more teachers to own course', () => {
+      cy.visit('/courses');
+      cy.contains(courses[2].title).click();
+      cy.get('[data-cy="edit-course-button"]').click();
+
+      cy.get('[data-cy="show-teacher-list-button"]').click();
+      cy.get('[data-cy="checkbox-course-teachers"]').last().click();
+      cy.get('[data-cy="create-course-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+      cy.visit('/courses');
+      cy.get('[data-cy="TC03"]').within(() => {
+        cy.get('[data-cy="tag-own"]').should("exist");
+      });
+      cy.contains(courses[2].title).click();
+      cy.get('[data-cy="edit-course-button"]').should('exist');
+
+      cy.switchToAdmin();
+      cy.visit('/courses');
+      cy.get('[data-cy="TC03"]').within(() => {
+        cy.get('[data-cy="tag-own"]').should("exist");
+      });
+    });
+
+    it('Can remove teachers from own course', () => {
+      cy.visit('/courses');
+      cy.contains(courses[7].title).click();
+      cy.get('[data-cy="edit-course-button"]').click();
+
+      cy.get('[data-cy="show-teacher-list-button"]').click();
+      cy.get('[data-cy="checkbox-course-teachers"]').last().click();
+      cy.get('[data-cy="create-course-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+      cy.visit('/courses');
+      cy.get('[data-cy="TC08"]').within(() => {
+        cy.get('[data-cy="tag-own"]').should("exist");
+      });
+
+      cy.switchToAdmin();
+      cy.visit('/courses');
+      cy.get('[data-cy="TC08"]').within(() => {
+        cy.get('[data-cy="tag-own"]').should("not.exist");
+      });
+    });
+
+    it('Can change teacher of own course', () => {
+      cy.visit('/courses');
+      cy.contains(courses[2].title).click();
+      cy.get('[data-cy="edit-course-button"]').click();
+
+      cy.get('[data-cy="show-teacher-list-button"]').click();
+      cy.get('[data-cy="checkbox-course-teachers"]').first().click();
+      cy.get('[data-cy="checkbox-course-teachers"]').last().click();
+      cy.get('[data-cy="create-course-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+      cy.visit('/courses');
+      cy.get('[data-cy="TC03"]').within(() => {
+        cy.get('[data-cy="tag-own"]').should("not.exist");
+      });
+
+      cy.switchToAdmin();
+      cy.visit('/courses');
+      cy.get('[data-cy="TC03"]').within(() => {
+        cy.get('[data-cy="tag-own"]').should("exist");
+      });
+    });
+
     it('Can not edit course after publishing it', () => {
       cy.visit('/courses');
       cy.contains(courses[2].title).click();
