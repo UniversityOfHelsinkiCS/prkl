@@ -84,7 +84,6 @@ export default {
     'course.confirmDelete': 'Delete this course?',
     'course.userHasRegistered': 'Already registered!',
     'course.seeGroups': 'Generated groups',
-    'course.generateGroups': 'Generate groups',
     'course.hideTeachers': 'Hide teachers',
     'course.showTeachers': 'Show teachers',
     'course.switchGroupsView': 'Switch to Groups view',
@@ -148,6 +147,11 @@ export default {
     'groupsView.targetGroupSize': 'Target group size',
     'groupsView.confirmGroupGenration':
       'Are you sure you want to generate new groups and override existing groups?',
+    'groupsView.confirmGroupsSave': 'Save groups?',
+    'groupsView.generateGroups': 'Generate new groups',
+    'groupsView.saveGroups': 'Save groups',
+    'groupsView.unsavedGroupsInfo': 'Below are the sample groups. You can edit them manually before saving them.',
+    'groupsView.groupsSavedSuccessMsg': 'New groups saved.',
 
     'util.notAllowed': 'You do not have the required roles to access this content.',
   },

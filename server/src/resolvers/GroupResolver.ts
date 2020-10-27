@@ -3,6 +3,7 @@ import { getRepository } from "typeorm";
 
 import { Group } from "../entities/Group";
 import { User } from "../entities/User";
+import { UserInput } from '../inputs/UserInput';
 import { Registration } from "../entities/Registration";
 import { GroupListInput } from "./../inputs/GroupListInput";
 
@@ -57,19 +58,33 @@ export class GroupResolver {
       .getMany();
   }
 
+  // Returns sample groups based on received data, does not save them
   @Authorized(STAFF)
   @Mutation(() => [Group])
-  async createGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
+  async createSampleGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
     const { courseId, minGroupSize } = data;
-    (await Group.find({ where: { courseId: courseId } })).forEach(g => g.remove());
 
     const groups = data.groups && data.groups.length > 0 ? data.groups : await formNewGroups(courseId, minGroupSize);
 
     return Promise.all(
       groups.map(async g => {
         const students = await User.findByIds(g.userIds);
-        return Group.create({ courseId, students }).save();
+        return Group.create({ courseId, students });
       }),
+    );
+  }
+
+  @Authorized(STAFF)
+  @Mutation(() => [Group])
+  async saveGeneratedGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
+    const { courseId, groups } = data;
+    (await Group.find({ where: { courseId: courseId } })).forEach(g => g.remove());
+
+    return Promise.all(
+      groups.map(async g => {
+        const students = await User.findByIds(g.userIds);
+        return Group.create({ courseId, students }).save();
+      })
     );
   }
 }

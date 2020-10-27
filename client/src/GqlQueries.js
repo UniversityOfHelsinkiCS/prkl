@@ -249,9 +249,8 @@ export const COURSE_GROUPS = gql`
 `;
 
 export const GENERATE_GROUPS = gql`
-  mutation createGroups($data: GroupListInput!) {
-    createGroups(data: $data) {
-      id
+  mutation createSampleGroups($data: GroupListInput!) {
+    createSampleGroups(data: $data) {
       courseId
       students {
         id
@@ -260,6 +259,14 @@ export const GENERATE_GROUPS = gql`
         studentNo
         email
       }
+    }
+  }
+`;
+
+export const SAVE_GROUPS = gql`
+  mutation saveGeneratedGroups($data: GroupListInput!) {
+    saveGeneratedGroups(data: $data) {
+      courseId
     }
   }
 `;
