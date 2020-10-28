@@ -21,7 +21,7 @@ export default ({ course, registrations, regByStudentId }) => {
   const intl = useIntl();
 
   const { loading, error, data } = useQuery(COURSE_GROUPS, {
-    skip: user.role !== userRoles.ADMIN_ROLE,
+    skip: user.role !== userRoles.STAFF_ROLE,
     variables: { courseId: course.id },
   });
 
