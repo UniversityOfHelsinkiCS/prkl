@@ -46,7 +46,6 @@ export default () => {
     }
   );
 
-
   userService(useQuery, useEffect, setUser);
 
   useEffect(() => {

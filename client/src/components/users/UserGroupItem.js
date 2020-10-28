@@ -25,7 +25,7 @@ export default ({ group, groupTimes }) => {
                   <Button floated="right" onClick={handleShowTime}>
                     <FormattedMessage id="groups.showTimes" />
                   </Button>
-                  : null}
+                : null}
               </Header>
             </Table.HeaderCell>
           </Table.Row>

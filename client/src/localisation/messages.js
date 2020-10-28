@@ -140,6 +140,8 @@ export default {
     'groups.createGroups': 'Create and save groups',
     'groups.createConfirm': 'Confirm group selection',
     'groups.addGroupButton': 'Add new group',
+    'groups.published': 'Your group has been published:',
+    'groups.notPublished': 'Groups are coming soon after enrollment deadline.',
 
     'groupsView.noRegistrations': 'No registrations',
     'groupsView.matchingTimes': 'Matching times',

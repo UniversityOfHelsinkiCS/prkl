@@ -11,21 +11,24 @@ import EditView from './CourseEdit';
 import RegistrationList from '../registrations/RegistrationList';
 import Registration from '../registrations/Registration';
 import ConfirmationButton from '../ui/ConfirmationButton';
+import UserGroup from '../users/UserGroup'
 
 export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
   const [user] = useStore('userStore');
+
   const [course, setCourse] = useState({});
-
-  //course description
-  const paragraphs = course.description ? course.description.split('\n\n') : [];
-
   const [registrations, setRegistrations] = useState([]);
   const [regByStudentId, setRegByStudentId] = useState([]);
-  const [deleteCourse] = useMutation(DELETE_COURSE);
   const [view, setView] = useState('registrations');
+
+  const [deleteCourse] = useMutation(DELETE_COURSE);
+
   const history = useHistory();
   const intl = useIntl();
+
+  // course description
+  const paragraphs = course.description ? course.description.split('\n\n') : [];
 
   const { loading, error, data } = useQuery(COURSE_BY_ID, {
     variables: { id },
@@ -201,6 +204,11 @@ export default ({ id }) => {
         </div>
       ) : <Registration course={course} /> } {/* when !userHasAccess() */}
       </div>
+      &nbsp;
+      <div>
+        <UserGroup user={user} course={course} />
+      </div>
+
     </div>
   );
 };

@@ -20,7 +20,7 @@ export class CourseResolver {
         .where("teacherId = user.id") // Pitääkö kurssin näkyä opiskelijalle, jos hän on luonut sen ollessaan opettaja (roolihan voi muuttua), vaikka kurssi ei olisi enää kurantti?
         .where("deleted = false")
         .andWhere("published = true")
-        .andWhere("deadline > NOW()")
+        //.andWhere("deadline > NOW()")
         .getMany();
     } else {
       return Course.find({ where: { deleted: false }, relations: ["teachers"] });
@@ -36,9 +36,11 @@ export class CourseResolver {
       throw new Error("Nothing to see here."); // Viesti on placeholder.
     }
 
+    /*
     if (course.deadline < new Date() && user.role < STAFF) {
       throw new Error("The registration deadline for this course has already passed.");
     }
+    */
 
     return course;
   }

@@ -34,9 +34,6 @@ export default () => {
     });
   };
 
-  // Implement filtering by published courser and user role.
-
-  // Function for staff controls
   const toggleMyCourses = () => {
     setShowMyCourses(prev => {
       localStorage.setItem('assembler.showMyCourses', !prev);
@@ -44,6 +41,7 @@ export default () => {
     });
   };
 
+  // Filter visible courses
   const visibleCourses = () => {
     if (!courses) {
       return [];
@@ -55,7 +53,7 @@ export default () => {
     const deadlineFilter = course =>
       showPastCourses ? true : new Date(course.deadline) > new Date();
 
-    // check teacher of the course
+    // Check teacher of the course
     const teacherFilter = course => (showMyCourses ? course.teachers.find(t => t.id === user.id) : true);
 
     const searchFilter = course =>
