@@ -205,10 +205,11 @@ export default ({ id }) => {
       ) : <Registration course={course} /> } {/* when !userHasAccess() */}
       </div>
       &nbsp;
+      { view === 'registrations' ? (
       <div>
         <UserGroup user={user} course={course} />
       </div>
-
+      ) : null}
     </div>
   );
 };
