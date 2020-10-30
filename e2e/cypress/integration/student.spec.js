@@ -6,7 +6,6 @@ describe('Student', () => {
   beforeEach(() => {
     cy.seedDatabase();
     cy.switchToStudent();
-    cy.fixture('courses').as('courses');
   });
 
   after(() => {
@@ -40,11 +39,10 @@ describe('Student', () => {
     it('Can not see non-valid courses', () => {
       // unpublished course
       cy.visit('/');
-      cy.contains(courses[2].title).should('not.exist');
-
+      cy.contains(courses[3].title).should('exist');
       // past course
-      cy.visit('/');
-      cy.contains(courses[3].title).should('not.exist');
+      cy.wait(500);
+      cy.contains(courses[2].title).should('not.exist');
   
       // deleted course
       cy.switchToAdmin();
@@ -54,22 +52,24 @@ describe('Student', () => {
   
       cy.switchToStudent();
       cy.visit('/courses');
+      cy.wait(500);
       cy.get('[data-cy="loader"]').should('not.exist');
       cy.contains(courses[0].title).should('not.exist');
     });
 
+    it('Can see past courses if registered', () => {
+      cy.visit('/');
+      cy.wait(500);
+      cy.contains(courses[8].title).should('not.exist');
+    })
+
     it('Can not see staffcontrols', () => {
       cy.visit('/courses');
+      cy.wait(500);
       cy.get('[data-cy="checkbox-staff-controls"]').should('not.exist');
     });
   
     it('Can see tag `enrolled` when registered on course', () => {
-      cy.visit('/courses');
-      cy.contains('Enrolled').should('not.exist');
-      cy.contains(courses[0].title).click();
-      cy.get('[data-cy="toc-checkbox"]').click();
-      cy.get('[data-cy="register-on-course-button"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.visit('/courses');
       cy.contains('Enrolled');
     });
@@ -137,6 +137,7 @@ describe('Student', () => {
       cy.contains(courses[1].title).click();
   
       cy.get('[data-cy="register-on-course-button"]').click();
+      cy.wait(500);
       cy.get('[data-cy="confirmation-button-confirm"]').should('not.exist');
 
       cy.contains('Please answer all questions!');
@@ -150,6 +151,7 @@ describe('Student', () => {
       cy.get('[data-cy="toc-checkbox"]').click();
       cy.get('[data-cy="toc-checkbox"]').click();
       cy.get('[data-cy="register-on-course-button"]').click();
+      cy.wait(500);
       cy.get('[data-cy="confirmation-button-confirm"]').should('not.exist');
 
       cy.contains('Please answer all questions!');
@@ -166,6 +168,7 @@ describe('Student', () => {
       cy.visit('/');
       cy.contains(courses[0].title).click();
       cy.contains('Already registered!');
+      cy.wait(500);
       cy.get('[data-cy="register-on-course-button"]').should('not.exist');
     });
   });

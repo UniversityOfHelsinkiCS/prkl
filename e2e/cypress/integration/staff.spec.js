@@ -24,6 +24,7 @@ describe('Staff', () => {
       cy.get('[data-cy="checkbox-staff-controls"]').should('exist');
       // only own courses
       cy.get('[data-cy="checkbox-staff-controls"]').last().click();
+      cy.wait(500);
       cy.contains(courses[1].title).should('not.exist');
       cy.get('[data-cy="checkbox-staff-controls"]').last().click();
       // past courses
@@ -31,12 +32,14 @@ describe('Staff', () => {
       cy.contains(courses[3].title).should('exist');
       // toggle combo
       cy.get('[data-cy="checkbox-staff-controls"]').last().click();
+      cy.wait(500);
       cy.contains(courses[0].title).should('exist');
       cy.contains(courses[1].title).should('not.exist');
       cy.contains(courses[2].title).should('exist');
       cy.contains(courses[3].title).should('exist');
 
       cy.get('[data-cy="checkbox-staff-controls"]').first().click();
+      cy.wait(500);
       cy.contains(courses[3].title).should('not.exist');
 
       cy.get('[data-cy="checkbox-staff-controls"]').last().click();
@@ -45,6 +48,7 @@ describe('Staff', () => {
 
     it('Can see tags on course listing', () => {
         cy.visit('/courses');
+        cy.wait(500);
         cy.get('[data-cy="TC01"]').within(() => {
           cy.get('[data-cy="tag-own"]').should("exist");
           cy.get('[data-cy="tag-unpublished"]').should("not.exist");
@@ -67,6 +71,7 @@ describe('Staff', () => {
         });
         
         cy.get('[data-cy="checkbox-staff-controls"]').first().click();
+        cy.wait(500);
         cy.get('[data-cy="TC04"]').within(() => {
           cy.get('[data-cy="tag-own"]').should("exist");
           cy.get('[data-cy="tag-unpublished"]').should("not.exist");
@@ -208,7 +213,7 @@ describe('Staff', () => {
       course.questions[0].questionChoices.forEach(qc => {
         cy.get(`[data-cy="question-${course.questions[0].order}"]`).contains(qc.content).should('exist')
       });
-
+      cy.wait(500);
       cy.contains(course.questions[1].content).should('not.exist');
     });
 
@@ -321,6 +326,7 @@ describe('Staff', () => {
 
       cy.switchToAdmin();
       cy.visit('/courses');
+      cy.wait(500);
       cy.get('[data-cy="TC08"]').within(() => {
         cy.get('[data-cy="tag-own"]').should("not.exist");
       });
@@ -338,6 +344,7 @@ describe('Staff', () => {
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       cy.visit('/courses');
+      cy.wait(500);
       cy.get('[data-cy="TC03"]').within(() => {
         cy.get('[data-cy="tag-own"]').should("not.exist");
       });
@@ -360,14 +367,18 @@ describe('Staff', () => {
 
       cy.visit('/courses');
       cy.contains(courses[2].title).click();
-      cy.contains('[data-cy="edit-course-button"]').should('not.exist');
+      cy.wait(500);
+      cy.get('[data-cy="edit-course-button"]').should('not.exist');
     });
 
     it('Can delete only own, unpublished course', () => {
       cy.visit('/courses');
       cy.contains(courses[2].title).click();
       cy.get('[data-cy="delete-course-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
       cy.visit('/courses');
+      cy.wait(500);
       cy.contains(courses[2].title).should('not.exist');
 
       // check that deleting other's courses won't work even from backend
@@ -383,6 +394,7 @@ describe('Staff', () => {
       cy.visit('/courses');
       cy.contains(courses[2].title).click();
       cy.get('[data-cy="edit-course-button"]').click();
+      cy.wait(500);
       cy.get('[data-cy="course-deadline-control"]').should('not.exist');
     })
   });
@@ -391,12 +403,13 @@ describe('Staff', () => {
     it('Can see enrolled students only on own course', () => {
       cy.visit('/courses');
       cy.contains(courses[0].title).click();
-      cy.get('table').contains(users[3].firstname);
+      cy.get('[data-cy="registration-table"]').contains(users[3].firstname);
       cy.contains("Students enrolled to the course:");
 
       cy.visit('/courses');
       cy.contains(courses[4].title).click();
-      cy.get('table').should('not.exist');
+      cy.wait(500);
+      cy.get('[data-cy="registration-table"]').should('not.exist');
       cy.contains("Students enrolled to the course:").should('not.exist');
 
       // Test that restrictions apply to backend too.
@@ -411,7 +424,8 @@ describe('Staff', () => {
       cy.contains(courses[0].title).click();
       cy.get('[data-cy="remove-registration-button"]').first().click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.get('table').contains(users[3].firstname).should('not.exist');
+      cy.wait(500);
+      cy.get('[data-cy="registration-table"]').contains(users[3].firstname).should('not.exist');
 
       // can't remove student from other's course
       cy.deleteRegistration(3, 4, 1).then((resp) => {

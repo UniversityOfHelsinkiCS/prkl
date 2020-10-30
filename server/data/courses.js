@@ -182,6 +182,17 @@ const defaultCourses = [
     minGroupSize: 5,
     published: false
   },
+  {
+    id: "4b06a7ab-a473-461e-b5f2-90b886798287",
+    title: "Test Course 9 unpublished without registrations",
+    deadline: "2000-12-31",
+    code: "TC09",
+    description: "Description for a test course.",
+    teachers: [userData[1]],
+    maxGroupSize: 10,
+    minGroupSize: 5,
+    published: false
+  },
 ];
 
 module.exports = defaultCourses;
