@@ -83,6 +83,7 @@ export default {
     'course.delete': 'Delete course',
     'course.confirmDelete': 'Delete this course?',
     'course.userHasRegistered': 'Already registered!',
+    'course.groupsComeHere': 'Your group will be shown here when ready.',
     'course.seeGroups': 'Generated groups',
     'course.hideTeachers': 'Hide teachers',
     'course.showTeachers': 'Show teachers',
