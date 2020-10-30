@@ -173,6 +173,13 @@ export default ({ course }) => {
             </Header.Content>
           </div>
         </Header>
+        <Header as="h5">
+          <div>
+            <Header.Content>
+              <FormattedMessage id="course.groupsComeHere" />
+            </Header.Content>
+          </div>
+        </Header>
         {new Date(course.deadline) > new Date() ? (
           <ConfirmationButton
             onConfirm={handleRegistrationDeletion}
