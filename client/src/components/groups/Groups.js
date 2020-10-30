@@ -9,11 +9,11 @@ import DraggableRow from './DraggableRow';
 import questionSwitch, { count } from '../../util/functions';
 import HourDisplay from '../misc/HourDisplay';
 
-export default ({ course, regByStudentId }) => {
+export default ({ course, regByStudentId, setGroupsUnsaved }) => {
   const [privacyToggle] = useStore('toggleStore');
   const [groups, setGroups] = useStore('groupsStore');
 
-  const [generateGroups] = useMutation(GENERATE_GROUPS);
+  //const [generateGroups] = useMutation(GENERATE_GROUPS);
 
   const [showGroupTimes, setShowGroupTimes] = useState([]);
 
@@ -24,9 +24,6 @@ export default ({ course, regByStudentId }) => {
   }, [groups]);
 
   // varmaa pitää päivittää noi group funktiois
-
-  console.log('showGroupTimes:', showGroupTimes);
-  console.log('groups.length:', groups.length);
 
   const addGroup = () => {
     const newGroups = [...groups];
@@ -68,21 +65,6 @@ export default ({ course, regByStudentId }) => {
     }
     return null;
   };
-  const handleGroupCreation = () => {
-    const groupObject = [];
-    groups.forEach(group => {
-      if (group.length > 0) {
-        groupObject.push({ userIds: group.map(userObject => userObject.id) });
-      }
-    });
-
-    const dataObject = { data: { courseId: course.id, groups: groupObject } };
-    try {
-      generateGroups({ variables: dataObject });
-    } catch (generationError) {
-      console.log('error generating groups:', generationError);
-    }
-  };
 
   const swapElements = (fromIndex, toIndex, fromTable, toTable) => {
     const newGroups = [...groups];
@@ -93,7 +75,7 @@ export default ({ course, regByStudentId }) => {
       newGroups.splice(fromTable, 1);
     }
     setGroups(newGroups);
-    handleGroupCreation();
+    setGroupsUnsaved(true);
   };
 
   const handleShowGroupTimesClick = index => {

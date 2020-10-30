@@ -15,13 +15,14 @@ export default ({ course, registrations, regByStudentId }) => {
   const [minGroupSize, setMinGroupSize] = useState(1);
   const [groupsUnsaved, setGroupsUnsaved] = useState(false);
   const [savedSuccessMsgVisible, setSavedSuccessMsgVisible] = useState(false);
+  const [oldGroups, setOldGroups] = useState([]);
   const [groups, setGroups] = useStore('groupsStore');
   const [user] = useStore('userStore');
 
   const intl = useIntl();
 
-  const { loading, error, data } = useQuery(COURSE_GROUPS, {
-    skip: user.role !== userRoles.STAFF_ROLE,
+  const { loading, error, data, refetch } = useQuery(COURSE_GROUPS, {
+    skip: user.role === userRoles.STUDENT_ROLE,
     variables: { courseId: course.id },
   });
 
@@ -29,6 +30,7 @@ export default ({ course, registrations, regByStudentId }) => {
     if (!loading && data !== undefined) {
       const fetchedGroups = data.courseGroups.map(e => e.students);
       setGroups(fetchedGroups);
+      setOldGroups(fetchedGroups);
     }
   }, [data, loading]);
 
@@ -66,12 +68,19 @@ export default ({ course, registrations, regByStudentId }) => {
       await saveGeneratedGroups({ variables });
       setGroupsUnsaved(false);
       setSavedSuccessMsgVisible(true);
+      refetch();
       setTimeout(() => {
         setSavedSuccessMsgVisible(false);
       }, 3000);
     } catch (groupError) {
       console.log('error:', groupError);
     }
+  }
+
+  // some problems...
+  const cancelGroups = () => {
+    setGroups(oldGroups);
+    console.log("old", oldGroups);
   }
 
   if (loading || !groups) {
@@ -115,19 +124,30 @@ export default ({ course, registrations, regByStudentId }) => {
             >
               <FormattedMessage id="groupsView.generateGroups" />
             </ConfirmationButton>
-            {groupsUnsaved && <ConfirmationButton
+            {groupsUnsaved && 
+            <>
+            <ConfirmationButton
               onConfirm={saveSampleGroups}
               modalMessage={ intl.formatMessage({ id: 'groupsView.confirmGroupsSave' }) }
               buttonDataCy="save-groups-button"
             >
               <FormattedMessage id='groupsView.saveGroups' />
-            </ConfirmationButton>}
+            </ConfirmationButton>
+            <ConfirmationButton
+              onConfirm={cancelGroups}
+              color="red"
+              modalMessage={ intl.formatMessage({ id: 'groupsView.confirmCancelGroups' })}
+              buttonDataCy="cancel-groups-button"
+            >
+              <FormattedMessage id='groupsView.cancelGroups' />
+            </ConfirmationButton>
+            </>}
           </Form>
           <p />
 
           {groupsUnsaved && <SuccessMessage iconVar='info'>{intl.formatMessage({ id: 'groupsView.unsavedGroupsInfo' })}</SuccessMessage>}
             {savedSuccessMsgVisible && <SuccessMessage>{intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' })}</SuccessMessage>}
-          <Groups course={course} regByStudentId={regByStudentId} />
+          <Groups course={course} regByStudentId={regByStudentId} setGroupsUnsaved={setGroupsUnsaved} />
 
         </div>
       )}

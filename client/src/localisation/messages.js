@@ -153,8 +153,10 @@ export default {
     'groupsView.confirmGroupsSave': 'Save groups?',
     'groupsView.generateGroups': 'Generate new groups',
     'groupsView.saveGroups': 'Save groups',
-    'groupsView.unsavedGroupsInfo': 'Below are the sample groups. You can edit them manually before saving them.',
+    'groupsView.unsavedGroupsInfo': 'Remember to save groups!',
     'groupsView.groupsSavedSuccessMsg': 'New groups saved.',
+    'groupsView.confirmCancelGroups': 'Are you sure?',
+    'groupsView.cancelGroups': 'Cancel',
 
     'util.notAllowed': 'You do not have the required roles to access this content.',
   },
