@@ -82,7 +82,7 @@ export default () => {
           <h3>
             <FormattedMessage id="studentInfo.group" />
           </h3>
-          <GroupList groups={user.groups} groupTimes={groupTimes} />
+          {/*<GroupList groups={user.groups} groupTimes={groupTimes} />*/}
         </div>
       ) : null}
     </div>

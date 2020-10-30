@@ -3,7 +3,7 @@ import { useStore } from 'react-hookstore';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Form, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { GENERATE_GROUPS, SAVE_GROUPS, COURSE_GROUPS } from '../../GqlQueries';
+import { GENERATE_GROUPS, SAVE_GROUPS, COURSE_GROUPS, PUBLISH_COURSE_GROUPS } from '../../GqlQueries';
 import Groups from './Groups';
 import userRoles from '../../util/userRoles';
 import ConfirmationButton from '../ui/ConfirmationButton';
@@ -12,12 +12,14 @@ import SuccessMessage from '../ui/SuccessMessage';
 export default ({ course, registrations, regByStudentId }) => {
   const [generateGroups] = useMutation(GENERATE_GROUPS);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
+  const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
   const [minGroupSize, setMinGroupSize] = useState(1);
   const [groupsUnsaved, setGroupsUnsaved] = useState(false);
   const [savedSuccessMsgVisible, setSavedSuccessMsgVisible] = useState(false);
   const [oldGroups, setOldGroups] = useState([]);
   const [groups, setGroups] = useStore('groupsStore');
   const [user] = useStore('userStore');
+  const [groupsPublished, setGroupsPublished] = useState(false);
 
   const intl = useIntl();
 
@@ -25,6 +27,10 @@ export default ({ course, registrations, regByStudentId }) => {
     skip: user.role === userRoles.STUDENT_ROLE,
     variables: { courseId: course.id },
   });
+
+  useEffect(() => {
+    setGroupsPublished(course.groupsPublished);
+  }, [course]);
 
   useEffect(() => {
     if (!loading && data !== undefined) {
@@ -77,6 +83,17 @@ export default ({ course, registrations, regByStudentId }) => {
     }
   }
 
+  const publishGroups = async () => {
+    const id = course.id;
+    const variables = { id };
+    try {
+      await publishCourseGroups({ variables });
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
   /* cancel-button has some problems...
   const cancelGroups = () => {
     setGroups(oldGroups);
@@ -125,7 +142,7 @@ export default ({ course, registrations, regByStudentId }) => {
             >
               <FormattedMessage id="groupsView.generateGroups" />
             </ConfirmationButton>
-            {groupsUnsaved && 
+            {groupsUnsaved &&
             <>
             <ConfirmationButton
               onConfirm={saveSampleGroups}
@@ -143,6 +160,14 @@ export default ({ course, registrations, regByStudentId }) => {
               <FormattedMessage id='groupsView.cancelGroups' />
             </ConfirmationButton> */}
             </>}
+            {!groupsPublished && <ConfirmationButton
+              onConfirm={publishGroups}
+              modalMessage={ intl.formatMessage({ id: 'groupsView.publishGroupsConfirm' }) }
+              buttonDataCy="publish-groups-button"
+              color='green'
+            >
+              <FormattedMessage id='groupsView.publishGroupsBtn' />
+            </ConfirmationButton>}
           </Form>
           <p />
 

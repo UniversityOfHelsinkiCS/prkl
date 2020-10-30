@@ -205,7 +205,7 @@ export default ({ id }) => {
       ) : <Registration course={course} /> } {/* when !userHasAccess() */}
       </div>
       &nbsp;
-      { view === 'registrations' ? (
+      { view === 'registrations' && course.groupsPublished ? (
       <div>
         <UserGroup user={user} course={course} />
       </div>

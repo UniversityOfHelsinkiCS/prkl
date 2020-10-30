@@ -91,6 +91,7 @@ export const COURSE_BY_ID = gql`
       code
       deadline
       published
+      groupsPublished
       questions {
         id
         content
@@ -125,10 +126,17 @@ export const CREATE_COURSE = gql`
       code
       deadline
       published
+      groupsPublished
       teachers {
         id
       }
     }
+  }
+`;
+
+export const PUBLISH_COURSE_GROUPS = gql`
+  mutation publishCourseGroups($id: String!) {
+    publishCourseGroups(id: $id)
   }
 `;
 
@@ -143,6 +151,7 @@ export const UPDATE_COURSE = gql`
       code
       deadline
       published
+      groupsPublished
       teachers {
         id
       }

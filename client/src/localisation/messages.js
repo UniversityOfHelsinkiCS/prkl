@@ -149,14 +149,16 @@ export default {
     'groupsView.maxGroupSize': 'Maximum group size',
     'groupsView.targetGroupSize': 'Target group size',
     'groupsView.confirmGroupGenration':
-      'Are you sure you want to generate new groups and override existing groups?',
-    'groupsView.confirmGroupsSave': 'Save groups?',
+      'Are you sure you want to generate new groups?',
+    'groupsView.confirmGroupsSave': 'Save and overwrite existing groups?',
     'groupsView.generateGroups': 'Generate new groups',
     'groupsView.saveGroups': 'Save groups',
     'groupsView.unsavedGroupsInfo': 'Remember to save groups!',
     'groupsView.groupsSavedSuccessMsg': 'New groups saved.',
     'groupsView.confirmCancelGroups': 'Are you sure?',
     'groupsView.cancelGroups': 'Cancel',
+    'groupsView.publishGroupsBtn': 'Publish groups',
+    'groupsView.publishGroupsConfirm': 'Are you sure you want to publish groups?',
 
     'util.notAllowed': 'You do not have the required roles to access this content.',
   },

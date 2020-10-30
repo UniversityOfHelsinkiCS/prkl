@@ -7,6 +7,7 @@ import { CourseInput } from "../inputs/CourseInput";
 import { getRepository } from "typeorm";
 import { QuestionChoice } from "../entities/QuestionChoice";
 import _ from 'lodash';
+import { UserResolver } from "./UserResolver";
 
 @Resolver()
 export class CourseResolver {
@@ -60,6 +61,23 @@ export class CourseResolver {
     console.log('course is:', course);
     await course.save();
     return course;
+  }
+
+  @Authorized(STAFF)
+  @Mutation(() => Boolean)
+  async publishCourseGroups(@Ctx() context, @Arg("id") id: string): Promise<boolean> {
+    const { user } = context;
+    const course = await Course.findOne({ where: { id }, relations: ["teachers"] });
+    if (!course) {
+      throw new Error("Course with given id not found");
+    }
+    if (user.role === ADMIN || (course.teachers.find(t => t.id === user.id) !== undefined)) {
+      course.groupsPublished = true;
+      await course.save();
+      return true;
+    }
+    
+    throw new Error("No authorization for publishing groups");
   }
 
   @Authorized(STAFF)
