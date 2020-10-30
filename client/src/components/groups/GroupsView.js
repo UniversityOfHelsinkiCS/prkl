@@ -77,11 +77,12 @@ export default ({ course, registrations, regByStudentId }) => {
     }
   }
 
-  // some problems...
+  /* cancel-button has some problems...
   const cancelGroups = () => {
     setGroups(oldGroups);
     console.log("old", oldGroups);
   }
+  */
 
   if (loading || !groups) {
     return <Loader active />;
@@ -133,14 +134,14 @@ export default ({ course, registrations, regByStudentId }) => {
             >
               <FormattedMessage id='groupsView.saveGroups' />
             </ConfirmationButton>
-            <ConfirmationButton
+            {/*<ConfirmationButton
               onConfirm={cancelGroups}
               color="red"
               modalMessage={ intl.formatMessage({ id: 'groupsView.confirmCancelGroups' })}
               buttonDataCy="cancel-groups-button"
             >
               <FormattedMessage id='groupsView.cancelGroups' />
-            </ConfirmationButton>
+            </ConfirmationButton> */}
             </>}
           </Form>
           <p />
