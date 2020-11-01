@@ -34,6 +34,12 @@ export default {
     'courseForm.confirmSubmit': 'Confirm course creation?',
     'courseForm.confirmPublishSubmit': 'Create and publish course?',
     'courseForm.teacherInfo': 'Choose teachers for your course from this list',
+    'courseForm.titleValidationFailMsg': 'Title required',
+    'courseForm.courseCodeValidationFailMsg': 'Course code required',
+    'courseForm.deadlineValidationFailMsg': 'Deadline required',
+    'courseForm.deadlinePassedValidationFailMsg': 'Date passed',
+    'courseForm.descriptionValidationFailMsg': 'Description required',
+    'courseForm.calendarDescValidationFailMsg': 'Calendar description required',
 
     'editView.pageTitle': 'Modify Course',
     'editView.coursePublishedNotification': "Course has been published, adding or removing new questions is not allowed. Texts of existing questions and their answer choices may be edited.",
@@ -74,6 +80,9 @@ export default {
     'questionForm.multipleSelectOne': 'Multiple select',
     'questionForm.optionTitle': 'Choice {number}',
     'questionForm.questionTypeLabel': 'Question type',
+    'questionForm.questionTitleValidationFailedMsg': 'Question title required',
+    'questionForm.questionChoicesMissingValidationFailedMsg': 'At least one answer option required',
+    'questionForm.questionChoiceTitleValidationFaildMsg': 'Choice label required',
 
     'course.deadline': 'Enrollment deadline:',
     'course.questionsPreface': 'Answer the questions below',

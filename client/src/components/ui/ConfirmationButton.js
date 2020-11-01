@@ -3,6 +3,7 @@ import { Button, Icon, Modal } from 'semantic-ui-react'
 
 const ConfirmationButton = (
   { onConfirm, 
+    isDisabled,
     modalMessage='Confirm action?', 
     children, 
     confirmButtonText='Confirm',
@@ -46,7 +47,7 @@ const ConfirmationButton = (
       //nOpen={() => setOpen(true)}
       open={open}
       size='small'
-      trigger={<Button data-cy={buttonDataCy} color={color} onClick={triggerClick}>{children}</Button>}
+      trigger={<Button disabled={isDisabled} data-cy={buttonDataCy} color={color} onClick={triggerClick}>{children}</Button>}
     >
       <Modal.Header>
         <Icon name='exclamation circle' /> {modalMessage}

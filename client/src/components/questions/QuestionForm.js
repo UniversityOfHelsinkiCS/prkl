@@ -22,15 +22,18 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
   const missingChoicesErr = 'choice-' + qName;
 
   useEffect(() => {
-    register({ name: qName }, { required: 'Question title required' });
+    register({ name: qName }, { required: intl.formatMessage({ id: 'questionForm.questionTitleValidationFailedMsg' }) });
     if (questionType !== 'freeForm' && !options.length) {
-      setError(missingChoicesErr, {message: 'At least one answer option required'});
+      setError(missingChoicesErr, {message: intl.formatMessage({ id: 'questionForm.questionChoicesMissingValidationFailedMsg' }) });
     } else {
       clearErrors(missingChoicesErr);
     }
   }, [options, question]);
 
   useEffect(() => {
+    // FYI: qName ja oName -muuttujat on vain hook-formsin validointia varten. Näitä ei tallenneta.
+    // id:tä ei käytetty koska ei ole tiedossa, onko kysymystä vielä olemassa vai ei
+    // qName = tämän kysymyksen name-attribuutti DOMissa, oName = yksittäisen vastausvaihtoehdon vastaava
     const qstn = questions[questionIndex]
       ? {
         id: questions[questionIndex].id,
@@ -43,16 +46,20 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
         qKey: qName
       }
       : defaultQuestion;
+    setQuestionType(qstn.questionType);
     setQuestion(qstn);
+    setValue(qName, qstn.content);
     if (init) {
       setQuestions(questions.map(q => q.qKey !== question.qKey ? q : question));
       setInit(false);
     }
     const opts = questions[questionIndex]?.questionChoices 
       ? questions[questionIndex].questionChoices.map(qc => {
-        // Something is bugged with this oName thing, removing all text from single choice in a question will mark all choice fields of that question erroneous
-        const oName = qc.oName ? qc.oName : 'question-' + qName + '-o-' + new Date().getTime().toString();
-        if (!qc.oName) register({name: oName}, {required: 'Choice text required'});
+        // Käytä choicen id:tä jos semmoinen on, muuten oNamea jos on, muuten luo uusi oName timestampilla
+        const oName = qc.id 
+          ? qc.id : qc.oName 
+          ? qc.oName : 'question-' + qName + '-o-' + new Date().getTime().toString();
+        if (!qc.oName) register({name: oName}, {required: intl.formatMessage({ id: 'questionForm.questionChoiceTitleValidationFaildMsg' }) });
         return {
           id: qc.id,
           content: qc.content,
@@ -62,6 +69,7 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
       })
       : options;
     setOptions(opts);
+    opts.forEach(o => { setValue(o.oName, o.content) });
   }, [questions]);
 
   const handleOptionChange = (e, index, value) => {
@@ -106,7 +114,7 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
 
   const handleAddForm = () => {
     const oName = 'question-' + qName + '-o-' + new Date().getTime().toString();
-    register({name: oName}, {required: 'Choice text required'});
+    register({name: oName}, {required: intl.formatMessage({ id: 'questionForm.questionChoiceTitleValidationFaildMsg' }) });
     setOptions([...options, { oName: oName, order: options.length + 1, content: '' }]);
   };
 

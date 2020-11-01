@@ -11,6 +11,11 @@ import ConfirmationButton from '../ui/ConfirmationButton';
 import { useForm } from 'react-hook-form';
 import _ from 'lodash';
 
+// TODO: Tämä ja CourseEdit pitäisi yhdistää, hyvin runsaasti copypastea
+// TODO: Validointi aiheuttaa pientä mutta huomattavaa viivettä kirjoittaessa fieldeihin ym.
+//       Pitäisi katsoa saisiko suorituskykyä vähän parannettua jotenkin, kuitenkin validointitoiminnallisuus säilyttäen
+// TODO: Submit-buttonin disablointi kun validointi epäonnistunut (kunnes korjatut)
+// TODO: Missing key prop -virhe kyssäriä lisättäessä, vaikka ei pitäisi tulla (?)
 const CourseForm = () => {
   const [courseTitle, setCourseTitle] = useState('');
   const [courseDescription, setCourseDescription] = useState('');
@@ -56,18 +61,18 @@ const CourseForm = () => {
 
   useEffect(() => {
     if (calendarToggle) {
-      register({ name: 'nameCalendarDesc' }, { required: 'Calendar description required' });
+      register({ name: 'nameCalendarDesc' }, { required: intl.formatMessage({ id: 'courseForm.calendarDescValidationFailMsg' }) });
     } else {
       unregister('nameCalendarDesc');
     }
   }, [calendarToggle]);
 
   useEffect(() => {
-    // TODO: remove hardcoded messages from these register functions and elsewhere
-    register({ name: 'nameTitle' }, { required: 'Title required' });
-    register({ name: 'nameCode' }, { required: 'Course code required' });
-    register({ name: 'nameDeadline' }, { required: 'Deadline required', min: {value: todayParsed, message: 'Date passed'} });
-    register({ name: 'nameDescription' }, { required: 'Description required' });
+    register({ name: 'nameTitle' }, { required: intl.formatMessage({id: 'courseForm.titleValidationFailMsg',}) });
+    register({ name: 'nameCode' }, { required: intl.formatMessage({id: 'courseForm.courseCodeValidationFailMsg',}) });
+    register({ name: 'nameDeadline' }, { required: intl.formatMessage({id: 'courseForm.deadlineValidationFailMsg',}), 
+      min: { value: todayParsed, message: intl.formatMessage({id: 'courseForm.deadlinePassedValidationFailMsg',}) } });
+    register({ name: 'nameDescription' }, { required: intl.formatMessage({id: 'courseForm.descriptionValidationFailMsg',}) });
   }, []);
 
   const handleSubmit = async () => {

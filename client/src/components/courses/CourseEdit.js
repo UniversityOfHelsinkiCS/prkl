@@ -12,8 +12,10 @@ import { useForm } from 'react-hook-form';
 import _ from 'lodash';
 import TeacherList from './TeacherList';
 
-// Form validation currently not working in this view!
-// Furthermore, this view should me merged with CourseForm
+// TODO: Tämä ja CourseForm pitäisi yhdistää, hyvin runsaasti copypastea
+// TODO: Validointi aiheuttaa pientä mutta huomattavaa viivettä kirjoittaessa fieldeihin ym.
+//       Pitäisi katsoa saisiko suorituskykyä vähän parannettua jotenkin, kuitenkin validointitoiminnallisuus säilyttäen
+// TODO: Submit-buttonin disablointi kun validointi epäonnistunut (kunnes korjatut)
 const EditView = ({ course, user, onCancelEdit }) => {
   const [courseTitle, setCourseTitle] = useState('');
   const [courseDescription, setCourseDescription] = useState('');
@@ -42,12 +44,31 @@ const EditView = ({ course, user, onCancelEdit }) => {
   });
 
   const hookForm = useForm();
-  const { setValue, trigger, errors, register } = hookForm;
+  const { setValue, trigger, errors, register, unregister } = hookForm;
+
+  useEffect(() => {
+    if (calendarToggle) {
+      register({ name: 'nameCalendarDesc' }, { required: intl.formatMessage({ id: 'courseForm.calendarDescValidationFailMsg' }) });
+    } else {
+      unregister('nameCalendarDesc');
+    }
+  }, [calendarToggle]);
+
+  useEffect(() => {
+    register({ name: 'nameTitle' }, { required: intl.formatMessage({id: 'courseForm.titleValidationFailMsg',}) });
+    register({ name: 'nameCode' }, { required: intl.formatMessage({id: 'courseForm.courseCodeValidationFailMsg',}) });
+    register({ name: 'nameDeadline' }, { required: intl.formatMessage({id: 'courseForm.deadlineValidationFailMsg',}), 
+      min: { value: user.role === roles.ADMIN_ROLE ? null : getFormattedDate(), message: intl.formatMessage({id: 'courseForm.deadlinePassedValidationFailMsg',}) } });
+    register({ name: 'nameDescription' }, { required: intl.formatMessage({id: 'courseForm.descriptionValidationFailMsg',}) });
+  }, []);
 
   useEffect(() => {
     setCourseTitle(course.title);
+    setValue('nameTitle', course.title);
     setCourseDescription(course.description);
+    setValue('nameDescription', course.description);
     setCourseCode(course.code);
+    setValue('nameCode', course.code);
     const qstns = course.questions.filter(q => q.questionType !== 'times').map(q => {
       return {
         id: q.id,
@@ -65,6 +86,7 @@ const EditView = ({ course, user, onCancelEdit }) => {
       .split('/');
     const dateString = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`;
     setDeadline(dateString);
+    setValue('nameDeadline', dateString);
     setPublished(course.published);
     const teachersCurrently = course.teachers;
     setCourseTeachers(teachersCurrently);
@@ -72,6 +94,7 @@ const EditView = ({ course, user, onCancelEdit }) => {
     setCalendarToggle(calendar);
     if (calendar) {
       setCalendarDescription(calendar.content);
+      setValue('nameCalendarDesc', calendar.content);
       setCalendarId(calendar.id);
     }
   }, []);
@@ -111,7 +134,9 @@ const EditView = ({ course, user, onCancelEdit }) => {
     });
 
     const questionsWOKeys = questions.map(q => {
-      const opts = q.questionChoices.map(qc => _.omit(qc, 'oName'));
+      const opts = q.questionChoices 
+      ? q.questionChoices.map(qc => _.omit(qc, 'oName'))
+      : [];
       const newQ = _.omit(q, 'qKey')
       newQ.questionChoices = opts;
       return newQ;
@@ -163,39 +188,52 @@ const EditView = ({ course, user, onCancelEdit }) => {
       <Form onSubmit={handleSubmit}>
         <Form.Field>
           <Form.Input
-            required
+            name='nameTitle'
             fluid
             label={intl.formatMessage({
               id: 'courseForm.titleForm',
             })}
             value={courseTitle}
-            onChange={event => setCourseTitle(event.target.value)}
+            onChange={async (e, { name, value }) => {
+              setCourseTitle(e.target.value);
+              setValue(name, value);
+              await trigger(name);
+            }}
+            error={errors.nameTitle?.message}
             data-cy="course-title-input"
           />
         </Form.Field>
 
         <Form.Group>
           <Form.Input
-            required
+            name='nameCode'
             label={intl.formatMessage({
               id: 'courseForm.courseCodeForm',
             })}
             value={courseCode}
-            onChange={event => setCourseCode(event.target.value)}
+            onChange={async (e, { name, value }) => {
+              setCourseCode(e.target.value);
+              setValue(name, value);
+              await trigger(name);
+            }}
+            error={errors.nameCode?.message}
             data-cy="course-code-input"
           />
 
           <Form.Input
-            required
+            name='nameDeadline'
             type="date"
             min={user.role === roles.ADMIN_ROLE ? null : getFormattedDate()}
             label={intl.formatMessage({
               id: 'courseForm.courseDeadlineForm',
             })}
             value={deadline}
-            onChange={event => {
-              setDeadline(event.target.value);
+            onChange={async (e, { name, value }) => {
+              setDeadline(e.target.value);
+              setValue(name, value);
+              await trigger(name);
             }}
+            error={errors.nameDeadline?.message}
             data-cy="course-deadline-input"
           />
 
@@ -212,12 +250,17 @@ const EditView = ({ course, user, onCancelEdit }) => {
 
         <Form.Field>
           <Form.TextArea
-            required
+            name='nameDescription'
             label={intl.formatMessage({
               id: 'courseForm.courseDescriptionForm',
             })}
             value={courseDescription}
-            onChange={event => setCourseDescription(event.target.value)}
+            onChange={async (e, { name, value }) => {
+              setCourseDescription(e.target.value);
+              setValue(name, value);
+              await trigger(name);
+            }}
+            error={errors.nameDescription?.message}
             data-cy="course-description-input"
           />
         </Form.Field>
@@ -230,10 +273,16 @@ const EditView = ({ course, user, onCancelEdit }) => {
         />
 
         <Form.Input
+          name='nameCalendarDesc'
           disabled={!calendarToggle}
           label={intl.formatMessage({ id: 'courseForm.timeFormLabel' })}
           value={calendarDescription}
-          onChange={event => setCalendarDescription(event.target.value)}
+          onChange={async (e, { name, value }) => {
+            setCalendarDescription(e.target.value);
+            setValue(name, value);
+            await trigger(name);
+          }}
+          error={errors.nameCalendarDesc?.message}
         />
 
         {course.published ? (
@@ -249,7 +298,7 @@ const EditView = ({ course, user, onCancelEdit }) => {
         <Form.Group style={{ flexWrap: 'wrap' }}>
           {questions?.map((q, index) => (
             <QuestionForm
-              key={`addQuestionField${q.id}`}
+              key={q.qKey ? q.qKey : q.id}
               qName={q.qKey ? q.qKey : q.id}
               setQuestions={setQuestions}
               questions={questions}
@@ -315,6 +364,7 @@ const EditView = ({ course, user, onCancelEdit }) => {
           onConfirm={handleSubmit}
           modalMessage={confirmPromptText}
           buttonDataCy="create-course-submit"
+          formControl={hookForm}
         >
           <FormattedMessage id="courseForm.confirmButton" />
         </ConfirmationButton>
