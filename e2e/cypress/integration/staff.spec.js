@@ -19,7 +19,7 @@ describe('Staff', () => {
       cy.contains(courses[2].title);
     });
 
-    it('Can see staffcontrols', () => {
+    it.only('Can see staffcontrols', () => {
       cy.visit('/courses');
       cy.get('[data-cy="checkbox-staff-controls"]').should('exist');
       // only own courses
@@ -458,7 +458,7 @@ describe('Staff', () => {
       cy.reload();
       cy.get('[data-cy="switch-view-button"]').click();
       cy.get('table').contains(users[0].firstname);
-      cy.get('table').contains(users[1].firstname);
+      cy.get('table').contains(users[3].firstname);
       cy.contains('No groups generated').should('not.exist');
     });
 
