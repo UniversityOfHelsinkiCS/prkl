@@ -55,6 +55,10 @@ export class Course extends BaseEntity {
 
   @Field(() => Boolean)
   @Column({ default: false })
+  groupsPublished: boolean;
+
+  @Field(() => Boolean)
+  @Column({ default: false })
   deleted: boolean;
 
   @CreateDateColumn({ type: "timestamptz" })

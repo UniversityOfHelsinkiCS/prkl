@@ -93,7 +93,11 @@ const defaultCourses = [
       {
         id: "c867f368-fa39-4ed4-96b8-d97cecec2c98",
         student: userData[0],
-      }
+      },
+      {
+        id: "722eaaa4-779d-44e0-ace6-d26be12c5759",
+        student: userData[3],
+      },
     ],
   },
   {
@@ -119,7 +123,7 @@ const defaultCourses = [
     deadline: "2100-12-31",
     code: "TC06",
     description: "Unpublished mock course by admin.",
-    teacher: userData[2],
+    teachers: [userData[2]],
     maxGroupSize: 10,
     minGroupSize: 5,
     published: false,
@@ -130,7 +134,7 @@ const defaultCourses = [
     deadline: "2100-12-31",
     code: "TC07",
     description: "Another mock course by staff.",
-    teacher: userData[1],
+    teachers: [userData[1]],
     maxGroupSize: 10,
     minGroupSize: 5,
     published: false,
@@ -170,6 +174,28 @@ const defaultCourses = [
         ],
       },
     ],
+  },
+  {
+    id: "4f6c1320-7f30-40d7-aac3-3a3800a0a7d3",
+    title: "Test Course 8 unpublished by Staff and Admin",
+    deadline: "2100-12-31",
+    code: "TC08",
+    description: "Description for a test course.",
+    teachers: [userData[1], userData[2]],
+    maxGroupSize: 10,
+    minGroupSize: 5,
+    published: false
+  },
+  {
+    id: "4b06a7ab-a473-461e-b5f2-90b886798287",
+    title: "Test Course 9 unpublished without registrations",
+    deadline: "2000-12-31",
+    code: "TC09",
+    description: "Description for a test course.",
+    teachers: [userData[1]],
+    maxGroupSize: 10,
+    minGroupSize: 5,
+    published: false
   },
 ];
 

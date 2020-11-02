@@ -7,6 +7,7 @@ describe('Menu', () => {
 
   it('Shows right for student', () => {
     cy.switchToStudent();
+    cy.wait(500);
     cy.get('[data-cy="menu-item-courses"]').should('exist');
     cy.get('[data-cy="menu-item-add-course"]').should('not.exist');
     cy.get('[data-cy="menu-item-user-mgmt"]').should('not.exist');
@@ -16,6 +17,7 @@ describe('Menu', () => {
 
   it('Shows right for staff', () => {
     cy.switchToStaff();
+    cy.wait(500);
     cy.get('[data-cy="menu-item-courses"]').should('exist');
     cy.get('[data-cy="menu-item-add-course"]').should('exist');
     cy.get('[data-cy="menu-item-user-mgmt"]').should('not.exist');

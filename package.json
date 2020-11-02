@@ -41,5 +41,8 @@
     "prkl",
     "projektiryhmäytymistyökalu",
     "toska"
-  ]
+  ],
+  "dependencies": {
+    "react-hook-form": "^6.9.6"
+  }
 }

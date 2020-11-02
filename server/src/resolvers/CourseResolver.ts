@@ -7,6 +7,7 @@ import { CourseInput } from "../inputs/CourseInput";
 import { getRepository } from "typeorm";
 import { QuestionChoice } from "../entities/QuestionChoice";
 import _ from 'lodash';
+import { UserResolver } from "./UserResolver";
 
 @Resolver()
 export class CourseResolver {
@@ -20,7 +21,7 @@ export class CourseResolver {
         .where("teacherId = user.id") // Pitääkö kurssin näkyä opiskelijalle, jos hän on luonut sen ollessaan opettaja (roolihan voi muuttua), vaikka kurssi ei olisi enää kurantti?
         .where("deleted = false")
         .andWhere("published = true")
-        .andWhere("deadline > NOW()")
+        //.andWhere("deadline > NOW()")
         .getMany();
     } else {
       return Course.find({ where: { deleted: false }, relations: ["teachers"] });
@@ -36,9 +37,11 @@ export class CourseResolver {
       throw new Error("Nothing to see here."); // Viesti on placeholder.
     }
 
+    /*
     if (course.deadline < new Date() && user.role < STAFF) {
       throw new Error("The registration deadline for this course has already passed.");
     }
+    */
 
     return course;
   }
@@ -58,6 +61,23 @@ export class CourseResolver {
     console.log('course is:', course);
     await course.save();
     return course;
+  }
+
+  @Authorized(STAFF)
+  @Mutation(() => Boolean)
+  async publishCourseGroups(@Ctx() context, @Arg("id") id: string): Promise<boolean> {
+    const { user } = context;
+    const course = await Course.findOne({ where: { id }, relations: ["teachers"] });
+    if (!course) {
+      throw new Error("Course with given id not found");
+    }
+    if (user.role === ADMIN || (course.teachers.find(t => t.id === user.id) !== undefined)) {
+      course.groupsPublished = true;
+      await course.save();
+      return true;
+    }
+    
+    throw new Error("No authorization for publishing groups");
   }
 
   @Authorized(STAFF)
@@ -123,6 +143,14 @@ export class CourseResolver {
     course.questions = qsts;
     course.published = data.published;
 
+    const courseTeachers = [];
+    const t = data.teachers.map(teacher => teacher.id);
+    for (let index in t) {
+      const id = t[index];
+      const user = await User.findOne({ where: { id } });
+      courseTeachers.push(user);
+    }
+    course.teachers = courseTeachers;
     await course.save();
 
     // Cleanup

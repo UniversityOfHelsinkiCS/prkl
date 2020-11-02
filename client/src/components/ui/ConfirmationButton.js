@@ -3,26 +3,26 @@ import { Button, Icon, Modal } from 'semantic-ui-react'
 
 const ConfirmationButton = (
   { onConfirm, 
+    isDisabled,
     modalMessage='Confirm action?', 
     children, 
     confirmButtonText='Confirm',
     cancelButtonText='Cancel',
-    color='primary',
+    color='blue',
     buttonDataCy,
     formControl }) => {
   const [open, setOpen] = React.useState(false)
 
   const formIsValidated = async () => {
-    const { triggerValidation, errors } = formControl;
-    await triggerValidation();
-
+    const { trigger, errors } = formControl;
+    await trigger();
     if (Object.keys(errors).length !== 0) {
       return false;
     }
     return true;
   };
 
-  const triggetClick = async e => {
+  const triggerClick = async e => {
     e.preventDefault();
     if (formControl && !await formIsValidated()) {
       return;
@@ -47,7 +47,7 @@ const ConfirmationButton = (
       //nOpen={() => setOpen(true)}
       open={open}
       size='small'
-      trigger={<Button data-cy={buttonDataCy} color={color} onClick={triggetClick}>{children}</Button>}
+      trigger={<Button disabled={isDisabled} data-cy={buttonDataCy} color={color} onClick={triggerClick}>{children}</Button>}
     >
       <Modal.Header>
         <Icon name='exclamation circle' /> {modalMessage}

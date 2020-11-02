@@ -91,6 +91,7 @@ export const COURSE_BY_ID = gql`
       code
       deadline
       published
+      groupsPublished
       questions {
         id
         content
@@ -125,10 +126,17 @@ export const CREATE_COURSE = gql`
       code
       deadline
       published
+      groupsPublished
       teachers {
         id
       }
     }
+  }
+`;
+
+export const PUBLISH_COURSE_GROUPS = gql`
+  mutation publishCourseGroups($id: String!) {
+    publishCourseGroups(id: $id)
   }
 `;
 
@@ -143,6 +151,7 @@ export const UPDATE_COURSE = gql`
       code
       deadline
       published
+      groupsPublished
       teachers {
         id
       }
@@ -249,9 +258,8 @@ export const COURSE_GROUPS = gql`
 `;
 
 export const GENERATE_GROUPS = gql`
-  mutation createGroups($data: GroupListInput!) {
-    createGroups(data: $data) {
-      id
+  mutation createSampleGroups($data: GroupListInput!) {
+    createSampleGroups(data: $data) {
       courseId
       students {
         id
@@ -260,6 +268,14 @@ export const GENERATE_GROUPS = gql`
         studentNo
         email
       }
+    }
+  }
+`;
+
+export const SAVE_GROUPS = gql`
+  mutation saveGeneratedGroups($data: GroupListInput!) {
+    saveGeneratedGroups(data: $data) {
+      courseId
     }
   }
 `;

@@ -1,20 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Radio, Segment } from 'semantic-ui-react';
+import { Form, Input, Message, Radio, Segment } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-const QuestionForm = ({ questionIndex, setQuestions, questions, hideAddRemoveButtons }) => {
+const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRemoveButtons, hookForm }) => {
   const intl = useIntl();
 
   const defaultQuestion = {
     questionType: 'singleChoice',
     content: '',
-    order: questionIndex
+    order: questionIndex,
+    qKey: qName
   }
 
+  const [questionType, setQuestionType] = useState('singleChoice');
   const [options, setOptions] = useState([]);
   const [question, setQuestion] = useState(defaultQuestion);
+  const [init, setInit] = useState(true);
+
+  const { setValue, trigger, errors, setError, clearErrors, register, unregister } = hookForm;
+
+  const missingChoicesErr = 'choice-' + qName;
 
   useEffect(() => {
+    register({ name: qName }, { required: intl.formatMessage({ id: 'questionForm.questionTitleValidationFailedMsg' }) });
+    if (questionType !== 'freeForm' && !options.length) {
+      setError(missingChoicesErr, {message: intl.formatMessage({ id: 'questionForm.questionChoicesMissingValidationFailedMsg' }) });
+    } else {
+      clearErrors(missingChoicesErr);
+    }
+  }, [options, question]);
+
+  useEffect(() => {
+    // FYI: qName ja oName -muuttujat on vain hook-formsin validointia varten. Näitä ei tallenneta.
+    // id:tä ei käytetty koska ei ole tiedossa, onko kysymystä vielä olemassa vai ei
+    // qName = tämän kysymyksen name-attribuutti DOMissa, oName = yksittäisen vastausvaihtoehdon vastaava
     const qstn = questions[questionIndex]
       ? {
         id: questions[questionIndex].id,
@@ -23,23 +42,37 @@ const QuestionForm = ({ questionIndex, setQuestions, questions, hideAddRemoveBut
           : defaultQuestion.questionType,
         content: questions[questionIndex].content,
         questionChoices: questions[questionIndex].questionChoices,
-        order: questionIndex
+        order: questionIndex,
+        qKey: qName
       }
       : defaultQuestion;
+    setQuestionType(qstn.questionType);
     setQuestion(qstn);
+    setValue(qName, qstn.content);
+    if (init) {
+      setQuestions(questions.map(q => q.qKey !== question.qKey ? q : question));
+      setInit(false);
+    }
     const opts = questions[questionIndex]?.questionChoices 
       ? questions[questionIndex].questionChoices.map(qc => {
+        // Käytä choicen id:tä jos semmoinen on, muuten oNamea jos on, muuten luo uusi oName timestampilla
+        const oName = qc.id 
+          ? qc.id : qc.oName 
+          ? qc.oName : 'question-' + qName + '-o-' + new Date().getTime().toString();
+        if (!qc.oName) register({name: oName}, {required: intl.formatMessage({ id: 'questionForm.questionChoiceTitleValidationFaildMsg' }) });
         return {
           id: qc.id,
           content: qc.content,
-          order: qc.order
+          order: qc.order,
+          oName: oName
         }
       })
       : options;
     setOptions(opts);
+    opts.forEach(o => { setValue(o.oName, o.content) });
   }, [questions]);
 
-  const handleOptionChange = index => (e, { value }) => {
+  const handleOptionChange = (e, index, value) => {
     const newOptions = options;
     newOptions[index] = { ...newOptions[index], content: value };
     setOptions(newOptions);
@@ -57,9 +90,13 @@ const QuestionForm = ({ questionIndex, setQuestions, questions, hideAddRemoveBut
 
   const handleTypeChange = value => {
     const questionObject = { ...question, questionType: value };
-    if (value === 'freeForm') {
+    // Remove options on type change to freeForm
+    if (questionType === 'freeForm') {
       delete questionObject.questionChoices;
+      options.forEach(o => unregister(o.oName));
+      setOptions([]);
     }
+    setQuestionType(value);
 
     const newQuestions = [...questions];
     newQuestions[questionIndex] = questionObject;
@@ -67,7 +104,7 @@ const QuestionForm = ({ questionIndex, setQuestions, questions, hideAddRemoveBut
     setQuestions(newQuestions);
   };
 
-  const handleTitleChange = (e, { value }) => {
+  const handleTitleChange = (e, value) => {
     const questionObject = { ...question, content: value };
     const newQuestions = [...questions];
     newQuestions[questionIndex] = questionObject;
@@ -76,9 +113,14 @@ const QuestionForm = ({ questionIndex, setQuestions, questions, hideAddRemoveBut
   };
 
   const handleAddForm = () => {
-    setOptions([...options, { order: options.length + 1, content: '' }]);
+    const oName = 'question-' + qName + '-o-' + new Date().getTime().toString();
+    register({name: oName}, {required: intl.formatMessage({ id: 'questionForm.questionChoiceTitleValidationFaildMsg' }) });
+    setOptions([...options, { oName: oName, order: options.length + 1, content: '' }]);
   };
+
   const handleRemoveForm = () => {
+    if (options.length === 0) return;
+    if (options) unregister(options[options.length-1].oName);
     const newOptions = options.slice(0, options.length - 1);
     const newQuestion = { ...question, questionChoices: newOptions };
     const newQuestions = [...questions];
@@ -90,6 +132,10 @@ const QuestionForm = ({ questionIndex, setQuestions, questions, hideAddRemoveBut
 
   const removeQuestion = (e) => {
     e.preventDefault();
+    unregister(qName);
+    options.forEach(o => unregister(o.oName));
+    clearErrors(missingChoicesErr);
+    setOptions([]);
     const newQuestions = questions.filter((q, i) => {
       return i !== questionIndex;
     }).map((q, i) => {
@@ -107,8 +153,13 @@ const QuestionForm = ({ questionIndex, setQuestions, questions, hideAddRemoveBut
       >X
       </Form.Button>}
       <Form.Field
-        required
-        onChange={handleTitleChange}
+        name={qName}
+        onChange={async (e, {name, value}) => {
+          handleTitleChange(e, value);
+          setValue(name, value);
+          await trigger(name);
+        }}
+        error={errors[qName]?.message}
         control={Input}
         value={question.content}
         label={intl.formatMessage({
@@ -169,10 +220,21 @@ const QuestionForm = ({ questionIndex, setQuestions, questions, hideAddRemoveBut
           </Form.Group>
           }
 
+          {errors[missingChoicesErr] &&
+          <Message
+            negative
+            header={errors[missingChoicesErr]?.message}
+          />}
           <Form.Group style={{ flexWrap: 'wrap' }}>
             {options.map((q, index) => (
               <Form.Field
-                onChange={handleOptionChange(index)}
+                name={q.oName}
+                onChange={async (e, {name, value}) => {
+                  handleOptionChange(e, index, value);
+                  setValue(name, value);
+                  await trigger(name);
+                }}
+                error={errors[q.oName]?.message}
                 control={Input}
                 type="text"
                 value={q.content}

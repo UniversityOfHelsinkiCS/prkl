@@ -3,7 +3,8 @@ import { Registration } from "../entities/Registration";
 import { RegistrationInput } from "../inputs/RegistrationInput";
 import { USER, STAFF, ADMIN } from "../utils/userRoles";
 
-import { Course } from "../entities/Course";@Resolver()
+import { Course } from "../entities/Course";
+@Resolver()
 export class RegistrationResolver {
   @Authorized(STAFF)
   @Query(() => [Registration])

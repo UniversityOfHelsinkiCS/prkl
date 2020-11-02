@@ -1,13 +1,16 @@
-import { Resolver, Query, Mutation, Arg, Authorized } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Authorized, Ctx } from "type-graphql";
 import { getRepository } from "typeorm";
 
 import { Group } from "../entities/Group";
 import { User } from "../entities/User";
+import { UserInput } from '../inputs/UserInput';
 import { Registration } from "../entities/Registration";
 import { GroupListInput } from "./../inputs/GroupListInput";
 
-import { STAFF } from "../utils/userRoles";
+import { STAFF, ADMIN } from "../utils/userRoles";
 import { formGroups } from "../algorithm/index";
+import { isContext } from "vm";
+import { Course } from "../entities/Course";
 
 const formNewGroups = async (courseId: string, minGroupSize: number) => {
   const registrations = await Registration.find({
@@ -28,13 +31,20 @@ const formNewGroups = async (courseId: string, minGroupSize: number) => {
 export class GroupResolver {
   @Authorized(STAFF)
   @Query(() => [Group])
-  courseGroups(@Arg("courseId") courseId: string): Promise<Group[]> {
-    return Group.find({
-      where: { courseId: courseId },
-      relations: ["students"],
-    });
+  async courseGroups(@Ctx() context, @Arg("courseId") courseId: string): Promise<Group[]> {
+    const { user } = context;
+    const course = await Course.findOne({ where: { id: courseId }, relations: ["teachers"] });
+    
+    if (user.role === ADMIN || course.teachers.find(t => t.id === user.id) !== undefined) {
+      return Group.find({
+        where: { courseId: courseId },
+        relations: ["students"],
+      });
+    }
+    throw new Error("Not your course.");
   }
 
+  // Is there need for an authorization? Or would it mess group view for students?
   @Query(() => [Group])
   async groupTimes(@Arg("studentId") studentId: string): Promise<Group[]> {
     return getRepository(Group)
@@ -57,19 +67,33 @@ export class GroupResolver {
       .getMany();
   }
 
+  // Returns sample groups based on received data, does not save them
   @Authorized(STAFF)
   @Mutation(() => [Group])
-  async createGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
+  async createSampleGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
     const { courseId, minGroupSize } = data;
-    (await Group.find({ where: { courseId: courseId } })).forEach(g => g.remove());
 
     const groups = data.groups && data.groups.length > 0 ? data.groups : await formNewGroups(courseId, minGroupSize);
 
     return Promise.all(
       groups.map(async g => {
         const students = await User.findByIds(g.userIds);
-        return Group.create({ courseId, students }).save();
+        return Group.create({ courseId, students });
       }),
+    );
+  }
+
+  @Authorized(STAFF)
+  @Mutation(() => [Group])
+  async saveGeneratedGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
+    const { courseId, groups } = data;
+    (await Group.find({ where: { courseId: courseId } })).forEach(g => g.remove());
+
+    return Promise.all(
+      groups.map(async g => {
+        const students = await User.findByIds(g.userIds);
+        return Group.create({ courseId, students }).save();
+      })
     );
   }
 }

@@ -2,26 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
 import { useHistory } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { Button, Loader } from 'semantic-ui-react';
-import { FormattedMessage, useIntl } from 'react-intl';
-import roles from '../../util/user_roles';
+import { Header, Button, Loader } from 'semantic-ui-react';
+import { FormattedMessage, FormattedDate, useIntl } from 'react-intl';
+import roles from '../../util/userRoles';
 import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
-import GroupsView from './GroupsView';
-import EditView from './EditView';
-import RegistrationList from './RegistrationList';
-import ConfirmationButton from '../misc/ConfirmationButton';
+import GroupsView from '../groups/GroupsView';
+import EditView from './CourseEdit';
+import RegistrationList from '../registrations/RegistrationList';
+import Registration from '../registrations/Registration';
+import ConfirmationButton from '../ui/ConfirmationButton';
+import UserGroup from '../users/UserGroup'
 
 export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
   const [user] = useStore('userStore');
-  const [course, setCourse] = useState({});
 
+  const [course, setCourse] = useState({});
   const [registrations, setRegistrations] = useState([]);
   const [regByStudentId, setRegByStudentId] = useState([]);
-  const [deleteCourse] = useMutation(DELETE_COURSE);
   const [view, setView] = useState('registrations');
+
+  const [deleteCourse] = useMutation(DELETE_COURSE);
+
   const history = useHistory();
   const intl = useIntl();
+
+  // course description
+  const paragraphs = course.description ? course.description.split('\n\n') : [];
 
   const { loading, error, data } = useQuery(COURSE_BY_ID, {
     variables: { id },
@@ -103,70 +110,106 @@ export default ({ id }) => {
     }
   };
 
-  const userIsRegistered = () => {
-    const found = user.registrations?.find(r => r.course.id === course.id);
-
-    if (found === undefined) {
+  // function to check if logged in user is teacher of this course or admin
+  const userHasAccess = () => {
+    const inTeachers = data.course.teachers.some(t => t.id === user.id);
+    if (user.role === roles.ADMIN_ROLE || inTeachers) {
+      return true;
+    } else {
       return false;
     }
-
-    return true;
   };
 
   return (
     <div>
-      <h2>{`${course.code} - ${course.title}`}</h2>
-      {user && user.role >= roles.STAFF_ROLE ? (
+      {/* course info, hide in edit view */}
+      {view !== 'edit' && <div>
+        <h2>{`${course.code} - ${course.title}`}</h2>
+        <Header as="h4" color="red">
+          <FormattedMessage id="course.deadline" />
+          &nbsp;
+          <FormattedDate value={course.deadline} />
+        </Header>
         <div>
-          {view === 'registrations' ? (
-            <div>
-              <p>
-                <Button onClick={handleGroupsView} color="blue">
-                  <FormattedMessage id="course.switchGroupsView" />
-                </Button>
-              </p>
-              {(user.role === roles.ADMIN_ROLE ||
-                (user.role === roles.STAFF_ROLE && !course.published && data.course.teachers.some(t => t.id === user.id))) && (
-                  <p>
-                    <ConfirmationButton
-                      onConfirm={handleDeletion}
-                      modalMessage={intl.formatMessage({ id: "course.confirmDelete" })}
-                      buttonDataCy="delete-course-button"
-                      color="red"
-                    >
-                      <FormattedMessage id="course.delete" />
-                    </ConfirmationButton>
-                  </p>
-                )}
-              {(user.role === roles.ADMIN_ROLE ||
-                (user.role === roles.STAFF_ROLE && !course.published)) && (
-                  <p>
-                    <Button onClick={handleEditCourse} color="blue" data-cy="edit-course-button">
-                      <FormattedMessage id="course.switchEditView" />
-                    </Button>
-                  </p>
-                )}
-            </div>
-          ) : (
-              <Button onClick={handleGroupsView} color="blue">
-                <FormattedMessage id="course.switchCourseView" />
-              </Button>
-            )}
+          {paragraphs.map(p => (
+            <p key={p}>{p}</p>
+          ))}
         </div>
-      ) : null}
-      {view === 'groups' ? (
-        <GroupsView course={course} registrations={registrations} regByStudentId={regByStudentId} />
-      ) : view === 'registrations' ? (
-        <RegistrationList
-          userIsRegistered={userIsRegistered}
-          course={course}
-          registrations={registrations}
-          setRegistrations={setRegistrations}
-          user={user}
-        />
-      ) : (
-            <EditView course={course} user={user} />
+        &nbsp;
+      </div>}
+
+      <div>
+        {userHasAccess() ? (
+          <div>
+          { view === 'edit' ? (
+            <EditView 
+              course={course} 
+              user={user}
+              onCancelEdit={handleEditCourse} 
+            />
+          ) : (
+          <div>
+
+            {/* staff & admin control buttons */}
+            <div>
+              {/* only admin can edit or delete after publish */}
+              {( !course.published || user.role === roles.ADMIN_ROLE ) ? (
+                <div>
+                  <div>
+                  <Button onClick={handleEditCourse} color="blue" data-cy="edit-course-button">
+                    <FormattedMessage id="course.switchEditView" />
+                  </Button>
+                  <ConfirmationButton
+                    onConfirm={handleDeletion}
+                    modalMessage={intl.formatMessage({ id: "course.confirmDelete" })}
+                    buttonDataCy="delete-course-button"
+                    color="red"
+                  >
+                    <FormattedMessage id="course.delete" />
+                  </ConfirmationButton>
+                  </div>
+                  &nbsp;
+                </div>
+              ) : null}
+                {/* groupView available regardless of publish */}
+                <Button onClick={handleGroupsView} color="blue" data-cy="switch-view-button">
+                  <FormattedMessage id={view === 'registrations' 
+                    ? "course.switchGroupsView"
+                    : "course.switchRegistrationsView" }/>
+                </Button>
+            </div>
+
+            {/* Views */}
+            <div>
+              { view === 'groups' ? (
+                <GroupsView 
+                  course={course}
+                  registrations={registrations}
+                  regByStudentId={regByStudentId} 
+                />
+              ) : (
+                <>
+                  <RegistrationList
+                    course={course}
+                    registrations={registrations}
+                    setRegistrations={setRegistrations}
+                    user={user}
+                  />
+                  <Registration course={course} />
+                </>
+              )}
+            </div>
+          </div>
           )}
+        </div>
+      ) : <Registration course={course} /> } {/* when !userHasAccess() */}
+      </div>
+      &nbsp;
+      { view === 'registrations' && course.groupsPublished ? (
+      <div>
+        <UserGroup user={user} course={course} />
+      </div>
+      ) : null}
     </div>
   );
 };

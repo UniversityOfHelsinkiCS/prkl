@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Checkbox, Table } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
-import { COURSE_BY_ID } from '../../GqlQueries';
 
 export default ({ courseTeachers, setCourseTeachers }) => {
   const [teachers, setTeachers] = useStore('teacherStore');
@@ -44,7 +43,7 @@ export default ({ courseTeachers, setCourseTeachers }) => {
             <Table.Row key={u.id}>
               <Table.Cell>{u.firstname}</Table.Cell>
               <Table.Cell>{u.lastname}</Table.Cell>
-              <Table.Cell>{createCheckbox(() => handleTeacherToggle(u), u.id === user.id)}</Table.Cell>
+              <Table.Cell>{createCheckbox(() => handleTeacherToggle(u), courseTeachers.map(t => t.id).includes(u.id))}</Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>

@@ -1,21 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useStore } from 'react-hookstore';
 import { useForm } from 'react-hook-form';
-import { FormattedMessage } from 'react-intl';
+import { Header, Icon } from 'semantic-ui-react';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from 'react-apollo';
+import { useHistory } from 'react-router-dom';
 import { FREEFORM, SINGLE_CHOICE, MULTI_CHOICE, TIMES } from '../../util/questionTypes';
-import { REGISTER_TO_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
-import SuccessMessage from '../forms/SuccessMessage';
+import { REGISTER_TO_COURSE, DELETE_REGISTRATION } from '../../GqlQueries';
 import RegistrationForm from './RegistrationForm';
+import ConfirmationButton from '../ui/ConfirmationButton';
 import timeChoices from '../../util/timeFormChoices';
 
-// Fix: do not bring whole course or do not bring id and questions...
-export default ({ course, courseId, questions }) => {
+export default ({ course }) => {
   const hookForm = useForm({ mode: 'onChange' });
   const { handleSubmit } = hookForm;
   const [createRegistration] = useMutation(REGISTER_TO_COURSE);
-  const [success, setSuccess] = useState(false);
+  const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
+
   const [user, setUser] = useStore('userStore');
+  const courseId = course.id;
+  const studentId = user.id;
+
+  const variables = { studentId, courseId };
+  const intl = useIntl();
+  const history = useHistory();
 
   const parseDay = (day, dayIndex, key) => {
     let prev = [1, timeChoices.no];
@@ -75,7 +83,7 @@ export default ({ course, courseId, questions }) => {
 
     answer.questionAnswers = Object.keys(data).map(key => {
       const res = { questionId: key };
-      const type = questions.filter(q => q.id === key)[0].questionType;
+      const type = course.questions.filter(q => q.id === key)[0].questionType;
 
       switch (type) {
         case FREEFORM:
@@ -121,23 +129,78 @@ export default ({ course, courseId, questions }) => {
       const regs = updatedUser.registrations.concat(newReg);
       updatedUser.registrations = regs;
       setUser(updatedUser);
-      setSuccess(true);
+      //TODO: add timeout success alert
     } catch (err) {
       // TODO: Handle errors.
       console.log(err);
     }
   };
 
-  return success ? (
-    <SuccessMessage>
-      <FormattedMessage id="forms.registrationSuccess" />
-    </SuccessMessage>
-  ) : (
-    <RegistrationForm
-      onSubmit={handleSubmit(onSubmit)}
-      questions={questions}
-      formControl={hookForm}
-    />
+  const handleRegistrationDeletion = async () => {
+    try {
+      await deleteRegistration({
+        variables
+      });
+      const updatedUser = user;
+      const regs = updatedUser.registrations.filter(r => r.course.id !== courseId);
+      updatedUser.registrations = regs;
+      setUser(updatedUser);
+    } catch (deletionError) {
+      console.log('error:', deletionError);
+    }
+    history.push('/courses');
+  }
+
+  const userIsRegistered = () => {
+    const found = user.registrations?.find(r => r.course.id === course.id);
+
+    if (found === undefined) {
+      return false;
+    }
+
+    return true;
+  };
+
+  return (
+    userIsRegistered() ? (
+      <div>
+        <br></br>
+        <Header as="h2">
+          <div>
+            <Icon name="thumbs up outline" data-cy="registered" />
+            <Header.Content>
+              <FormattedMessage id="course.userHasRegistered" />
+            </Header.Content>
+          </div>
+        </Header>
+        <Header as="h5">
+          <div>
+            <Header.Content>
+              <FormattedMessage id="course.groupsComeHere" />
+            </Header.Content>
+          </div>
+        </Header>
+        {new Date(course.deadline) > new Date() ? (
+          <ConfirmationButton
+            onConfirm={handleRegistrationDeletion}
+            modalMessage={intl.formatMessage({ id: "courseRegistration.cancelConfirmation" })}
+            buttonDataCy="cancel-registration-button"
+            color="red"
+          >
+            <FormattedMessage id="courseRegistration.cancel" />
+          </ConfirmationButton>
+        ) : null}
+      </div>
+    ) : (
+      <div>
+        {new Date(course.deadline) > new Date() ? (
+          <RegistrationForm
+            onSubmit={handleSubmit(onSubmit)}
+            questions={course.questions}
+            formControl={hookForm}
+          />
+        ) : null}
+      </div>
+    )
   );
-  // TODO: Add TOC checkbox.
 };
