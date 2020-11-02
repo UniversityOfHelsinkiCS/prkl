@@ -433,4 +433,48 @@ describe('Staff', () => {
       });
     });
   });
+
+  describe('managing groups', () => {
+    const course = courses[3];
+    
+    it('Can create and save groups', () => {
+      // Do not save first on purpose
+      cy.visit(`/course/${course.id}`);
+      cy.get('[data-cy="switch-view-button"]').click();
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      // Reload to check that no info has stored
+      cy.reload();
+      cy.get('[data-cy="switch-view-button"]').click();
+      cy.get('table').should('not.exist');
+      cy.contains('No groups generated');
+
+      // Generate groups and save them
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.get('[data-cy="save-groups-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      // Reload to be sure that information is stored at backend
+      cy.reload();
+      cy.get('[data-cy="switch-view-button"]').click();
+      cy.get('table').contains(users[0].firstname);
+      cy.get('table').contains(users[1].firstname);
+      cy.contains('No groups generated').should('not.exist');
+    });
+
+    it('Can edit groups', () => {
+      cy.visit(`/course/${course.id}`);
+      cy.get('[data-cy="switch-view-button"]').click();
+      cy.wait(500);
+      cy.get('[data-cy="save-groups-button"]').should('not.exist');
+
+      // Re-generate groups, would be nice also to be able to drag'n drop...
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.get('[data-cy="save-groups-button"]').should('exist');
+    });
+
+   // No need to test publish feature here, it's done in student tests.
+
+  });
 });

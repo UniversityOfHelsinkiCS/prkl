@@ -93,7 +93,11 @@ const defaultCourses = [
       {
         id: "c867f368-fa39-4ed4-96b8-d97cecec2c98",
         student: userData[0],
-      }
+      },
+      {
+        id: "722eaaa4-779d-44e0-ace6-d26be12c5759",
+        student: userData[1],
+      },
     ],
   },
   {
