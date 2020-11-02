@@ -62,6 +62,7 @@ const CourseForm = () => {
   useEffect(() => {
     if (calendarToggle) {
       register({ name: 'nameCalendarDesc' }, { required: intl.formatMessage({ id: 'courseForm.calendarDescValidationFailMsg' }) });
+      setValue('nameCalendarDesc', calendarDescription);
     } else {
       unregister('nameCalendarDesc');
     }
