@@ -172,7 +172,7 @@ export default ({ id }) => {
                 </div>
               ) : null}
                 {/* groupView available regardless of publish */}
-                <Button onClick={handleGroupsView} color="blue">
+                <Button onClick={handleGroupsView} color="blue" data-cy="switch-view-button">
                   <FormattedMessage id={view === 'registrations' 
                     ? "course.switchGroupsView"
                     : "course.switchRegistrationsView" }/>
