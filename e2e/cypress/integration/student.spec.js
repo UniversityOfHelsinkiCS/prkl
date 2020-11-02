@@ -37,12 +37,12 @@ describe('Student', () => {
     });
     
     it('Can not see non-valid courses', () => {
-      // unpublished course
       cy.visit('/');
-      cy.contains(courses[3].title).should('exist');
-      // past course
       cy.wait(500);
+      // unpublished course
       cy.contains(courses[2].title).should('not.exist');
+      // past course without registration
+      cy.contains(courses[8].title).should('not.exist');
   
       // deleted course
       cy.switchToAdmin();
@@ -59,8 +59,7 @@ describe('Student', () => {
 
     it('Can see past courses if registered', () => {
       cy.visit('/');
-      cy.wait(500);
-      cy.contains(courses[8].title).should('not.exist');
+      cy.contains(courses[3].title).should('exist');
     })
 
     it('Can not see staffcontrols', () => {
