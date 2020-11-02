@@ -168,6 +168,7 @@ export default {
     'groupsView.cancelGroups': 'Cancel',
     'groupsView.publishGroupsBtn': 'Publish groups',
     'groupsView.publishGroupsConfirm': 'Are you sure you want to publish groups?',
+    'groupsView.publishedGroupsInfo': 'Groups have been published, changes will be made visible immediately to members',
 
     'util.notAllowed': 'You do not have the required roles to access this content.',
   },

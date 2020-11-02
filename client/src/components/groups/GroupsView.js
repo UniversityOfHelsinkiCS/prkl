@@ -88,6 +88,7 @@ export default ({ course, registrations, regByStudentId }) => {
     const variables = { id };
     try {
       await publishCourseGroups({ variables });
+      setGroupsPublished(true);
     }
     catch (error) {
       console.log(error);
@@ -170,6 +171,8 @@ export default ({ course, registrations, regByStudentId }) => {
             </ConfirmationButton>}
           </Form>
           <p />
+
+            {groupsPublished && <SuccessMessage iconVar='info'>{intl.formatMessage({ id: 'groupsView.publishedGroupsInfo' })}</SuccessMessage>}
 
           {groupsUnsaved && <SuccessMessage iconVar='info'>{intl.formatMessage({ id: 'groupsView.unsavedGroupsInfo' })}</SuccessMessage>}
             {savedSuccessMsgVisible && <SuccessMessage>{intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' })}</SuccessMessage>}
