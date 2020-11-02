@@ -105,7 +105,7 @@ export default {
     'studentInfo.fullname': 'Name: {fullname}',
     'studentInfo.studentNo': 'Student number: {studentNo}',
     'studentInfo.email': 'Email: {email}',
-    'studentInfo.course': 'Enrolled courses',
+    'studentInfo.course': 'Enrolled courses - click the course to check your groups',
     'studentInfo.group': 'Groups assigned to',
     'studentInfo.noGroups': 'Not assigned to a group yet.',
 
