@@ -1,10 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { useQuery } from '@apollo/react-hooks';
+import roles from '../../util/userRoles';
 import { Checkbox, Table } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
+import { FACULTY_USERS } from '../../GqlQueries';
 
 export default ({ courseTeachers, setCourseTeachers }) => {
   const [teachers, setTeachers] = useStore('teacherStore');
   const [user] = useStore('userStore');
+
+  const { loading:facultyLoading, error:facultyError, data:facultyData } = useQuery(
+    FACULTY_USERS,
+    {
+      skip: user.role === roles.STUDENT_ROLE,
+    }
+  );
+
+  useEffect(() => {
+    if (!facultyLoading && facultyData?.facultyUsers !== undefined) {
+      const teachers = facultyData?.facultyUsers;
+      setTeachers(teachers);      
+    }  
+  }, [
+    facultyData,
+    facultyError,
+    facultyLoading,
+  ])
 
   const createCheckbox = (onChange, checked) => {
     return (

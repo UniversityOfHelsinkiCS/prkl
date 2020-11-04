@@ -8,7 +8,7 @@ import StudentInfo from './components/users/UserInfo';
 import CourseForm from './components/courses/CourseForm';
 import Courses from './components/courses/Courses';
 import Course from './components/courses/Course';
-import { ALL_COURSES, ALL_USERS, FACULTY_USERS } from './GqlQueries';
+import { ALL_COURSES, ALL_USERS } from './GqlQueries';
 import DevBar from './components/DevBar';
 import roles from './util/userRoles';
 import userService from './services/userService';
@@ -29,7 +29,6 @@ export default () => {
   const [courses, setCourses] = useStore('coursesStore');
   const [allUsers, setAllUsers] = useStore('allUsersStore');
   const [user, setUser] = useStore('userStore');
-  const [allTeachers, setAllTeachers] = useStore('teacherStore')
   const [privacyToggle] = useStore('toggleStore');
 
   const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
@@ -37,12 +36,6 @@ export default () => {
     ALL_USERS,
     {
       skip: user.role !== roles.ADMIN_ROLE,
-    }
-  );
-  const { loading:facultyLoading, error:facultyError, data:facultyData } = useQuery(
-    FACULTY_USERS,
-    {
-      skip: user.role === roles.STUDENT_ROLE,
     }
   );
 
@@ -65,11 +58,7 @@ export default () => {
         ? allUsersData.users.map(u => ({ ...u, email: dummyEmail, studentNo: dummyStudentNumber }))
         : allUsersData.users;
       setAllUsers(usersToSet);
-    }
-    if (!facultyLoading && facultyData?.facultyUsers !== undefined) {
-      const teachers = facultyData?.facultyUsers;
-      setAllTeachers(teachers);      
-    }  
+    } 
   }, [
     courseData,
     courseError,
@@ -79,10 +68,6 @@ export default () => {
     allUsersData,
     allUsersLoading,
     privacyToggle,
-    facultyData,
-    facultyError,
-    facultyLoading,
-    setAllTeachers
   ]);
 
   return (
