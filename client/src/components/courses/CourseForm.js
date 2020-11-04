@@ -24,7 +24,6 @@ const CourseForm = () => {
   const [deadline, setDeadline] = useState();
   const [calendarToggle, setCalendarToggle] = useState(false);
   const [publishToggle, setPublishToggle] = useState(false);
-  const [showTeachers, setShowTeachers] = useState(false);
   const [user] = useStore('userStore');
   //pick needed fields from current user.
   const { id, firstname, lastname, studentNo, email, role } = user;
@@ -120,9 +119,6 @@ const CourseForm = () => {
     history.push('/courses');
   };
 
-  const handleShowTeachers = () => {
-    setShowTeachers(!showTeachers);
-  };
 
   const handleAddForm = e => {
     e.preventDefault();
@@ -248,18 +244,10 @@ const CourseForm = () => {
           <FormattedMessage id="courseForm.teacherInfo" />
         </h3>
 
-        {!showTeachers ? (
-          <Form.Button type="button" onClick={handleShowTeachers} color="blue" data-cy="show-teacher-list-button">
-            <FormattedMessage id="course.showTeachers" />
-          </Form.Button>
-        ) : (
             <div>
-              <Form.Button type="button" onClick={handleShowTeachers} color="blue">
-                <FormattedMessage id="course.hideTeachers" />
-              </Form.Button>
               <TeacherList courseTeachers={courseTeachers} setCourseTeachers={setCourseTeachers} />
             </div>
-          )}
+          
 
         {courseTeachers.length === 0 ? (
           <Message icon info>
