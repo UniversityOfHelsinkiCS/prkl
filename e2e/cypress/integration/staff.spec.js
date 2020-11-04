@@ -19,7 +19,7 @@ describe('Staff', () => {
       cy.contains(courses[2].title);
     });
 
-    it.only('Can see staffcontrols', () => {
+    it('Can see staffcontrols', () => {
       cy.visit('/courses');
       cy.get('[data-cy="checkbox-staff-controls"]').should('exist');
       // only own courses
