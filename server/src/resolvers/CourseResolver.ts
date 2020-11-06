@@ -7,7 +7,6 @@ import { CourseInput } from "../inputs/CourseInput";
 import { getRepository } from "typeorm";
 import { QuestionChoice } from "../entities/QuestionChoice";
 import _ from 'lodash';
-import { UserResolver } from "./UserResolver";
 
 @Resolver()
 export class CourseResolver {
@@ -17,14 +16,22 @@ export class CourseResolver {
     if (user.role < STAFF) {
       return getRepository(Course)
         .createQueryBuilder("course")
-        .leftJoinAndSelect("course.teachers", "user")
+        .select(['course', 'user.id'])
+        .leftJoin("course.teachers", "user")
         .where("teacherId = user.id") // Pitääkö kurssin näkyä opiskelijalle, jos hän on luonut sen ollessaan opettaja (roolihan voi muuttua), vaikka kurssi ei olisi enää kurantti?
         .where("deleted = false")
         .andWhere("published = true")
         //.andWhere("deadline > NOW()")
         .getMany();
     } else {
-      return Course.find({ where: { deleted: false }, relations: ["teachers"] });
+      const courses = await Course.find({ where: { deleted: false }, relations: ["teachers"] });
+
+      if ( user.role < ADMIN ){
+        courses.map(c => {
+          c.teachers.map(t => {t.studentNo = null, t.shibbolethUid = null});
+        });
+      }
+      return courses;
     }
   }
 
@@ -43,7 +50,10 @@ export class CourseResolver {
     }
     */
 
-    return course;
+    if (user.role !== ADMIN && ( user.role < STAFF || (course.teachers.find(t => t.id === user.id) === undefined) ) ){
+      course.teachers.map(t => {t.studentNo = null, t.shibbolethUid = null});
+    }
+    return course
   }
 
   @Authorized(STAFF)
