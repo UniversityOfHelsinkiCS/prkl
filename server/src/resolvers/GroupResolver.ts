@@ -1,15 +1,11 @@
 import { Resolver, Query, Mutation, Arg, Authorized, Ctx } from "type-graphql";
 import { getRepository } from "typeorm";
-
 import { Group } from "../entities/Group";
 import { User } from "../entities/User";
-import { UserInput } from '../inputs/UserInput';
 import { Registration } from "../entities/Registration";
 import { GroupListInput } from "./../inputs/GroupListInput";
-
 import { STAFF, ADMIN } from "../utils/userRoles";
 import { formGroups } from "../algorithm/index";
-import { isContext } from "vm";
 import { Course } from "../entities/Course";
 
 const formNewGroups = async (courseId: string, minGroupSize: number) => {
@@ -49,9 +45,10 @@ export class GroupResolver {
   async groupTimes(@Arg("studentId") studentId: string): Promise<Group[]> {
     return getRepository(Group)
       .createQueryBuilder("group")
-      .innerJoinAndSelect("group.students", "student")
-      .innerJoinAndSelect("student.registrations", "registration")
-      .innerJoinAndSelect("registration.workingTimes", "times")
+      .select(['group', 'student.id', 'student.firstname', 'registration', 'times'])
+      .innerJoin("group.students", "student")
+      .innerJoin("student.registrations", "registration")
+      .innerJoin("registration.workingTimes", "times")
       .where(qb => {
         const subQuery = qb
           .subQuery()
