@@ -22,7 +22,7 @@ export class UserInput {
   @Field()
   lastname: string;
 
-  @Field()
+  @Field({ nullable: true })
   @IsOptional()
   @Length(9, 9)
   studentNo: string;

@@ -5,11 +5,19 @@ import { ADMIN, STAFF } from "../utils/userRoles";
 @Resolver()
 export class UserResolver {
   @Query(() => User)
-  currentUser(@Ctx() context): Promise<User> {
-    return User.findOne({
+  async currentUser(@Ctx() context): Promise<User> {
+    const user = await User.findOne({
       where: { shibbolethUid: context.user.shibbolethUid },
       relations: ["registrations", "registrations.course", "groups", "groups.students", "groups.course"],
     });
+
+    if ( user.role < ADMIN ){
+      user.groups.map(g => {
+        g.students.map(s => {s.studentNo = null, s.shibbolethUid = null})
+      })
+    }
+    
+    return user;
   }
 
   @Authorized(ADMIN)
@@ -20,8 +28,14 @@ export class UserResolver {
 
   @Authorized(STAFF)
   @Query(() => [User])
-  async facultyUsers(): Promise<User[]>{
-    return await User.find({ where: [{role:2},{role:3}] });
+  async facultyUsers(@Ctx() context): Promise<User[]>{
+    const {user} = context;
+    const users = await User.find({ where: [{role:2},{role:3}] });
+
+    if ( user.role < ADMIN ){
+      users.map(u => {u.studentNo = null, u.shibbolethUid = null});
+    }
+    return users;
   }
 
   @Authorized(ADMIN)
