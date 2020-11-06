@@ -55,7 +55,7 @@ export default ({ courseTeachers, setCourseTeachers }) => {
           selection
           options={optionTeachers}
           onChange={handleTeacherToggle}
-
+          data-cy="teacher-dropdown"
         />
       </Form.Field>
       
