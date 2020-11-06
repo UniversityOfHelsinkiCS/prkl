@@ -32,9 +32,9 @@ export class UserResolver {
     const {user} = context;
     const users = await User.find({ where: [{role:2},{role:3}] });
 
-/*     if ( user.role < ADMIN ){
+    if ( user.role < ADMIN ){
       users.map(u => {u.studentNo = null, u.shibbolethUid = null});
-    } */
+    }
     return users;
   }
 
