@@ -193,7 +193,6 @@ export default ({ id }) => {
                     course={course}
                     registrations={registrations}
                     setRegistrations={setRegistrations}
-                    user={user}
                   />
                   <Registration course={course} />
                 </>
