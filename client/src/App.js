@@ -17,6 +17,7 @@ import KeepAlive from './components/misc/KeepAlive';
 import Users from './components/users/Users';
 import { dummyEmail, dummyStudentNumber } from './util/privacyDefaults';
 import PrivateRoute from './components/ui/PrivateRoute';
+import { initShibbolethPinger } from 'unfuck-spa-shibboleth-session';
 
 createStore('coursesStore', []);
 createStore('groupsStore', []);
@@ -40,6 +41,10 @@ export default () => {
   );
 
   userService(useQuery, useEffect, setUser);
+
+  useEffect(() => {
+    initShibbolethPinger();
+  }, []);
 
   useEffect(() => {
     if (!courseLoading) {
