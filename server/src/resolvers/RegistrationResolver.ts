@@ -4,6 +4,7 @@ import { RegistrationInput } from "../inputs/RegistrationInput";
 import { USER, STAFF, ADMIN } from "../utils/userRoles";
 
 import { Course } from "../entities/Course";
+import { User } from "../entities/User";
 @Resolver()
 export class RegistrationResolver {
   @Authorized(STAFF)
@@ -63,8 +64,14 @@ export class RegistrationResolver {
     };
     if (!auth) throw new Error("You are not authorized to cancel his registration or deadline has passed.");
     
-    const registration = await Registration.findOne({ where: { studentId, courseId }, relations: ["student", "course"] });
+    const registration = await Registration.findOne({ where: { studentId, courseId }, relations: ["student", "student.groups", "course"] });
     if (!registration) throw new Error("Registration not found!");
+
+    // If the user has been assigned to a group on this course, unassign them
+    const groups = await registration.student.groups.filter(g => g.courseId !== courseId);
+    const unregisteredUser = await User.findOne({ id: studentId });
+    unregisteredUser.groups = groups;
+    await unregisteredUser.save();
 
     await registration.remove();
 

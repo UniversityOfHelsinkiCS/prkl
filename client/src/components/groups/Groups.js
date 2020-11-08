@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
-import { Table, Header, List, Button, Segment, Grid } from 'semantic-ui-react';
+import { Table, Header, List, Button, Segment, Grid, Popup } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
 import { GENERATE_GROUPS } from '../../GqlQueries';
@@ -16,6 +16,7 @@ export default ({ course, regByStudentId, setGroupsUnsaved }) => {
   //const [generateGroups] = useMutation(GENERATE_GROUPS);
 
   const [showGroupTimes, setShowGroupTimes] = useState([]);
+  const [groupTimesVisible, setGroupTimesVisible] = useState(false);
 
   useEffect(() => {
     if (groups.length > 0) {
@@ -79,10 +80,20 @@ export default ({ course, regByStudentId, setGroupsUnsaved }) => {
   };
 
   const handleShowGroupTimesClick = index => {
+    setGroupTimesVisible(!groupTimesVisible);
     let newShowTimes = [...showGroupTimes];
     newShowTimes[index] = !newShowTimes[index];
     setShowGroupTimes(newShowTimes);
   };
+
+  const popupTimesDisplay = (student) => (
+    <HourDisplay
+      groupId={student.id}
+      header={`${student.firstname} ${student.lastname}`}
+      students={1}
+      times={count([regByStudentId[student.studentNo]])}
+    />
+  )
 
   return (
     <div>
@@ -103,7 +114,11 @@ export default ({ course, regByStudentId, setGroupsUnsaved }) => {
                 <div>
                   <FormattedMessage id="groups.title" />
                   {tableIndex + 1}
-                  <Button onClick={() => handleShowGroupTimesClick(tableIndex)}>
+                  <Button
+                    style={{ marginLeft: '10px' }}
+                    onClick={() => handleShowGroupTimesClick(tableIndex)}
+                    disabled={ !course.questions.some(q => q.questionType === 'times') }
+                    >
                     <FormattedMessage id="groups.toggleGroupTimes" />
                   </Button>
                   {removeGroupButton(tableIndex)}
@@ -136,7 +151,13 @@ export default ({ course, regByStudentId, setGroupsUnsaved }) => {
                       index={rowIndex}
                       tableIndex={tableIndex}
                     >
-                      <Table.Cell>{`${student.firstname} ${student.lastname}`}</Table.Cell>
+                      <Popup 
+                        content={() => popupTimesDisplay(student)} 
+                        trigger={
+                        <Table.Cell>{`${student.firstname} ${student.lastname}`}</Table.Cell>
+                        }
+                        disabled={ groupTimesVisible || !course.questions.some(q => q.questionType === 'times') }
+                      />
                       <Table.Cell>
                         {privacyToggle ? dummyStudentNumber : student.studentNo}
                       </Table.Cell>
