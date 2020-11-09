@@ -108,16 +108,13 @@ describe('Staff', () => {
       cy.get('[data-cy="course-code-input"]').type('CWT123');
       cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
       cy.get('[data-cy="course-description-input"]').type('Description for test course.');
-      // set all checkboxes to false
-      cy.get('[data-cy="teacher-dropdown"]').click();
-      cy.contains(users[1].firstname).click();
-      cy.contains(users[1].firstname).get('.delete').click();
+      // delete pre selected teacher (staff)
+      cy.get('[data-cy="teacher-dropdown"]').contains(users[1].firstname).children().should('have.class', 'delete icon').click();
 
       cy.get('[data-cy="publish-checkbox"]').click();
-
       cy.get('[data-cy="create-course-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
-
+      //check that course has been created and staff added as teacher
       cy.visit('/courses');
       cy.get('[data-cy="CWT123"]').should('exist');
       cy.get('[data-cy="CWT123"]').within(() => {
@@ -130,14 +127,14 @@ describe('Staff', () => {
       // create course as admin
       cy.switchToAdmin();
       cy.get('[data-cy="menu-item-add-course"]').click();
-
       cy.get('[data-cy="course-title-input"]').type('Course with multiple teachers');
       cy.get('[data-cy="course-code-input"]').type('CWMT123');
       cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
       cy.get('[data-cy="course-description-input"]').type('Description for test course.');
-      // set staff and admin as teachers
-      cy.get('[data-cy="teacher-dropdown"]').click();
-      cy.contains(users[1].firstname).click();
+      // admin should be pre selected
+      cy.get('[data-cy="teacher-dropdown"]').contains(users[2].firstname).children().should('have.class', 'delete icon');
+      // add staff as teacher
+      cy.get('[data-cy="teacher-dropdown"]').click().contains(users[1].firstname).click();
 
       cy.get('[data-cy="create-course-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
@@ -146,13 +143,12 @@ describe('Staff', () => {
       cy.visit('/courses');
       cy.wait(500);
       cy.get('[data-cy="CWMT123"]').within(() => {
-        cy.get('[data-cy="tag-own"]').should("not.exist");
+        cy.get('[data-cy="tag-own"]').should("exist");
       });
       cy.contains('CWMT123 - Course with multiple teachers').click();
-
       cy.get('[data-cy="registration-table"]').should('exist');
 
-      // check that registration table exists for staff (staff is a teacher on this course)
+      // check that staff is also a teacher of this course
       cy.switchToStaff();
       cy.visit('/courses');
       cy.get('[data-cy="CWMT123"]').within(() => {
@@ -164,20 +160,18 @@ describe('Staff', () => {
     });
 
     it('Correct person is toggled', () => {
-      // check that when staff is creating course, staff is checked and admin unchecked
+      // check that when staff is creating course, staff is preselected and admin is not
+      cy.get('[data-cy="menu-item-add-course"]').click();
+      cy.get('[data-cy="teacher-dropdown"]').contains(users[1].firstname).children().should('have.class', 'delete icon');
+      cy.get('[data-cy="teacher-dropdown"]').click().contains(users[2].firstname).children().should('not.exist');
+      
       // and vice versa when admin is the creator
-      cy.get('[data-cy="menu-item-add-course"]').click();
-      cy.get('[data-cy="show-teacher-dropdown"]').click();
-      cy.get('[data-cy="checkbox-course-teachers"]').first().should('have.class', 'checked');
-      cy.get('[data-cy="checkbox-course-teachers"]').last().should('not.have.class', 'checked');
-
       cy.switchToAdmin();
-
       cy.get('[data-cy="menu-item-add-course"]').click();
-      cy.get('[data-cy="teacher-dropdown"]').click();
-      cy.get('[data-cy="checkbox-course-teachers"]').first().should('not.have.class', 'checked');
-      cy.get('[data-cy="checkbox-course-teachers"]').last().should('have.class', 'checked');
+      cy.get('[data-cy="teacher-dropdown"]').contains(users[2].firstname).children().should('have.class', 'delete icon');
+      cy.get('[data-cy="teacher-dropdown"]').click().contains(users[1].firstname).children().should('not.exist');
     });
+
   });
 
   describe('editing existing course', () => {
@@ -302,8 +296,7 @@ describe('Staff', () => {
       cy.contains(courses[2].title).click();
       cy.get('[data-cy="edit-course-button"]').click();
 
-      cy.get('[data-cy="teacher-dropdown"]').click();
-      cy.get('[data-cy="checkbox-course-teachers"]').last().click();
+      cy.get('[data-cy="teacher-dropdown"]').click().contains(users[2].firstname).click();
       cy.get('[data-cy="create-course-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
@@ -326,8 +319,8 @@ describe('Staff', () => {
       cy.contains(courses[7].title).click();
       cy.get('[data-cy="edit-course-button"]').click();
 
-      cy.get('[data-cy="show-teacher-list-button"]').click();
-      cy.get('[data-cy="checkbox-course-teachers"]').last().click();
+      // remove admin from teachers and save changes
+      cy.get('[data-cy="teacher-dropdown"]').contains(users[2].firstname).children().should('have.class', 'delete icon').click();
       cy.get('[data-cy="create-course-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
@@ -349,9 +342,9 @@ describe('Staff', () => {
       cy.contains(courses[2].title).click();
       cy.get('[data-cy="edit-course-button"]').click();
 
-      cy.get('[data-cy="show-teacher-list-button"]').click();
-      cy.get('[data-cy="checkbox-course-teachers"]').first().click();
-      cy.get('[data-cy="checkbox-course-teachers"]').last().click();
+      // admin becomes only teacher
+      cy.get('[data-cy="teacher-dropdown"]').contains(users[1].firstname).children().should('have.class', 'delete icon').click();
+      cy.get('[data-cy="teacher-dropdown"]').click().contains(users[2].firstname).click();
       cy.get('[data-cy="create-course-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
