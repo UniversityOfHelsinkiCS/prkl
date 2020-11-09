@@ -28,9 +28,7 @@ const EditView = ({ course, user, onCancelEdit }) => {
   const intl = useIntl();
   const [updateCourse] = useMutation(UPDATE_COURSE);
 
-  const {id, firstname, lastname, studentNo, email, role} = user;
-  const currentUser = {id, firstname, lastname, studentNo, email, role};
-  const [courseTeachers, setCourseTeachers] = useState([]);
+  const [courseTeachers, setCourseTeachers] = useState(course.teachers);
 
   const [courses, setCourses] = useStore('coursesStore');
 
@@ -88,8 +86,6 @@ const EditView = ({ course, user, onCancelEdit }) => {
     setDeadline(dateString);
     setValue('nameDeadline', dateString);
     setPublished(course.published);
-    const teachersCurrently = course.teachers;
-    setCourseTeachers(teachersCurrently);
     const calendar = course.questions.find(q => q.questionType === 'times');
     setCalendarToggle(calendar);
     if (calendar) {
