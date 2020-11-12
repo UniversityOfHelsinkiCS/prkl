@@ -361,6 +361,19 @@ describe('Staff', () => {
       });
     });
 
+    it('Cannot remove all teachers from course', () => {
+      cy.visit('/courses');
+      cy.contains(courses[2].title).click();
+      cy.get('[data-cy="edit-course-button"]').click();
+
+      cy.get('[data-cy="teacher-dropdown"]').contains(users[1].firstname).children().should('have.class', 'delete icon').click();
+
+      cy.visit('/courses');
+      cy.get('[data-cy="TC03"]').within(() => {
+        cy.get('[data-cy="tag-own"]').should("exist");
+      });
+    });
+
     it('Can not edit course after publishing it', () => {
       cy.visit('/courses');
       cy.contains(courses[2].title).click();
@@ -466,6 +479,20 @@ describe('Staff', () => {
       cy.get('table').contains(users[3].firstname);
       cy.contains('No groups generated').should('not.exist');
     });
+
+    it('Can drag from group to another', () => {
+      cy.visit(`/course/${course.id}`);
+      cy.get('[data-cy="switch-view-button"]').click();
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      const dataTransfer = new DataTransfer;
+      cy.get('table').contains(users[3].firstname).trigger('dragstart', {dataTransfer});
+      cy.get('table').contains(users[0].firstname).trigger('drop', {dataTransfer});
+      cy.get('table').contains(users[3].firstname).trigger('dragend');
+      cy.get('[data-cy="save-groups-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.contains('Group2').should('not.exist');
+    })
 
     it('Can edit groups', () => {
       cy.visit(`/course/${course.id}`);

@@ -124,6 +124,19 @@ describe('Admin', () => {
     });
   });
 
+  it('Cannot remove all teachers from course', () => {
+    cy.visit('/courses');
+    cy.contains(courses[1].title).click();
+    cy.get('[data-cy="edit-course-button"]').click();
+
+    cy.get('[data-cy="teacher-dropdown"]').contains(users[2].firstname).children().should('have.class', 'delete icon').click();
+
+    cy.visit('/courses');
+    cy.get('[data-cy="TC02"]').within(() => {
+      cy.get('[data-cy="tag-own"]').should("exist");
+    });
+  });
+
   it('Can only edit textual content of existing questions in a published course', () => {
     const course = courses[1];
     const testTitle = 'test title';
