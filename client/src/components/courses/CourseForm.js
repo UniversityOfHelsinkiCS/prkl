@@ -1,48 +1,62 @@
+// Renders form for both course addition and course edition 
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Form, Icon, Popup, Message, Input } from 'semantic-ui-react';
+import { Form, Icon, Popup, Message } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
-import { CREATE_COURSE } from '../../GqlQueries';
+import { CREATE_COURSE, UPDATE_COURSE } from '../../GqlQueries';
 import QuestionForm from '../questions/QuestionForm';
 import TeacherList from './TeacherList';
 import ConfirmationButton from '../ui/ConfirmationButton';
+import roles from '../../util/userRoles';
 import { useForm } from 'react-hook-form';
 import _ from 'lodash';
 
-// TODO: Tämä ja CourseEdit pitäisi yhdistää, hyvin runsaasti copypastea
 // TODO: Validointi aiheuttaa pientä mutta huomattavaa viivettä kirjoittaessa fieldeihin ym.
 //       Pitäisi katsoa saisiko suorituskykyä vähän parannettua jotenkin, kuitenkin validointitoiminnallisuus säilyttäen
 // TODO: Submit-buttonin disablointi kun validointi epäonnistunut (kunnes korjatut)
 // TODO: Missing key prop -virhe kyssäriä lisättäessä, vaikka ei pitäisi tulla (?)
-const CourseForm = () => {
+const CourseForm = ({ course, user, onCancelEdit, editView }) => {
+  const [courses, setCourses] = useStore('coursesStore');
+  const [currentUser] = useStore('userStore');
+
   const [courseTitle, setCourseTitle] = useState('');
   const [courseDescription, setCourseDescription] = useState('');
   const [courseCode, setCourseCode] = useState('');
   const [questions, setQuestions] = useState([]);
-  const [deadline, setDeadline] = useState();
-  const [calendarToggle, setCalendarToggle] = useState(false);
+  const [deadline, setDeadline] = useState('');
+
   const [publishToggle, setPublishToggle] = useState(false);
-  const [user] = useStore('userStore');
-  //pick needed fields from current user.
-  const { id, firstname, lastname, studentNo, email, role } = user;
-  const currentUser = { id, firstname, lastname, studentNo, email, role };
-  const [courseTeachers, setCourseTeachers] = useState([currentUser]);
+  const [calendarToggle, setCalendarToggle] = useState(false);
 
-  const [courses, setCourses] = useStore('coursesStore');
-
-  const [createCourse] = useMutation(CREATE_COURSE);
+  const history = useHistory();
   const intl = useIntl();
+
+  const [updateCourse] = useMutation(UPDATE_COURSE);
+  const [createCourse] = useMutation(CREATE_COURSE);
+
+  const {id, firstname, lastname, studentNo, email, role} = currentUser;
+  const userFields = {id, firstname, lastname, studentNo, email, role};
+  const currentTeachers = editView ? course.teachers : [userFields];
+  const [courseTeachers, setCourseTeachers] = useState(currentTeachers);
+
+  const [calendarId, setCalendarId] = useState('');
   const [calendarDescription, setCalendarDescription] = useState(
     `${intl.formatMessage({ id: 'courseForm.timeQuestionDefault' })}`
   );
 
-  const promptText = intl.formatMessage({
-    id: publishToggle ? 'courseForm.confirmPublishSubmit' : 'courseForm.confirmSubmit',
-  });
+  let promptText = undefined; 
+  if (editView) {
+    promptText = intl.formatMessage({
+      id: publishToggle ? 'editView.confirmPublishSubmit' : 'editView.confirmSubmit',
+    });  
+  } else {
+    promptText = intl.formatMessage({
+      id: publishToggle ? 'courseForm.confirmPublishSubmit' : 'courseForm.confirmSubmit',
+    });
+  }
 
-  const history = useHistory();
   const today = new Date();
   const dd = String(today.getDate()).padStart(2, '0');
   const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -71,16 +85,74 @@ const CourseForm = () => {
     register({ name: 'nameTitle' }, { required: intl.formatMessage({id: 'courseForm.titleValidationFailMsg',}) });
     register({ name: 'nameCode' }, { required: intl.formatMessage({id: 'courseForm.courseCodeValidationFailMsg',}) });
     register({ name: 'nameDeadline' }, { required: intl.formatMessage({id: 'courseForm.deadlineValidationFailMsg',}), 
-      min: { value: todayParsed, message: intl.formatMessage({id: 'courseForm.deadlinePassedValidationFailMsg',}) } });
+      min: editView ? { value: user === undefined || user.role === roles.ADMIN_ROLE ? null : getFormattedDate(), message: intl.formatMessage({id: 'courseForm.deadlinePassedValidationFailMsg',}) } 
+                    : { value: todayParsed, message: intl.formatMessage({id: 'courseForm.deadlinePassedValidationFailMsg',}) } });
     register({ name: 'nameDescription' }, { required: intl.formatMessage({id: 'courseForm.descriptionValidationFailMsg',}) });
   }, []);
 
+  useEffect(() => {
+    if (editView) {
+      setCourseTitle(course.title);
+      setValue('nameTitle', course.title);
+      setCourseDescription(course.description);
+      setValue('nameDescription', course.description);
+      setCourseCode(course.code);
+      setValue('nameCode', course.code);
+      const qstns = course.questions.filter(q => q.questionType !== 'times').map(q => {
+        return {
+          id: q.id,
+          order: q.order,
+          content: q.content,
+          questionType: q.questionType,
+          questionChoices: q.questionChoices.map(qc => {
+            return { id: qc.id, content: qc.content, order: qc.order };
+          })
+        };
+      });
+      setQuestions(qstns);
+      const dateParts = intl
+        .formatDate(course.deadline, { year: 'numeric', month: '2-digit', day: '2-digit' })
+        .split('/');
+      const dateString = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`;
+      setDeadline(dateString);
+      setValue('nameDeadline', dateString);
+      setPublishToggle(course.published);
+      const calendar = course.questions.find(q => q.questionType === 'times');
+      setCalendarToggle(calendar);
+      if (calendar) {
+        setCalendarDescription(calendar.content);
+        setValue('nameCalendarDesc', calendar.content);
+        setCalendarId(calendar.id);
+      }
+    }
+  }, []);
+
+  const getFormattedDate = (setYesterday) => {
+    const date = new Date();
+    if (setYesterday) date.setDate(date.getDate() - 1);
+    const dd = String(date.getDate()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  const closeRegistration = e => {
+    e.preventDefault();
+    setDeadline(getFormattedDate(true));
+  }
+
   const handleSubmit = async () => {
-    if (calendarToggle) {
+    // TODO: Add logic for checking whether there is actually anything to update
+    if (editView && calendarToggle) {
+      calendarQuestion.id = calendarId ? calendarId : undefined;
+      calendarQuestion.content = calendarDescription;
+      calendarQuestion.order = questions.length;
+    }
+    if (!editView && calendarToggle) {
       calendarQuestion.content = calendarDescription;
     }
 
-    const teachersRemoveType = courseTeachers.map(t => {
+    const teacherRemoveType = courseTeachers.map(t => {
       const newT = { ...t }
       delete newT.__typename;
       return newT;
@@ -88,8 +160,8 @@ const CourseForm = () => {
 
     const questionsWOKeys = questions.map(q => {
       const opts = q.questionChoices 
-        ? q.questionChoices.map(qc => _.omit(qc, 'oName'))
-        : [];
+      ? q.questionChoices.map(qc => _.omit(qc, 'oName'))
+      : [];
       const newQ = _.omit(q, 'qKey')
       newQ.questionChoices = opts;
       return newQ;
@@ -100,25 +172,35 @@ const CourseForm = () => {
       title: courseTitle,
       description: courseDescription,
       code: courseCode,
-      minGroupSize: 1,
-      maxGroupSize: 1,
-      teachers: teachersRemoveType,
+      minGroupSize: editView ? course.minGroupSize : 1,
+      maxGroupSize: editView ? course.maxGroupSize : 1,
       deadline: new Date(deadline).setHours(23, 59),
-      published: !!publishToggle,
-      questions: calendarToggle ? questionsWOKeys.concat(calendarQuestion) : questionsWOKeys
-    };
-    const variables = { data: { ...courseObject } };
+      teachers: teacherRemoveType,
+      questions: calendarToggle ? questionsWOKeys.concat(calendarQuestion) : questionsWOKeys,
+      published: publishToggle,
+    }
+    const variables = { id: editView ? course.id : undefined, data: { ...courseObject } };
     try {
-      const result = await createCourse({
-        variables,
-      });
-      setCourses(courses.concat(result.data.createCourse));
+      if (editView) {   
+        const result = await updateCourse({
+          variables,
+        });
+        setCourses(
+          courses.map(c => {
+            return c.id !== course.id ? c : result.data.updateCourse;
+          })
+        );
+      } else {      
+        const result = await createCourse({
+          variables,
+        });
+        setCourses(courses.concat(result.data.createCourse));
+      }
     } catch (error) {
       console.log('error:', error);
     }
     history.push('/courses');
   };
-
 
   const handleAddForm = e => {
     e.preventDefault();
@@ -126,11 +208,16 @@ const CourseForm = () => {
   };
 
   return (
-    <div>
-      <h1>
-        <FormattedMessage id="courseForm.pageTitle" />
-      </h1>
-
+    <div style={{ marginTop: '15px' }}>
+      {editView ? (
+        <h4>
+         <FormattedMessage id="editView.pageTitle" />
+        </h4>
+      ) : (
+        <h1>
+          <FormattedMessage id="courseForm.pageTitle" />
+        </h1>
+      )}
       <Form onSubmit={handleSubmit}>
         <Form.Field>
           <Form.Input
@@ -139,6 +226,7 @@ const CourseForm = () => {
             label={intl.formatMessage({
               id: 'courseForm.titleForm',
             })}
+            value={courseTitle}
             onChange={async (e, { name, value }) => {
               setCourseTitle(e.target.value);
               setValue(name, value);
@@ -155,6 +243,7 @@ const CourseForm = () => {
             label={intl.formatMessage({
               id: 'courseForm.courseCodeForm',
             })}
+            value={courseCode}
             onChange={async (e, { name, value }) => {
               setCourseCode(e.target.value);
               setValue(name, value);
@@ -167,9 +256,11 @@ const CourseForm = () => {
           <Form.Input
             name='nameDeadline'
             type="date"
+            min={editView && user.role === roles.ADMIN_ROLE ? null : getFormattedDate()}
             label={intl.formatMessage({
               id: 'courseForm.courseDeadlineForm',
             })}
+            value={deadline}
             onChange={async (e, { name, value }) => {
               setDeadline(e.target.value);
               setValue(name, value);
@@ -178,6 +269,16 @@ const CourseForm = () => {
             error={errors.nameDeadline?.message}
             data-cy="course-deadline-input"
           />
+          
+          {(editView && user.role === roles.ADMIN_ROLE) &&
+            <Form.Button 
+              onClick={closeRegistration} 
+              label={intl.formatMessage({id: 'editView.closeRegistrationLabel'})}
+              data-cy="course-deadline-control"
+            >
+              {intl.formatMessage({id: 'editView.closeRegistrationBtn'})}
+            </Form.Button>
+          }
         </Form.Group>
 
         <Form.Field>
@@ -186,6 +287,7 @@ const CourseForm = () => {
             label={intl.formatMessage({
               id: 'courseForm.courseDescriptionForm',
             })}
+            value={courseDescription}
             onChange={async (e, { name, value }) => {
               setCourseDescription(e.target.value);
               setValue(name, value);
@@ -197,7 +299,9 @@ const CourseForm = () => {
         </Form.Field>
 
         <Form.Checkbox
+          disabled={editView && course.published}
           label={intl.formatMessage({ id: 'courseForm.includeCalendar' })}
+          checked={!!calendarToggle}
           onClick={() => setCalendarToggle(!calendarToggle)}
         />
 
@@ -212,29 +316,33 @@ const CourseForm = () => {
             await trigger(name);
           }}
           error={errors.nameCalendarDesc?.message}
-          data-cy="course-calendar-description-input"
         />
 
-        <Form.Group>
-          <Form.Button type="button" onClick={handleAddForm} color="green">
-            <FormattedMessage id="courseForm.addQuestion" />
-          </Form.Button>
+        {editView && course.published ? (
+          <p style={{ "color": "#b00" }}> {intl.formatMessage({ id: 'editView.coursePublishedNotification' })} </p>
+        ) : (
+          <Form.Group>
+            <Form.Button type="button" onClick={handleAddForm} color="green" data-cy="add-question-button" >
+              <FormattedMessage id="courseForm.addQuestion" />
+            </Form.Button>
 
-          <Popup trigger={<Icon name="info circle" size="large" color="blue" />} wide="very">
-            <Popup.Content>
-              <FormattedMessage id="courseForm.infoBox" />
-            </Popup.Content>
-          </Popup>
-        </Form.Group>
+            <Popup trigger={<Icon name="info circle" size="large" color="blue" />} wide="very">
+              <Popup.Content>
+                <FormattedMessage id="courseForm.infoBox" />
+             </Popup.Content>
+            </Popup>
+          </Form.Group>
+        )}
 
         <Form.Group style={{ flexWrap: 'wrap' }}>
-          {questions.map((q, index) => (
+          {questions?.map((q, index) => (
             <QuestionForm
-              key={q.qkey}
-              qName={q.qKey}
+              key={q.qKey ? q.qKey : q.id}
+              qName={q.qKey ? q.qKey : q.id}
               setQuestions={setQuestions}
               questions={questions}
               questionIndex={index}
+              hideAddRemoveButtons={editView ? course.published : false}
               hookForm={hookForm}
             />
           ))}
@@ -244,10 +352,9 @@ const CourseForm = () => {
           <FormattedMessage id="courseForm.teacherInfo" />
         </h3>
 
-            <div>
-              <TeacherList courseTeachers={courseTeachers} setCourseTeachers={setCourseTeachers} />
-            </div>
-          
+        <div>
+          <TeacherList courseTeachers={courseTeachers} setCourseTeachers={setCourseTeachers} /> 
+        </div>
 
         {courseTeachers.length === 0 ? (
           <Message icon info>
@@ -259,11 +366,12 @@ const CourseForm = () => {
             </Message.Content>
           </Message>
         ) : (
-            null
-          )}
+          null
+        )}
 
         <Form.Checkbox
           label={intl.formatMessage({ id: 'courseForm.publishCourse' })}
+          checked={publishToggle}
           onClick={() => setPublishToggle(!publishToggle)}
           data-cy="publish-checkbox"
         />
@@ -278,10 +386,15 @@ const CourseForm = () => {
             </Message.Content>
           </Message>
         ) : (
-            null
-          )}
+          null
+        )}
 
-        <ConfirmationButton
+        {currentUser.role === roles.ADMIN_ROLE &&
+         new Date(deadline).getTime() <= new Date().getTime() &&
+         <p style={{ "color": "#b00" }}> { intl.formatMessage({ id: 'editView.pastDeadlineWarning' }) } </p>
+        }
+
+        <ConfirmationButton 
           onConfirm={handleSubmit}
           modalMessage={promptText}
           buttonDataCy="create-course-submit"
@@ -289,6 +402,19 @@ const CourseForm = () => {
         >
           <FormattedMessage id="courseForm.confirmButton" />
         </ConfirmationButton>
+
+        {editView ? (
+          <ConfirmationButton 
+            onConfirm={onCancelEdit}
+            modalMessage={ intl.formatMessage({ id: 'editView.confirmCancelEdits' }) }
+            buttonDataCy="create-course-cancel"
+            color="red"
+          >
+            <FormattedMessage id="editView.cancelEditsButton" />
+          </ConfirmationButton>
+        ) : (
+          null
+        )}
       </Form>
     </div>
   );

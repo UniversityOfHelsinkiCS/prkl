@@ -199,7 +199,7 @@ describe('Staff', () => {
       // TODO: test set date too somehow, find a way to do reliably with intl
       cy.contains(newDescription);
       cy.get('[data-cy="edit-course-button"]').click();
-      cy.get('[data-cy="course-published-checkbox"]').should('not.have.class', 'checked');
+      cy.get('[data-cy="publish-checkbox"]').should('not.have.class', 'checked');
     })
 
     it('Can delete a course question', () => {
@@ -379,7 +379,7 @@ describe('Staff', () => {
       cy.contains(courses[2].title).click();
       cy.get('[data-cy="edit-course-button"]').click();
 
-      cy.get('[data-cy="course-published-checkbox"]').click();
+      cy.get('[data-cy="publish-checkbox"]').click();
       cy.get('[data-cy="create-course-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 

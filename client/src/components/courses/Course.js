@@ -7,7 +7,7 @@ import { FormattedMessage, FormattedDate, useIntl } from 'react-intl';
 import roles from '../../util/userRoles';
 import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
 import GroupsView from '../groups/GroupsView';
-import EditView from './CourseEdit';
+import CourseForm from './CourseForm';
 import RegistrationList from '../registrations/RegistrationList';
 import Registration from '../registrations/Registration';
 import ConfirmationButton from '../ui/ConfirmationButton';
@@ -143,10 +143,11 @@ export default ({ id }) => {
         {userHasAccess() ? (
           <div>
           { view === 'edit' ? (
-            <EditView 
+            <CourseForm 
               course={course} 
               user={user}
               onCancelEdit={handleEditCourse} 
+              editView={true}
             />
           ) : (
           <div>
