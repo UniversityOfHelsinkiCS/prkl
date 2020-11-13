@@ -172,36 +172,6 @@ describe('Student', () => {
       cy.wait(500);
       cy.get('[data-cy="register-on-course-button"]').should('not.exist');
     });
-
-    it('Can see groups on the course page', () => {
-      cy.switchToStaff();
-      cy.visit(`/course/${courses[3].id}`);
-      cy.get('[data-cy="switch-view-button"]').click();
-      cy.get('[data-cy="create-groups-submit"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.get('[data-cy="save-groups-button"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      
-      // Groups are saved but not published
-      cy.switchToStudent();
-      cy.visit(`/course/${courses[3].id}`);
-      cy.wait(500);
-      cy.contains('Your group has been published:').should('not.exist');
-
-      cy.switchToStaff();
-      cy.visit(`/course/${courses[3].id}`);
-      cy.get('[data-cy="switch-view-button"]').click();
-      cy.get('[data-cy="publish-groups-button"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.switchToStudent();
-      cy.visit(`/course/${courses[3].id}`);
-      cy.contains('Your group has been published:');
-      cy.get('table').within(() => {
-        cy.contains(users[0].firstname);
-        cy.contains(users[0].lastname);
-        cy.contains(users[0].email);
-      });
-    });
   });
 
   describe('cancel registration', () => {
