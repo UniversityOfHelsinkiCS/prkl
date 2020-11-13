@@ -44,7 +44,8 @@ export default ({ questions, formControl, onSubmit }) => {
       <ConfirmationButton
         onConfirm={onSubmit}
         modalMessage={intl.formatMessage({ id: "forms.confirmRegistration" })}
-        buttonDataCy="register-on-course-button"
+				buttonDataCy="register-on-course-button"
+				color="green"
         formControl={formControl}
       >
         <FormattedMessage id="forms.submitRegistration" />

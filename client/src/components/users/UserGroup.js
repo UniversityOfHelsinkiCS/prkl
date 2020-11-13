@@ -55,9 +55,6 @@ export default ({ user, course }) => {
       {userIsRegistered() ? (
         courseHasGroups() ? (
           <div>
-            <Header as="h4">
-              <FormattedMessage id="groups.published" />
-            </Header>
             <UserGroupItem group={group[0]} groupTimes={groupTimes} />
           </div>
         ) : null)
