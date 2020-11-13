@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
 import { useHistory } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { Header, Button, Loader } from 'semantic-ui-react';
+import { Header, Button, Loader, Card } from 'semantic-ui-react';
 import { FormattedMessage, FormattedDate, useIntl } from 'react-intl';
 import roles from '../../util/userRoles';
 import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
@@ -11,7 +11,8 @@ import CourseForm from './CourseForm';
 import RegistrationList from '../registrations/RegistrationList';
 import Registration from '../registrations/Registration';
 import ConfirmationButton from '../ui/ConfirmationButton';
-import UserGroup from '../users/UserGroup'
+import UserGroup from '../users/UserGroup';
+import CourseInfo from './CourseInfo';
 
 export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
@@ -126,17 +127,7 @@ export default ({ id }) => {
       {/* course info, hide in edit view */}
       {view !== 'edit' && <div>
         <h2>{`${course.code} - ${course.title}`}</h2>
-        <Header as="h4" color="red">
-          <FormattedMessage id="course.deadline" />
-          &nbsp;
-          <FormattedDate value={course.deadline} />
-        </Header>
-        <div>
-          {paragraphs.map(p => (
-            <p key={p}>{p}</p>
-          ))}
-        </div>
-        &nbsp;
+         <CourseInfo id={course.id} deadline={course.deadline} teachers={course.teachers} paragraphs={paragraphs}/>
       </div>}
 
       <div>
