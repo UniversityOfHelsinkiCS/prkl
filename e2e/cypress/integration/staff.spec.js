@@ -145,7 +145,8 @@ describe('Staff', () => {
       cy.get('[data-cy="CWMT123"]').within(() => {
         cy.get('[data-cy="tag-own"]').should("exist");
       });
-      cy.contains('CWMT123 - Course with multiple teachers').click();
+			cy.contains('CWMT123 - Course with multiple teachers').click();
+			cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="registration-table"]').should('exist');
 
       // check that staff is also a teacher of this course
@@ -155,7 +156,7 @@ describe('Staff', () => {
         cy.get('[data-cy="tag-own"]').should("exist");
       });
       cy.contains('CWMT123 - Course with multiple teachers').click();
-
+			cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="registration-table"]').should('exist');
     });
 
@@ -420,13 +421,15 @@ describe('Staff', () => {
   describe('enroll management', () => {
     it('Can see enrolled students only on own course', () => {
       cy.visit('/courses');
-      cy.contains(courses[0].title).click();
+			cy.contains(courses[0].title).click();
+			cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="registration-table"]').contains(users[3].firstname);
       cy.contains("Students enrolled to the course:");
 
       cy.visit('/courses');
-      cy.contains(courses[4].title).click();
-      cy.wait(500);
+			cy.contains(courses[4].title).click();
+			cy.wait(500);
+			cy.get('[data-cy="show-registrations-button"]').should('not.exist');
       cy.get('[data-cy="registration-table"]').should('not.exist');
       cy.contains("Students enrolled to the course:").should('not.exist');
 
@@ -439,9 +442,10 @@ describe('Staff', () => {
     it('Can remove enrollments only from own course', () => {
       // remove student from own course
       cy.visit('/courses');
-      cy.contains(courses[0].title).click();
+			cy.contains(courses[0].title).click();
+			cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="remove-registration-button"]').first().click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
+			cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.wait(500);
       cy.get('[data-cy="registration-table"]').contains(users[3].firstname).should('not.exist');
 
@@ -458,12 +462,12 @@ describe('Staff', () => {
     it('Can create and save groups', () => {
       // Do not save first on purpose
       cy.visit(`/course/${course.id}`);
-      cy.get('[data-cy="switch-view-button"]').click();
+      cy.get('[data-cy="manage-groups-button"]').click();
       cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       // Reload to check that no info has stored
       cy.reload();
-      cy.get('[data-cy="switch-view-button"]').click();
+      cy.get('[data-cy="manage-groups-button"]').click();
       cy.get('table').should('not.exist');
       cy.contains('No groups generated');
 
@@ -474,7 +478,7 @@ describe('Staff', () => {
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       // Reload to be sure that information is stored at backend
       cy.reload();
-      cy.get('[data-cy="switch-view-button"]').click();
+      cy.get('[data-cy="manage-groups-button"]').click();
       cy.get('table').contains(users[0].firstname);
       cy.get('table').contains(users[3].firstname);
       cy.contains('No groups generated').should('not.exist');
@@ -482,7 +486,7 @@ describe('Staff', () => {
 
     it('Can drag from group to another', () => {
       cy.visit(`/course/${course.id}`);
-      cy.get('[data-cy="switch-view-button"]').click();
+      cy.get('[data-cy="manage-groups-button"]').click();
       cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       const dataTransfer = new DataTransfer;
@@ -496,7 +500,7 @@ describe('Staff', () => {
 
     it('Can edit groups', () => {
       cy.visit(`/course/${course.id}`);
-      cy.get('[data-cy="switch-view-button"]').click();
+      cy.get('[data-cy="manage-groups-button"]').click();
       cy.wait(500);
       cy.get('[data-cy="save-groups-button"]').should('not.exist');
 

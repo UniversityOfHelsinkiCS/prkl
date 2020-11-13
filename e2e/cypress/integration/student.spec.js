@@ -123,11 +123,12 @@ describe('Student', () => {
       cy.get('[data-cy="confirmation-button-confirm"]').click();
   
       cy.get('[data-cy="registered"]').should('exist');
-      cy.contains('Your group will be shown here when ready.');
+      cy.contains('Groups are not ready yet...');
 
       // Admin-role check for correct answers.
       cy.switchToAdmin();
-      cy.visit(`/course/${course.id}`);
+			cy.visit(`/course/${course.id}`);
+			cy.get('[data-cy="show-registrations-button"]').click();
       for (const answer of answers) {
         cy.contains(answer);
       }
@@ -176,7 +177,7 @@ describe('Student', () => {
     it('Can see groups on the course page', () => {
       cy.switchToStaff();
       cy.visit(`/course/${courses[3].id}`);
-      cy.get('[data-cy="switch-view-button"]').click();
+      cy.get('[data-cy="manage-groups-button"]').click();
       cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.get('[data-cy="save-groups-button"]').click();
@@ -190,12 +191,12 @@ describe('Student', () => {
 
       cy.switchToStaff();
       cy.visit(`/course/${courses[3].id}`);
-      cy.get('[data-cy="switch-view-button"]').click();
+      cy.get('[data-cy="manage-groups-button"]').click();
       cy.get('[data-cy="publish-groups-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.switchToStudent();
       cy.visit(`/course/${courses[3].id}`);
-      cy.contains('Your group has been published:');
+      cy.get('[data-cy="show-user-groups-button"]').click();
       cy.get('table').within(() => {
         cy.contains(users[0].firstname);
         cy.contains(users[0].lastname);

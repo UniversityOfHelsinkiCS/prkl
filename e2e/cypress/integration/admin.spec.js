@@ -142,7 +142,8 @@ describe('Admin', () => {
     const testTitle = 'test title';
     const testChoice = 'test choice';
 
-    cy.visit('/courses');
+		cy.visit('/courses');
+		cy.wait(300);
     cy.contains(course.title).click();
     cy.get('[data-cy="edit-course-button"]').click();
     cy.wait(500);
@@ -202,16 +203,19 @@ describe('Admin', () => {
     it('Can remove enrollments from any course', () => {  
       // remove student from own course
       cy.visit('/courses');
-      cy.contains(courses[4].title).click();
+			cy.contains(courses[4].title).click();
+			cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="remove-registration-button"]').first().click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
+			cy.get('[data-cy="confirmation-button-confirm"]').click();
+
       cy.wait(500);
       cy.get('[data-cy="registration-table"]').contains(users[3].firstname).should('not.exist');
 
       // remove student from other's course
       cy.visit('/courses');
       cy.contains(courses[0].title).click();
-      // check that admin sees list of enrollments
+			// check that admin sees list of enrollments
+			cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="registration-table"]').contains(users[3].firstname);
       cy.get('[data-cy="remove-registration-button"]').first().click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
@@ -242,7 +246,8 @@ describe('Admin', () => {
 
       cy.visit('/courses');
       cy.switchToAdmin();
-      cy.contains(courses[1].title).click();
+			cy.contains(courses[1].title).click();
+			cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="remove-registration-button"]').first().click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.wait(500);
