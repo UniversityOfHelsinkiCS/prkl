@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
-import { Table, Header, List, Button, Segment, Grid, Popup } from 'semantic-ui-react';
+import { Table, Header, List, Button, Segment, Grid, Popup, Input } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
 import { GENERATE_GROUPS } from '../../GqlQueries';
@@ -8,8 +8,9 @@ import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import DraggableRow from './DraggableRow';
 import questionSwitch, { count } from '../../util/functions';
 import HourDisplay from '../misc/HourDisplay';
+import _ from 'lodash';
 
-export default ({ course, regByStudentId, setGroupsUnsaved }) => {
+export default ({ course, regByStudentId, groupsUnsaved, setGroupsUnsaved, groupMessages, setGroupMessages }) => {
   const [privacyToggle] = useStore('toggleStore');
   const [groups, setGroups] = useStore('groupsStore');
 
@@ -20,33 +21,56 @@ export default ({ course, regByStudentId, setGroupsUnsaved }) => {
 
   useEffect(() => {
     if (groups.length > 0) {
+      if (groupMessages.length === 0) {
+        const newGroupMsgs = groups.map(g => g.groupMessage);
+        setGroupMessages(newGroupMsgs);
+      }
       setShowGroupTimes(Array(groups.length).fill(false));
     }
   }, [groups]);
 
-  // varmaa pitää päivittää noi group funktiois
+  const setUnsaved = () => {
+    // To prevent unnecessary refreshes
+    if (!groupsUnsaved) {
+      setGroupsUnsaved(true);
+    }
+  }
 
   const addGroup = () => {
-    const newGroups = [...groups];
-    newGroups.push([]);
+    const newGroups = _.cloneDeep(groups);
+    newGroups.push({
+      students: [],
+      groupMessage: ''
+    });
     setGroups(newGroups);
+
+    const newGroupMsgs = [ ...groupMessages ];
+    newGroupMsgs.push('');
+    setGroupMessages(newGroupMsgs);
+
     setShowGroupTimes(showGroupTimes.push(false));
+
+    setGroupsUnsaved(true);
   };
 
   const removeGroup = index => {
-    const newGroups = [...groups];
+    const newGroups = _.cloneDeep(groups);
     newGroups.splice(index, 1);
-
     setGroups(newGroups);
+
+    const newGroupMsgs = [ ...groupMessages ];
+    newGroupMsgs.splice(index, 1);
+    setGroupMessages(newGroupMsgs);
 
     const newShowGroups = [...showGroupTimes];
     newShowGroups.splice(index, 1);
-
     setShowGroupTimes(newShowGroups);
+    
+    setGroupsUnsaved(true);
   };
 
   const removeGroupButton = index => {
-    if (groups.length > 1 && groups[index].length === 0) {
+    if (groups.length > 1 && groups[index].students.length === 0) {
       return (
         <Button style={{ marginLeft: 10 }} color="red" onClick={() => removeGroup(index)}>
           <FormattedMessage id="groups.removeGroupButton" />
@@ -68,10 +92,10 @@ export default ({ course, regByStudentId, setGroupsUnsaved }) => {
   };
 
   const swapElements = (fromIndex, toIndex, fromTable, toTable) => {
-    const newGroups = [...groups];
-    const removed = newGroups[fromTable].splice(fromIndex, 1);
+    const newGroups = _.cloneDeep(groups);
+    const removed = newGroups[fromTable].students.splice(fromIndex, 1);
 
-    newGroups[toTable].splice(toIndex, 0, removed[0]);
+    newGroups[toTable].students.splice(toIndex, 0, removed[0]);
     if (newGroups[fromTable].length === 0) {
       newGroups.splice(fromTable, 1);
     }
@@ -106,7 +130,9 @@ export default ({ course, regByStudentId, setGroupsUnsaved }) => {
         </div>
       ) : (
         <div>
-          {groups.map((grop, tableIndex) => (
+          {groups.map((grop, tableIndex) => {
+            
+            return (
             // eslint-disable-next-line react/no-array-index-key
             <div key={`Group-${tableIndex}`}>
               <p />
@@ -121,6 +147,18 @@ export default ({ course, regByStudentId, setGroupsUnsaved }) => {
                     >
                     <FormattedMessage id="groups.toggleGroupTimes" />
                   </Button>
+                  <Input 
+                    fluid
+                    label="testlabel"
+                    placeholder="Your message here..."
+                    value={groupMessages[tableIndex]}
+                    onChange={e => {
+                      const newGroupMsgs = [ ...groupMessages ];
+                      newGroupMsgs[tableIndex] = e.target.value;
+                      setGroupMessages(newGroupMsgs);
+                      setUnsaved();
+                    }}
+                  />
                   {removeGroupButton(tableIndex)}
                 </div>
               </Header>
@@ -144,7 +182,7 @@ export default ({ course, regByStudentId, setGroupsUnsaved }) => {
                   </DraggableRow>
                 </Table.Header>
                 <Table.Body>
-                  {grop.map((student, rowIndex) => (
+                  {grop.students.map((student, rowIndex) => (
                     <DraggableRow
                       key={student.id}
                       action={swapElements}
@@ -196,7 +234,8 @@ export default ({ course, regByStudentId, setGroupsUnsaved }) => {
                 </List>
               ) : null}
             </div>
-          ))}
+          )
+          })}
         </div>
       )}
       <div>{addGroupButton()}</div>

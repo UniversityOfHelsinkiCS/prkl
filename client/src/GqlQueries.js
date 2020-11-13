@@ -63,6 +63,7 @@ export const CURRENT_USER = gql`
       }
       groups {
         id
+        groupMessage
         students {
           id
           firstname
@@ -246,6 +247,7 @@ export const COURSE_GROUPS = gql`
     courseGroups(courseId: $courseId) {
       id
       courseId
+      groupMessage
       students {
         id
         firstname

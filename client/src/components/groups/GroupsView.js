@@ -20,6 +20,7 @@ export default ({ course, registrations, regByStudentId }) => {
   const [groups, setGroups] = useStore('groupsStore');
   const [user] = useStore('userStore');
   const [groupsPublished, setGroupsPublished] = useState(false);
+  const [groupMessages, setGroupMessages] = useState([]);
 
   const intl = useIntl();
 
@@ -34,7 +35,12 @@ export default ({ course, registrations, regByStudentId }) => {
 
   useEffect(() => {
     if (!loading && data !== undefined) {
-      const fetchedGroups = data.courseGroups.map(e => e.students);
+      const fetchedGroups = data.courseGroups.map(e => {
+        return {
+          students: e.students,
+          groupMessage: e.groupMessage
+        }
+      });
       setGroups(fetchedGroups);
       setOldGroups(fetchedGroups);
     }
@@ -56,7 +62,12 @@ export default ({ course, registrations, regByStudentId }) => {
         const res = await generateGroups({
           variables,
         });
-        const mappedGroups = res.data.createSampleGroups.map(e => e.students);
+        const mappedGroups = res.data.createSampleGroups.map(e => {
+          return {
+            students: e.students,
+            groupMessage: ''
+          }
+        });
         setGroups(mappedGroups);
         setGroupsUnsaved(true);
       } catch (groupError) {
@@ -67,12 +78,16 @@ export default ({ course, registrations, regByStudentId }) => {
   const saveSampleGroups = async () => {
     if (!groups || groups.length === 0) return;
     try {
-      const userIdGroups = groups.map(g => {
-        return {userIds: g.map(student => student.id)};
+      const userIdGroups = groups.map((g, i) => {
+        return {
+          userIds: g.students.map(student => student.id),
+          groupMessage: groupMessages[i]
+        };
       });
       const variables = {data: { courseId: course.id, groups: userIdGroups }};
       await saveGeneratedGroups({ variables });
       setGroupsUnsaved(false);
+      setGroupMessages([]);
       setSavedSuccessMsgVisible(true);
       refetch();
       setTimeout(() => {
@@ -176,7 +191,14 @@ export default ({ course, registrations, regByStudentId }) => {
 
           {groupsUnsaved && <SuccessMessage iconVar='info'>{intl.formatMessage({ id: 'groupsView.unsavedGroupsInfo' })}</SuccessMessage>}
             {savedSuccessMsgVisible && <SuccessMessage>{intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' })}</SuccessMessage>}
-          <Groups course={course} regByStudentId={regByStudentId} setGroupsUnsaved={setGroupsUnsaved} />
+          <Groups 
+            course={course}
+            regByStudentId={regByStudentId}
+            groupsUnsaved={groupsUnsaved}
+            setGroupsUnsaved={setGroupsUnsaved}
+            groupMessages={groupMessages}
+            setGroupMessages={setGroupMessages}
+          />
 
         </div>
       )}
