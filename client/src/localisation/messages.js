@@ -107,6 +107,8 @@ export default {
 		'course.noTeachers': 'This course has no teachers. You will be set as a teacher',
 		'course.joinToGroups': 'Join group here',
 
+		'courseInfo.teachers': 'Teachers: ',
+
     'studentInfo.header': 'Student Info',
     'studentInfo.fullname': 'Name: {fullname}',
     'studentInfo.studentNo': 'Student number: {studentNo}',
