@@ -16,9 +16,9 @@ const HourDisplay = ({ header, times, students, groupId }) => {
     const ratio = timeSlot / students;
     let code = 0; // red
 
-    if (ratio == 1){
+    if (ratio === 1){
       code = 120; // green
-    } else if (ratio >= 0.5) {
+    } else if (ratio > 0.5) {
       code = 60; // yellow
     } else if (ratio > 0) {
       code = 30; // orange
