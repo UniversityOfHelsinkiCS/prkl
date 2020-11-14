@@ -1,3 +1,4 @@
+import { group } from "console";
 import { Resolver, Query, Arg, Ctx, Authorized, Mutation } from "type-graphql";
 import { User } from "../entities/User";
 import { ADMIN, STAFF } from "../utils/userRoles";
@@ -22,6 +23,13 @@ export class UserResolver {
         g.students.map(s => {s.studentNo = null, s.shibbolethUid = null})
       })
     };
+
+    // Resolve migration issue where each course had groupPublished field set to null, which effed up everything
+    user.groups.forEach(g => {
+      if (g.groupMessage === null) {
+        g.groupMessage = '';
+      }
+    });
     
     return user;
   }
