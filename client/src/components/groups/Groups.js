@@ -140,16 +140,9 @@ export default ({ course, regByStudentId, groupsUnsaved, setGroupsUnsaved, group
                 <div>
                   <FormattedMessage id="groups.title" />
                   {tableIndex + 1}
-                  <Button
-                    style={{ marginLeft: '10px' }}
-                    onClick={() => handleShowGroupTimesClick(tableIndex)}
-                    disabled={ !course.questions.some(q => q.questionType === 'times') }
-                    >
-                    <FormattedMessage id="groups.toggleGroupTimes" />
-                  </Button>
                   <Input 
                     fluid
-                    label="testlabel"
+                    label="Message: "
                     placeholder="Your message here..."
                     value={groupMessages[tableIndex]}
                     onChange={e => {
@@ -159,9 +152,18 @@ export default ({ course, regByStudentId, groupsUnsaved, setGroupsUnsaved, group
                       setUnsaved();
                     }}
                   />
-                  {removeGroupButton(tableIndex)}
                 </div>
               </Header>
+              <div>
+                <Button
+                    style={{ marginLeft: '10px' }}
+                    onClick={() => handleShowGroupTimesClick(tableIndex)}
+                    disabled={ !course.questions.some(q => q.questionType === 'times') }
+                    >
+                    <FormattedMessage id="groups.toggleGroupTimes" />
+                </Button>
+                {removeGroupButton(tableIndex)}
+              </div>
               <Table singleLine fixed>
                 <Table.Header>
                   <DraggableRow action={swapElements} index={0} tableIndex={tableIndex}>
@@ -214,11 +216,11 @@ export default ({ course, regByStudentId, groupsUnsaved, setGroupsUnsaved, group
                     <HourDisplay
                       header={'Combined'}
                       groupId={grop.id}
-                      students={grop.length}
-                      times={count(grop.map(student => regByStudentId[student.studentNo]))}
+                      students={grop.students.length}
+                      times={count(grop.students.map(student => regByStudentId[student.studentNo]))}
                     />
                   </List.Item>
-                  {grop.map((student, rowIndex) => {
+                  {grop.students.map((student, rowIndex) => {
                     regByStudentId[student.studentNo].questionAnswers.map(qa => questionSwitch(qa));
                     return (
                       <List.Item>
