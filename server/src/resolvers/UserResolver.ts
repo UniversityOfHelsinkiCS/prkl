@@ -11,11 +11,17 @@ export class UserResolver {
       relations: ["registrations", "registrations.course", "groups", "groups.students", "groups.course"],
     });
 
+    // Should we also hide unpublished groups from staff members?
+    if ( user.role < STAFF ) {
+      const filteredGroups = user.groups.filter(g => g.course.groupsPublished);
+      user.groups = filteredGroups;
+    };
+
     if ( user.role < ADMIN ){
       user.groups.map(g => {
         g.students.map(s => {s.studentNo = null, s.shibbolethUid = null})
       })
-    }
+    };
     
     return user;
   }

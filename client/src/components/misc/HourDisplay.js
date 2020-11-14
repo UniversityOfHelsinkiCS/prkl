@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Table, Header } from 'semantic-ui-react';
 import { useIntl } from 'react-intl';
 
