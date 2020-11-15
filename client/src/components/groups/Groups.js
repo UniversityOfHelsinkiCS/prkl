@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
-import { Table, Header, List, Button, Segment, Grid, Popup, Input } from 'semantic-ui-react';
+import { Table, Header, List, Button, Segment, Grid, Popup, Input, Label, TextArea, Form } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
 import { GENERATE_GROUPS } from '../../GqlQueries';
@@ -9,6 +9,7 @@ import DraggableRow from './DraggableRow';
 import questionSwitch, { count } from '../../util/functions';
 import HourDisplay from '../misc/HourDisplay';
 import _ from 'lodash';
+import { FragmentsOnCompositeTypesRule } from 'graphql';
 
 export default ({ course, regByStudentId, groupMessages, setGroupMessages }) => {
   const [privacyToggle] = useStore('toggleStore');
@@ -76,7 +77,7 @@ export default ({ course, regByStudentId, groupMessages, setGroupMessages }) => 
   const removeGroupButton = index => {
     if (groups.length > 1 && groups[index].students.length === 0) {
       return (
-        <Button style={{ marginLeft: 10 }} color="red" onClick={() => removeGroup(index)}>
+        <Button size="mini" color="red" onClick={() => removeGroup(index)}>
           <FormattedMessage id="groups.removeGroupButton" />
         </Button>
       );
@@ -96,6 +97,9 @@ export default ({ course, regByStudentId, groupMessages, setGroupMessages }) => 
   };
 
   const swapElements = (fromIndex, toIndex, fromTable, toTable) => {
+    if (fromTable == toTable) {
+      return;
+    }
     const newGroups = _.cloneDeep(groups);
     const removed = newGroups[fromTable].students.splice(fromIndex, 1);
 
@@ -138,103 +142,112 @@ export default ({ course, regByStudentId, groupMessages, setGroupMessages }) => 
             
             return (
             // eslint-disable-next-line react/no-array-index-key
-            <div key={`Group-${tableIndex}`}>
-              <p />
-              <Header as="h3">
-                <div>
-                  <FormattedMessage id="groups.title" />
+            <Segment.Group key={`Group-${tableIndex}`}>
+              <Segment>
+                <Label
+                  color="grey"
+                  size="large"
+                  attached="top"
+                >
+                  <FormattedMessage id="groups.title" /> 
                   {tableIndex + 1}
-                  <Input
-                    fluid
-                    label="Message: "
-                    placeholder="Your message here..."
-                    value={groupMessages[tableIndex] || ''}
-                    onChange={e => handleGroupMessageChange(e, tableIndex)}
-                  />
-                </div>
-              </Header>
-              <div>
-                <Button
-                    style={{ marginLeft: '10px' }}
-                    onClick={() => handleShowGroupTimesClick(tableIndex)}
-                    disabled={ !course.questions.some(q => q.questionType === 'times') }
-                    >
-                    <FormattedMessage id="groups.toggleGroupTimes" />
-                </Button>
-                {removeGroupButton(tableIndex)}
-              </div>
-              <Table singleLine fixed>
-                <Table.Header>
-                  <DraggableRow action={swapElements} index={0} tableIndex={tableIndex}>
-                    <Table.HeaderCell>
-                      <FormattedMessage id="groups.name" />
-                    </Table.HeaderCell>
-                    <Table.HeaderCell>
-                      <FormattedMessage id="groups.studentNumber" />
-                    </Table.HeaderCell>
-                    <Table.HeaderCell>
-                      <FormattedMessage id="groups.email" />
-                    </Table.HeaderCell>
-                    {course.questions.map(question =>
-                      question.questionType !== 'times' ? (
-                        <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
-                      ) : null
-                    )}
-                  </DraggableRow>
-                </Table.Header>
-                <Table.Body>
-                  {grop.students.map((student, rowIndex) => (
-                    <DraggableRow
-                      key={student.id}
-                      action={swapElements}
-                      index={rowIndex}
-                      tableIndex={tableIndex}
-                    >
-                      <Popup 
-                        content={() => popupTimesDisplay(student)} 
-                        trigger={
-                        <Table.Cell>{`${student.firstname} ${student.lastname}`}</Table.Cell>
-                        }
-                        disabled={ groupTimesVisible || !course.questions.some(q => q.questionType === 'times') }
-                      />
-                      <Table.Cell>
-                        {privacyToggle ? dummyStudentNumber : student.studentNo}
-                      </Table.Cell>
-                      <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
-                      {regByStudentId[student.studentNo]?.questionAnswers.map(qa =>
-                        questionSwitch(qa)
+                </Label>
+                <Header style={{marginBottom: 5}} as="h5">Message for the group:</Header>
+                <Input
+                  fluid
+                  placeholder="Use this to send a message to members of this group..."
+                  value={groupMessages[tableIndex] || ''}
+                  onChange={e => handleGroupMessageChange(e, tableIndex)}
+                />
+              </Segment>
+              <Segment>
+                <Header as="h5">Students in this group:</Header>
+                <Table singleLine fixed>
+                  <Table.Header>
+                    <DraggableRow action={swapElements} index={0} tableIndex={tableIndex}>
+                      <Table.HeaderCell>
+                        <FormattedMessage id="groups.name" />
+                      </Table.HeaderCell>
+                      <Table.HeaderCell>
+                        <FormattedMessage id="groups.studentNumber" />
+                      </Table.HeaderCell>
+                      <Table.HeaderCell>
+                        <FormattedMessage id="groups.email" />
+                      </Table.HeaderCell>
+                      {course.questions.map(question =>
+                        question.questionType !== 'times' ? (
+                          <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
+                        ) : null
                       )}
                     </DraggableRow>
-                  ))}
-                </Table.Body>
-              </Table>
+                  </Table.Header>
+                  <Table.Body>
+                    {grop.students.map((student, rowIndex) => (
+                      <DraggableRow
+                        key={student.id}
+                        action={swapElements}
+                        index={rowIndex}
+                        tableIndex={tableIndex}
+                      >
+                        <Popup 
+                          content={() => popupTimesDisplay(student)} 
+                          trigger={
+                          <Table.Cell>{`${student.firstname} ${student.lastname}`}</Table.Cell>
+                          }
+                          disabled={ groupTimesVisible || !course.questions.some(q => q.questionType === 'times') }
+                        />
+                        <Table.Cell>
+                          {privacyToggle ? dummyStudentNumber : student.studentNo}
+                        </Table.Cell>
+                        <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
+                        {regByStudentId[student.studentNo]?.questionAnswers.map(qa =>
+                          questionSwitch(qa)
+                        )}
+                      </DraggableRow>
+                    ))}
+                  </Table.Body>
+                </Table>
+
+                <Button.Group size="mini">
+                  <Button
+                    size="mini"
+                    onClick={() => handleShowGroupTimesClick(tableIndex)}
+                    disabled={ !course.questions.some(q => q.questionType === 'times') }
+                  >
+                    <FormattedMessage id="groups.toggleGroupTimes" />
+                  </Button>
+                  {removeGroupButton(tableIndex)}
+                </Button.Group>
+              </Segment>
 
               {showGroupTimes[tableIndex] ? (
-                <List horizontal verticalAlign="top">
-                  <List.Item>
-                    <HourDisplay
-                      header={'Combined'}
-                      groupId={grop.id}
-                      students={grop.students.length}
-                      times={count(grop.students.map(student => regByStudentId[student.studentNo]))}
-                    />
-                  </List.Item>
-                  {grop.students.map((student, rowIndex) => {
-                    regByStudentId[student.studentNo].questionAnswers.map(qa => questionSwitch(qa));
-                    return (
-                      <List.Item>
-                        <HourDisplay
-                          groupId={student.id}
-                          header={`${student.firstname} ${student.lastname}`}
-                          students={1}
-                          times={count([regByStudentId[student.studentNo]])}
-                        />
-                      </List.Item>
-                    );
-                  })}
-                </List>
+                <Segment>
+                  <List horizontal verticalAlign="top">
+                    <List.Item>
+                      <HourDisplay
+                        header={'Combined'}
+                        groupId={grop.id}
+                        students={grop.students.length}
+                        times={count(grop.students.map(student => regByStudentId[student.studentNo]))}
+                      />
+                    </List.Item>
+                    {grop.students.map((student, rowIndex) => {
+                      regByStudentId[student.studentNo].questionAnswers.map(qa => questionSwitch(qa));
+                      return (
+                        <List.Item>
+                          <HourDisplay
+                            groupId={student.id}
+                            header={`${student.firstname} ${student.lastname}`}
+                            students={1}
+                            times={count([regByStudentId[student.studentNo]])}
+                          />
+                        </List.Item>
+                      );
+                    })}
+                  </List>
+                </Segment>
               ) : null}
-            </div>
+            </Segment.Group>
           )
           })}
         </div>
