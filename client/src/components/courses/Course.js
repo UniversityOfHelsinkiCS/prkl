@@ -16,12 +16,12 @@ import UserGroup from '../users/UserGroup'
 export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
   const [user] = useStore('userStore');
+  const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
 
   const [course, setCourse] = useState({});
   const [registrations, setRegistrations] = useState([]);
   const [regByStudentId, setRegByStudentId] = useState([]);
   const [view, setView] = useState('registrations');
-  const [groupsUnsaved, setGroupsUnsaved] = useState(false);
 
   const [deleteCourse] = useMutation(DELETE_COURSE);
 
@@ -100,14 +100,14 @@ export default ({ id }) => {
       setView('edit');
     } else if (view === 'groups') {
       if (groupsUnsaved 
-            && window.confirm('Warning: you have unsaved edits to your groups. Are you sure you want to discard them?')) {
+            && window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' }))) {
           setView('edit');
           setGroupsUnsaved(false);
       } else if (!groupsUnsaved) {
           setView('edit');
       }
     } else {
-      setView('registrations');
+        setView('registrations');
     }
   };
 
@@ -116,11 +116,11 @@ export default ({ id }) => {
       setView('groups');
     } else {
       if (groupsUnsaved 
-          && window.confirm('Warning: you have unsaved edits to your groups. Are you sure you want to discard them?')) {
-        setView('registrations');
-        setGroupsUnsaved(false);
+          && window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' }))) {
+            setView('registrations');
+            setGroupsUnsaved(false);
       } else if (!groupsUnsaved) {
-        setView('registrations');
+          setView('registrations');
       }
     }
   };
@@ -201,8 +201,6 @@ export default ({ id }) => {
                   course={course}
                   registrations={registrations}
                   regByStudentId={regByStudentId}
-                  groupsUnsaved={groupsUnsaved}
-                  setGroupsUnsaved={setGroupsUnsaved}
                 />
               ) : (
                 <>

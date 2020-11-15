@@ -10,8 +10,9 @@ import questionSwitch, { count } from '../../util/functions';
 import HourDisplay from '../misc/HourDisplay';
 import _ from 'lodash';
 
-export default ({ course, regByStudentId, groupsUnsaved, setGroupsUnsaved, groupMessages, setGroupMessages }) => {
+export default ({ course, regByStudentId, groupMessages, setGroupMessages }) => {
   const [privacyToggle] = useStore('toggleStore');
+  const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [groups, setGroups] = useStore('groupsStore');
 
   //const [generateGroups] = useMutation(GENERATE_GROUPS);

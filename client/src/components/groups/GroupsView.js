@@ -8,8 +8,9 @@ import Groups from './Groups';
 import userRoles from '../../util/userRoles';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import SuccessMessage from '../ui/SuccessMessage';
+import { Prompt } from 'react-router-dom';
 
-export default ({ course, registrations, regByStudentId, groupsUnsaved, setGroupsUnsaved }) => {
+export default ({ course, registrations, regByStudentId }) => {
   const [generateGroups] = useMutation(GENERATE_GROUPS);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
@@ -17,6 +18,7 @@ export default ({ course, registrations, regByStudentId, groupsUnsaved, setGroup
   const [savedSuccessMsgVisible, setSavedSuccessMsgVisible] = useState(false);
   const [oldGroups, setOldGroups] = useState([]);
   const [groups, setGroups] = useStore('groupsStore');
+  const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [user] = useStore('userStore');
   const [groupsPublished, setGroupsPublished] = useState(false);
   const [groupMessages, setGroupMessages] = useState(['']);
@@ -125,6 +127,10 @@ export default ({ course, registrations, regByStudentId, groupsUnsaved, setGroup
 
   return (
     <div>
+      <Prompt
+        when={groupsUnsaved}
+        message={intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' })}
+      />
       &nbsp;
       {registrations.length === 0 ? (
         <div>
@@ -196,8 +202,6 @@ export default ({ course, registrations, regByStudentId, groupsUnsaved, setGroup
           <Groups 
             course={course}
             regByStudentId={regByStudentId}
-            groupsUnsaved={groupsUnsaved}
-            setGroupsUnsaved={setGroupsUnsaved}
             groupMessages={groupMessages}
             setGroupMessages={setGroupMessages}
           />
