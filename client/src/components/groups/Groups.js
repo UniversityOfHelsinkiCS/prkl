@@ -21,10 +21,6 @@ export default ({ course, regByStudentId, groupsUnsaved, setGroupsUnsaved, group
 
   useEffect(() => {
     if (groups.length > 0) {
-      if (groupMessages.length === 0) {
-        const newGroupMsgs = groups.map(g => g.groupMessage);
-        setGroupMessages(newGroupMsgs);
-      }
       setShowGroupTimes(Array(groups.length).fill(false));
     }
   }, [groups]);
@@ -35,6 +31,13 @@ export default ({ course, regByStudentId, groupsUnsaved, setGroupsUnsaved, group
       setGroupsUnsaved(true);
     }
   }
+
+  const handleGroupMessageChange = (e, index) => {
+    const newGroupMsgs = [ ...groupMessages ];
+    newGroupMsgs[index] = e.target.value;
+    setGroupMessages(newGroupMsgs);
+    setUnsaved();
+  };
 
   const addGroup = () => {
     const newGroups = _.cloneDeep(groups);
@@ -140,17 +143,12 @@ export default ({ course, regByStudentId, groupsUnsaved, setGroupsUnsaved, group
                 <div>
                   <FormattedMessage id="groups.title" />
                   {tableIndex + 1}
-                  <Input 
+                  <Input
                     fluid
                     label="Message: "
                     placeholder="Your message here..."
-                    value={groupMessages[tableIndex]}
-                    onChange={e => {
-                      const newGroupMsgs = [ ...groupMessages ];
-                      newGroupMsgs[tableIndex] = e.target.value;
-                      setGroupMessages(newGroupMsgs);
-                      setUnsaved();
-                    }}
+                    value={groupMessages[tableIndex] || ''}
+                    onChange={e => handleGroupMessageChange(e, tableIndex)}
                   />
                 </div>
               </Header>

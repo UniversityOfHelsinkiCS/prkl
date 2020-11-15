@@ -55,10 +55,11 @@ export default ({ user, course }) => {
       {userIsRegistered() ? (
         courseHasGroups() ? (
           <div>
+            {group[0].groupMessage && group[0].groupMessage !== '' && 
             <Container fluid textAlign='justified'>
               <Header as="h4">Your group has a new message:</Header>
               <p>{group[0].groupMessage}</p>
-            </Container>
+            </Container>}
             <Header as="h4">
               <FormattedMessage id="groups.published" />
             </Header>

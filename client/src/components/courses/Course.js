@@ -21,6 +21,7 @@ export default ({ id }) => {
   const [registrations, setRegistrations] = useState([]);
   const [regByStudentId, setRegByStudentId] = useState([]);
   const [view, setView] = useState('registrations');
+  const [groupsUnsaved, setGroupsUnsaved] = useState(false);
 
   const [deleteCourse] = useMutation(DELETE_COURSE);
 
@@ -97,6 +98,14 @@ export default ({ id }) => {
   const handleEditCourse = () => {
     if (view === 'registrations') {
       setView('edit');
+    } else if (view === 'groups') {
+      if (groupsUnsaved 
+            && window.confirm('Warning: you have unsaved edits to your groups. Are you sure you want to discard them?')) {
+          setView('edit');
+          setGroupsUnsaved(false);
+      } else if (!groupsUnsaved) {
+          setView('edit');
+      }
     } else {
       setView('registrations');
     }
@@ -106,7 +115,13 @@ export default ({ id }) => {
     if (view === 'registrations') {
       setView('groups');
     } else {
-      setView('registrations');
+      if (groupsUnsaved 
+          && window.confirm('Warning: you have unsaved edits to your groups. Are you sure you want to discard them?')) {
+        setView('registrations');
+        setGroupsUnsaved(false);
+      } else if (!groupsUnsaved) {
+        setView('registrations');
+      }
     }
   };
 
@@ -182,10 +197,12 @@ export default ({ id }) => {
             {/* Views */}
             <div>
               { view === 'groups' ? (
-                <GroupsView 
+                <GroupsView
                   course={course}
                   registrations={registrations}
-                  regByStudentId={regByStudentId} 
+                  regByStudentId={regByStudentId}
+                  groupsUnsaved={groupsUnsaved}
+                  setGroupsUnsaved={setGroupsUnsaved}
                 />
               ) : (
                 <>

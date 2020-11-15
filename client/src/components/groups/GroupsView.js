@@ -9,18 +9,17 @@ import userRoles from '../../util/userRoles';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import SuccessMessage from '../ui/SuccessMessage';
 
-export default ({ course, registrations, regByStudentId }) => {
+export default ({ course, registrations, regByStudentId, groupsUnsaved, setGroupsUnsaved }) => {
   const [generateGroups] = useMutation(GENERATE_GROUPS);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
   const [minGroupSize, setMinGroupSize] = useState(1);
-  const [groupsUnsaved, setGroupsUnsaved] = useState(false);
   const [savedSuccessMsgVisible, setSavedSuccessMsgVisible] = useState(false);
   const [oldGroups, setOldGroups] = useState([]);
   const [groups, setGroups] = useStore('groupsStore');
   const [user] = useStore('userStore');
   const [groupsPublished, setGroupsPublished] = useState(false);
-  const [groupMessages, setGroupMessages] = useState([]);
+  const [groupMessages, setGroupMessages] = useState(['']);
 
   const intl = useIntl();
 
@@ -42,6 +41,8 @@ export default ({ course, registrations, regByStudentId }) => {
         }
       });
       setGroups(fetchedGroups);
+      const newGroupMsgs = fetchedGroups.map(g => g.groupMessage);
+      setGroupMessages(newGroupMsgs);
       setOldGroups(fetchedGroups);
     }
   }, [data, loading]);
@@ -69,6 +70,8 @@ export default ({ course, registrations, regByStudentId }) => {
           }
         });
         setGroups(mappedGroups);
+        const newGroupMsgs = mappedGroups.map(mg => mg.groupMessage);
+        setGroupMessages(newGroupMsgs);
         setGroupsUnsaved(true);
       } catch (groupError) {
         console.log('error:', groupError);
@@ -87,7 +90,6 @@ export default ({ course, registrations, regByStudentId }) => {
       const variables = {data: { courseId: course.id, groups: userIdGroups }};
       await saveGeneratedGroups({ variables });
       setGroupsUnsaved(false);
-      setGroupMessages([]);
       setSavedSuccessMsgVisible(true);
       refetch();
       setTimeout(() => {
