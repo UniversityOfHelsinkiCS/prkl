@@ -171,6 +171,7 @@ export default {
     'groupsView.generateGroups': 'Generate new groups',
     'groupsView.saveGroups': 'Save groups',
     'groupsView.unsavedGroupsInfo': 'Remember to save groups!',
+    'groupsView.unsavedGroupsPrompt' : 'Warning: you have unsaved edits to your groups. Are you sure you want to discard them?',
     'groupsView.groupsSavedSuccessMsg': 'New groups saved.',
     'groupsView.confirmCancelGroups': 'Are you sure?',
     'groupsView.cancelGroups': 'Cancel',

@@ -8,18 +8,20 @@ import Groups from './Groups';
 import userRoles from '../../util/userRoles';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import SuccessMessage from '../ui/SuccessMessage';
+import { Prompt } from 'react-router-dom';
 
 export default ({ course, registrations, regByStudentId }) => {
   const [generateGroups] = useMutation(GENERATE_GROUPS);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
   const [minGroupSize, setMinGroupSize] = useState(1);
-  const [groupsUnsaved, setGroupsUnsaved] = useState(false);
   const [savedSuccessMsgVisible, setSavedSuccessMsgVisible] = useState(false);
   const [oldGroups, setOldGroups] = useState([]);
   const [groups, setGroups] = useStore('groupsStore');
+  const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [user] = useStore('userStore');
   const [groupsPublished, setGroupsPublished] = useState(false);
+  const [groupMessages, setGroupMessages] = useState(['']);
 
   const intl = useIntl();
 
@@ -34,8 +36,15 @@ export default ({ course, registrations, regByStudentId }) => {
 
   useEffect(() => {
     if (!loading && data !== undefined) {
-      const fetchedGroups = data.courseGroups.map(e => e.students);
+      const fetchedGroups = data.courseGroups.map(e => {
+        return {
+          students: e.students,
+          groupMessage: e.groupMessage
+        }
+      });
       setGroups(fetchedGroups);
+      const newGroupMsgs = fetchedGroups.map(g => g.groupMessage);
+      setGroupMessages(newGroupMsgs);
       setOldGroups(fetchedGroups);
     }
   }, [data, loading]);
@@ -56,8 +65,15 @@ export default ({ course, registrations, regByStudentId }) => {
         const res = await generateGroups({
           variables,
         });
-        const mappedGroups = res.data.createSampleGroups.map(e => e.students);
+        const mappedGroups = res.data.createSampleGroups.map(e => {
+          return {
+            students: e.students,
+            groupMessage: ''
+          }
+        });
         setGroups(mappedGroups);
+        const newGroupMsgs = mappedGroups.map(mg => mg.groupMessage);
+        setGroupMessages(newGroupMsgs);
         setGroupsUnsaved(true);
       } catch (groupError) {
         console.log('error:', groupError);
@@ -67,8 +83,11 @@ export default ({ course, registrations, regByStudentId }) => {
   const saveSampleGroups = async () => {
     if (!groups || groups.length === 0) return;
     try {
-      const userIdGroups = groups.map(g => {
-        return {userIds: g.map(student => student.id)};
+      const userIdGroups = groups.map((g, i) => {
+        return {
+          userIds: g.students.map(student => student.id),
+          groupMessage: groupMessages[i]
+        };
       });
       const variables = {data: { courseId: course.id, groups: userIdGroups }};
       await saveGeneratedGroups({ variables });
@@ -108,6 +127,10 @@ export default ({ course, registrations, regByStudentId }) => {
 
   return (
     <div>
+      <Prompt
+        when={groupsUnsaved}
+        message={intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' })}
+      />
       &nbsp;
       {registrations.length === 0 ? (
         <div>
@@ -176,7 +199,12 @@ export default ({ course, registrations, regByStudentId }) => {
 
           {groupsUnsaved && <SuccessMessage iconVar='info'>{intl.formatMessage({ id: 'groupsView.unsavedGroupsInfo' })}</SuccessMessage>}
             {savedSuccessMsgVisible && <SuccessMessage>{intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' })}</SuccessMessage>}
-          <Groups course={course} regByStudentId={regByStudentId} setGroupsUnsaved={setGroupsUnsaved} />
+          <Groups 
+            course={course}
+            regByStudentId={regByStudentId}
+            groupMessages={groupMessages}
+            setGroupMessages={setGroupMessages}
+          />
 
         </div>
       )}

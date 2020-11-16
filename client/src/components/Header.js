@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, Button } from 'semantic-ui-react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
 import axios from 'axios';
@@ -10,6 +10,9 @@ export default () => {
   const [activeItem, setActiveItem] = useState(null);
   const [user] = useStore('userStore');
   const [privacyToggle, setPrivacyToggle] = useStore('toggleStore');
+  const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
+
+  const intl = useIntl();
 
   const handleItemClick = (e, { name }) => {
     setActiveItem(name);
@@ -17,6 +20,9 @@ export default () => {
 
   // Logout feature. Calling Shibboleth headers from backend and redirecting there.
   const handleLogout = () => {
+    if (groupsUnsaved && !window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' }))) {
+      return;
+    }
     const url =
       process.env.NODE_ENV === 'development'
         ? 'http://localhost:3001/logout'

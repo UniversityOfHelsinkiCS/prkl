@@ -17,6 +17,7 @@ import CourseInfo from './CourseInfo';
 export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
   const [user] = useStore('userStore');
+  const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
 
   const [course, setCourse] = useState({});
   const [registrations, setRegistrations] = useState([]);
@@ -99,6 +100,14 @@ export default ({ id }) => {
   const handleEditCourse = () => {
     if (view !== 'edit') {
       setView('edit');
+    } else if (view === 'groups') {
+      if (groupsUnsaved 
+            && window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' }))) {
+          setView('edit');
+          setGroupsUnsaved(false);
+      } else if (!groupsUnsaved) {
+          setView('edit');
+      }
     } else {
       setView('info');
     }

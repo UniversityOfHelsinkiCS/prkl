@@ -32,10 +32,16 @@ export class GroupResolver {
     const course = await Course.findOne({ where: { id: courseId }, relations: ["teachers"] });
     
     if (user.role === ADMIN || course.teachers.find(t => t.id === user.id) !== undefined) {
-      return Group.find({
+      const groups = await Group.find({
         where: { courseId: courseId },
         relations: ["students"],
       });
+      groups.forEach(g => {
+        if (g.groupMessage === null) {
+          g.groupMessage = ''
+        }
+      })
+      return groups
     }
     throw new Error("Not your course.");
   }
@@ -89,7 +95,8 @@ export class GroupResolver {
     return Promise.all(
       groups.map(async g => {
         const students = await User.findByIds(g.userIds);
-        return Group.create({ courseId, students }).save();
+        const groupMessage = g.groupMessage;
+        return Group.create({ courseId, students, groupMessage }).save();
       })
     );
   }

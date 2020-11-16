@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Header } from 'semantic-ui-react';
+import { Header, Container } from 'semantic-ui-react';
 import { useQuery } from '@apollo/react-hooks';
 import { GROUP_TIMES } from '../../GqlQueries';
 import { timeParse } from '../../util/functions';
@@ -55,6 +55,14 @@ export default ({ user, course }) => {
       {userIsRegistered() ? (
         courseHasGroups() ? (
           <div>
+            {group[0].groupMessage && group[0].groupMessage !== '' && 
+            <Container fluid textAlign='justified'>
+              <Header as="h4">Your group has a new message:</Header>
+              <p>{group[0].groupMessage}</p>
+            </Container>}
+            <Header as="h4">
+              <FormattedMessage id="groups.published" />
+            </Header>
             <UserGroupItem group={group[0]} groupTimes={groupTimes} />
           </div>
         ) : null)
