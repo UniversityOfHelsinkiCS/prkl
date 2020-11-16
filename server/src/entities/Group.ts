@@ -23,6 +23,10 @@ export class Group extends BaseEntity {
   @Column({ nullable: true })
   courseId: string;
 
+  @Field(() => String)
+  @Column({ nullable: true })
+  groupMessage: string;
+
   @Field(type => Course)
   @ManyToOne(
     type => Course,

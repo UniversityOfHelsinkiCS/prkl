@@ -123,11 +123,12 @@ describe('Student', () => {
       cy.get('[data-cy="confirmation-button-confirm"]').click();
   
       cy.get('[data-cy="registered"]').should('exist');
-      cy.contains('Your group will be shown here when ready.');
+      cy.contains('Groups are not ready yet...');
 
       // Admin-role check for correct answers.
       cy.switchToAdmin();
-      cy.visit(`/course/${course.id}`);
+			cy.visit(`/course/${course.id}`);
+			cy.get('[data-cy="show-registrations-button"]').click();
       for (const answer of answers) {
         cy.contains(answer);
       }

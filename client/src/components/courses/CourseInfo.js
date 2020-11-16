@@ -1,41 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Header, Card } from 'semantic-ui-react';
-import { useIntl } from 'react-intl';
+import { Header, Card, Item } from 'semantic-ui-react';
+import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
 
 export default ({id, deadline, teachers, paragraphs}) => {
   const intl = useIntl();
 
   return (
-    <Card 
-      key={id} 
-      fluid
-      color="blue"
-      header={`${intl.formatMessage({
+		<div>
+		<Card
+			fluid
+			color="blue"
+		>
+			<Card.Content header={`${intl.formatMessage({
         id: 'courses.deadline',
-      })} ${intl.formatDate(deadline)}`}
-      
-      extra={
-        <div>
-          <Header as="h4">
-            <div>
-              <p>Teachers: </p>
-              {teachers ? (
-                teachers.map(t => 
-                  <p key={t.id}>{t.firstname} {t.lastname}</p>
-                )
-              ) : (
-                null
-              )}
-            </div>
-          </Header>
-          <Header as="h4">
-            {paragraphs.map(p => (
-              <p key={p}>{p}</p>
-            ))}
-          </Header>
-          &nbsp;
-        </div>
-      }
-    />
+      })} ${intl.formatDate(deadline)}`} color="red" />
+			<Card.Content> 
+				<Card.Meta>
+					<FormattedMessage id="courseInfo.teachers" />
+					<div>
+						{teachers ? (
+							teachers.map(t =>
+								<p key={t.id}>{t.firstname} {t.lastname} - ({t.email})</p>)
+						) : null}
+					</div>
+				</Card.Meta>
+			</Card.Content>
+			<Card.Content description={paragraphs.map(p => (
+						<p key={p}>{p}</p>
+					))}
+			/>
+		</Card>
+		</div>
   );
 }
