@@ -73,7 +73,6 @@ describe('Admin', () => {
         cy.get('[data-cy="tag-own"]').should("not.exist");
         cy.get('[data-cy="tag-unpublished"]').should("not.exist");
         cy.get('[data-cy="tag-dl"]').should("exist");
-        cy.get('[data-cy="tag-enrolled"]').should("not.exist");
       });
     });
 

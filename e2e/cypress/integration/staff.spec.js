@@ -29,7 +29,7 @@ describe('Staff', () => {
       cy.get('[data-cy="checkbox-staff-controls"]').last().click();
       // past courses
       cy.get('[data-cy="checkbox-staff-controls"]').first().click();
-      cy.contains(courses[3].title).should('exist');
+      cy.contains(courses[8].title).should('exist');
       // toggle combo
       cy.get('[data-cy="checkbox-staff-controls"]').last().click();
       cy.wait(500);
@@ -37,10 +37,16 @@ describe('Staff', () => {
       cy.contains(courses[1].title).should('not.exist');
       cy.contains(courses[2].title).should('exist');
       cy.contains(courses[3].title).should('exist');
+      cy.contains(courses[4].title).should('not.exist');
+      cy.contains(courses[5].title).should('not.exist');
+      cy.contains(courses[6].title).should('exist');
+      cy.contains(courses[7].title).should('exist');
+      cy.contains(courses[8].title).should('exist');
 
+      // Hide past courses again
       cy.get('[data-cy="checkbox-staff-controls"]').first().click();
       cy.wait(500);
-      cy.contains(courses[3].title).should('not.exist');
+      cy.contains(courses[8].title).should('not.exist');
 
       cy.get('[data-cy="checkbox-staff-controls"]').last().click();
       cy.contains(courses[1].title).should('exist');
@@ -76,7 +82,6 @@ describe('Staff', () => {
           cy.get('[data-cy="tag-own"]').should("exist");
           cy.get('[data-cy="tag-unpublished"]').should("not.exist");
           cy.get('[data-cy="tag-dl"]').should("exist");
-          cy.get('[data-cy="tag-enrolled"]').should("not.exist");
         });
       });
 

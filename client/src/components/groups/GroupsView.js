@@ -143,6 +143,7 @@ export default ({ course, registrations, regByStudentId }) => {
           <Form>
             <Form.Group>
               <Form.Input
+                data-cy="target-group-size"
                 required
                 value={minGroupSize}
                 type="number"
