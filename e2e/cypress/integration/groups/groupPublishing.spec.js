@@ -1,5 +1,5 @@
-const courses = require('../../../../server/data/courses');
-const users = require('../../../../server/data/users');
+const courses = require('../../fixtures/courses');
+const users = require('../../fixtures/users');
 const { v4: uuidv4 } = require('uuid');
 
 describe('Group publishing', () => {
