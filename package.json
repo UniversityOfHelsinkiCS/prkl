@@ -43,7 +43,6 @@
     "toska"
   ],
   "dependencies": {
-    "react-hook-form": "^6.9.6",
-    "uuid": "^8.3.1"
+    "react-hook-form": "^6.9.6"
   }
 }

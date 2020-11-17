@@ -1,6 +1,6 @@
 // / <reference types="Cypress" />
-const users = require('../../../server/data/users');
-const courses = require('../../../server/data/courses');
+const courses = require('../fixtures/courses');
+const users = require('../fixtures/users');
 
 const apiUrl = Cypress.env('API_URL') || '';
 
