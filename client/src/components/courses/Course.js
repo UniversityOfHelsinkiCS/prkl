@@ -2,25 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
 import { useHistory } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { Header, Button, Loader } from 'semantic-ui-react';
+import { Header, Button, Loader, Card } from 'semantic-ui-react';
 import { FormattedMessage, FormattedDate, useIntl } from 'react-intl';
 import roles from '../../util/userRoles';
 import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
 import GroupsView from '../groups/GroupsView';
-import EditView from './CourseEdit';
+import CourseForm from './CourseForm';
 import RegistrationList from '../registrations/RegistrationList';
 import Registration from '../registrations/Registration';
 import ConfirmationButton from '../ui/ConfirmationButton';
-import UserGroup from '../users/UserGroup'
+import UserGroup from '../users/UserGroup';
+import CourseInfo from './CourseInfo';
 
 export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
   const [user] = useStore('userStore');
+  const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
 
   const [course, setCourse] = useState({});
   const [registrations, setRegistrations] = useState([]);
   const [regByStudentId, setRegByStudentId] = useState([]);
-  const [view, setView] = useState('registrations');
+  const [view, setView] = useState('info');
 
   const [deleteCourse] = useMutation(DELETE_COURSE);
 
@@ -35,7 +37,8 @@ export default ({ id }) => {
   });
 
   const { loading: regLoading, data: regData } = useQuery(COURSE_REGISTRATION, {
-    skip: user.role === roles.STUDENT_ROLE,
+    skip: course.teachers === undefined 
+          || (!course.teachers.some(t => t.id === user.id) && user.role !== roles.ADMIN_ROLE),
     variables: { courseId: id },
   });
 
@@ -95,19 +98,43 @@ export default ({ id }) => {
   };
 
   const handleEditCourse = () => {
-    if (view === 'registrations') {
+    if (view !== 'edit') {
       setView('edit');
+    } else if (view === 'groups') {
+      if (groupsUnsaved 
+            && window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' }))) {
+          setView('edit');
+          setGroupsUnsaved(false);
+      } else if (!groupsUnsaved) {
+          setView('edit');
+      }
     } else {
-      setView('registrations');
+      setView('info');
     }
   };
 
   const handleGroupsView = () => {
-    if (view === 'registrations') {
+    if (view !== 'groups') {
       setView('groups');
     } else {
-      setView('registrations');
+      setView('info');
     }
+	};
+	
+	const handleRegistrationsView = () => {
+    if (view !== 'registrations') {
+      setView('registrations');
+    } else {
+      setView('info');
+    }
+	};
+
+	const handleQuestionView = () => {
+    if (view !== 'questions') {
+      setView('questions');
+    } else {
+      setView('info');
+		}
   };
 
   // function to check if logged in user is teacher of this course or admin
@@ -120,95 +147,129 @@ export default ({ id }) => {
     }
   };
 
+  const userIsRegistered = () => {
+    const found = user.registrations?.find(r => r.course.id === course.id);
+    if (found === undefined) {
+			return false;
+    }
+		return true;
+  };
+
+
   return (
     <div>
-      {/* course info, hide in edit view */}
-      {view !== 'edit' && <div>
-        <h2>{`${course.code} - ${course.title}`}</h2>
-        <Header as="h4" color="red">
-          <FormattedMessage id="course.deadline" />
-          &nbsp;
-          <FormattedDate value={course.deadline} />
-        </Header>
-        <div>
-          {paragraphs.map(p => (
-            <p key={p}>{p}</p>
-          ))}
-        </div>
-        &nbsp;
+
+      {/* Course info, hide in edit and questions views */}
+			<h2>{`${course.code} - ${course.title}`}</h2>
+      { view !== 'edit' && view !== 'questions' && <div>
+         <CourseInfo id={course.id} deadline={course.deadline} teachers={course.teachers} paragraphs={paragraphs}/>
+				 &nbsp;
       </div>}
 
+			{/* Staff and admin control buttons */}
       <div>
         {userHasAccess() ? (
-          <div>
+				<div>
           { view === 'edit' ? (
-            <EditView 
-              course={course} 
+            <CourseForm 
+              course={course}
               user={user}
-              onCancelEdit={handleEditCourse} 
+              onCancelEdit={handleEditCourse}
+              editView={true}
             />
           ) : (
           <div>
-
-            {/* staff & admin control buttons */}
             <div>
-              {/* only admin can edit or delete after publish */}
-              {( !course.published || user.role === roles.ADMIN_ROLE ) ? (
+              {/* Only admin can edit or delete after publish */}
+              {( !course.published || user.role === roles.ADMIN_ROLE ) && view === 'info' ? (
                 <div>
                   <div>
-                  <Button onClick={handleEditCourse} color="blue" data-cy="edit-course-button">
-                    <FormattedMessage id="course.switchEditView" />
-                  </Button>
-                  <ConfirmationButton
-                    onConfirm={handleDeletion}
-                    modalMessage={intl.formatMessage({ id: "course.confirmDelete" })}
-                    buttonDataCy="delete-course-button"
-                    color="red"
-                  >
-                    <FormattedMessage id="course.delete" />
-                  </ConfirmationButton>
+                  	<Button onClick={handleEditCourse} color="blue" data-cy="edit-course-button">
+                    	<FormattedMessage id="course.switchEditView" />
+                  	</Button>
+                  	<ConfirmationButton
+                    	onConfirm={handleDeletion}
+                    	modalMessage={intl.formatMessage({ id: "course.confirmDelete" })}
+                    	buttonDataCy="delete-course-button"
+                    	color="red"
+										>
+                    	<FormattedMessage id="course.delete" />
+                  	</ConfirmationButton>
                   </div>
                   &nbsp;
                 </div>
-              ) : null}
-                {/* groupView available regardless of publish */}
-                <Button onClick={handleGroupsView} color="blue" data-cy="switch-view-button">
-                  <FormattedMessage id={view === 'registrations' 
-                    ? "course.switchGroupsView"
-                    : "course.switchRegistrationsView" }/>
-                </Button>
+							) : null}
+              {/* Group management and enroll list available regardless of publish status */}
+								<div>
+									{ view === 'info' ?
+									<div>
+										<Button onClick={handleGroupsView} color="green" data-cy="manage-groups-button">
+                  		<FormattedMessage id="course.switchGroupsView"/>
+                		</Button>
+										<Button onClick={handleRegistrationsView} color="orange" data-cy="show-registrations-button">
+											<FormattedMessage id="course.switchRegistrationsView"/>
+										</Button>
+									</div>
+									: null}
+								</div>
             </div>
 
-            {/* Views */}
+            {/* Views for staff */}
             <div>
               { view === 'groups' ? (
-                <GroupsView 
-                  course={course}
-                  registrations={registrations}
-                  regByStudentId={regByStudentId} 
-                />
+                <div>
+									<GroupsView 
+                  	course={course}
+                  	registrations={registrations}
+                  	regByStudentId={regByStudentId} 
+                	/>
+								<br></br>
+									<Button onClick={handleGroupsView} color="blue" data-cy="back-to-info-from-groups-button">
+										<FormattedMessage id="course.switchInfoView"/>
+									</Button>
+								</div>
               ) : (
-                <>
-                  <RegistrationList
-                    course={course}
-                    registrations={registrations}
-                    setRegistrations={setRegistrations}
-                  />
-                  <Registration course={course} />
-                </>
+                <div>
+									{view === 'registrations' ?
+                  	<div>
+											<RegistrationList
+                    		course={course}
+                    		registrations={registrations}
+                    		setRegistrations={setRegistrations}
+											/>
+										<br></br>
+											<Button onClick={handleRegistrationsView} color="blue" data-cy="back-to-info-from-groups-button">
+												<FormattedMessage id="course.switchInfoView"/>
+											</Button>
+										</div> 
+									: null}	
+                </div>
               )}
-            </div>
-          </div>
-          )}
-        </div>
-      ) : <Registration course={course} /> } {/* when !userHasAccess() */}
-      </div>
-      &nbsp;
-      { view === 'registrations' && course.groupsPublished ? (
-      <div>
-        <UserGroup user={user} course={course} />
-      </div>
-      ) : null}
-    </div>
+							&nbsp;
+            	</div>
+          	</div>
+          	)}
+					</div>
+      	) : null}
+
+				{/* Views for everyone */}
+				<div>
+					{ view === 'info' ? 
+					<Registration course={course} />
+					: null}
+				</div>
+      	&nbsp;
+{/*
+				<div>
+					{ view === 'userGroup' ? (
+						<div>
+							<UserGroup user={user} course={course} />
+						</div>
+					) : null}
+				</div>
+					*/}			
+						
+				</div>
+				</div>
   );
 };

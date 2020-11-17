@@ -1,5 +1,3 @@
-// FIXME: This data is coupled with mockHeaders.js in client code.
-
 const { v4: uuidv4 } = require('uuid');
 
 const defaultUsers = [

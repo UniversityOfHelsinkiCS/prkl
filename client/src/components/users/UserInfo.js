@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import { useQuery } from '@apollo/react-hooks';
-import { GROUP_TIMES, CURRENT_USER } from '../../GqlQueries';
+import { GROUP_TIMES } from '../../GqlQueries';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import { timeParse } from '../../util/functions';
 import UserCourseList from './UserCourseList';
@@ -13,6 +13,7 @@ export default () => {
   const [groupTimes, setGroupTimes] = useState(undefined);
 
   const { loading, error, data } = useQuery(GROUP_TIMES, {
+    skip: user.id === undefined,
     variables: { studentId: user.id },
   });
 

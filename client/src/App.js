@@ -25,6 +25,7 @@ createStore('allUsersStore', []);
 createStore('teacherStore', []);
 createStore('userStore', {});
 createStore('toggleStore', false);
+createStore('groupsUnsavedStore', false);
 
 export default () => {
   const [courses, setCourses] = useStore('coursesStore');

@@ -59,10 +59,6 @@ export class CourseResolver {
   @Authorized(STAFF)
   @Mutation(() => Course)
   async createCourse(@Ctx() context, @Arg("data") data: CourseInput): Promise<Course> {
-    // if (data.teachers.length === 0) {
-    //   throw new Error("Course must have at least one teacher.");
-    // }
-
     const course = Course.create(data);
     if (data.teachers.length === 0) {
       const { user } = context;
@@ -153,14 +149,19 @@ export class CourseResolver {
     course.questions = qsts;
     course.published = data.published;
 
-    const courseTeachers = [];
-    const t = data.teachers.map(teacher => teacher.id);
-    for (let index in t) {
-      const id = t[index];
-      const user = await User.findOne({ where: { id } });
-      courseTeachers.push(user);
+    if (data.teachers.length === 0) {
+      const { user } = context;
+      course.teachers = [user];
+    } else {
+      const courseTeachers = [];
+      const t = data.teachers.map(teacher => teacher.id);
+      for (let index in t) {
+        const id = t[index];
+        const user = await User.findOne({ where: { id } });
+        courseTeachers.push(user);
+      }
+      course.teachers = courseTeachers;
     }
-    course.teachers = courseTeachers;
     await course.save();
 
     // Cleanup

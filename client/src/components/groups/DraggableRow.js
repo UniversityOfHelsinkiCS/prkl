@@ -23,6 +23,7 @@ const DraggableRow = ({ index, action, children, tableIndex }) => {
       onDragStart={e => onDragStart(e)}
       onDragOver={e => onDragOver(e)}
       onDrop={e => onDrop(e)}
+      data-cy="draggablerow-student {tableIndex}"
     >
       {children}
     </Table.Row>

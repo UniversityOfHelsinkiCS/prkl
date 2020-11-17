@@ -1,5 +1,5 @@
 [User|(pk) id: UUID; shibbolethUid: string; firstname: string; lastname: string; studentNo: string; email: string; role: integer]
-[Course|(pk) id: UUID; (fk) teacherId: User; title: string; code: string; description: string; deadline: Date; maxGroupSize: integer; minGroupSize: integer;  createdAt: Date; updatedAt: Date; deleted: boolean]
+[Course|(pk) id: UUID; title: string; code: string; description: string; deadline: Date; maxGroupSize: integer; minGroupSize: integer;  createdAt: Date; updatedAt: Date; deleted: boolean; published: boolean; groupsPublished: boolean]
 [Question|(pk) id: UUID; (fk) courseId: Course; content: string; questionType: string; rangeMin: integer; rangeMax: integer; order: integer;]
 [QuestionChoice|(pk) id: UUID; (fk) questionId: Question; content: string; order: integer;]
 [Answer|(pk) id: UUID; (fk) questionId: Question; (fk) registrationId: Registration; content: string;]
@@ -8,6 +8,7 @@
 [Group|(pk) id: UUID; (fk) courseId: Course]
 [GroupStudents|(fk) userId: User; (fk) groupId: Group]
 [WorkingTimes|(pk) id: UUID; (fk) registrationId: Registration; (fk) questionId: Question; startTime: Date; endTime: Date; tentative: boolean]
+[CourseTeachers| (fk) courseId: Course; (fk) userId: User]
 
 [Registration]*-1[User]
 [Registration]1-*[Answer]
@@ -23,3 +24,5 @@
 [AnswerChoice]*-1[QuestionChoice]
 [WorkingTimes]*-1[Question]
 [Registration]1-*[WorkingTimes]
+[CourseTeachers]*-1[User]
+[CourseTeachers]*-1[Course]

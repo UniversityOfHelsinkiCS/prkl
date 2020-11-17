@@ -1,6 +1,6 @@
 // / <reference types="Cypress" />
-const courses = require('../../../server/data/courses');
-const users = require('../../../server/data/users');
+const courses = require('../fixtures/courses');
+const users = require('../fixtures/users');
 
 describe('Student', () => {
   beforeEach(() => {
@@ -123,11 +123,12 @@ describe('Student', () => {
       cy.get('[data-cy="confirmation-button-confirm"]').click();
   
       cy.get('[data-cy="registered"]').should('exist');
-      cy.contains('Your group will be shown here when ready.');
+      cy.contains('Groups are not ready yet...');
 
       // Admin-role check for correct answers.
       cy.switchToAdmin();
-      cy.visit(`/course/${course.id}`);
+			cy.visit(`/course/${course.id}`);
+			cy.get('[data-cy="show-registrations-button"]').click();
       for (const answer of answers) {
         cy.contains(answer);
       }
@@ -171,36 +172,6 @@ describe('Student', () => {
       cy.contains('Already registered!');
       cy.wait(500);
       cy.get('[data-cy="register-on-course-button"]').should('not.exist');
-    });
-
-    it('Can see groups on the course page', () => {
-      cy.switchToStaff();
-      cy.visit(`/course/${courses[3].id}`);
-      cy.get('[data-cy="switch-view-button"]').click();
-      cy.get('[data-cy="create-groups-submit"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.get('[data-cy="save-groups-button"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      
-      // Groups are saved but not published
-      cy.switchToStudent();
-      cy.visit(`/course/${courses[3].id}`);
-      cy.wait(500);
-      cy.contains('Your group has been published:').should('not.exist');
-
-      cy.switchToStaff();
-      cy.visit(`/course/${courses[3].id}`);
-      cy.get('[data-cy="switch-view-button"]').click();
-      cy.get('[data-cy="publish-groups-button"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.switchToStudent();
-      cy.visit(`/course/${courses[3].id}`);
-      cy.contains('Your group has been published:');
-      cy.get('table').within(() => {
-        cy.contains(users[0].firstname);
-        cy.contains(users[0].lastname);
-        cy.contains(users[0].email);
-      });
     });
   });
 

@@ -1,6 +1,6 @@
 // / <reference types="Cypress" />
-const courses = require('../../../server/data/courses');
-const users = require('../../../server/data/users');
+const courses = require('../fixtures/courses');
+const users = require('../fixtures/users');
 
 describe('Staff', () => {
   beforeEach(() => {
@@ -29,7 +29,7 @@ describe('Staff', () => {
       cy.get('[data-cy="checkbox-staff-controls"]').last().click();
       // past courses
       cy.get('[data-cy="checkbox-staff-controls"]').first().click();
-      cy.contains(courses[3].title).should('exist');
+      cy.contains(courses[8].title).should('exist');
       // toggle combo
       cy.get('[data-cy="checkbox-staff-controls"]').last().click();
       cy.wait(500);
@@ -37,10 +37,16 @@ describe('Staff', () => {
       cy.contains(courses[1].title).should('not.exist');
       cy.contains(courses[2].title).should('exist');
       cy.contains(courses[3].title).should('exist');
+      cy.contains(courses[4].title).should('not.exist');
+      cy.contains(courses[5].title).should('not.exist');
+      cy.contains(courses[6].title).should('exist');
+      cy.contains(courses[7].title).should('exist');
+      cy.contains(courses[8].title).should('exist');
 
+      // Hide past courses again
       cy.get('[data-cy="checkbox-staff-controls"]').first().click();
       cy.wait(500);
-      cy.contains(courses[3].title).should('not.exist');
+      cy.contains(courses[8].title).should('not.exist');
 
       cy.get('[data-cy="checkbox-staff-controls"]').last().click();
       cy.contains(courses[1].title).should('exist');
@@ -76,7 +82,6 @@ describe('Staff', () => {
           cy.get('[data-cy="tag-own"]').should("exist");
           cy.get('[data-cy="tag-unpublished"]').should("not.exist");
           cy.get('[data-cy="tag-dl"]').should("exist");
-          cy.get('[data-cy="tag-enrolled"]').should("not.exist");
         });
       });
 
@@ -90,8 +95,8 @@ describe('Staff', () => {
       cy.get('[data-cy="course-code-input"]').type('CYP999');
       cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
       cy.get('[data-cy="course-description-input"]').type('Description for test course.');
-      cy.get('[data-cy="show-teacher-list-button"]').click();
-      cy.get('[data-cy="checkbox-course-teachers"]').first().click();
+      cy.get('[data-cy="teacher-dropdown"]').click();
+      cy.contains(users[1].firstname).click();
 
       cy.get('[data-cy="create-course-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
@@ -108,64 +113,71 @@ describe('Staff', () => {
       cy.get('[data-cy="course-code-input"]').type('CWT123');
       cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
       cy.get('[data-cy="course-description-input"]').type('Description for test course.');
-      // set all checkboxes to false
-      cy.get('[data-cy="show-teacher-list-button"]').click();
-      cy.get('[data-cy="checkbox-course-teachers"]').first().click();
+      // delete pre selected teacher (staff)
+      cy.get('[data-cy="teacher-dropdown"]').contains(users[1].firstname).children().should('have.class', 'delete icon').click();
 
       cy.get('[data-cy="publish-checkbox"]').click();
-
       cy.get('[data-cy="create-course-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
-
+      //check that course has been created and staff added as teacher
       cy.visit('/courses');
       cy.get('[data-cy="CWT123"]').should('exist');
+      cy.get('[data-cy="CWT123"]').within(() => {
+        cy.get('[data-cy="tag-own"]').should("exist");
+      });
+      
     });
 
     it('Correct teachers are added to the course', () => {
       // create course as admin
       cy.switchToAdmin();
       cy.get('[data-cy="menu-item-add-course"]').click();
-
       cy.get('[data-cy="course-title-input"]').type('Course with multiple teachers');
       cy.get('[data-cy="course-code-input"]').type('CWMT123');
       cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
       cy.get('[data-cy="course-description-input"]').type('Description for test course.');
-      // set staff and admin as teachers
-      cy.get('[data-cy="show-teacher-list-button"]').click();
-      cy.get('[data-cy="checkbox-course-teachers"]').first().click();
+      // admin should be pre selected
+      cy.get('[data-cy="teacher-dropdown"]').contains(users[2].firstname).children().should('have.class', 'delete icon');
+      // add staff as teacher
+      cy.get('[data-cy="teacher-dropdown"]').click().contains(users[1].firstname).click();
 
       cy.get('[data-cy="create-course-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       //check that course is created 
       cy.visit('/courses');
-      cy.contains('CWMT123 - Course with multiple teachers').click();
-
+      cy.wait(500);
+      cy.get('[data-cy="CWMT123"]').within(() => {
+        cy.get('[data-cy="tag-own"]').should("exist");
+      });
+			cy.contains('CWMT123 - Course with multiple teachers').click();
+			cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="registration-table"]').should('exist');
 
-      // check that registration table exists for staff (staff is a teacher on this course)
+      // check that staff is also a teacher of this course
       cy.switchToStaff();
       cy.visit('/courses');
+      cy.get('[data-cy="CWMT123"]').within(() => {
+        cy.get('[data-cy="tag-own"]').should("exist");
+      });
       cy.contains('CWMT123 - Course with multiple teachers').click();
-
+			cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="registration-table"]').should('exist');
     });
 
     it('Correct person is toggled', () => {
-      // check that when staff is creating course, staff is checked and admin unchecked
+      // check that when staff is creating course, staff is preselected and admin is not
+      cy.get('[data-cy="menu-item-add-course"]').click();
+      cy.get('[data-cy="teacher-dropdown"]').contains(users[1].firstname).children().should('have.class', 'delete icon');
+      cy.get('[data-cy="teacher-dropdown"]').click().contains(users[2].firstname).children().should('not.exist');
+      
       // and vice versa when admin is the creator
-      cy.get('[data-cy="menu-item-add-course"]').click();
-      cy.get('[data-cy="show-teacher-list-button"]').click();
-      cy.get('[data-cy="checkbox-course-teachers"]').first().should('have.class', 'checked');
-      cy.get('[data-cy="checkbox-course-teachers"]').last().should('not.have.class', 'checked');
-
       cy.switchToAdmin();
-
       cy.get('[data-cy="menu-item-add-course"]').click();
-      cy.get('[data-cy="show-teacher-list-button"]').click();
-      cy.get('[data-cy="checkbox-course-teachers"]').first().should('not.have.class', 'checked');
-      cy.get('[data-cy="checkbox-course-teachers"]').last().should('have.class', 'checked');
+      cy.get('[data-cy="teacher-dropdown"]').contains(users[2].firstname).children().should('have.class', 'delete icon');
+      cy.get('[data-cy="teacher-dropdown"]').click().contains(users[1].firstname).children().should('not.exist');
     });
+
   });
 
   describe('editing existing course', () => {
@@ -193,7 +205,7 @@ describe('Staff', () => {
       // TODO: test set date too somehow, find a way to do reliably with intl
       cy.contains(newDescription);
       cy.get('[data-cy="edit-course-button"]').click();
-      cy.get('[data-cy="course-published-checkbox"]').should('not.have.class', 'checked');
+      cy.get('[data-cy="publish-checkbox"]').should('not.have.class', 'checked');
     })
 
     it('Can delete a course question', () => {
@@ -290,8 +302,7 @@ describe('Staff', () => {
       cy.contains(courses[2].title).click();
       cy.get('[data-cy="edit-course-button"]').click();
 
-      cy.get('[data-cy="show-teacher-list-button"]').click();
-      cy.get('[data-cy="checkbox-course-teachers"]').last().click();
+      cy.get('[data-cy="teacher-dropdown"]').click().contains(users[2].firstname).click();
       cy.get('[data-cy="create-course-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
@@ -314,8 +325,8 @@ describe('Staff', () => {
       cy.contains(courses[7].title).click();
       cy.get('[data-cy="edit-course-button"]').click();
 
-      cy.get('[data-cy="show-teacher-list-button"]').click();
-      cy.get('[data-cy="checkbox-course-teachers"]').last().click();
+      // remove admin from teachers and save changes
+      cy.get('[data-cy="teacher-dropdown"]').contains(users[2].firstname).children().should('have.class', 'delete icon').click();
       cy.get('[data-cy="create-course-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
@@ -337,9 +348,9 @@ describe('Staff', () => {
       cy.contains(courses[2].title).click();
       cy.get('[data-cy="edit-course-button"]').click();
 
-      cy.get('[data-cy="show-teacher-list-button"]').click();
-      cy.get('[data-cy="checkbox-course-teachers"]').first().click();
-      cy.get('[data-cy="checkbox-course-teachers"]').last().click();
+      // admin becomes only teacher
+      cy.get('[data-cy="teacher-dropdown"]').contains(users[1].firstname).children().should('have.class', 'delete icon').click();
+      cy.get('[data-cy="teacher-dropdown"]').click().contains(users[2].firstname).click();
       cy.get('[data-cy="create-course-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
@@ -356,12 +367,25 @@ describe('Staff', () => {
       });
     });
 
+    it('Cannot remove all teachers from course', () => {
+      cy.visit('/courses');
+      cy.contains(courses[2].title).click();
+      cy.get('[data-cy="edit-course-button"]').click();
+
+      cy.get('[data-cy="teacher-dropdown"]').contains(users[1].firstname).children().should('have.class', 'delete icon').click();
+
+      cy.visit('/courses');
+      cy.get('[data-cy="TC03"]').within(() => {
+        cy.get('[data-cy="tag-own"]').should("exist");
+      });
+    });
+
     it('Can not edit course after publishing it', () => {
       cy.visit('/courses');
       cy.contains(courses[2].title).click();
       cy.get('[data-cy="edit-course-button"]').click();
 
-      cy.get('[data-cy="course-published-checkbox"]').click();
+      cy.get('[data-cy="publish-checkbox"]').click();
       cy.get('[data-cy="create-course-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
@@ -402,13 +426,15 @@ describe('Staff', () => {
   describe('enroll management', () => {
     it('Can see enrolled students only on own course', () => {
       cy.visit('/courses');
-      cy.contains(courses[0].title).click();
+			cy.contains(courses[0].title).click();
+			cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="registration-table"]').contains(users[3].firstname);
       cy.contains("Students enrolled to the course:");
 
       cy.visit('/courses');
-      cy.contains(courses[4].title).click();
-      cy.wait(500);
+			cy.contains(courses[4].title).click();
+			cy.wait(500);
+			cy.get('[data-cy="show-registrations-button"]').should('not.exist');
       cy.get('[data-cy="registration-table"]').should('not.exist');
       cy.contains("Students enrolled to the course:").should('not.exist');
 
@@ -421,9 +447,10 @@ describe('Staff', () => {
     it('Can remove enrollments only from own course', () => {
       // remove student from own course
       cy.visit('/courses');
-      cy.contains(courses[0].title).click();
+			cy.contains(courses[0].title).click();
+			cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="remove-registration-button"]').first().click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
+			cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.wait(500);
       cy.get('[data-cy="registration-table"]').contains(users[3].firstname).should('not.exist');
 
@@ -434,47 +461,4 @@ describe('Staff', () => {
     });
   });
 
-  describe('managing groups', () => {
-    const course = courses[3];
-    
-    it('Can create and save groups', () => {
-      // Do not save first on purpose
-      cy.visit(`/course/${course.id}`);
-      cy.get('[data-cy="switch-view-button"]').click();
-      cy.get('[data-cy="create-groups-submit"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      // Reload to check that no info has stored
-      cy.reload();
-      cy.get('[data-cy="switch-view-button"]').click();
-      cy.get('table').should('not.exist');
-      cy.contains('No groups generated');
-
-      // Generate groups and save them
-      cy.get('[data-cy="create-groups-submit"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.get('[data-cy="save-groups-button"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      // Reload to be sure that information is stored at backend
-      cy.reload();
-      cy.get('[data-cy="switch-view-button"]').click();
-      cy.get('table').contains(users[0].firstname);
-      cy.get('table').contains(users[3].firstname);
-      cy.contains('No groups generated').should('not.exist');
-    });
-
-    it('Can edit groups', () => {
-      cy.visit(`/course/${course.id}`);
-      cy.get('[data-cy="switch-view-button"]').click();
-      cy.wait(500);
-      cy.get('[data-cy="save-groups-button"]').should('not.exist');
-
-      // Re-generate groups, would be nice also to be able to drag'n drop...
-      cy.get('[data-cy="create-groups-submit"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.get('[data-cy="save-groups-button"]').should('exist');
-    });
-
-   // No need to test publish feature here, it's done in student tests.
-
-  });
 });
