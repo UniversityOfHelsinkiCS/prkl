@@ -142,7 +142,7 @@ export default ({ course, regByStudentId, groupMessages, setGroupMessages }) => 
             
             return (
             // eslint-disable-next-line react/no-array-index-key
-            <Segment.Group key={`Group-${tableIndex}`}>
+            <Segment.Group data-cy="group-container" key={`Group-${tableIndex}`}>
               <Segment>
                 <Label
                   color="grey"
@@ -154,6 +154,7 @@ export default ({ course, regByStudentId, groupMessages, setGroupMessages }) => 
                 </Label>
                 <Header style={{marginBottom: 5}} as="h5">Message for the group:</Header>
                 <Input
+                  data-cy="group-message-input"
                   fluid
                   placeholder="Use this to send a message to members of this group..."
                   value={groupMessages[tableIndex] || ''}

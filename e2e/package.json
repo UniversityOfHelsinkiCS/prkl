@@ -18,5 +18,8 @@
   },
   "engines": {
     "node": ">=10.16"
+  },
+  "dependencies": {
+    "uuid": "^8.3.1"
   }
 }
