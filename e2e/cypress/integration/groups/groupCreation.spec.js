@@ -61,6 +61,34 @@ describe('Group creation', () => {
       cy.get('[data-cy="save-groups-button"]').should('exist');
     });
 
+    it('When removing enrollment, empty groups are deleted', () => {
+      cy.visit(`/course/${course.id}`);
+      cy.get('[data-cy="manage-groups-button"]').click();
+
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.get('[data-cy="save-groups-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.get('[data-cy="publish-groups-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+      cy.contains('Group1').should('exist');
+      cy.contains('Group2').should('exist');
+
+      cy.get('[data-cy="back-to-info-from-groups-button"]').click();
+      
+      cy.get('[data-cy="show-registrations-button"]').click();
+      cy.get('[data-cy="remove-registration-button"]').first().click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      
+      cy.reload();
+
+      cy.get('[data-cy="manage-groups-button"]').click();
+      cy.contains('Group9').should('not.exist');
+
+    });
+    
+
     // No need to test publish feature here, it's done in student tests.
 
   });
