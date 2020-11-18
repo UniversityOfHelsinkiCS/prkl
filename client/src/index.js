@@ -13,7 +13,6 @@ const apolloClient = new ApolloClient({
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:3001/graphql/'
       : `${process.env.PUBLIC_URL}/graphql/`,
-  headers: process.env.REACT_APP_CUSTOM_NODE_ENV === 'production' ? {} : getMockHeaders(),
 });
 
 ReactDOM.render(

@@ -3,6 +3,9 @@ import { getCustomRepository } from "typeorm";
 import { AuthChecker } from "type-graphql";
 import { UserRepository } from "./../repositories/UserRepository";
 import { User } from "./../entities/User";
+import parseStudentNumber from "../utils/parseStudentNumber";
+
+export type AuthenticatedRequest = Request & { user: User };
 
 /**
  * Check that user details match.
@@ -21,26 +24,24 @@ const userDetailsMatch = (user: User, data: object): boolean => {
  * include user information for backend in the Request object.
  */
 export default async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const { uid, firstname, lastname, studentNo, email } = req.headers;
-
-  // Don't pollute database with default headers. Also effectively denies access if Shibboleth fails.
-  if (uid === "default" && process.env.NODE_ENV !== "production") {
-    req["user"] = null;
+  if (process.env.NODE_ENV !== "production") {
     return next();
   }
 
+  const { uid, givenname: firstname, sn: lastname, mail: email } = req.headers;
+
   const repo = getCustomRepository(UserRepository);
-  const data = { firstname, lastname, studentNo, email, shibbolethUid: uid };
+  const data = { firstname, lastname, studentNo: parseStudentNumber(req), email, shibbolethUid: uid };
   let user = await repo.findByShibbolethUid(String(uid));
 
   // Create a new user with basic roles if none exists.
   if (!user) {
-    const role = process.env.NODE_ENV === "production" ? 1 : req.headers.role || 1;
     try {
-      user = await repo.addUser({ role, ...data });
+      user = await repo.addUser({ role: 1, ...data });
     } catch (error) {
       // FIXME: This is a hack to make mocking work.
-      user = await repo.findByShibbolethUid(String(uid));
+      //user = await repo.findByShibbolethUid(String(uid));
+      console.log("Creating new user failed", error);
     }
   }
 
