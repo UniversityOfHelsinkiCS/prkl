@@ -4,6 +4,8 @@ import { UserRepository } from "../repositories/UserRepository";
 import { isAdmin } from "../utils/userRoles";
 import { AuthenticatedRequest } from "./authorization";
 
+export type MockedByRequest = AuthenticatedRequest & { mockedBy: String };
+
 /**
  * User mocking for admins.
  */

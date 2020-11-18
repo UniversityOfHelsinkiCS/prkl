@@ -15,7 +15,7 @@ import { GroupResolver } from "./resolvers/GroupResolver";
 import { RegistrationResolver } from "./resolvers/RegistrationResolver";
 import authorization, { authChecker } from "./middleware/authorization";
 import seeding from "./testUtils/seeding";
-import logInAs from "./middleware/logInAs";
+import logInAs, { MockedByRequest } from "./middleware/logInAs";
 
 export const app = express();
 const router = promiseRouter();
@@ -65,7 +65,7 @@ const main = async (): Promise<void> => {
     }
   });
 
-  app.get("/mockedBy", (req, res) => res.send(req.mockedBy));
+  app.get("/mockedBy", (req: MockedByRequest, res) => res.send(req.mockedBy));
 
   // Register routes for development and testing utilities.
   if (process.env.NODE_ENV !== "production") {
