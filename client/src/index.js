@@ -6,7 +6,6 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import { IntlProvider } from 'react-intl';
 import App from './App';
 import messages from './localisation/messages';
-import { getMockHeaders } from './util/mockHeaders';
 
 const apolloClient = new ApolloClient({
   uri:
