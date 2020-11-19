@@ -22,6 +22,7 @@ export default ({ course, registrations, regByStudentId }) => {
   const [user] = useStore('userStore');
   const [groupsPublished, setGroupsPublished] = useState(false);
   const [groupMessages, setGroupMessages] = useState(['']);
+  const [groupNames, setGroupNames] = useState(['']);
 
   const intl = useIntl();
 
@@ -38,12 +39,16 @@ export default ({ course, registrations, regByStudentId }) => {
     if (!loading && data !== undefined) {
       const fetchedGroups = data.courseGroups.map(e => {
         return {
+          groupId: e.id,
           students: e.students,
-          groupMessage: e.groupMessage
+          groupMessage: e.groupMessage,
+          groupName: e.groupName
         }
       });
       setGroups(fetchedGroups);
+      const newGroupNames = fetchedGroups.map(g => g.groupName);
       const newGroupMsgs = fetchedGroups.map(g => g.groupMessage);
+      setGroupNames(newGroupNames);
       setGroupMessages(newGroupMsgs);
       setOldGroups(fetchedGroups);
     }
@@ -67,12 +72,16 @@ export default ({ course, registrations, regByStudentId }) => {
         });
         const mappedGroups = res.data.createSampleGroups.map(e => {
           return {
+            groupId: '',
             students: e.students,
-            groupMessage: ''
+            groupMessage: '',
+            groupName: 'unnamed'
           }
         });
         setGroups(mappedGroups);
+        const newGroupNames = mappedGroups.map(mg => mg.groupName);
         const newGroupMsgs = mappedGroups.map(mg => mg.groupMessage);
+        setGroupNames(newGroupNames);
         setGroupMessages(newGroupMsgs);
         setGroupsUnsaved(true);
       } catch (groupError) {
@@ -85,8 +94,10 @@ export default ({ course, registrations, regByStudentId }) => {
     try {
       const userIdGroups = groups.map((g, i) => {
         return {
+          id: g.groupId,
           userIds: g.students.map(student => student.id),
-          groupMessage: groupMessages[i]
+          groupMessage: groupMessages[i],
+          groupName: groupNames[i]
         };
       });
       const variables = {data: { courseId: course.id, groups: userIdGroups }};
@@ -203,6 +214,8 @@ export default ({ course, registrations, regByStudentId }) => {
           <Groups 
             course={course}
             regByStudentId={regByStudentId}
+            groupNames={groupNames}
+            setGroupNames={setGroupNames}
             groupMessages={groupMessages}
             setGroupMessages={setGroupMessages}
           />

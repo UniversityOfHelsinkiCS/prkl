@@ -28,6 +28,9 @@ export class UserResolver {
       if (g.groupMessage === null) {
         g.groupMessage = '';
       }
+      if (g.groupName === null) {
+        g.groupName = '';
+      }
     });
     
     return user;

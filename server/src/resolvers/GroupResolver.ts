@@ -7,6 +7,7 @@ import { GroupListInput } from "./../inputs/GroupListInput";
 import { STAFF, ADMIN } from "../utils/userRoles";
 import { formGroups } from "../algorithm/index";
 import { Course } from "../entities/Course";
+import { UserResolver } from "./UserResolver";
 
 const formNewGroups = async (courseId: string, minGroupSize: number) => {
   const registrations = await Registration.find({
@@ -38,10 +39,13 @@ export class GroupResolver {
       });
       groups.forEach(g => {
         if (g.groupMessage === null) {
-          g.groupMessage = ''
+          g.groupMessage = '';
+        }
+        if (g.groupName === null) {
+          g.groupName = '';
         }
       })
-      return groups
+      return groups;
     }
     throw new Error("Not your course.");
   }
@@ -90,13 +94,29 @@ export class GroupResolver {
   @Mutation(() => [Group])
   async saveGeneratedGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
     const { courseId, groups } = data;
-    (await Group.find({ where: { courseId: courseId } })).forEach(g => g.remove());
+    const groupsInDb = await Group.find({ where: { courseId: courseId } });
+
+    const newGroups = groups.filter(g => !groupsInDb.some(gid => gid.id === g.id));
+
+    groupsInDb.forEach(async g => {
+      if (!groups.map(dg => dg.id).some(id => id === g.id)) {
+        g.remove();
+      } else {
+        const updatedGroup = groups.find(gr => gr.id === g.id);
+        g.groupName = updatedGroup.groupName;
+        g.groupMessage = updatedGroup.groupMessage;
+        const newStudents = await User.findByIds(updatedGroup.userIds);
+        g.students = newStudents;
+        g.save();
+      }
+    });
 
     return Promise.all(
-      groups.map(async g => {
+      newGroups.map(async g => {
         const students = await User.findByIds(g.userIds);
         const groupMessage = g.groupMessage;
-        return Group.create({ courseId, students, groupMessage }).save();
+        const groupName = g.groupName;
+        return Group.create({ groupName, courseId, students, groupMessage }).save();
       })
     );
   }

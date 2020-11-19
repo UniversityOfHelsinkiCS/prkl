@@ -25,6 +25,10 @@ export class Group extends BaseEntity {
 
   @Field(() => String)
   @Column({ nullable: true })
+  groupName: string;
+
+  @Field(() => String)
+  @Column({ nullable: true })
   groupMessage: string;
 
   @Field(type => Course)
