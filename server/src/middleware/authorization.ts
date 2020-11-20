@@ -4,7 +4,6 @@ import { AuthChecker } from "type-graphql";
 import { UserRepository } from "./../repositories/UserRepository";
 import { User } from "./../entities/User";
 import parseStudentNumber from "../utils/parseStudentNumber";
-import users from "../../data/users.js";
 
 export type AuthenticatedRequest = Request & { user: User };
 
@@ -26,8 +25,6 @@ const userDetailsMatch = (user: User, data: object): boolean => {
  */
 export default async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   if (process.env.NODE_ENV !== "production") {
-    // set admin as user
-    req["user"] = users[2];
     return next();
   }
 
