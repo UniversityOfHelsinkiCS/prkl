@@ -20,14 +20,12 @@ const Asd = () => {
 
   useEffect(() => {
     (async () => {
-      const { data: mockedBy } = await axios.get(
+      const { data: mock } = await axios.get(
         process.env.NODE_ENV === 'development'
-          ? 'http://localhost:3001/mockedBy'
-          : `${process.env.PUBLIC_URL}/mockedBy`
+          ? 'http://localhost:3001/mocking'
+          : `${process.env.PUBLIC_URL}/mocking`
       );
-
-      setMocking(prev => ({ ...prev, mockedBy }));
-      // TODO: Fire currentUser query to get mocking status from backend (SSoT).
+      setMocking(mock);
       // If mockedBy === mockedUser => mockaus ei päällä.
     })();
   }, []);

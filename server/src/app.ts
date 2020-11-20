@@ -65,7 +65,12 @@ const main = async (): Promise<void> => {
     }
   });
 
-  app.get("/mockedBy", (req: MockedByRequest, res) => res.send(req.mockedBy));
+  app.get("/mocking", (req: MockedByRequest, res) => {
+    res.send({ 
+      mockedBy: req.mockedBy,
+      mockedUser: req.user.shibbolethUid
+    })
+  });
 
   // Register routes for development and testing utilities.
   if (process.env.NODE_ENV !== "production") {

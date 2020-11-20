@@ -34,11 +34,6 @@ export default async (req: AuthenticatedRequest, res: Response, next: NextFuncti
   if (usernameToMock) {
     const repo = getCustomRepository(UserRepository);
     const mockedUser = await repo.findByShibbolethUid(usernameToMock);
-    
-    if (!mockedUser) {
-      return next();
-    }
-
     req.user = mockedUser;
     req["mockedBy"] = username;
   }
