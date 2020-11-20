@@ -13,13 +13,13 @@ const loggedInAs = {};
 
 export default async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
   const { user } = req;
-  const canMock = process.env.NODE_ENV === "development" ? true : isAdmin(user);
+  const canMock = isAdmin(user);
 
   if (!canMock) {
     return next();
   }
 
-  const username = process.env.NODE_ENV === "development" ? "3" : user.shibbolethUid;
+  const username = user.shibbolethUid;
 
   // Set mocked user.
   const mockingHeader = req.headers["x-admin-logged-in-as"];
@@ -34,6 +34,11 @@ export default async (req: AuthenticatedRequest, res: Response, next: NextFuncti
   if (usernameToMock) {
     const repo = getCustomRepository(UserRepository);
     const mockedUser = await repo.findByShibbolethUid(usernameToMock);
+    
+    if (!mockedUser) {
+      return next();
+    }
+
     req.user = mockedUser;
     req["mockedBy"] = username;
   }

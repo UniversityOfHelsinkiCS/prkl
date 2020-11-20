@@ -1,10 +1,9 @@
 import React from 'react';
 import { Menu, Icon } from 'semantic-ui-react';
 import axios from 'axios';
-import { setMockHeaders } from '../util/mockHeaders';
 
-const switchUser = async index => {
-  setMockHeaders(index);
+const switchUser = async id => {
+  localStorage.setItem('mockedId', id);
   window.location.reload();
 };
 
@@ -29,13 +28,13 @@ const seedDemoDatabase = async () => {
 export default () => (
   <Menu className="mainHeader" size="massive" stackable borderless attached inverted>
     <Menu.Item>DEV</Menu.Item>
-    <Menu.Item onClick={() => switchUser(0)} data-cy="switch-to-student">
+    <Menu.Item onClick={() => switchUser(1)} data-cy="switch-to-student">
       Student
     </Menu.Item>
-    <Menu.Item onClick={() => switchUser(1)} data-cy="switch-to-staff">
+    <Menu.Item onClick={() => switchUser(2)} data-cy="switch-to-staff">
       Staff
     </Menu.Item>
-    <Menu.Item onClick={() => switchUser(2)} data-cy="switch-to-admin">
+    <Menu.Item onClick={() => switchUser(3)} data-cy="switch-to-admin">
       Admin
     </Menu.Item>
     <Menu.Item>

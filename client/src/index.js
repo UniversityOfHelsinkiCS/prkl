@@ -12,6 +12,9 @@ const apolloClient = new ApolloClient({
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:3001/graphql/'
       : `${process.env.PUBLIC_URL}/graphql/`,
+  headers: {
+    'x-admin-logged-in-as': localStorage.getItem('mockedId')
+  },
 });
 
 ReactDOM.render(
