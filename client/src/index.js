@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 import { createStore, useStore } from 'react-hookstore';
 
 createStore('mocking', {
-  mockedBy: '',
+  mockedBy: null,
   mockedUser: null,
 });
 
@@ -30,7 +30,7 @@ const Asd = () => {
     })();
   }, []);
 
-  const mockingHeader = process.env.NODE_ENV === 'development' ? mocking.mockedUser || '3' : null;
+  const mockingHeader = process.env.NODE_ENV === 'development' ? mocking.mockedUser : null;
 
   const apolloClient = new ApolloClient({
     uri:
@@ -42,6 +42,11 @@ const Asd = () => {
     },
   });
 
+  if(mocking.mockedUser === null) {
+    return (
+      <></>
+    )
+  }
   return (
     <ApolloProvider client={apolloClient}>
       <App />

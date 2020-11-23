@@ -5,7 +5,6 @@ import { useStore } from 'react-hookstore';
 
 const switchUser = async (setMocking, id) => {
   setMocking(prev => ({ ...prev, mockedUser: id }));
-  //window.location.reload();
 };
 
 const apiUrl =

@@ -9,7 +9,7 @@ export type MockedByRequest = AuthenticatedRequest & { mockedBy: String };
 /**
  * User mocking for admins.
  */
-const loggedInAs = {};
+const loggedInAs = {'3': '3'};
 
 export default async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
   const { user } = req;
