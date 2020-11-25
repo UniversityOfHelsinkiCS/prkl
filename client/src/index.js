@@ -25,8 +25,7 @@ const Asd = () => {
           ? 'http://localhost:3001/mocking'
           : `${process.env.PUBLIC_URL}/mocking`
       );
-      setMocking(mock);
-      // If mockedBy === mockedUser => mockaus ei päällä.
+			setMocking(mock); // If mockedBy === mockedUser => mockaus ei päällä.
     })();
   }, []);
 

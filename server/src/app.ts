@@ -66,10 +66,11 @@ const main = async (): Promise<void> => {
   });
 
   app.get("/mocking", (req: MockedByRequest, res) => {
-    res.send({ 
+		
+		res.send({ 
       mockedBy: req.mockedBy,
-      mockedUser: req.user.shibbolethUid
-    })
+      mockedUser: req.user ? req.user.shibbolethUid : req.mockedBy
+		})
   });
 
   // Register routes for development and testing utilities.

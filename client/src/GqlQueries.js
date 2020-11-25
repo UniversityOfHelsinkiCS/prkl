@@ -26,7 +26,8 @@ export const ALL_USERS = gql`
       lastname
       studentNo
       email
-      role
+			role
+			shibbolethUid
     }
   }
 `;

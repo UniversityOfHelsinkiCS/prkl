@@ -3,14 +3,17 @@ import { useStore } from 'react-hookstore';
 import { Header, Loader, Card, Input, Divider, Button } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
+import { useHistory } from 'react-router-dom';
 import { EDIT_USER_ROLE } from '../../GqlQueries';
 import roles from '../../util/userRoles';
 
 export default ({ allUsersError, allUsersLoading }) => {
-  const [users] = useStore('allUsersStore');
+	const [users] = useStore('allUsersStore');
+	const [mocking, setMocking] = useStore('mocking');
   const [search, setSearch] = useState('');
   const [editUserRole] = useMutation(EDIT_USER_ROLE);
-  const intl = useIntl();
+	const intl = useIntl();
+	const history = useHistory();
 
   const handleSearchChange = event => {
     setSearch(event.target.value);
@@ -26,6 +29,12 @@ export default ({ allUsersError, allUsersLoading }) => {
       console.log('error editing role:', e);
     }
   };
+
+	const handleLogInAs = (setMocking, id) => {
+		setMocking(prev => ({ ...prev, mockedUser: id }));
+		history.push('/courses');
+		// Do we want to reload page here?
+	}
 
   if (allUsersError !== undefined) {
     console.log('error:', allUsersError);
@@ -85,7 +94,14 @@ export default ({ allUsersError, allUsersLoading }) => {
                         >
                           {intl.formatMessage({ id: 'users.student' })}
                         </Button>
-                      </div>
+												<Button
+													onClick={() => handleLogInAs(setMocking, u.shibbolethUid)}
+													color="orange"
+													data-cy="log-in-as-user-button"
+												>
+													Log in as this user
+												</Button>	
+											</div>
                     )}
                   </Card.Content>
                 </Card.Content>
