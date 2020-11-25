@@ -12,7 +12,7 @@ export default () => {
 	const [user] = useStore('userStore');
 
   return (
-    <Menu className="mainHeader" size="massive" stackable borderless attached inverted>
+    <Menu data-cy="mockbar" className="mainHeader" size="massive" stackable borderless attached inverted>
       <Menu.Item>
         Hey admin, you are now logged in as user:
       </Menu.Item>

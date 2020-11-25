@@ -252,5 +252,9 @@ describe('Admin', () => {
       cy.wait(500);
       cy.get('[data-cy="registration-table"]').contains(users[0].firstname).should('not.exist');
     });
-  });
+	});
+	
+	//describe('log in as user -feature', () => {
+	//	it('')
+	//});
 });

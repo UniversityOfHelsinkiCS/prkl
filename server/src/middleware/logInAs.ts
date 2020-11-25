@@ -13,13 +13,13 @@ const loggedInAs = {'3': '3'};
 
 export default async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
   const { user } = req;
-  const canMock = process.env.NODE_ENV === "development" ? true : isAdmin(user);
+  const canMock = process.env.NODE_ENV !== "production" ? true : isAdmin(user);
 
   if (!canMock) {
     return next();
   }
 
-  const username = process.env.NODE_ENV === "development" ? "3" : user.shibbolethUid;
+  const username = process.env.NODE_ENV !== "production" ? "3" : user.shibbolethUid;
 
   // Set mocked user.
   const mockingHeader = req.headers["x-admin-logged-in-as"];
