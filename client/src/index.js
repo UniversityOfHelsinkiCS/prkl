@@ -48,10 +48,6 @@ const Asd = () => {
   }
   return (
     <ApolloProvider client={apolloClient}>
-      <>
-        <h4>Mocked user: {mocking.mockedUser}</h4>
-        <h4>Mocked by: {mocking.mockedBy}</h4>
-      </>
       <App />
     </ApolloProvider>
   );
