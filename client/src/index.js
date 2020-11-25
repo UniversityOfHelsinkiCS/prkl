@@ -21,7 +21,7 @@ const Asd = () => {
   useEffect(() => {
     (async () => {
       const { data: mock } = await axios.get(
-        process.env.NODE_ENV === 'development'
+        process.env.NODE_ENV !== 'production'
           ? 'http://localhost:3001/mocking'
           : `${process.env.PUBLIC_URL}/mocking`
       );
@@ -29,11 +29,11 @@ const Asd = () => {
     })();
   }, []);
 
-  const mockingHeader = process.env.NODE_ENV === 'development' ? mocking.mockedUser : null;
+  const mockingHeader = process.env.NODE_ENV !== 'production' ? mocking.mockedUser : null;
 
   const apolloClient = new ApolloClient({
     uri:
-      process.env.NODE_ENV === 'development'
+      process.env.NODE_ENV !== 'production'
         ? 'http://localhost:3001/graphql/'
         : `${process.env.PUBLIC_URL}/graphql/`,
     headers: {
