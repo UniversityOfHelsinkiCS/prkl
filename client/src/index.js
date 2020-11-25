@@ -41,7 +41,7 @@ const Asd = () => {
     },
   });
 
-  if(mocking.mockedUser === null) {
+  if(!mocking.mockedUser) {
     return (
       <></>
     )
