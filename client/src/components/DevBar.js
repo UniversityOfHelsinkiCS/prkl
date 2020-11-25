@@ -33,10 +33,13 @@ export default () => {
     <Menu className="mainHeader" size="massive" stackable borderless attached inverted>
       <Menu.Item>DEV</Menu.Item>
 			<Menu.Item onClick={() => switchUser(setMocking, 1)} data-cy="switch-to-student">
-        Log in as student
+        Student
       </Menu.Item>
       <Menu.Item onClick={() => switchUser(setMocking, 2)} data-cy="switch-to-staff">
-        Log in as staff
+        Staff
+      </Menu.Item>
+			<Menu.Item onClick={() => switchUser(setMocking, mocking.mockedBy)} data-cy="switch-to-admin">
+        Admin
       </Menu.Item>
       <Menu.Item>
         <Icon name="cogs" style={{ color: '#fbbd08' }} />

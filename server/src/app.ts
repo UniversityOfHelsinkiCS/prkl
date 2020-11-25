@@ -66,7 +66,6 @@ const main = async (): Promise<void> => {
   });
 
   app.get("/mocking", (req: MockedByRequest, res) => {
-		
 		res.send({ 
       mockedBy: req.mockedBy,
       mockedUser: req.user ? req.user.shibbolethUid : req.mockedBy
