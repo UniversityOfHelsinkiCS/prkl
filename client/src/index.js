@@ -15,25 +15,29 @@ createStore('mocking', {
   mockedUser: null,
 });
 
-const Asd = () => {
+const MockingEnabledClient = () => {
   const [mocking, setMocking] = useStore('mocking');
+
+  console.log('process.env.REACT_APP_CUSTOM_NODE_ENV:', process.env.REACT_APP_CUSTOM_NODE_ENV)
 
   useEffect(() => {
     (async () => {
       const { data: mock } = await axios.get(
-        process.env.NODE_ENV === 'development'
+        process.env.REACT_APP_CUSTOM_NODE_ENV === 'development'
           ? 'http://localhost:3001/mocking'
           : `${process.env.PUBLIC_URL}/mocking`
       );
-			setMocking(mock); // If mockedBy === mockedUser => mockaus ei päällä.
+      setMocking(mock); // If mockedBy === mockedUser => mockaus ei päällä.
     })();
   }, []);
 
-  const mockingHeader = process.env.NODE_ENV !== 'production' ? mocking.mockedUser : null;
+  const mockingHeader = process.env.REACT_APP_CUSTOM_NODE_ENV !== 'production'
+    ? mocking.mockedUser
+    : null;
 
   const apolloClient = new ApolloClient({
     uri:
-      process.env.NODE_ENV === 'development'
+      process.env.REACT_APP_CUSTOM_NODE_ENV === 'development'
         ? 'http://localhost:3001/graphql/'
         : `${process.env.PUBLIC_URL}/graphql/`,
     headers: {
@@ -41,7 +45,7 @@ const Asd = () => {
     },
   });
 
-  if(!mocking.mockedUser) {
+  if (!mocking.mockedUser) {
     return (
       <></>
     )
@@ -55,7 +59,7 @@ const Asd = () => {
 
 ReactDOM.render(
   <IntlProvider locale="en" messages={messages.en}>
-    <Asd />
+    <MockingEnabledClient />
   </IntlProvider>,
   document.getElementById('root')
 );
