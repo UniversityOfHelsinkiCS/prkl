@@ -67,24 +67,31 @@ describe('Group creation', () => {
 
       cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(gc =>{
+        cy.contains('unnamed').click();
+      });
+      cy.get('[data-cy="group-name-input"]').type('Testgroup');
+      
       cy.get('[data-cy="save-groups-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.get('[data-cy="publish-groups-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
-      cy.contains('Group1').should('exist');
-      cy.contains('Group2').should('exist');
+      cy.contains('Testgroup').should('exist');
 
       cy.get('[data-cy="back-to-info-from-groups-button"]').click();
       
       cy.get('[data-cy="show-registrations-button"]').click();
-      cy.get('[data-cy="remove-registration-button"]').first().click();
+      cy.contains(users[0].firstname).parents('[data-cy="student-registration-row"]').within(()=> {
+        cy.get('[data-cy="remove-registration-button"]').click();
+      })
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       
       cy.reload();
 
       cy.get('[data-cy="manage-groups-button"]').click();
-      cy.contains('Group9').should('not.exist');
+      cy.wait(300);
+      cy.contains('Testgroup').should('not.exist');
 
     });
     

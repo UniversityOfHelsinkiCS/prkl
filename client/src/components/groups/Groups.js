@@ -159,8 +159,10 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
             <Segment.Group data-cy="group-container" key={`Group-${tableIndex}`}>
               <Segment>
                 <Popup 
+                  data-cy="group-name-popup"
                   content={
                   <input 
+                    data-cy="group-name-input"
                     value={groupNames[tableIndex] || ''}
                     onChange={e => handleGroupNameChange(e, tableIndex)}
                   />
