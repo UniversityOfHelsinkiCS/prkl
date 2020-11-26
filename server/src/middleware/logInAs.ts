@@ -13,6 +13,9 @@ const loggedInAs = {'3': '3'};
 
 export default async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
   const { user } = req;
+  console.log('\nat the start of logInAs mw, user is:', user)
+  console.log('and req.headers is:')
+  console.log(req.headers)
   const canMock = process.env.NODE_ENV !== "production" ? true : isAdmin(user);
 
   if (!canMock) {
@@ -37,6 +40,10 @@ export default async (req: AuthenticatedRequest, res: Response, next: NextFuncti
     req.user = mockedUser;
     req["mockedBy"] = username;
   }
+
+  console.log('at the end of logInAs mw, req.user is', req.user)
+  console.log('and req.headers are:')
+  console.log(req.headers)
 
   next();
 };
