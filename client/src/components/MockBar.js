@@ -4,7 +4,7 @@ import { useStore } from 'react-hookstore';
 
 const stopMocking = async (setMocking, mockedBy) => {
 	setMocking(prev => ({ ...prev, mockedUser: mockedBy }));
-	window.location.reload();
+	//window.location.reload();
 };
 
 export default () => {
@@ -12,6 +12,8 @@ export default () => {
 	const [user] = useStore('userStore');
 
   return (
+    <>
+    {mocking.mockedUser !== mocking.mockedBy ?
     <Menu data-cy="mockbar" className="mainHeader" size="massive" stackable borderless attached inverted>
       <Menu.Item>
         Hey admin, you are now logged in as user:
@@ -25,4 +27,6 @@ export default () => {
 				</Button>
       </Menu.Item>
       </Menu>
+    : null }
+    </>
 )};
