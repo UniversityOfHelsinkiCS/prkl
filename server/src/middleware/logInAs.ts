@@ -12,7 +12,9 @@ export type MockedByRequest = AuthenticatedRequest & { mockedBy: String };
 const loggedInAs = {'3': '3'};
 
 export default async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
-  const { user } = req;
+	console.log(loggedInAs);
+
+	const { user } = req;
   console.log('\nat the start of logInAs mw, user is:', user)
   console.log('and req.headers is:')
   console.log(req.headers)
@@ -23,6 +25,7 @@ export default async (req: AuthenticatedRequest, res: Response, next: NextFuncti
   }
 
   const username = process.env.NODE_ENV !== "production" ? "3" : user.shibbolethUid;
+	// 'prkl-admin'
 
   // Set mocked user.
   const mockingHeader = req.headers["x-admin-logged-in-as"];
@@ -33,11 +36,13 @@ export default async (req: AuthenticatedRequest, res: Response, next: NextFuncti
 
   // Overwrite req.user if mocking.
   const usernameToMock = loggedInAs[username];
+	console.log('usernameToMock is ', usernameToMock);
 
   if (usernameToMock) {
     const repo = getCustomRepository(UserRepository);
     const mockedUser = await repo.findByShibbolethUid(usernameToMock);
-    req.user = mockedUser;
+		console.log('mockedUser is ', mockedUser);
+		req.user = mockedUser;
     req["mockedBy"] = username;
   }
 
@@ -45,5 +50,6 @@ export default async (req: AuthenticatedRequest, res: Response, next: NextFuncti
   console.log('and req.headers are:')
   console.log(req.headers)
 
+	console.log(loggedInAs);
   next();
 };
