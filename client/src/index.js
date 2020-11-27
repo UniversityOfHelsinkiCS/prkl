@@ -31,9 +31,7 @@ const MockingEnabledClient = () => {
     })();
   }, []);
 
-  const mockingHeader = process.env.REACT_APP_CUSTOM_NODE_ENV !== 'production'
-    ? mocking.mockedUser
-    : null;
+  const mockingHeader = mocking.mockedUser;
 
   const apolloClient = new ApolloClient({
     uri:
