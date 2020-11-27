@@ -70,18 +70,10 @@ export class RegistrationResolver {
     if (!registration) throw new Error("Registration not found!");
 
     // If the user has been assigned to a group on this course, unassign them
-    const oldGroup = await registration.student.groups.filter(g => g.courseId === courseId);
     const groups = await registration.student.groups.filter(g => g.courseId !== courseId);
     const unregisteredUser = await User.findOne({ id: studentId });
     unregisteredUser.groups = groups;
     await unregisteredUser.save();
-
-    if(oldGroup.length !== 0){
-      const removegroup = await Group.findOne({where: {id: oldGroup[0].id }, relations:["students"]});
-      if(removegroup.students.length === 0){
-        removegroup.remove();
-      }
-    }
 
     await registration.remove();
 

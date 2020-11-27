@@ -91,7 +91,7 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
   const removeGroupButton = index => {
     if (groups.length > 1 && groups[index].students.length === 0) {
       return (
-        <Button size="mini" color="red" onClick={() => removeGroup(index)}>
+        <Button data-cy="group-remove-button" size="mini" color="red" onClick={() => removeGroup(index)}>
           <FormattedMessage id="groups.removeGroupButton" />
         </Button>
       );

@@ -61,38 +61,44 @@ describe('Group creation', () => {
       cy.get('[data-cy="save-groups-button"]').should('exist');
     });
 
-    it('When removing enrollment, empty groups are deleted', () => {
+    it('When removing enrollment, group that is left empty will be retained and has a remove button', () => {
+      const newGroupName = 'Testgroup123';
       cy.visit(`/course/${course.id}`);
       cy.get('[data-cy="manage-groups-button"]').click();
 
       cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(gc =>{
+        cy.get('[data-cy="group-remove-button"]').should('not.exist');
         cy.contains('unnamed').click();
       });
-      cy.get('[data-cy="group-name-input"]').type('Testgroup');
+      cy.get('[data-cy="group-name-input"]').type(`{selectAll}${newGroupName}`);
       
       cy.get('[data-cy="save-groups-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.get('[data-cy="publish-groups-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
-      cy.contains('Testgroup').should('exist');
+      cy.contains(newGroupName).should('exist');
 
       cy.get('[data-cy="back-to-info-from-groups-button"]').click();
       
       cy.get('[data-cy="show-registrations-button"]').click();
       cy.contains(users[0].firstname).parents('[data-cy="student-registration-row"]').within(()=> {
         cy.get('[data-cy="remove-registration-button"]').click();
-      })
+      });
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       
       cy.reload();
 
       cy.get('[data-cy="manage-groups-button"]').click();
       cy.wait(300);
-      cy.contains('Testgroup').should('not.exist');
-
+      cy.contains('Testgroup').should('exist');
+      cy.contains(users[0].firstname).should('not.exist');
+      cy.contains(newGroupName).parents('[data-cy="group-container"]').within(gc => {
+        cy.get('tr').should('have.length', 1);
+        cy.get('[data-cy="group-remove-button"]').should('exist');
+      });
     });
     
 
