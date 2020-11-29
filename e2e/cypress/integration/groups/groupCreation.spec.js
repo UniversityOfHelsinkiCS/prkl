@@ -34,19 +34,63 @@ describe('Group creation', () => {
       cy.get('table').contains(users[3].firstname);
       cy.contains('No groups generated').should('not.exist');
     });
+    it('Teacher can name a group', () => {
+      const namedGroup = 'MyGroup'
 
+      cy.visit(`/course/${course.id}`);
+      cy.get('[data-cy="manage-groups-button"]').click();
+      cy.get('[data-cy="target-group-size"]').type('9');
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+      cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(gc =>{
+        cy.get('[data-cy="group-remove-button"]').should('not.exist');
+        cy.contains('unnamed').click();
+      });
+      cy.get('[data-cy="group-name-input"]').type(`{selectAll}${namedGroup}`);
+      cy.get('[data-cy="save-groups-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+      cy.contains(namedGroup).should('exist');
+
+    })
     it('Can drag a student from group to another', () => {
+      const emptyGroup = 'Emptygroup';
+      const groupToDrag = 'GroupToDrag';
+
       cy.visit(`/course/${course.id}`);
       cy.get('[data-cy="manage-groups-button"]').click();
       cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+      cy.contains(users[3].firstname).parents('[data-cy="group-container"]').within(gc =>{
+        cy.get('[data-cy="group-remove-button"]').should('not.exist');
+        cy.contains('unnamed').click();
+      });
+      cy.get('[data-cy="group-name-input"]').type(`{selectAll}${emptyGroup}`);
+
+      cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(gc =>{
+        cy.get('[data-cy="group-remove-button"]').should('not.exist');
+        cy.contains('unnamed').click();
+      });
+      cy.get('[data-cy="group-name-input"]').type(`{selectAll}${groupToDrag}`);
+      
       const dataTransfer = new DataTransfer;
       cy.get('table').contains(users[3].firstname).trigger('dragstart', { dataTransfer });
       cy.get('table').contains(users[0].firstname).trigger('drop', { dataTransfer });
       cy.get('table').contains(users[3].firstname).trigger('dragend');
       cy.get('[data-cy="save-groups-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
-      //cy.contains('Group2').should('not.exist'); Fix this
+
+      cy.contains(emptyGroup).parents('[data-cy="group-container"]').within(gc => {
+        cy.get('tr').should('have.length', 1);
+        cy.get('[data-cy="group-remove-button"]').should('exist');
+      });
+
+      cy.contains(groupToDrag).parents('[data-cy="group-container"]').within(gc => {
+        cy.get('tr').should('have.length', 3);
+        cy.get('[data-cy="group-remove-button"]').should('not.exist');
+      });
     })
 
     it('Can edit existing groups', () => {
