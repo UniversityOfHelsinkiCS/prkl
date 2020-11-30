@@ -24,14 +24,9 @@ const userDetailsMatch = (user: User, data: object): boolean => {
  * include user information for backend in the Request object.
  */
 export default async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  console.log('\n\n\n\nNEW REQUEST CAME IN')
-  console.log('in authorization mw, req.headers is:')
-  console.log(req.headers)
   if (process.env.NODE_ENV !== "production") {
-    console.log(`authorization was skipped, NODE_ENV is '${process.env.NODE_ENV}'`)
     return next();
   }
-  console.log(`authorization was not skipped, NODE_ENV is '${process.env.NODE_ENV}'`)
 
   const { uid, givenname: firstname, sn: lastname, mail: email } = req.headers;
 

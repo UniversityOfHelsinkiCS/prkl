@@ -18,8 +18,6 @@ createStore('mocking', {
 const MockingEnabledClient = () => {
   const [mocking, setMocking] = useStore('mocking');
 
-  console.log('process.env.REACT_APP_CUSTOM_NODE_ENV:', process.env.REACT_APP_CUSTOM_NODE_ENV)
-
   useEffect(() => {
     (async () => {
       const { data: mock } = await axios.get(
