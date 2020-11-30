@@ -10,6 +10,7 @@ import Courses from './components/courses/Courses';
 import Course from './components/courses/Course';
 import { ALL_COURSES, ALL_USERS } from './GqlQueries';
 import DevBar from './components/DevBar';
+import MockBar from './components/MockBar';
 import roles from './util/userRoles';
 import userService from './services/userService';
 import './App.css';
@@ -31,7 +32,8 @@ export default () => {
   const [courses, setCourses] = useStore('coursesStore');
   const [allUsers, setAllUsers] = useStore('allUsersStore');
   const [user, setUser] = useStore('userStore');
-  const [privacyToggle] = useStore('toggleStore');
+	const [privacyToggle] = useStore('toggleStore');
+	const [mocking] = useStore('mocking');
 
   const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
   const { loading: allUsersLoading, error: allUsersError, data: allUsersData } = useQuery(
@@ -79,6 +81,7 @@ export default () => {
   return (
     <>
       {process.env.REACT_APP_CUSTOM_NODE_ENV !== 'production' ? <DevBar /> : null}
+			{mocking.mockedBy  ? <MockBar /> : null }
       <div className="App">
         <Router basename={process.env.PUBLIC_URL}>
           <Header />

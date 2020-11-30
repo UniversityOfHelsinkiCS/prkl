@@ -8,13 +8,14 @@ import { buildSchema } from "type-graphql";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 import cors from "cors";
+import headersMiddleware from "unfuck-utf8-headers-middleware";
 import { CourseResolver } from "./resolvers/CourseResolver";
 import { UserResolver } from "./resolvers/UserResolver";
 import { GroupResolver } from "./resolvers/GroupResolver";
 import { RegistrationResolver } from "./resolvers/RegistrationResolver";
-import shibbolethHeaders from "./middleware/shibbolethHeaders";
 import authorization, { authChecker } from "./middleware/authorization";
 import seeding from "./testUtils/seeding";
+import logInAs, { MockedByRequest } from "./middleware/logInAs";
 
 export const app = express();
 const router = promiseRouter();
@@ -44,8 +45,9 @@ const main = async (): Promise<void> => {
 
   // Middleware.
   app
-    .use(shibbolethHeaders)
+    .use(headersMiddleware(["uid", "givenname", "sn", "mail", "schacpersonaluniquecode"]))
     .use(authorization)
+    .use(logInAs)
     .use("/graphql", graphqlHttp({ schema, graphiql: true }))
     .use(bodyParser.json())
     .use(morgan(logFormat))
@@ -61,6 +63,13 @@ const main = async (): Promise<void> => {
     } else {
       res.send(req.headers.shib_logout_url);
     }
+  });
+
+  app.get("/mocking", (req: MockedByRequest, res) => {
+		res.send({ 
+      mockedBy: req.mockedBy,
+      mockedUser: req.user ? req.user.shibbolethUid : req.mockedBy
+		})
   });
 
   // Register routes for development and testing utilities.

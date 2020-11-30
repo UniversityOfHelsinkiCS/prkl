@@ -7,13 +7,15 @@ services:
       dockerfile: dev.Dockerfile
       args:
         NODE_ENV: development
+        REACT_APP_CUSTOM_NODE_ENV: development
     volumes:
       - ./server:/usr/src/app/server
     ports:
       - "3001:3001"
     container_name: prkl-dev
     environment:
-      - NODE_ENV=development
+      - "NODE_ENV=development"
+      - "REACT_APP_CUSTOM_NODE_ENV=development"
     command: npm run start:dev
 
   test-app:
@@ -26,7 +28,8 @@ services:
       - 3001:3001
     container_name: test-app
     environment:
-      - NODE_ENV=test
+      - "NODE_ENV=test"
+      - "REACT_APP_CUSTOM_NODE_ENV=test"
     depends_on:
       - test-db
     command: npm run start:test

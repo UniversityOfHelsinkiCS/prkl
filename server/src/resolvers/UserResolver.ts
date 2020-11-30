@@ -1,4 +1,3 @@
-import { group } from "console";
 import { Resolver, Query, Arg, Ctx, Authorized, Mutation } from "type-graphql";
 import { User } from "../entities/User";
 import { ADMIN, STAFF } from "../utils/userRoles";
@@ -28,6 +27,9 @@ export class UserResolver {
     user.groups.forEach(g => {
       if (g.groupMessage === null) {
         g.groupMessage = '';
+      }
+      if (g.groupName === null) {
+        g.groupName = '';
       }
     });
     

@@ -5,6 +5,8 @@ import { USER, STAFF, ADMIN } from "../utils/userRoles";
 
 import { Course } from "../entities/Course";
 import { User } from "../entities/User";
+import { Group } from "../entities/Group";
+
 @Resolver()
 export class RegistrationResolver {
   @Authorized(STAFF)

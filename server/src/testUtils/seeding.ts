@@ -81,7 +81,7 @@ export default (router): void => {
   });
 
   router.get("/seed", async (req: Request, res: Response) => {
-    try {
+		try {
       await reset();
       await seed();
     } catch (error) {

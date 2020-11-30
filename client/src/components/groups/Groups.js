@@ -2,16 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
 import { Table, Header, List, Button, Segment, Grid, Popup, Input, Label, TextArea, Form } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
-import { useMutation } from '@apollo/react-hooks';
-import { GENERATE_GROUPS } from '../../GqlQueries';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import DraggableRow from './DraggableRow';
 import questionSwitch, { count } from '../../util/functions';
 import HourDisplay from '../misc/HourDisplay';
 import _ from 'lodash';
-import { FragmentsOnCompositeTypesRule } from 'graphql';
 
-export default ({ course, regByStudentId, groupMessages, setGroupMessages }) => {
+export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessages, setGroupMessages }) => {
   const [privacyToggle] = useStore('toggleStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [groups, setGroups] = useStore('groupsStore');
@@ -34,6 +31,13 @@ export default ({ course, regByStudentId, groupMessages, setGroupMessages }) => 
     }
   }
 
+  const handleGroupNameChange = (e, index) => {
+    const newGroupNames = [ ...groupNames ];
+    newGroupNames[index] = e.target.value;
+    setGroupNames(newGroupNames);
+    setUnsaved();
+  };
+
   const handleGroupMessageChange = (e, index) => {
     const newGroupMsgs = [ ...groupMessages ];
     newGroupMsgs[index] = e.target.value;
@@ -44,14 +48,20 @@ export default ({ course, regByStudentId, groupMessages, setGroupMessages }) => 
   const addGroup = () => {
     const newGroups = _.cloneDeep(groups);
     newGroups.push({
+      groupId: '',
       students: [],
-      groupMessage: ''
+      groupMessage: '',
+      groupName: ''
     });
     setGroups(newGroups);
 
     const newGroupMsgs = [ ...groupMessages ];
     newGroupMsgs.push('');
     setGroupMessages(newGroupMsgs);
+    
+    const newGroupNames = [ ...groupNames ];
+    newGroupNames.push('');
+    setGroupNames(newGroupNames);
 
     setShowGroupTimes(showGroupTimes.push(false));
 
@@ -62,6 +72,10 @@ export default ({ course, regByStudentId, groupMessages, setGroupMessages }) => 
     const newGroups = _.cloneDeep(groups);
     newGroups.splice(index, 1);
     setGroups(newGroups);
+
+    const newGroupNames = [ ...groupNames ];
+    newGroupNames.splice(index, 1);
+    setGroupNames(newGroupNames);
 
     const newGroupMsgs = [ ...groupMessages ];
     newGroupMsgs.splice(index, 1);
@@ -77,7 +91,7 @@ export default ({ course, regByStudentId, groupMessages, setGroupMessages }) => 
   const removeGroupButton = index => {
     if (groups.length > 1 && groups[index].students.length === 0) {
       return (
-        <Button size="mini" color="red" onClick={() => removeGroup(index)}>
+        <Button data-cy="group-remove-button" size="mini" color="red" onClick={() => removeGroup(index)}>
           <FormattedMessage id="groups.removeGroupButton" />
         </Button>
       );
@@ -144,14 +158,36 @@ export default ({ course, regByStudentId, groupMessages, setGroupMessages }) => 
             // eslint-disable-next-line react/no-array-index-key
             <Segment.Group data-cy="group-container" key={`Group-${tableIndex}`}>
               <Segment>
-                <Label
+                <Popup 
+                  data-cy="group-name-popup"
+                  content={
+                  <input 
+                    data-cy="group-name-input"
+                    value={groupNames[tableIndex] || ''}
+                    onChange={e => handleGroupNameChange(e, tableIndex)}
+                  />
+                  }
+                  on="click"
+                  trigger={
+                    <Label
+                      as = "a"
+                      color="grey"
+                      size="large"
+                      attached="top"
+                    >
+                      { groupNames[tableIndex] || '' }
+                    </Label>
+                  }
+                />
+                {/*<Label
                   color="grey"
                   size="large"
                   attached="top"
                 >
+
                   <FormattedMessage id="groups.title" /> 
                   {tableIndex + 1}
-                </Label>
+                </Label>*/}
                 <Header style={{marginBottom: 5}} as="h5">Message for the group:</Header>
                 <Input
                   data-cy="group-message-input"

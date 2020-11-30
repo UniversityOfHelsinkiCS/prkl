@@ -26,7 +26,8 @@ export const ALL_USERS = gql`
       lastname
       studentNo
       email
-      role
+			role
+			shibbolethUid
     }
   }
 `;
@@ -63,6 +64,7 @@ export const CURRENT_USER = gql`
       }
       groups {
         id
+        groupName
         groupMessage
         students {
           id
@@ -247,6 +249,7 @@ export const COURSE_GROUPS = gql`
     courseGroups(courseId: $courseId) {
       id
       courseId
+      groupName
       groupMessage
       students {
         id
