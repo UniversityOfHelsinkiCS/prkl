@@ -170,6 +170,7 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
                   on="click"
                   trigger={
                     <Label
+                      as = "a"
                       color="grey"
                       size="large"
                       attached="top"
