@@ -4,10 +4,14 @@ const users = require('../fixtures/users');
 describe('User access and content', () => {
   beforeEach(() => {
     cy.seedDatabase();
-    cy.visit('/');
   });
 
-  it('for student', () => {
+  after(() => {
+    cy.switchToAdmin();
+    cy.seedDatabase();
+  })
+
+  it('Student', () => {
     cy.switchToStudent();
     // menu
     cy.wait(300);
@@ -58,32 +62,91 @@ describe('User access and content', () => {
     cy.contains(courses[1].title).should('not.exist');
 	});
 
-  it('menu shows correctly for staff', () => {
+  it('Staff', () => {
     cy.switchToStaff();
-    cy.wait(300);
+    //menu
     cy.get('[data-cy="menu-item-courses"]').should('exist');
     cy.get('[data-cy="menu-item-add-course"]').should('exist');
     cy.get('[data-cy="menu-item-user-mgmt"]').should('not.exist');
     cy.get('[data-cy="menu-item-info"]').should('exist');
     cy.get('[data-cy="menu-item-privacy-toggle"]').should('not.exist');
     cy.get('[data-cy="mockbar"]').should('exist');
-    //course listing
-    cy.get('[data-cy="checkbox-staff-controls"]').should('exist');
-	});
 
-  it('menu shows correctly for admin', () => {
+    //course listing
+    //unpublished course visible
+    cy.contains(courses[2].title);
+    //staff controls
+    cy.get('[data-cy="checkbox-staff-controls"]').should('exist');
+    // only own courses
+    cy.get('[data-cy="checkbox-staff-controls"]').last().click();
+    cy.wait(500);
+    cy.contains(courses[1].title).should('not.exist');
+    cy.get('[data-cy="checkbox-staff-controls"]').last().click();
+    // past courses
+    cy.get('[data-cy="checkbox-staff-controls"]').first().click();
+    cy.contains(courses[8].title).should('exist');
+    // toggle combo
+    cy.get('[data-cy="checkbox-staff-controls"]').last().click();
+    cy.contains(courses[0].title).should('exist');
+    cy.contains(courses[1].title).should('not.exist');
+    cy.contains(courses[2].title).should('exist');
+    cy.contains(courses[3].title).should('exist');
+    cy.contains(courses[4].title).should('not.exist');
+    cy.contains(courses[5].title).should('not.exist');
+    cy.contains(courses[6].title).should('exist');
+    cy.contains(courses[7].title).should('exist');
+    cy.contains(courses[8].title).should('exist');
+    // hide past courses again
+    cy.get('[data-cy="checkbox-staff-controls"]').first().click();
+    cy.wait(500);
+    cy.contains(courses[8].title).should('not.exist');
+    // show only own toggle off
+    cy.get('[data-cy="checkbox-staff-controls"]').last().click();
+    cy.contains(courses[1].title).should('exist');
+
+    // tags in course listing
+    cy.wait(500);
+    cy.get('[data-cy="TC01"]').within(() => {
+      cy.get('[data-cy="tag-own"]').should("exist");
+      cy.get('[data-cy="tag-unpublished"]').should("not.exist");
+      cy.get('[data-cy="tag-dl"]').should("not.exist");
+      cy.get('[data-cy="tag-enrolled"]').should("not.exist");
+    });
+    
+    cy.get('[data-cy="TC02"]').within(() => {
+      cy.get('[data-cy="tag-own"]').should("not.exist");
+      cy.get('[data-cy="tag-unpublished"]').should("not.exist");
+      cy.get('[data-cy="tag-dl"]').should("not.exist");
+      cy.get('[data-cy="tag-enrolled"]').should("not.exist");
+    });
+    
+    cy.get('[data-cy="TC03"]').within(() => {
+      cy.get('[data-cy="tag-own"]').should("exist");
+      cy.get('[data-cy="tag-unpublished"]').should("exist");
+      cy.get('[data-cy="tag-dl"]').should("not.exist");
+      cy.get('[data-cy="tag-enrolled"]').should("not.exist");
+    });
+    
+    cy.get('[data-cy="checkbox-staff-controls"]').first().click();
+    cy.wait(500);
+    cy.get('[data-cy="TC04"]').within(() => {
+      cy.get('[data-cy="tag-own"]').should("exist");
+      cy.get('[data-cy="tag-unpublished"]').should("not.exist");
+      cy.get('[data-cy="tag-dl"]').should("exist");
+    });
+  });
+
+  it('Admin', () => {
     cy.switchToAdmin();
+    //menu
     cy.get('[data-cy="menu-item-courses"]').should('exist');
     cy.get('[data-cy="menu-item-add-course"]').should('exist');
     cy.get('[data-cy="menu-item-user-mgmt"]').should('exist');
     cy.get('[data-cy="menu-item-info"]').should('exist');
     cy.get('[data-cy="menu-item-privacy-toggle"]').should('exist');
     cy.get('[data-cy="mockbar"]').should('not.exist');
-  });
-  
-  it('course listing for admin', () => {
-    cy.switchToAdmin();
-    cy.visit('/courses');
+
+    //course listing
     //unpublished course visible
     cy.contains(courses[2].title);
     //staff controls
@@ -93,23 +156,21 @@ describe('User access and content', () => {
     cy.wait(500);
     cy.contains(courses[0].title).should('not.exist');
     cy.get('[data-cy="checkbox-staff-controls"]').last().click();
-
     // past courses
     cy.get('[data-cy="checkbox-staff-controls"]').first().click();
     cy.contains(courses[3].title).should('exist');
-
     // toggle combo
     cy.get('[data-cy="checkbox-staff-controls"]').last().click();
     cy.wait(500);
     cy.contains(courses[0].title).should('not.exist');
     cy.contains(courses[1].title).should('exist');
     cy.contains(courses[2].title).should('not.exist');
-    cy.contains(courses[3].title).should('not.exist');    
-  });
+    cy.contains(courses[3].title).should('not.exist');
+    // turn off staff controls
+    cy.get('[data-cy="checkbox-staff-controls"]').first().click();
+    cy.get('[data-cy="checkbox-staff-controls"]').last().click();
 
-  it('admin can see tags on course listing', () => {
-    cy.switchToAdmin();
-    cy.visit('/courses');
+    // tags in course listing
     cy.get('[data-cy="TC01"]').within(() => {
       cy.wait(500);
       cy.get('[data-cy="tag-own"]').should("not.exist");
@@ -141,5 +202,7 @@ describe('User access and content', () => {
       cy.get('[data-cy="tag-unpublished"]').should("not.exist");
       cy.get('[data-cy="tag-dl"]').should("exist");
     });
+
   });
+
 });
