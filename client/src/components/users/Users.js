@@ -33,7 +33,7 @@ export default ({ allUsersError, allUsersLoading }) => {
 	const handleLogInAs = (setMocking, id) => {
 		setMocking(prev => ({ ...prev, mockedUser: id }));
 		history.push('/courses');
-		// Do we want to reload page here?
+		window.location.reload();
 	}
 
   if (allUsersError !== undefined) {
