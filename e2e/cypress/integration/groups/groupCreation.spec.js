@@ -35,7 +35,7 @@ describe('Group creation', () => {
       cy.contains('No groups generated').should('not.exist');
     });
     it('Teacher can name a group', () => {
-      const namedGroup = 'MyGroup'
+      const namedGroup = 'MyGroup';
 
       cy.visit(`/course/${course.id}`);
       cy.get('[data-cy="manage-groups-button"]').click();

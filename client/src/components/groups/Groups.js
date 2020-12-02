@@ -174,6 +174,7 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
                       color="grey"
                       size="large"
                       attached="top"
+                      data-cy="group-name-label"
                     >
                       { groupNames[tableIndex] || '' }
                     </Label>
