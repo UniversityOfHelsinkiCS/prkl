@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
-import { Table, Header, List, Button, Segment, Grid, Popup, Input, Label, TextArea, Form } from 'semantic-ui-react';
+import { Table, Header, List, Button, Segment, Popup, Input, Label } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import DraggableRow from './DraggableRow';

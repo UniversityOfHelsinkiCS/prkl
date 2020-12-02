@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
 import { useHistory } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { Header, Button, Loader, Card } from 'semantic-ui-react';
-import { FormattedMessage, FormattedDate, useIntl } from 'react-intl';
+import { Button, Loader } from 'semantic-ui-react';
+import { FormattedMessage, useIntl } from 'react-intl';
 import roles from '../../util/userRoles';
 import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
 import GroupsView from '../groups/GroupsView';
@@ -11,7 +11,6 @@ import CourseForm from './CourseForm';
 import RegistrationList from '../registrations/RegistrationList';
 import Registration from '../registrations/Registration';
 import ConfirmationButton from '../ui/ConfirmationButton';
-import UserGroup from '../users/UserGroup';
 import CourseInfo from './CourseInfo';
 
 export default ({ id }) => {

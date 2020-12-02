@@ -10,7 +10,7 @@ export default () => {
   const [activeItem, setActiveItem] = useState(null);
   const [user] = useStore('userStore');
   const [privacyToggle, setPrivacyToggle] = useStore('toggleStore');
-  const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
+  const [groupsUnsaved] = useStore('groupsUnsavedStore');
 
   const intl = useIntl();
 

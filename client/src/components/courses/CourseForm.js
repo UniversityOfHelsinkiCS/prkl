@@ -13,10 +13,6 @@ import roles from '../../util/userRoles';
 import { useForm } from 'react-hook-form';
 import _ from 'lodash';
 
-// TODO: Validointi aiheuttaa pientä mutta huomattavaa viivettä kirjoittaessa fieldeihin ym.
-//       Pitäisi katsoa saisiko suorituskykyä vähän parannettua jotenkin, kuitenkin validointitoiminnallisuus säilyttäen
-// TODO: Submit-buttonin disablointi kun validointi epäonnistunut (kunnes korjatut)
-// TODO: Missing key prop -virhe kyssäriä lisättäessä, vaikka ei pitäisi tulla (?)
 const CourseForm = ({ course, user, onCancelEdit, editView }) => {
   const [courses, setCourses] = useStore('coursesStore');
   const [currentUser] = useStore('userStore');
