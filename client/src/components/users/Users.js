@@ -33,7 +33,7 @@ export default ({ allUsersError, allUsersLoading }) => {
 	const handleLogInAs = (setMocking, id) => {
 		setMocking(prev => ({ ...prev, mockedUser: id }));
 		history.push('/courses');
-		// Do we want to reload page here?
+		window.location.reload();
 	}
 
   if (allUsersError !== undefined) {
@@ -73,7 +73,7 @@ export default ({ allUsersError, allUsersLoading }) => {
                 u.studentNo?.includes(search.toLowerCase())
             )
             .map(u => (
-              <Card key={u.id} raised fluid>
+              <Card key={u.id} raised fluid data-cy={`manage-user-${u.shibbolethUid}`}>
                 <Card.Content>
                   <Card.Header content={`${u.lastname} ${u.firstname}`} />
                   <Card.Description content={`${u.email} - ${u.studentNo}`} />
@@ -85,19 +85,21 @@ export default ({ allUsersError, allUsersLoading }) => {
                         <Button
                           onClick={() => handleRoleButtonClick(u.id, roles.STAFF_ROLE)}
                           primary={u.role === roles.STAFF_ROLE}
+                          data-cy={`staff-button-${u.shibbolethUid}`}
                         >
                           {intl.formatMessage({ id: 'users.staff' })}
                         </Button>
                         <Button
                           onClick={() => handleRoleButtonClick(u.id, roles.STUDENT_ROLE)}
                           primary={u.role === roles.STUDENT_ROLE}
+                          data-cy={`student-button-${u.shibbolethUid}`}
                         >
                           {intl.formatMessage({ id: 'users.student' })}
                         </Button>
 												<Button
 													onClick={() => handleLogInAs(setMocking, u.shibbolethUid)}
 													color="orange"
-													data-cy="log-in-as-user-button"
+													data-cy={`log-in-as-${u.shibbolethUid}`}
 												>
 													Log in as this user
 												</Button>	

@@ -2,14 +2,14 @@ import React from 'react';
 import { Menu, Button } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
 
-const stopMocking = async (setMocking, mockedBy) => {
-	setMocking(prev => ({ ...prev, mockedUser: mockedBy }));
-	//window.location.reload();
-};
-
 export default () => {
-  const [mocking, setMocking] = useStore('mocking');
+	const [mocking, setMocking] = useStore('mocking');
 	const [user] = useStore('userStore');
+
+	const stopMocking = async (setMocking, mockedBy) => {
+		setMocking(prev => ({ ...prev, mockedUser: mockedBy }));
+		window.location.reload();
+	};
 
   return (
     <>

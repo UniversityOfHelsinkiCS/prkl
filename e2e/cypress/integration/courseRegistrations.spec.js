@@ -8,8 +8,8 @@ describe('Course registrations', () => {
   });
 
   after(() => {
-    cy.seedDatabase();
     cy.switchToAdmin();
+    cy.seedDatabase();
   })
 
   describe('Course enrolment for student', () => {
@@ -19,7 +19,6 @@ describe('Course registrations', () => {
 
     it('Can enrol on a course', () => {
       const course = courses[1];
-      cy.visit('/');
       cy.contains(courses[1].title).click();
   
       cy.get('[data-cy="question-0"]').click();
@@ -52,7 +51,6 @@ describe('Course registrations', () => {
     });
   
     it('Can not enrol with answers missing', () => {
-      cy.visit('/');
       cy.contains(courses[1].title).click();
   
       cy.get('[data-cy="register-on-course-button"]').click();
@@ -63,7 +61,6 @@ describe('Course registrations', () => {
     });
   
     it('Can not enrol without accepting the privacy terms', () => {
-      cy.visit('/');
       cy.contains(courses[0].title).click();
   
       // Cycle the checkbox on once to account for a past validation bug.
@@ -77,7 +74,6 @@ describe('Course registrations', () => {
     });
   
     it('Can not enrol twice on the same course', () => {
-      cy.visit('/');
       cy.contains(courses[0].title).click();
   
       cy.get('[data-cy="toc-checkbox"]').click();
@@ -98,7 +94,6 @@ describe('Course registrations', () => {
     });
     it('Can cancel registration before deadline, frontend', () => {
       //frontend
-      cy.visit('/');
       cy.contains(courses[0].title).click();
   
       cy.get('[data-cy="toc-checkbox"]').click();
@@ -139,6 +134,46 @@ describe('Course registrations', () => {
     });
   });
 
+  describe('Enrolment management for staff', () => {
+    beforeEach(() => {
+      cy.switchToStaff();
+    });
+
+    it('Can see enrolled students only on own course', () => {
+			cy.contains(courses[0].title).click();
+			cy.get('[data-cy="show-registrations-button"]').click();
+      cy.get('[data-cy="registration-table"]').contains(users[3].firstname);
+      cy.contains("Students enrolled to the course:");
+
+      cy.visit('/courses');
+			cy.contains(courses[4].title).click();
+			cy.wait(500);
+			cy.get('[data-cy="show-registrations-button"]').should('not.exist');
+      cy.get('[data-cy="registration-table"]').should('not.exist');
+      cy.contains("Students enrolled to the course:").should('not.exist');
+
+      // Test that restrictions apply to backend too.
+      cy.courseRegistration(4, 1).then((resp) => {
+        expect(resp.status).to.eq(500);
+      });
+    });
+
+    it('Can remove enrollments only from own course', () => {
+      // can remove student from own course
+			cy.contains(courses[0].title).click();
+			cy.get('[data-cy="show-registrations-button"]').click();
+      cy.get('[data-cy="remove-registration-button"]').first().click();
+			cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.wait(500);
+      cy.get('[data-cy="registration-table"]').contains(users[3].firstname).should('not.exist');
+
+      // can't remove student from other's course
+      cy.deleteRegistration(3, 4, 1).then((resp) => {
+        expect(resp.status).to.eq(500);
+      });
+    });
+  }); 
+
   describe('Enrolment management for admin', () => {   
     beforeEach(() => {
       cy.switchToAdmin();
@@ -146,7 +181,6 @@ describe('Course registrations', () => {
 
     it('Admin can remove enrollments from any course', () => {  
       // remove student from own course
-      cy.visit('/courses');
 			cy.contains(courses[4].title).click();
 			cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="remove-registration-button"]').first().click();
