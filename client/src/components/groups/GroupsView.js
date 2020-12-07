@@ -131,7 +131,7 @@ export default ({ course, registrations, regByStudentId }) => {
   const cancelGroups = () => {
     setGroups(oldGroups);
     setGroupsUnsaved(false);
-    console.log("old", oldGroups);
+    //console.log("old", oldGroups);
   }
 
   if (loading || !groups) {
