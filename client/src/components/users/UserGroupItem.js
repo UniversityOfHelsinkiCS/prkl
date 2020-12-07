@@ -21,7 +21,6 @@ export default ({ group, groupTimes }) => {
             <Table.HeaderCell colSpan="3" style={{ backgroundColor: "lightgrey" }}>
               <Header as="h3" data-cy="user-group-view-group-name">
                 {group.groupName}
-                TESTI
                 {groupTimes[group.id] ?
                   <Button floated="right" onClick={handleShowTime}>
                     <FormattedMessage id="groups.showTimes" />
