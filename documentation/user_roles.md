@@ -31,6 +31,6 @@ Each elevation of privileges (student -> staff -> admin) retains old privileges 
 * can edit and delete any course (except adding and deleting questions of published courses)
 * can see list of registrations on any course
 * can delete registrations from any course
-* can close coursë́'s registration immediately
+* can close course's registration immediately
 * can manage users in the database
 
