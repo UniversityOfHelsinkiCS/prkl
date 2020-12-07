@@ -76,12 +76,12 @@ export default ({ course, registrations, regByStudentId }) => {
         const res = await generateGroups({
           variables,
         });
-        const mappedGroups = res.data.createSampleGroups.map(e => {
+        const mappedGroups = res.data.createSampleGroups.map((e,i) => {
           return {
             groupId: '',
             students: e.students,
             groupMessage: '',
-            groupName: 'unnamed'
+            groupName: `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${i+1}`
           }
         });
         handleGroupsMessagesAndNames(mappedGroups);
