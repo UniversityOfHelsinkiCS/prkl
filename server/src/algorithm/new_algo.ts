@@ -32,21 +32,21 @@ export const formGroups = (targetGroupSize: number, registrations: Registration[
 
   // Generate total hours and workingtime dictionary.
   for (const user of users) {
-    user.workingTimesMap = generate_working_time(user);
-    user.totalHours = find_total_hours(user.workingTimesMap);
+    user.workingTimesMap = generateWorkingTime(user);
+    user.totalHours = findTotalHours(user.workingTimesMap);
 
   }
 
 
   // Compared users workingtimes dictionary to other users dictionary total overlap.
   for (const user of users) {
-    for (const other_user of users) {
-      if (user.studentNo === other_user.studentNo) {
+    for (const otherUser of users) {
+      if (user.studentNo === otherUser.studentNo) {
         continue;
       }
 
-      let overlapofhours = find_overlap_of_working_hours(user.workingTimesMap, other_user.workingTimesMap);
-      user.bestMatches.push({ overlapofhours, other_user })
+      let overlapOfHours = findOverlapOfWorkingHours(user.workingTimesMap, otherUser.workingTimesMap);
+      user.bestMatches.push({ overlapOfHours, otherUser });
 
     }
   }
@@ -57,145 +57,139 @@ export const formGroups = (targetGroupSize: number, registrations: Registration[
   });
 
 
-  let resulting_groups = form_groups(users, targetGroupSize);
-  print_group_information(resulting_groups);
+  let resultingGroups = formNewGroups(users, targetGroupSize);
+  printGroupInformation(resultingGroups);
 
-  const result = resulting_groups.map(group => {
+  const result = resultingGroups.map(group => {
     return { userIds: group.map(u => u.id) }
   }) as GroupInput[];
-  console.log(result);
+  console.log('Groups are', result);
   return result;
 }
 
 
-function print_group_information(groups) {
-  let hours_avg = 0;
-  let hours_min = 5555;
+function printGroupInformation(groups) {
+  let hoursAvg = 0;
+  let hoursMin = 5555;
   for (const group of groups) {
-    console.log('RYHMA');
+    console.log('GROUP');
     for (const user of group) {
       console.log(user.firstname, user.lastname);
     }
-    let { hourly_overlap, day_hours } = find_common_hours_of_group(group);
-    console.log("hours_overlapping:", hourly_overlap);
-    if (hourly_overlap < hours_min) {
-      hours_min = hourly_overlap
+    let { hourlyOverlap, dayHours } = findCommonHoursOfGroup(group);
+    console.log("hours overlapping:", hourlyOverlap);
+    if (hourlyOverlap < hoursMin) {
+      hoursMin = hourlyOverlap
     }
-    hours_avg += hourly_overlap;
-    console.log("day_hours:", day_hours);
+    hoursAvg += hourlyOverlap;
+    console.log("day hours:", dayHours);
   }
 
-  console.log(groups.length);
+  console.log('Groups in total', groups.length);
 
-  console.log(hours_min);
-  console.log(hours_avg / groups.length);
+  console.log('Shortest common time slot', hoursMin);
+  console.log('Average common hours', hoursAvg / groups.length);
 
 }
 
-let mapping_dict = { '0': 11, '1': 5, '2': 6, '3': 7, '4': 8, '5': 9, '6': 10 };
+let mappingDict = { '0': 11, '1': 5, '2': 6, '3': 7, '4': 8, '5': 9, '6': 10 };
 
-function form_groups(users, groupsize) {
-  let handled_users = [];
+function formNewGroups(users, groupsize) {
+  let handledUers = [];
   let groups = [];
-  let amount_of_ungrouped_people = users.length % groupsize;
-  if (amount_of_ungrouped_people > 0) {
-    let ungrouped_people = users.splice(0, amount_of_ungrouped_people);
-    groups.push(ungrouped_people);
-    ungrouped_people.forEach(u => {
-      handled_users.push(u.id);
+  let amountOfUngroupedPeople = users.length % groupsize;
+  if (amountOfUngroupedPeople > 0) {
+    let ungroupedPeople = users.splice(0, amountOfUngroupedPeople);
+    groups.push(ungroupedPeople);
+    ungroupedPeople.forEach(u => {
+      handledUers.push(u.id);
     });
   }
   for (const user of users) {
-    if (handled_users.includes(user.id)) {
+    if (handledUers.includes(user.id)) {
       continue;
     }
     let group = [];
     group.push(user);
-    handled_users.push(user.id);
+    handledUers.push(user.id);
 
     user.bestMatches.sort(function compare(a, b) {
-      return b.overlapofhours - a.overlapofhours
+      return b.overlapOfHours - a.overlapOfHours;
     });
 
     for (let match of user.bestMatches) {
       if (group.length === groupsize) {
-        break
+        break;
       }
-      if (handled_users.includes(match.other_user.id)) {
-        continue
+      if (handledUers.includes(match.otherUser.id)) {
+        continue;
       }
-      group.push(match.other_user);
-      handled_users.push(match.other_user.id);
-
+      group.push(match.otherUser);
+      handledUers.push(match.otherUser.id);
     }
-
-    groups.push(group)
+    groups.push(group);
   }
-
-  return groups
+  return groups;
 }
 
-function find_common_hours_of_group(listofusers) {
-  let common_days = listofusers.map(user => Object.keys(user.workingTimesMap));
-  let day_intersection = _.intersection(...common_days);
+function findCommonHoursOfGroup(listofusers) {
+  let commonDays = listofusers.map(user => Object.keys(user.workingTimesMap));
+  let dayIntersection = _.intersection(...commonDays);
 
-  let hourly_overlap = 0;
-  let day_hours = {};
-  for (const day of day_intersection) {
+  let hourlyOverlap = 0;
+  let dayHours = {};
+  for (const day of dayIntersection) {
     let hours = listofusers.map(user => user.workingTimesMap[day]);
-    let common_hours = _.intersection(...hours);
-    day_hours[day] = common_hours;
-    hourly_overlap += common_hours.length
+    let commonHours = _.intersection(...hours);
+    dayHours[day] = commonHours;
+    hourlyOverlap += commonHours.length;
   }
-  return { hourly_overlap, day_hours }
+  return { hourlyOverlap, dayHours };
 }
 
 
-function find_total_hours(workingTimesMap) {
+function findTotalHours(workingTimesMap) {
   let totalhours = 0;
   let keys = Object.keys(workingTimesMap);
   for (const key of keys) {
-    totalhours += workingTimesMap[key].length
+    totalhours += workingTimesMap[key].length;
   }
-  return totalhours
+  return totalhours;
 }
 
-function find_overlap_of_working_hours(workingTimesMap, otherWorkingTimesMap) {
-  let first_keys = Object.keys(workingTimesMap);
-  let second_keys = Object.keys(otherWorkingTimesMap); //console.log(otherWorkingTimesMap.keys());
-  const common_keys = _.intersection(first_keys, second_keys);
+function findOverlapOfWorkingHours(workingTimesMap, otherWorkingTimesMap) {
+  let firstKeys = Object.keys(workingTimesMap);
+  let secondKeys = Object.keys(otherWorkingTimesMap); //console.log(otherWorkingTimesMap.keys());
+  const commonKeys = _.intersection(firstKeys, secondKeys);
   let overlap = 0;
-  for (const key of common_keys) {
-    let intersection_of_daily_hours = _.intersection(workingTimesMap[key], otherWorkingTimesMap[key]).length;
-    overlap += intersection_of_daily_hours
+  for (const key of commonKeys) {
+    let intersectionOfDailyHours = _.intersection(workingTimesMap[key], otherWorkingTimesMap[key]).length;
+    overlap += intersectionOfDailyHours;
   }
-  return overlap
+  return overlap;
 }
 
-function generate_working_time(user) {
+function generateWorkingTime(user) {
   let workingTimesMap = {};
   for (const workingTime of user.workingTimes) {
-    const mapped_start_day = mapping_dict[workingTime.startTime.getDay()];
-    const start_day_starting_hour = workingTime.startTime.getHours();
-    const ending_hour = workingTime.endTime.getHours();
+    const mappedStartDay = mappingDict[workingTime.startTime.getDay()];
+    const startDayStartingHour = workingTime.startTime.getHours();
+    const endingHour = workingTime.endTime.getHours();
 
-    if (!workingTimesMap.hasOwnProperty(mapped_start_day)) {
-      workingTimesMap[mapped_start_day] = return_starting_hours_from_interval(start_day_starting_hour, ending_hour)
+    if (!workingTimesMap.hasOwnProperty(mappedStartDay)) {
+      workingTimesMap[mappedStartDay] = returnStartingHoursFromInterval(startDayStartingHour, endingHour)
     } else {
-      let new_list_of_hours = workingTimesMap[mapped_start_day].concat(return_starting_hours_from_interval(start_day_starting_hour, ending_hour));
-      workingTimesMap[mapped_start_day] = new_list_of_hours
+      let newListOfHours = workingTimesMap[mappedStartDay].concat(returnStartingHoursFromInterval(startDayStartingHour, endingHour));
+      workingTimesMap[mappedStartDay] = newListOfHours;
     }
   }
-
-  return workingTimesMap
-
+  return workingTimesMap;
 }
 
-
-function return_starting_hours_from_interval(starttime, endtime) {
-  const temp_arr = [];
-  for (let x = starttime; x < endtime; x++) {
-    temp_arr.push(x)
+function returnStartingHoursFromInterval(startTime, endTime) {
+  const tempArr = [];
+  for (let x = startTime; x < endTime; x++) {
+    tempArr.push(x);
   }
-  return temp_arr
+  return tempArr;
 }

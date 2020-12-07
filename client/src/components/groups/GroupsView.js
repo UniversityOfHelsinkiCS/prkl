@@ -14,12 +14,14 @@ export default ({ course, registrations, regByStudentId }) => {
   const [generateGroups] = useMutation(GENERATE_GROUPS);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
-  const [minGroupSize, setMinGroupSize] = useState(1);
-  const [savedSuccessMsgVisible, setSavedSuccessMsgVisible] = useState(false);
-  const [oldGroups, setOldGroups] = useState([]);
+
   const [groups, setGroups] = useStore('groupsStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [user] = useStore('userStore');
+
+  const [oldGroups, setOldGroups] = useState([]);
+  const [minGroupSize, setMinGroupSize] = useState(1);
+  const [savedSuccessMsgVisible, setSavedSuccessMsgVisible] = useState(false);
   const [groupsPublished, setGroupsPublished] = useState(false);
   const [groupMessages, setGroupMessages] = useState(['']);
   const [groupNames, setGroupNames] = useState(['']);
@@ -45,11 +47,7 @@ export default ({ course, registrations, regByStudentId }) => {
           groupName: e.groupName
         }
       });
-      setGroups(fetchedGroups);
-      const newGroupNames = fetchedGroups.map(g => g.groupName);
-      const newGroupMsgs = fetchedGroups.map(g => g.groupMessage);
-      setGroupNames(newGroupNames);
-      setGroupMessages(newGroupMsgs);
+      handleGroupsMessagesAndNames(fetchedGroups);
       setOldGroups(fetchedGroups);
     }
   }, [data, loading]);
@@ -61,6 +59,14 @@ export default ({ course, registrations, regByStudentId }) => {
         <FormattedMessage id="groups.loadingError" />
       </div>
     );
+  }
+
+  const handleGroupsMessagesAndNames = (groups) => {
+    setGroups(groups);
+    const groupNames = groups.map(g => g.groupName);
+    const groupMsgs = groups.map(g => g.groupMessage);
+    setGroupNames(groupNames);
+    setGroupMessages(groupMsgs);
   }
 
   const handleSampleGroupCreation = async () => {
@@ -78,11 +84,7 @@ export default ({ course, registrations, regByStudentId }) => {
             groupName: 'unnamed'
           }
         });
-        setGroups(mappedGroups);
-        const newGroupNames = mappedGroups.map(mg => mg.groupName);
-        const newGroupMsgs = mappedGroups.map(mg => mg.groupMessage);
-        setGroupNames(newGroupNames);
-        setGroupMessages(newGroupMsgs);
+        handleGroupsMessagesAndNames(mappedGroups);
         setGroupsUnsaved(true);
       } catch (groupError) {
         console.log('error:', groupError);
@@ -125,12 +127,12 @@ export default ({ course, registrations, regByStudentId }) => {
     }
   }
 
-  /* cancel-button has some problems...
+  // cancel-button has some problems...
   const cancelGroups = () => {
     setGroups(oldGroups);
+    setGroupsUnsaved(false);
     console.log("old", oldGroups);
   }
-  */
 
   if (loading || !groups) {
     return <Loader active />;
@@ -167,7 +169,7 @@ export default ({ course, registrations, regByStudentId }) => {
                 }
                 onChange={event => setMinGroupSize(Number.parseInt(event.target.value, 10) 
                   ? Number.parseInt(event.target.value, 10)
-                  : 1)}
+                  : '')}
               />
             </Form.Group>
             <ConfirmationButton 
@@ -187,14 +189,14 @@ export default ({ course, registrations, regByStudentId }) => {
             >
               <FormattedMessage id='groupsView.saveGroups' />
             </ConfirmationButton>
-            {/*<ConfirmationButton
+            {<ConfirmationButton
               onConfirm={cancelGroups}
               color="red"
               modalMessage={ intl.formatMessage({ id: 'groupsView.confirmCancelGroups' })}
               buttonDataCy="cancel-groups-button"
             >
               <FormattedMessage id='groupsView.cancelGroups' />
-            </ConfirmationButton> */}
+            </ConfirmationButton>}
             </>}
             {!groupsPublished && <ConfirmationButton
               onConfirm={publishGroups}
@@ -207,10 +209,21 @@ export default ({ course, registrations, regByStudentId }) => {
           </Form>
           <p />
 
-            {groupsPublished && <SuccessMessage iconVar='info'>{intl.formatMessage({ id: 'groupsView.publishedGroupsInfo' })}</SuccessMessage>}
+          {groupsPublished && 
+          <SuccessMessage iconVar='info'>{
+            intl.formatMessage({ id: 'groupsView.publishedGroupsInfo' })}
+          </SuccessMessage>}
 
-          {groupsUnsaved && <SuccessMessage iconVar='info'>{intl.formatMessage({ id: 'groupsView.unsavedGroupsInfo' })}</SuccessMessage>}
-            {savedSuccessMsgVisible && <SuccessMessage>{intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' })}</SuccessMessage>}
+          {groupsUnsaved && 
+          <SuccessMessage iconVar='info'>
+            {intl.formatMessage({ id: 'groupsView.unsavedGroupsInfo' })}
+          </SuccessMessage>}
+
+          {savedSuccessMsgVisible && 
+          <SuccessMessage>
+            {intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' })}
+          </SuccessMessage>}
+
           <Groups 
             course={course}
             regByStudentId={regByStudentId}
@@ -219,7 +232,6 @@ export default ({ course, registrations, regByStudentId }) => {
             groupMessages={groupMessages}
             setGroupMessages={setGroupMessages}
           />
-
         </div>
       )}
     </div>
