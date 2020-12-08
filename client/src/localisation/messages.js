@@ -179,6 +179,7 @@ export default {
     'groupsView.publishGroupsConfirm': 'Are you sure you want to publish groups?',
     'groupsView.publishedGroupsInfo': 'Groups have been published, future changes are visible immediately to students.',
     'groupsView.defaultGroupNamePrefix': 'Group',
+    'groupsView.groupListingOrder': 'Groups listing order',
 
     'util.notAllowed': 'You do not have the required roles to access this content.',
   },

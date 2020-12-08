@@ -188,7 +188,7 @@ export default ({ id }) => {
                       {(!course.published || user.role === roles.ADMIN_ROLE) && view === 'info' ? (
                         <>
 
-                          <Button class="ui fluid button" onClick={handleEditCourse} color="blue" data-cy="edit-course-button">
+                          <Button onClick={handleEditCourse} color="blue" data-cy="edit-course-button">
                             <FormattedMessage id="course.switchEditView" />
                           </Button>
                           <ConfirmationButton

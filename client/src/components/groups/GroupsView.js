@@ -9,6 +9,7 @@ import userRoles from '../../util/userRoles';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import SuccessMessage from '../ui/SuccessMessage';
 import { Prompt } from 'react-router-dom';
+import _ from 'lodash'
 
 export default ({ course, registrations, regByStudentId }) => {
   const [generateGroups] = useMutation(GENERATE_GROUPS);
@@ -25,6 +26,7 @@ export default ({ course, registrations, regByStudentId }) => {
   const [groupsPublished, setGroupsPublished] = useState(false);
   const [groupMessages, setGroupMessages] = useState(['']);
   const [groupNames, setGroupNames] = useState(['']);
+  const [groupSorting, setGroupSorting] = useState('nameAscending');
 
   const intl = useIntl();
 
@@ -47,8 +49,9 @@ export default ({ course, registrations, regByStudentId }) => {
           groupName: e.groupName
         }
       });
-      handleGroupsMessagesAndNames(fetchedGroups);
+      handleGroupsMessagesAndNames(sortGroups(fetchedGroups, groupSorting));
       setOldGroups(fetchedGroups);
+      setGroupsUnsaved(false);
     }
   }, [data, loading]);
 
@@ -59,6 +62,24 @@ export default ({ course, registrations, regByStudentId }) => {
         <FormattedMessage id="groups.loadingError" />
       </div>
     );
+  }
+
+  const sortGroups = (groups, sorting) => {
+    const sortedGroups = _.cloneDeep(groups);
+    if (sorting === 'nameAscending' || sorting === 'nameDescending') {
+      sortedGroups.sort((a,b) => {
+        let x = a.groupName.toLowerCase();
+        let y = b.groupName.toLowerCase();
+        if (x < y) return sorting === 'nameAscending' ? -1 : 1;
+        if (x > y) return sorting === 'nameAscending' ? 1 : -1;
+        return 0;
+      });
+    } else if (sorting === 'sizeAscending') {
+      sortedGroups.sort((a,b) => a.students.length - b.students.length);
+    } else if (sorting === 'sizeDescending') {
+      sortedGroups.sort((a,b) => b.students.length - a.students.length);
+    }
+    return sortedGroups;
   }
 
   const handleGroupsMessagesAndNames = (groups) => {
@@ -84,7 +105,7 @@ export default ({ course, registrations, regByStudentId }) => {
             groupName: `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${i+1}`
           }
         });
-        handleGroupsMessagesAndNames(mappedGroups);
+        handleGroupsMessagesAndNames(sortGroups(mappedGroups, groupSorting));
         setGroupsUnsaved(true);
       } catch (groupError) {
         console.log('error:', groupError);
@@ -92,6 +113,9 @@ export default ({ course, registrations, regByStudentId }) => {
   };
 
   const saveSampleGroups = async () => {
+    // Known bug while saving groups: The current user that does the saving, 
+    // does not get their own (if they are enrolled to a course & assigned to a group) 
+    // published group view updated without a refresh
     if (!groups || groups.length === 0) return;
     try {
       const userIdGroups = groups.map((g, i) => {
@@ -134,6 +158,40 @@ export default ({ course, registrations, regByStudentId }) => {
     //console.log("old", oldGroups);
   }
 
+  const handleSortGroups = (value) => {
+    // Sorting currently does not preserve saved group names & messages correctly, so warn about reload
+    if (groupsUnsaved
+        && !window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' }))) {
+      return;
+    }
+    setGroupSorting(value);
+    handleGroupsMessagesAndNames(sortGroups(groups, value));
+    setGroupsUnsaved(false);
+  }
+
+  const sortOptions = [
+    {
+      key: 'By name, ascending',
+      text: 'By name, ascending',
+      value: 'nameAscending'
+    },
+    {
+      key: 'By name, descending',
+      text: 'By name, descending',
+      value: 'nameDescending'
+    },
+    {
+      key: 'By size, ascending',
+      text: 'By size, ascending',
+      value: 'sizeAscending'
+    },
+    {
+      key: 'By size, descending',
+      text: 'By size, descending',
+      value: 'sizeDescending'
+    },
+  ]
+
   if (loading || !groups) {
     return <Loader active />;
   }
@@ -155,6 +213,7 @@ export default ({ course, registrations, regByStudentId }) => {
         <div>
           <Form>
             <Form.Group>
+              <Form.Field>
               <Form.Input
                 data-cy="target-group-size"
                 required
@@ -171,6 +230,20 @@ export default ({ course, registrations, regByStudentId }) => {
                   ? Number.parseInt(event.target.value, 10)
                   : '')}
               />
+              </Form.Field>
+              <Form.Field>
+              <Form.Select
+                label={
+                  <h4>
+                    <FormattedMessage id="groupsView.groupListingOrder" />
+                  </h4>
+                }
+                placeholder='Sort groups...'
+                options={sortOptions}
+                defaultValue={groupSorting}
+                onChange={(e, {value}) => handleSortGroups(value)}
+              />
+              </Form.Field>
             </Form.Group>
             <ConfirmationButton 
               onConfirm={handleSampleGroupCreation}
