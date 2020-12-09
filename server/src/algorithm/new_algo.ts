@@ -123,7 +123,7 @@ function formNewGroups(users, groupsize) {
     });
   }
 
-  const amountOfUngroupedPeople = (users.length - tooFewHours.length)  % groupsize;
+  const amountOfUngroupedPeople = (users.length - tooFewHours.length) % groupsize;
   //console.log({amountOfUngroupedPeople});
   if (amountOfUngroupedPeople >= 0) {
     const ungroupedPeople = users.filter(user => !handledUsers.includes(user.id)).splice(0, amountOfUngroupedPeople);
@@ -142,7 +142,10 @@ function formNewGroups(users, groupsize) {
     group.push(user);
     handledUsers.push(user.id);
 
-    user.bestMatches = sortByTotalHoursAndShuffleBrackets(user.bestMatches);
+    user.bestMatches.sort(function compare(a, b) {
+      return b.overlapOfHours - a.overlapOfHours;
+    });
+    //user.bestMatches = sortByTotalHoursAndShuffleBrackets(user.bestMatches);
     for (const match of user.bestMatches) {
       if (group.length === groupsize) {
         break;
