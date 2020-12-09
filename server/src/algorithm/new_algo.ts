@@ -113,15 +113,16 @@ function formNewGroups(users, groupsize) {
   const handledUsers = [];
   const groups = [];
   const rejektiRyhma = [];
-
-  const tooFewHours = filterTooLittleHoursChosen(users, 20);
-  //console.log("Too few hours:", tooFewHours);
-  if (tooFewHours.length >= 0) {
-    rejektiRyhma.push(...tooFewHours);
-    tooFewHours.forEach(u => {
-      handledUsers.push(u.id);
-    });
-  }
+  // if (users.every(user => user.totalHours === 0)) {
+  //   const tooFewHours = filterTooLittleHoursChosen(users, 20);
+  //   //console.log("Too few hours:", tooFewHours);
+  //   if (tooFewHours.length >= 0) {
+  //     rejektiRyhma.push(...tooFewHours);
+  //     tooFewHours.forEach(u => {
+  //       handledUsers.push(u.id);
+  //     });
+  //   }
+  // }
 
   // const amountOfUngroupedPeople = (users.length - tooFewHours.length) % groupsize;
   const amountOfUngroupedPeople = users.length % groupsize;
@@ -146,6 +147,7 @@ function formNewGroups(users, groupsize) {
     user.bestMatches.sort(function compare(a, b) {
       return b.overlapOfHours - a.overlapOfHours;
     });
+
     //user.bestMatches = sortByTotalHoursAndShuffleBrackets(user.bestMatches);
     for (const match of user.bestMatches) {
       if (group.length === groupsize) {
