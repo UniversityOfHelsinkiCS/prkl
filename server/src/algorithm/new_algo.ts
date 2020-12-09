@@ -146,6 +146,7 @@ function formNewGroups(users, groupsize) {
     user.bestMatches.sort(function compare(a, b) {
       return b.overlapOfHours - a.overlapOfHours;
     });
+
     //user.bestMatches = sortByTotalHoursAndShuffleBrackets(user.bestMatches);
     for (const match of user.bestMatches) {
       if (group.length === groupsize) {
