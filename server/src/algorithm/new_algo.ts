@@ -71,7 +71,7 @@ function sortByTotalHoursAndShuffleBrackets(bestMatches) {
   // Find different brackets of overlapping hours.
   const differentOverlaps = bestMatches.map(user => user.overlapOfHours);
   // Get unique ones.
-  const disctinct = (Array.from(new Set(differentOverlaps)));
+  const disctinct = Array.from(new Set(differentOverlaps));
 
   // Makes sublists with people in same brackets and shuffle them.
   for (const overLap of disctinct) {
@@ -123,7 +123,8 @@ function formNewGroups(users, groupsize) {
     });
   }
 
-  const amountOfUngroupedPeople = (users.length - tooFewHours.length) % groupsize;
+  // const amountOfUngroupedPeople = (users.length - tooFewHours.length) % groupsize;
+  const amountOfUngroupedPeople = users.length % groupsize;
   //console.log({amountOfUngroupedPeople});
   if (amountOfUngroupedPeople >= 0) {
     const ungroupedPeople = users.filter(user => !handledUsers.includes(user.id)).splice(0, amountOfUngroupedPeople);
