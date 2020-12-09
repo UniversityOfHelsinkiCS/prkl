@@ -1,4 +1,4 @@
-**Unfinished tasks/planned but not started:**
+## Unfinished tasks and suggested features
 
 All planned/suggested features can be found from [Backlog](https://github.com/UniversityOfHelsinkiCS/prkl/projects/1). For convenience, the most impactful of them are also listed here.
 

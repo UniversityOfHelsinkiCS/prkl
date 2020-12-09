@@ -1,6 +1,6 @@
 # New algorithm (developed December 2020)
 
-New algorithm differs from earlier iteration. Current algorithm calculates overlapping hours 
+New algorithm differs from [earlier iteration](documentation/algorithm.md) (which can still be found from repository). Current algorithm calculates overlapping hours 
 between every pair of students. Then students are ordered based on amount of total working hours 
 (from least to most) and forming of groups can start:
 
