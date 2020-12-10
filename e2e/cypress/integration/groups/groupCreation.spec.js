@@ -173,6 +173,7 @@ describe('Group creation', () => {
       cy.reload();
 
       cy.get('[data-cy="manage-groups-button"]').click();
+
       cy.wait(300);
       cy.contains(groupForDelete).should('exist');
       cy.contains(users[0].firstname).should('not.exist');
@@ -180,6 +181,7 @@ describe('Group creation', () => {
         cy.get('tr').should('have.length', 1);
         cy.get('[data-cy="group-remove-button"]').click();
       });
+      cy.wait(300);
       cy.contains(groupForDelete).should('not.exist');
       cy.get('[data-cy="save-groups-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
