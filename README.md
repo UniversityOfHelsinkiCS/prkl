@@ -13,9 +13,10 @@ Basic documentation is listed here. If you are member of development group in _O
 
 - [Algorithm](documentation/new_algorithm.md)
 - [Client](documentation/client.md)
-- [Database](documentation/database_diagram.md)
+- [Database](documentation/database_diagram.png)
 - [Migrations](documentation/migrations.md)
 - [Server](documentation/server.md)
+- [Middlewares](documentation/middlewares.md)
 - [User roles](documentation/user_roles.md)
 
 #### Backlog and known issues

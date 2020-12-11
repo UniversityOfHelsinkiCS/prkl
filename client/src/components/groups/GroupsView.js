@@ -74,9 +74,8 @@ export default ({ course, registrations, regByStudentId }) => {
       sortedGroups.sort((a,b) => {
         let x = a.groupName.toLowerCase();
         let y = b.groupName.toLowerCase();
-        if (x < y) return sorting === 'nameAscending' ? -1 : 1;
-        if (x > y) return sorting === 'nameAscending' ? 1 : -1;
-        return 0;
+        let comp = x.localeCompare(y, undefined, {numeric: true, sensitivity: 'base'});
+        return sorting === 'nameAscending' ? comp : -comp;
       });
     } else if (sorting === 'sizeAscending') {
       sortedGroups.sort((a,b) => a.students.length - b.students.length);
