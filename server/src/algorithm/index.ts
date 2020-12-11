@@ -230,5 +230,7 @@ export const formGroups = (targetGroupSize: number, registrations: Registration[
       best = groups;
     }
   }
+  console.log('\n\n\n')
+  console.log('best.groups', best.groups);
   return best.groups;
 };

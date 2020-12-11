@@ -8,7 +8,7 @@ import StudentInfo from './components/users/UserInfo';
 import CourseForm from './components/courses/CourseForm';
 import Courses from './components/courses/Courses';
 import Course from './components/courses/Course';
-import { ALL_COURSES, ALL_USERS } from './GqlQueries';
+import { ALL_COURSES } from './GqlQueries';
 import DevBar from './components/DevBar';
 import MockBar from './components/MockBar';
 import roles from './util/userRoles';
@@ -16,13 +16,11 @@ import userService from './services/userService';
 import './App.css';
 import KeepAlive from './components/misc/KeepAlive';
 import Users from './components/users/Users';
-import { dummyEmail, dummyStudentNumber } from './util/privacyDefaults';
 import PrivateRoute from './components/ui/PrivateRoute';
 import { initShibbolethPinger } from 'unfuck-spa-shibboleth-session';
 
 createStore('coursesStore', []);
 createStore('groupsStore', []);
-createStore('allUsersStore', []);
 createStore('teacherStore', []);
 createStore('userStore', {});
 createStore('toggleStore', false);
@@ -30,18 +28,11 @@ createStore('groupsUnsavedStore', false);
 
 export default () => {
   const [courses, setCourses] = useStore('coursesStore');
-  const [allUsers, setAllUsers] = useStore('allUsersStore');
   const [user, setUser] = useStore('userStore');
 	const [privacyToggle] = useStore('toggleStore');
 	const [mocking] = useStore('mocking');
 
   const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
-  const { loading: allUsersLoading, error: allUsersError, data: allUsersData } = useQuery(
-    ALL_USERS,
-    {
-      skip: user.role !== roles.ADMIN_ROLE,
-    }
-  );
 
   userService(useQuery, useEffect, setUser);
 
@@ -57,25 +48,11 @@ export default () => {
         setCourses((courseData && courseData.courses) || []);
       }
     }
-
-    // for some reason, setUsers is being invoked with the new, updated users
-    // after handleRoleButtonClick(). albeit this is the desired behaviour,
-    // i, for one, don't know why or how it happens
-    if (!allUsersLoading && allUsersData?.users !== undefined) {
-      const usersToSet = privacyToggle
-        ? allUsersData.users.map(u => ({ ...u, email: dummyEmail, studentNo: dummyStudentNumber }))
-        : allUsersData.users;
-      setAllUsers(usersToSet);
-    } 
   }, [
     courseData,
     courseError,
     courseLoading,
-    setCourses,
-    setAllUsers,
-    allUsersData,
-    allUsersLoading,
-    privacyToggle,
+    setCourses
   ]);
 
   return (
@@ -99,9 +76,7 @@ export default () => {
               <PrivateRoute
                 path="/usermanagement"
                 requiredRole={roles.ADMIN_ROLE}
-                render={() => (
-                  <Users allUsersError={allUsersError} allUsersLoading={allUsersLoading} />
-                )}
+                render={() => <Users /> }
               />
               <Route
                 exact

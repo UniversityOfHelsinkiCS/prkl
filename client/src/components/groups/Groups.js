@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
-import { Table, Header, List, Button, Segment, Grid, Popup, Input, Label, TextArea, Form } from 'semantic-ui-react';
-import { FormattedMessage } from 'react-intl';
+import { Table, Header, List, Button, Segment, Popup, Input, Label } from 'semantic-ui-react';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import DraggableRow from './DraggableRow';
 import questionSwitch, { count } from '../../util/functions';
@@ -16,11 +16,14 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
   //const [generateGroups] = useMutation(GENERATE_GROUPS);
 
   const [showGroupTimes, setShowGroupTimes] = useState([]);
-  const [groupTimesVisible, setGroupTimesVisible] = useState(false);
+  const [groupTimesVisible, setGroupTimesVisible] = useState([]);
+
+  const intl = useIntl();
 
   useEffect(() => {
     if (groups.length > 0) {
       setShowGroupTimes(Array(groups.length).fill(false));
+      setGroupTimesVisible(Array(groups.length).fill(false));
     }
   }, [groups]);
 
@@ -47,11 +50,12 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
 
   const addGroup = () => {
     const newGroups = _.cloneDeep(groups);
+    const newGroupName = `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${groups.length+1}`;
     newGroups.push({
       groupId: '',
       students: [],
       groupMessage: '',
-      groupName: ''
+      groupName: newGroupName
     });
     setGroups(newGroups);
 
@@ -60,7 +64,7 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
     setGroupMessages(newGroupMsgs);
     
     const newGroupNames = [ ...groupNames ];
-    newGroupNames.push('');
+    newGroupNames.push(newGroupName);
     setGroupNames(newGroupNames);
 
     setShowGroupTimes(showGroupTimes.push(false));
@@ -126,7 +130,9 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
   };
 
   const handleShowGroupTimesClick = index => {
-    setGroupTimesVisible(!groupTimesVisible);
+    const newGroupTimesVisible = [ ...groupTimesVisible ];
+    newGroupTimesVisible[index] = !groupTimesVisible[index];
+    setGroupTimesVisible(newGroupTimesVisible);
     let newShowTimes = [...showGroupTimes];
     newShowTimes[index] = !newShowTimes[index];
     setShowGroupTimes(newShowTimes);
@@ -174,6 +180,7 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
                       color="grey"
                       size="large"
                       attached="top"
+                      data-cy="group-name-label"
                     >
                       { groupNames[tableIndex] || '' }
                     </Label>
@@ -231,7 +238,7 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
                           trigger={
                           <Table.Cell>{`${student.firstname} ${student.lastname}`}</Table.Cell>
                           }
-                          disabled={ groupTimesVisible || !course.questions.some(q => q.questionType === 'times') }
+                          disabled={ groupTimesVisible[tableIndex] || !course.questions.some(q => q.questionType === 'times') }
                         />
                         <Table.Cell>
                           {privacyToggle ? dummyStudentNumber : student.studentNo}

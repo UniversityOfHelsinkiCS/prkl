@@ -1,19 +1,39 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useQuery } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
 import { Header, Loader, Card, Input, Divider, Button } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-dom';
-import { EDIT_USER_ROLE } from '../../GqlQueries';
+import { ALL_USERS, EDIT_USER_ROLE } from '../../GqlQueries';
 import roles from '../../util/userRoles';
+import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 
-export default ({ allUsersError, allUsersLoading }) => {
-	const [users] = useStore('allUsersStore');
+export default () => {
+  const [user] = useStore('userStore');
+  const [privacyToggle] = useStore('toggleStore');
+  const [allUsers, setAllUsers] = useState(null);
 	const [mocking, setMocking] = useStore('mocking');
   const [search, setSearch] = useState('');
   const [editUserRole] = useMutation(EDIT_USER_ROLE);
 	const intl = useIntl();
-	const history = useHistory();
+  const history = useHistory();
+  
+  const { loading, error, data } = useQuery(
+    ALL_USERS,
+    {
+      skip: user.role !== roles.ADMIN_ROLE,
+    }
+  );
+
+  useEffect(() => {
+    if (!loading && data?.users !== undefined) {
+      const usersToSet = privacyToggle
+        ? data.users.map(u => ({ ...u, email: dummyEmail, studentNo: dummyStudentNumber }))
+        : data.users;
+      setAllUsers(usersToSet);
+    } 
+  }, [loading, data, privacyToggle])
 
   const handleSearchChange = event => {
     setSearch(event.target.value);
@@ -36,8 +56,8 @@ export default ({ allUsersError, allUsersLoading }) => {
 		window.location.reload();
 	}
 
-  if (allUsersError !== undefined) {
-    console.log('error:', allUsersError);
+  if (error !== undefined) {
+    console.log('error:', error);
     return (
       <div>
         <FormattedMessage id="groups.loadingError" />
@@ -45,7 +65,7 @@ export default ({ allUsersError, allUsersLoading }) => {
     );
   }
 
-  if (allUsersLoading || !users) {
+  if (loading || !allUsers) {
     return <Loader active />;
   }
 
@@ -56,7 +76,7 @@ export default ({ allUsersError, allUsersLoading }) => {
         placeholder={intl.formatMessage({ id: 'users.searchPlaceholder' })}
       />
       <Divider />
-      {users.length === 0 ? (
+      {allUsers.length === 0 ? (
         <div>
           <p />
           <Header as="h3" block>
@@ -65,7 +85,7 @@ export default ({ allUsersError, allUsersLoading }) => {
         </div>
       ) : (
         <div>
-          {users
+          {allUsers
             .filter(
               u =>
                 u.firstname?.toLowerCase().includes(search.toLowerCase()) ||

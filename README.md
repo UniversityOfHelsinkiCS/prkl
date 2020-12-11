@@ -1,6 +1,6 @@
 # Assembler
 
-Assembler is a tool for automating division of students into project groups. It goes by the nickname "prkl" which is shorthand for _Projektiryhmäytymistyökalu_.
+Assembler is a tool for automating division of students into project groups. It goes by the nickname "prkl" which is shorthand for _Projektiryhmäytymistyökalu_. More comprehensive description [here](documentation/introduction.md).
 
 |Branch|CI Status|
 |---|---|
@@ -9,7 +9,18 @@ Assembler is a tool for automating division of students into project groups. It 
 
 ### Documentation:
 
+Basic documentation is listed here. If you are member of development group in _Ohjelmistotuotantoprojekti_-course, you might be interested in more "beginner-friendly" explanation in [wiki](https://github.com/UniversityOfHelsinkiCS/prkl/wiki) (in Finnish).
+
+- [Algorithm](documentation/new_algorithm.md)
+- [Client](documentation/client.md)
+- [Database](documentation/database_diagram.md)
 - [Migrations](documentation/migrations.md)
+- [Server](documentation/server.md)
+- [User roles](documentation/user_roles.md)
+
+#### Backlog and known issues
+
+Backlog can be found [here](https://github.com/UniversityOfHelsinkiCS/prkl/projects/1). For more user-friendly way to view suggested improvements check [unfinished tasks](documentation/unfinished.md) and [known issues](documentation/knownissues.md). 
 
 ## Usage
 

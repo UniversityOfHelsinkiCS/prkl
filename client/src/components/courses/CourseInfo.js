@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Header, Card, Item } from 'semantic-ui-react';
-import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
+import React from 'react';
+import { Card } from 'semantic-ui-react';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 export default ({id, deadline, teachers, paragraphs}) => {
   const intl = useIntl();

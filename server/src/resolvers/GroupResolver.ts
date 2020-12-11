@@ -5,7 +5,8 @@ import { User } from "../entities/User";
 import { Registration } from "../entities/Registration";
 import { GroupListInput } from "./../inputs/GroupListInput";
 import { STAFF, ADMIN } from "../utils/userRoles";
-import { formGroups } from "../algorithm/index";
+import { formGroups } from "../algorithm/new_algo";
+//import { formGroups } from "../algorithm/index";
 import { Course } from "../entities/Course";
 import { UserResolver } from "./UserResolver";
 
