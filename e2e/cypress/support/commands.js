@@ -9,7 +9,8 @@ Cypress.Commands.add('seedDatabase', () => {
   cy.request('GET', `${apiUrl}/seed`);
 });
 
-Cypress.Commands.add('createCourse', (courseIndex, headerIndex) => {
+Cypress.Commands.add('createCourse', (courseIndex, userIndex) => {
+  //only test where courses.json is used
   cy.fixture('courses').then((courses) => {
     const body = {
       operationName: 'createCourse',
@@ -23,21 +24,21 @@ Cypress.Commands.add('createCourse', (courseIndex, headerIndex) => {
         }}`,
     };
 
-    cy.fixture('mockHeaders').then((headers) => {
-      cy.request({
-        method: 'POST',
-        url: `${apiUrl}/graphql`,
-        body,
-        headers: headers[headerIndex],
-        failOnStatusCode: false,
-      });
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/graphql`,
+      body,
+      headers: {
+        'x-admin-logged-in-as': users[userIndex].shibbolethUid,
+      },
+      failOnStatusCode: false,
     });
   });
 });
 
-Cypress.Commands.add('courseRegistration', (courseIndex, headerIndex) => {
+Cypress.Commands.add('courseRegistrations', (courseIndex, userIndex) => {
   const body = {
-    operationName: 'courseRegistration',
+    operationName: 'courseRegistrations',
     variables: {
       courseId: courses[courseIndex].id,
     },
@@ -49,18 +50,18 @@ Cypress.Commands.add('courseRegistration', (courseIndex, headerIndex) => {
     }`
   };
 
-  cy.fixture('mockHeaders').then((headers) => {
-    cy.request({
-      method: 'POST',
-      url: `${apiUrl}/graphql`,
-      body,
-      headers: headers[headerIndex],
-      failOnStatusCode: false,
-    });
+  cy.request({
+    method: 'POST',
+    url: `${apiUrl}/graphql`,
+    body,
+    headers: {
+      'x-admin-logged-in-as': users[userIndex].shibbolethUid,
+    },
+    failOnStatusCode: false,
   });
 });
 
-Cypress.Commands.add('createRegistration', (courseIndex, headerIndex) => {
+Cypress.Commands.add('createRegistration', (courseIndex, userIndex) => {
   const body = {
     operationName: 'createRegistration',
     variables: {
@@ -79,18 +80,18 @@ Cypress.Commands.add('createRegistration', (courseIndex, headerIndex) => {
   `,
   };
 
-  cy.fixture('mockHeaders').then((headers) => {
-    cy.request({
-      method: 'POST',
-      url: `${apiUrl}/graphql`,
-      body,
-      headers: headers[headerIndex],
-      failOnStatusCode: false,
-    });
+  cy.request({
+    method: 'POST',
+    url: `${apiUrl}/graphql`,
+    body,
+    headers: {
+      'x-admin-logged-in-as': users[userIndex].shibbolethUid,
+    },
+    failOnStatusCode: false,
   });
 });
 
-Cypress.Commands.add('deleteRegistration', (studentIndex, courseIndex, headerIndex) => {
+Cypress.Commands.add('deleteRegistration', (studentIndex, courseIndex, userIndex) => {
   const body = {
     operationName: 'deleteRegistration',
     variables: {
@@ -102,18 +103,19 @@ Cypress.Commands.add('deleteRegistration', (studentIndex, courseIndex, headerInd
       }`,
   };
 
-  cy.fixture('mockHeaders').then((headers) => {
-    cy.request({
-      method: 'POST',
-      url: `${apiUrl}/graphql`,
-      body,
-      headers: headers[headerIndex],
-      failOnStatusCode: false,
-    });
+  cy.request({
+    method: 'POST',
+    url: `${apiUrl}/graphql`,
+    body,
+    headers: {
+      'x-admin-logged-in-as': users[userIndex].shibbolethUid,
+    },
+    failOnStatusCode: false,
   });
+
 });
 
-Cypress.Commands.add('deleteCourse', (courseIndex, headerIndex) => {
+Cypress.Commands.add('deleteCourse', (courseIndex, userIndex) => {
   const body = {
     operationName: 'deleteCourse',
     variables: {
@@ -125,14 +127,14 @@ Cypress.Commands.add('deleteCourse', (courseIndex, headerIndex) => {
       }`,
   };
 
-  cy.fixture('mockHeaders').then((headers) => {
-    cy.request({
-      method: 'POST',
-      url: `${apiUrl}/graphql`,
-      body,
-      headers: headers[headerIndex],
-      failOnStatusCode: false,
-    });
+  cy.request({
+    method: 'POST',
+    url: `${apiUrl}/graphql`,
+    body,
+    headers: {
+      'x-admin-logged-in-as': users[userIndex].shibbolethUid,
+    },
+    failOnStatusCode: false,
   });
 });
 
