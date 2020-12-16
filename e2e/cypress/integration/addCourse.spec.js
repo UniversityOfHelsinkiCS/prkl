@@ -1,4 +1,3 @@
-const courses = require('../fixtures/courses');
 const users = require('../fixtures/users');
 
 describe('Adding a new course', () => {
@@ -12,14 +11,20 @@ describe('Adding a new course', () => {
     cy.seedDatabase();
   })
 
-/*   //TODO: fix commands to not use mockheaders,
-  // auth middleware is not used when testing
-  it('Student cannot create a course', () => {
-    cy.switchToStudent();
+  it('Straight to backend', () => {
+    //Student cannot create a course
     cy.createCourse(0, 0).then((resp) => {
       expect(resp.status).to.eq(500);
     });
-  }); */
+    //Staff can
+    cy.createCourse(0, 1).then((resp) => {
+      expect(resp.status).to.eq(200);
+    });
+    //Admin can
+    cy.createCourse(0, 2).then((resp) => {
+      expect(resp.status).to.eq(200);
+    });
+  });
 
   it('Correct person is preselected as teacher', () => {
     // when staff is creating course, staff is preselected and admin is not

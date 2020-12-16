@@ -153,7 +153,10 @@ describe('Course registrations', () => {
       cy.contains("Students enrolled to the course:").should('not.exist');
 
       // Test that restrictions apply to backend too.
-      cy.courseRegistration(4, 1).then((resp) => {
+      cy.courseRegistrations(0, 1).then((resp) => {
+        expect(resp.status).to.eq(200);
+      });
+      cy.courseRegistrations(4, 1).then((resp) => {
         expect(resp.status).to.eq(500);
       });
     });
