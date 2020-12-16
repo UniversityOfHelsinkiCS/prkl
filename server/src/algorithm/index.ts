@@ -203,6 +203,7 @@ const countAvailable = (group: AllTimes): MaxAvailableTimes => {
 };
 
 /**
+ * This is the old algorithm! New one is in the file new_algo.ts.
  * Forms groups based on common working times and similarity in question answers.
  * @param {number} targetGroupSize target size of the groups
  * @param {[Registration]} registrations list of registrations to the course

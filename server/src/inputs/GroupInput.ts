@@ -1,5 +1,5 @@
 import { InputType, Field } from "type-graphql";
-import { IsOptional, IsDate } from "class-validator";
+import { IsOptional } from "class-validator";
 
 @InputType()
 export class GroupInput {

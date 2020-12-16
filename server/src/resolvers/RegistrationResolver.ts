@@ -1,11 +1,10 @@
 import { Resolver, Query, Mutation, Arg, Ctx, Authorized, UnauthorizedError } from "type-graphql";
 import { Registration } from "../entities/Registration";
 import { RegistrationInput } from "../inputs/RegistrationInput";
-import { USER, STAFF, ADMIN } from "../utils/userRoles";
+import { STAFF, ADMIN } from "../utils/userRoles";
 
 import { Course } from "../entities/Course";
 import { User } from "../entities/User";
-import { Group } from "../entities/Group";
 
 @Resolver()
 export class RegistrationResolver {

@@ -6,9 +6,8 @@ import { Registration } from "../entities/Registration";
 import { GroupListInput } from "./../inputs/GroupListInput";
 import { STAFF, ADMIN } from "../utils/userRoles";
 import { formGroups } from "../algorithm/new_algo";
-//import { formGroups } from "../algorithm/index";
+//import { formGroups } from "../algorithm/index"; old algorithm
 import { Course } from "../entities/Course";
-import { UserResolver } from "./UserResolver";
 
 const formNewGroups = async (courseId: string, minGroupSize: number) => {
   const registrations = await Registration.find({

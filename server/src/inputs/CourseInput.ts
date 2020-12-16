@@ -5,9 +5,6 @@ import { UserInput } from "./UserInput";
 
 @InputType()
 export class CourseInput {
-  // @Field()
-  // id: string;
-
   @Field()
   title: string;
 

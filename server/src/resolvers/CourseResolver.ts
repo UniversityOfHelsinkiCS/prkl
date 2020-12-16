@@ -18,10 +18,9 @@ export class CourseResolver {
         .createQueryBuilder("course")
         .select(['course', 'user.id'])
         .leftJoin("course.teachers", "user")
-        .where("teacherId = user.id") // Pitääkö kurssin näkyä opiskelijalle, jos hän on luonut sen ollessaan opettaja (roolihan voi muuttua), vaikka kurssi ei olisi enää kurantti?
+        .where("teacherId = user.id")
         .where("deleted = false")
         .andWhere("published = true")
-        //.andWhere("deadline > NOW()")
         .getMany();
     } else {
       const courses = await Course.find({ where: { deleted: false }, relations: ["teachers"] });
@@ -41,13 +40,13 @@ export class CourseResolver {
     const course = await Course.findOne({ where: { id }, relations: ["questions", "questions.questionChoices", "teachers"] });
 
     if ((course.deleted === true || course.published === false) && user.role < STAFF) {
-      throw new Error("Nothing to see here."); // Viesti on placeholder.
+      throw new Error("Nothing to see here.");
     }
-
+    
     /*
     if (course.deadline < new Date() && user.role < STAFF) {
       throw new Error("The registration deadline for this course has already passed.");
-    }
+    }    
     */
 
     if (user.role !== ADMIN && ( user.role < STAFF || (course.teachers.find(t => t.id === user.id) === undefined) ) ){
@@ -120,8 +119,7 @@ export class CourseResolver {
       }
     };
 
-    // Really could not come up with a better way to ensure no order conflicts happen during update...
-    // Basically just temporarily bump up all orders of this courses questions to very big numbers so they don't collide
+    // Temporarily bump up all orders of this courses questions to very big numbers so they don't collide
     // with incoming new order values.
      await Promise.all(course.questions.map(async (q) => {
       q.order = 100000 + q.order;

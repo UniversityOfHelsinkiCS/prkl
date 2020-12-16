@@ -36,7 +36,7 @@ export default ({ course, registrations, regByStudentId }) => {
   });
 
   useEffect(() => {
-    refetch(); // Ensure groups are up to date (deleted registrations etc.)
+    refetch();
   }, []);
 
   useEffect(() => {

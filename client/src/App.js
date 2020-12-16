@@ -29,7 +29,6 @@ createStore('groupsUnsavedStore', false);
 export default () => {
   const [courses, setCourses] = useStore('coursesStore');
   const [user, setUser] = useStore('userStore');
-	const [privacyToggle] = useStore('toggleStore');
 	const [mocking] = useStore('mocking');
 
   const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);

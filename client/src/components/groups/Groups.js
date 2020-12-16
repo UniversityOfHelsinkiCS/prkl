@@ -13,8 +13,6 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [groups, setGroups] = useStore('groupsStore');
 
-  //const [generateGroups] = useMutation(GENERATE_GROUPS);
-
   const [showGroupTimes, setShowGroupTimes] = useState([]);
   const [groupTimesVisible, setGroupTimesVisible] = useState([]);
 
@@ -28,7 +26,6 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
   }, [groups]);
 
   const setUnsaved = () => {
-    // To prevent unnecessary refreshes
     if (!groupsUnsaved) {
       setGroupsUnsaved(true);
     }
