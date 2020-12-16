@@ -31,9 +31,6 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
   }, [options, question]);
 
   useEffect(() => {
-    // FYI: qName ja oName -muuttujat on vain hook-formsin validointia varten. Näitä ei tallenneta.
-    // id:tä ei käytetty koska ei ole tiedossa, onko kysymystä vielä olemassa vai ei
-    // qName = tämän kysymyksen name-attribuutti DOMissa, oName = yksittäisen vastausvaihtoehdon vastaava
     const qstn = questions[questionIndex]
       ? {
         id: questions[questionIndex].id,
@@ -55,7 +52,6 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
     }
     const opts = questions[questionIndex]?.questionChoices 
       ? questions[questionIndex].questionChoices.map(qc => {
-        // Käytä choicen id:tä jos semmoinen on, muuten oNamea jos on, muuten luo uusi oName timestampilla
         const oName = qc.id 
           ? qc.id : qc.oName 
           ? qc.oName : 'question-' + qName + '-o-' + new Date().getTime().toString();
@@ -146,7 +142,7 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
 
   return (
     <Segment style={{ padding: 15, margin: 10 }}>
-      {!hideAddRemoveButtons && <Form.Button  // TODO: Better styling for this button
+      {!hideAddRemoveButtons && <Form.Button
         onClick={removeQuestion}
         floated="right"
         data-cy="question-remove-button"

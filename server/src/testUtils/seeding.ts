@@ -65,7 +65,7 @@ const reset = async (): Promise<void> => {
  * Routes to seed the database with mock data.
  */
 export default (router): void => {
-  // Make sure these routes are not mounted in production.
+  // Make sure these routes are not mounted in production, very important!
   if (process.env.NODE_ENV === "production") {
     throw new Error("Testing routes must NOT be used in production!");
   }

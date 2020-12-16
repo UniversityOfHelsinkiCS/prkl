@@ -5,7 +5,7 @@
 [Answer|(pk) id: UUID; (fk) questionId: Question; (fk) registrationId: Registration; content: string;]
 [AnswerChoice|(fk) questionChoiceId: QuestionChoice; (fk) answerId: Answer;]
 [Registration|(pk) id: UUID; (fk) studentId: User; (fk) courseId: Course; createdAt: Date; updatedAt: Date;]
-[Group|(pk) id: UUID; (fk) courseId: Course]
+[Group|(pk) id: UUID; (fk) courseId: Course; groupName: string; groupMessage: string]
 [GroupStudents|(fk) userId: User; (fk) groupId: Group]
 [WorkingTimes|(pk) id: UUID; (fk) registrationId: Registration; (fk) questionId: Question; startTime: Date; endTime: Date; tentative: boolean]
 [CourseTeachers| (fk) courseId: Course; (fk) userId: User]

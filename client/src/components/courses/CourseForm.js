@@ -1,4 +1,3 @@
-// Renders form for both course addition and course edition 
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Form, Icon, Popup, Message } from 'semantic-ui-react';
@@ -13,6 +12,7 @@ import roles from '../../util/userRoles';
 import { useForm } from 'react-hook-form';
 import _ from 'lodash';
 
+// Renders form for both course addition and course edition 
 const CourseForm = ({ course, user, onCancelEdit, editView }) => {
   const [courses, setCourses] = useStore('coursesStore');
   const [currentUser] = useStore('userStore');

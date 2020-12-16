@@ -132,14 +132,6 @@ export default ({ id }) => {
     }
   };
 
-  const handleQuestionView = () => {
-    if (view !== 'questions') {
-      setView('questions');
-    } else {
-      setView('info');
-    }
-  };
-
   // function to check if logged in user is teacher of this course or admin
   const userHasAccess = () => {
     const inTeachers = data.course.teachers.some(t => t.id === user.id);
@@ -149,15 +141,6 @@ export default ({ id }) => {
       return false;
     }
   };
-
-  const userIsRegistered = () => {
-    const found = user.registrations?.find(r => r.course.id === course.id);
-    if (found === undefined) {
-      return false;
-    }
-    return true;
-  };
-
 
   return (
     <div>

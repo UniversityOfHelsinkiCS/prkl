@@ -29,7 +29,7 @@ const mapshit = qa => {
 };
 
 const hours = 14;
-// joko 8 tai 6 riippuen timezonesta
+// either 8 or 6 depending on the timezone
 const first = 8;
 
 export const count = registrations => {
@@ -41,7 +41,7 @@ export const count = registrations => {
       const diff = new Date(time.endTime).getHours() - start;
       let day = new Date(time.startTime).getDay();
 
-      // Tämä koska maanantai on 1 ja sunnuntai 0
+      // This because monday is 1 and sunday is 0
       if (day === 0) {
         day = 7;
       }
