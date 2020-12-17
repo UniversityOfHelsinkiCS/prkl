@@ -39,7 +39,7 @@ describe('Group creation', () => {
 
       cy.visit(`/course/${course.id}`);
       cy.get('[data-cy="manage-groups-button"]').click();
-      cy.get('[data-cy="target-group-size"]').type('9');
+      cy.get('[data-cy="target-group-size"]').type('{selectAll}$9');
       cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
