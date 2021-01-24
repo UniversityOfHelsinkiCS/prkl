@@ -37,6 +37,12 @@ First start the backend server in development mode:
 npm run dev
 ```
 
+If setting up the development enviroment for the first time, or if the database is empty for any reason, seed the database by visiting:
+
+```
+http://localhost:3001/seed
+```
+
 And follow with launching the frontend with CRA's standard development server:
 
 ```bash
