@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import CourseTag from './CourseTag';
 
-export default ({ courses, user, registrations }) => {
+export default ({ courses, user }) => {
   const intl = useIntl();
 
   return (
