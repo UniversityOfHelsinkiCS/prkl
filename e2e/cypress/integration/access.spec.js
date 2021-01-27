@@ -52,6 +52,10 @@ describe('User access and content', () => {
     cy.get('[data-cy="loader"]').should('not.exist');
     cy.contains(courses[0].title).should('not.exist');
 
+    //course page
+    cy.contains(courses[1].title).click();
+    cy.get(`[href="https://courses.helsinki.fi/fi/${courses[1].code}"]`).should('exist')
+
     //personal info
     cy.get('[data-cy="menu-item-info"]').click();
     cy.url().should('include', '/user');
