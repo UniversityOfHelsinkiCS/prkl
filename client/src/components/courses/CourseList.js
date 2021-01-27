@@ -18,13 +18,19 @@ export default ({ courses, user }) => {
             fluid
             as={Link}
             to={`/course/${course.id}`}
-            header={`${course.code} - ${course.title}`}
-            description={`${intl.formatMessage({
-              id: 'courses.deadline',
-            })} ${intl.formatDate(course.deadline)}`}
             className={new Date(course.deadline) < new Date() ? 'course-past' : null}
-            extra={<CourseTag course={course} user={user} />}
-          />
+          >
+            <Card.Content>
+              <Card.Header>{course.code} - {course.title}</Card.Header>
+              <Card.Description>{intl.formatMessage({
+                id: 'courses.deadline',
+                })} {intl.formatDate(course.deadline)}
+              </Card.Description>
+              <Card.Content>
+                <CourseTag course={course} user={user} />
+              </Card.Content>
+            </Card.Content>  
+          </Card>
         ))}
       </div>
     </Card.Group>
