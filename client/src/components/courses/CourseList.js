@@ -6,6 +6,10 @@ import CourseTag from './CourseTag';
 
 export default ({ courses, user }) => {
   const intl = useIntl();
+  if (!courses.length === 0) {
+    console.log('courseList', courses[0])
+    console.log('courses teachers', courses[0].teachers)
+  }
 
   return (
     <Card.Group itemsPerRow={1}>
@@ -26,6 +30,9 @@ export default ({ courses, user }) => {
                 id: 'courses.deadline',
                 })} {intl.formatDate(course.deadline)}
               </Card.Description>
+              <Card.Content as={Link}>
+                {course.teachers.map(t => <p key={t.id}> {t.firstname} {t.lastname} {t.email}  </p>)}
+              </Card.Content>
               <Card.Content>
                 <CourseTag course={course} user={user} />
               </Card.Content>
@@ -36,3 +43,4 @@ export default ({ courses, user }) => {
     </Card.Group>
   );
 };
+
