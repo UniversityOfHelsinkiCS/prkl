@@ -146,7 +146,7 @@ export default ({ id }) => {
     <div>
 
       {/* Course info, hide in edit and questions views */}
-      <h2>{`${course.code} - ${course.title}`}</h2>
+      <h2><a href={`https://courses.helsinki.fi/fi/${course.code}`}>{course.code}</a>{` - ${course.title}`}</h2>
       { view !== 'edit' && view !== 'questions' && <div>
         <CourseInfo id={course.id} deadline={course.deadline} teachers={course.teachers} paragraphs={paragraphs} />
 				 &nbsp;
