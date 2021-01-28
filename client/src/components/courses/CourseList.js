@@ -40,17 +40,15 @@ export default ({ courses, user }) => {
                 {course.description}
               </Card.Description>
 
-              
-              
               <Card.Content>
                 <CourseTag course={course} user={user} />
               </Card.Content>
-             
+
             </Card.Content>  
           </Card>
         ))}
       </div>
-    </Card.Group>    
+    </Card.Group>   
   );
 };
 
