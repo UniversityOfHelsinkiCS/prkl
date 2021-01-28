@@ -40,9 +40,7 @@ export default ({ courses, user }) => {
                 {course.description}
               </Card.Description>
 
-              <Card.Content>
-                {course.teachers.map(t => <p key={t.id}>{t.lastname}, {t.firstname} email: {t.email} </p>)}
-              </Card.Content>
+              
               
               <Card.Content>
                 <CourseTag course={course} user={user} />

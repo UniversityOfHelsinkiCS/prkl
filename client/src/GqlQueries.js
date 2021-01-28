@@ -13,9 +13,6 @@ export const ALL_COURSES = gql`
       published
       teachers {
         id
-        firstname
-        lastname
-        email
       }
     }
   }
