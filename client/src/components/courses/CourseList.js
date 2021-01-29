@@ -28,7 +28,6 @@ export default ({ courses, user }) => {
                 })} {intl.formatDate(course.deadline)}
               </Card.Description>
 
-              {/* move style to App.css later*/}
               <Card.Description 
                 style={{
                   whiteSpace: 'nowrap',
