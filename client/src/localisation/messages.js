@@ -53,6 +53,7 @@ export default {
 
     'courses.searchPlaceholder': 'Search courses',
     'courses.deadline': 'Enrollment deadline',
+    'courses.teachers': 'Teachers:',
     'courses.showPastCoursesButtonLabel': 'Show past courses',
     'courses.showMyCourses': 'Show only my courses',
     'courses.orderByLabel': 'Order by:',
