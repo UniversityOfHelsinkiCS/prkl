@@ -7,6 +7,10 @@ import CourseTag from './CourseTag';
 export default ({ courses, user }) => {
   const intl = useIntl();
 
+  const disableCardLink = event => {
+    event.stopPropagation();
+  };
+
   return (
     <Card.Group itemsPerRow={1}>
       <div className="coursesList">
@@ -21,7 +25,9 @@ export default ({ courses, user }) => {
             className={new Date(course.deadline) < new Date() ? 'course-past' : null}       
           >
             <Card.Content>
-              <Card.Header>{course.code} - {course.title}</Card.Header>
+              <Card.Header>
+                <a onClick={disableCardLink} href={`https://courses.helsinki.fi/fi/${course.code}`}>{course.code}</a> - {course.title}
+              </Card.Header>
 
               <Card.Description>{intl.formatMessage({
                 id: 'courses.deadline',

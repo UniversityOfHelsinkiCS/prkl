@@ -70,8 +70,6 @@ describe('User access and content', () => {
     cy.contains(`Email: ${users[0].email}`);
     cy.contains(courses[3].title);
     cy.contains(courses[1].title).should('not.exist');
-
-    
 	});
 
   it('Staff', () => {
