@@ -16,7 +16,7 @@ export class CourseResolver {
     if (user.role < STAFF) {
       return getRepository(Course)
         .createQueryBuilder("course")
-        .select(['course', 'user.id'])
+        .select(['course', 'user.id', 'user.firstname', 'user.lastname', 'user.email'])
         .leftJoin("course.teachers", "user")
         .where("teacherId = user.id")
         .where("deleted = false")

@@ -1,11 +1,15 @@
 import React from 'react';
 import { Card } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import { useIntl } from 'react-intl';
+import { useIntl, FormattedMessage } from 'react-intl';
 import CourseTag from './CourseTag';
 
 export default ({ courses, user }) => {
   const intl = useIntl();
+
+  const disableCardLink = event => {
+    event.stopPropagation();
+  };
 
   return (
     <Card.Group itemsPerRow={1}>
@@ -21,14 +25,25 @@ export default ({ courses, user }) => {
             className={new Date(course.deadline) < new Date() ? 'course-past' : null}       
           >
             <Card.Content>
-              <Card.Header>{course.code} - {course.title}</Card.Header>
+              <Card.Header>
+                <a onClick={disableCardLink} href={`https://courses.helsinki.fi/fi/${course.code}`}>{course.code}</a> - {course.title}
+              </Card.Header>
 
               <Card.Description>{intl.formatMessage({
                 id: 'courses.deadline',
                 })} {intl.formatDate(course.deadline)}
               </Card.Description>
+            </Card.Content>
 
-              {/* move style to App.css later*/}
+            <Card.Content extra>
+              <Card.Description>
+                <FormattedMessage id="courses.teachers" />
+                {course.teachers.map(t =>
+                  (<p key={t.id}>{t.firstname} {t.lastname} - ({t.email})</p>))}
+              </Card.Description>
+            </Card.Content>
+
+            <Card.Content extra>
               <Card.Description 
                 style={{
                   whiteSpace: 'nowrap',
@@ -39,12 +54,12 @@ export default ({ courses, user }) => {
               >
                 {course.description}
               </Card.Description>
+            </Card.Content>
 
-              <Card.Content>
-                <CourseTag course={course} user={user} />
-              </Card.Content>
+            <Card.Content extra>
+              <CourseTag course={course} user={user} />
+            </Card.Content>
 
-            </Card.Content>  
           </Card>
         ))}
       </div>

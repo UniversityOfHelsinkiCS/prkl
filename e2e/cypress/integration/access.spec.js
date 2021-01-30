@@ -31,6 +31,12 @@ describe('User access and content', () => {
     //course listing
     cy.visit('/courses');
     cy.wait(500);
+
+    //course descriptions
+    cy.get('[data-cy="TC01"]').within(() => {
+      cy.contains(courses[0].description);
+    });
+
     //cannot see staff controls
     cy.get('[data-cy="checkbox-staff-controls"]').should('not.exist');
     // published course
@@ -141,6 +147,7 @@ describe('User access and content', () => {
   });
 
   it('Admin', () => {
+    cy.wait(500);
     cy.switchToAdmin();
     //menu
     cy.get('[data-cy="menu-item-courses"]').should('exist');
