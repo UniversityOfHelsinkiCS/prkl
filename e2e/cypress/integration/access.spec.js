@@ -37,6 +37,13 @@ describe('User access and content', () => {
       cy.contains(courses[0].description);
     });
 
+    //course teachers
+    cy.get(`[data-cy="${courses[0].code}"]`).within(() => {
+      cy.contains(courses[0].teachers[0].firstname);
+      cy.contains(courses[0].teachers[0].lastname);
+      cy.contains(courses[0].teachers[0].email);
+    })
+
     //cannot see staff controls
     cy.get('[data-cy="checkbox-staff-controls"]').should('not.exist');
     // published course

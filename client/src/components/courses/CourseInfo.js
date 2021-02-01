@@ -2,7 +2,7 @@ import React from 'react';
 import { Card } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-export default ({id, deadline, teachers, paragraphs}) => {
+export default ({id, deadline, teachers, paragraphs, registrations}) => {
   const intl = useIntl();
 
   return (
@@ -14,7 +14,7 @@ export default ({id, deadline, teachers, paragraphs}) => {
 			<Card.Content header={`${intl.formatMessage({
         id: 'courses.deadline',
       })} ${intl.formatDate(deadline)}`} color="red" />
-			<Card.Content> 
+			<Card.Content>
 				<Card.Meta>
 					<FormattedMessage id="courseInfo.teachers" />
 					<div>
@@ -29,6 +29,11 @@ export default ({id, deadline, teachers, paragraphs}) => {
 						<p key={p}>{p}</p>
 					))}
 			/>
+			<Card.Content>{intl.formatMessage({
+				id: 'courses.enrolledStudents',
+			})}
+			{ registrations }
+			</Card.Content>
 		</Card>
 		</div>
   );

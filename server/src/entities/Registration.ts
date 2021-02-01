@@ -10,7 +10,7 @@ import {
   Column,
   Unique,
 } from "typeorm";
-import { ObjectType, Field, ID } from "type-graphql";
+import {ObjectType, Field, ID, Int} from "type-graphql";
 
 import { User } from "./User";
 import { Course } from "./Course";

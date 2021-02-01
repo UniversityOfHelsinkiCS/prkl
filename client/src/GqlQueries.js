@@ -247,6 +247,14 @@ export const COURSE_REGISTRATION = gql`
   }
 `;
 
+export const COURSE_REGISTRATIONS_ID = gql`
+  query courseRegistrationsID($courseId: String!) {
+    courseRegistrationsID(courseId: $courseId) {
+      id
+    }
+  }
+`;
+
 export const COURSE_GROUPS = gql`
   query courseGroups($courseId: String!) {
     courseGroups(courseId: $courseId) {

@@ -9,3 +9,4 @@ pg_data*
 /e2e/cypress/screenshots
 .vscode
 .DS_Store
+.idea
