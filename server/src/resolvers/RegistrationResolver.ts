@@ -1,10 +1,10 @@
-import { Resolver, Query, Mutation, Arg, Ctx, Authorized, UnauthorizedError } from "type-graphql";
-import { Registration } from "../entities/Registration";
-import { RegistrationInput } from "../inputs/RegistrationInput";
-import { STAFF, ADMIN } from "../utils/userRoles";
+import {Arg, Authorized, Ctx, Mutation, Query, Resolver} from "type-graphql";
+import {Registration} from "../entities/Registration";
+import {RegistrationInput} from "../inputs/RegistrationInput";
+import {ADMIN, STAFF} from "../utils/userRoles";
 
-import { Course } from "../entities/Course";
-import { User } from "../entities/User";
+import {Course} from "../entities/Course";
+import {User} from "../entities/User";
 
 @Resolver()
 export class RegistrationResolver {
@@ -26,8 +26,18 @@ export class RegistrationResolver {
           "workingTimes",
         ],
       });
-    } 
+    }
     throw new Error("Not your course.");
+  }
+
+  @Query(() => [Registration])
+  async courseRegistrationsID(@Arg("courseId") courseId: string) {
+    // FIXME: The best option would be to get this to return the size of the array.
+    // It appears that it isn't as simple as it sounds. '"Int!" subfield...' -error occurs.
+    // If changed, remember: Registration.ts, GqlQueries.js and Course.js
+    return await Registration.find({
+      where: { courseId: courseId },
+    });
   }
 
   @Mutation(() => Registration)
@@ -64,7 +74,7 @@ export class RegistrationResolver {
       auth = true;
     };
     if (!auth) throw new Error("You are not authorized to cancel his registration or deadline has passed.");
-    
+
     const registration = await Registration.findOne({ where: { studentId, courseId }, relations: ["student", "student.groups", "course"] });
     if (!registration) throw new Error("Registration not found!");
 

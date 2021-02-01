@@ -60,6 +60,7 @@ export default {
     'courses.orderByNameOption': 'Name',
     'courses.orderByCodeOption': 'Course Code',
     'courses.orderByDeadlineOption': 'Deadline',
+    'courses.enrolledStudents': 'Enrolled students: ',
 
     'users.empty': 'No users found',
     'users.admin': 'Admin user',
