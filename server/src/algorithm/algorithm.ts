@@ -22,7 +22,7 @@ const EVALUATORS = [
     [evaluateGroupByMultipleChoice, 1]
 ]
 
-const ITERATIONS = 10
+const ITERATIONS = 200
 
 const scoreGrouping = (grouping: Grouping) => {
     return sum(grouping.map(evaluateGroupByMultipleChoice))
