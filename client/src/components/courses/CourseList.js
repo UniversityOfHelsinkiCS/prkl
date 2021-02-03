@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, Divider, Dropdown } from 'semantic-ui-react';
+import { Card, Dropdown } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import { useIntl, FormattedMessage } from 'react-intl';
+import { useIntl } from 'react-intl';
 import CourseTag from './CourseTag';
 
 export default ({ courses, user }) => {
@@ -30,13 +30,13 @@ export default ({ courses, user }) => {
                 <span style={{color: '#f2f2f2'}}>{' | '}</span>
                   <Dropdown text='Teachers' onClick={e => {e.preventDefault()}}>
                     <Dropdown.Menu>
-                      <Dropdown.Item>
                         {course.teachers.map(t =>
-                        (<p key={t.id}>
-                          {t.firstname} {t.lastname} - 
-                          (<a onClick={e => {e.stopPropagation()}} href={`mailto:${t.email}`}>{t.email}</a>)
-                        </p>))}
-                    </Dropdown.Item>
+                        <Dropdown.Item 
+                          key={t.id} 
+                          onClick={e => {e.stopPropagation()}}>
+                            <a href={`mailto:${t.email}`}>{t.firstname} {t.lastname} <span style={{color: '#f2f2f2'}}>{' | '}</span> {t.email}</a>
+                        </Dropdown.Item>
+                        )}
                   </Dropdown.Menu>
                 </Dropdown>
               </Card.Description>
