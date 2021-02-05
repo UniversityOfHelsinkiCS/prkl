@@ -170,7 +170,8 @@ export default {
     'groupsView.confirmGroupGenration':
       'Are you sure you want to generate new groups?',
     'groupsView.confirmGroupsSave': 'Save and overwrite existing groups?',
-    'groupsView.generateGroups': 'Generate new groups',
+    'groupsView.generateGroups': 'Generate new groups by working hours',
+    'groupsView.generateGroupsByMultiple': 'Generate new groups by multiple choices',
     'groupsView.saveGroups': 'Save groups',
     'groupsView.unsavedGroupsInfo': 'Remember to save groups!',
     'groupsView.unsavedGroupsPrompt' : 'Warning: you have unsaved edits to your groups. Are you sure you want to discard them?',
