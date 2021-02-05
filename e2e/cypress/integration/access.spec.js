@@ -33,16 +33,18 @@ describe('User access and content', () => {
     cy.wait(500);
 
     //course descriptions
-    cy.get('[data-cy="TC01"]').within(() => {
+    cy.get(`[data-cy="${courses[0].code}"]`).within(() => {
       cy.contains(courses[0].description);
     });
 
     //course teachers
     cy.get(`[data-cy="${courses[0].code}"]`).within(() => {
+      cy.contains('Teachers').click();
       cy.contains(courses[0].teachers[0].firstname);
       cy.contains(courses[0].teachers[0].lastname);
       cy.contains(courses[0].teachers[0].email);
-    })
+      cy.contains('Teachers').click();
+    });
 
     //cannot see staff controls
     cy.get('[data-cy="checkbox-staff-controls"]').should('not.exist');
@@ -129,21 +131,21 @@ describe('User access and content', () => {
       cy.get('[data-cy="tag-dl"]').should("not.exist");
       cy.get('[data-cy="tag-enrolled"]').should("not.exist");
     });
-    
+
     cy.get('[data-cy="TC02"]').within(() => {
       cy.get('[data-cy="tag-own"]').should("not.exist");
       cy.get('[data-cy="tag-unpublished"]').should("not.exist");
       cy.get('[data-cy="tag-dl"]').should("not.exist");
       cy.get('[data-cy="tag-enrolled"]').should("not.exist");
     });
-    
+
     cy.get('[data-cy="TC03"]').within(() => {
       cy.get('[data-cy="tag-own"]').should("exist");
       cy.get('[data-cy="tag-unpublished"]').should("exist");
       cy.get('[data-cy="tag-dl"]').should("not.exist");
       cy.get('[data-cy="tag-enrolled"]').should("not.exist");
     });
-    
+
     cy.get('[data-cy="checkbox-staff-controls"]').first().click();
     cy.wait(500);
     cy.get('[data-cy="TC04"]').within(() => {
@@ -196,7 +198,7 @@ describe('User access and content', () => {
       cy.get('[data-cy="tag-dl"]').should("not.exist");
       cy.get('[data-cy="tag-enrolled"]').should("not.exist");
     });
-    
+
     cy.get('[data-cy="TC02"]').within(() => {
       cy.wait(500);
       cy.get('[data-cy="tag-own"]').should("exist");
@@ -204,7 +206,7 @@ describe('User access and content', () => {
       cy.get('[data-cy="tag-dl"]').should("not.exist");
       cy.get('[data-cy="tag-enrolled"]').should("not.exist");
     });
-    
+
     cy.get('[data-cy="TC03"]').within(() => {
       cy.wait(500);
       cy.get('[data-cy="tag-own"]').should("not.exist");
@@ -212,7 +214,7 @@ describe('User access and content', () => {
       cy.get('[data-cy="tag-dl"]').should("not.exist");
       cy.get('[data-cy="tag-enrolled"]').should("not.exist");
     });
-    
+
     cy.get('[data-cy="checkbox-staff-controls"]').first().click();
     cy.get('[data-cy="TC04"]').within(() => {
       cy.wait(500);

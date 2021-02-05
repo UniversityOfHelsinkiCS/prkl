@@ -3,6 +3,7 @@ import { GroupInput } from "../inputs/GroupInput";
 import * as _ from "lodash"
 
 import evaluateGroupByMultipleChoice from "./evaluators/evaluateByMultipleChoice"
+import evaluateGroupByWorkingHours from './evaluators/evaluateByWorkingHours';
 
 export type Algorithm = (targetGroupSize: number, registrations: Registration[]) => GroupInput[]
 
@@ -19,13 +20,13 @@ const sum = (arr: number[]) => arr.reduce((sum, val) => sum + val, 0)
 
 
 const EVALUATORS = [
-    [evaluateGroupByMultipleChoice, 1]
+    [evaluateGroupByMultipleChoice, evaluateGroupByWorkingHours]
 ]
 
 const ITERATIONS = 200
 
 const scoreGrouping = (grouping: Grouping) => {
-    return sum(grouping.map(evaluateGroupByMultipleChoice))
+    return sum(grouping.map(evaluateGroupByWorkingHours))
 }
 
 export const formGroups: Algorithm = (targetGroupSize: number, registrations: Registration[]): GroupInput[] => {
