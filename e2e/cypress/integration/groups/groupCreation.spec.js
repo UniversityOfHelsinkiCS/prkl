@@ -14,6 +14,7 @@ describe('Group creation', () => {
       // Do not save first on purpose
       cy.visit(`/course/${course.id}`);
       cy.get('[data-cy="manage-groups-button"]').click();
+      cy.get('[data-cy="create-groups-bymultiple-submit"]').should('not.exist');
       cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       // Refresh to check that no info was stored
@@ -40,6 +41,11 @@ describe('Group creation', () => {
     it('Can create and save groups based on multiple choices', () => {
       cy.visit(`/course/${course.id}`);
       cy.get('[data-cy="manage-groups-button"]').click();
+      cy.get('[data-cy="create-groups-bymultiple-submit"]').should('not.exist');
+
+      // Inside a course which has implemented multiple choice questions:
+      cy.visit(`/course/${courses[10].id}`);
+      cy.get('[data-cy="manage-groups-button"]').click();
       cy.get('[data-cy="create-groups-bymultiple-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.reload();
@@ -55,6 +61,7 @@ describe('Group creation', () => {
       cy.get('table').contains(users[0].firstname);
       cy.get('table').contains(users[3].firstname);
       cy.contains('No groups generated').should('not.exist');
+
     });
 
     it('Teacher can name a group', () => {
