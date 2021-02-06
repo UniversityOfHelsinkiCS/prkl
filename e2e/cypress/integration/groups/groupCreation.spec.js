@@ -10,7 +10,7 @@ describe('Group creation', () => {
   describe('teacher', () => {
     const course = courses[3];
 
-    it('Can create and save groups', () => {
+    it('Can create and save groups based on working hours', () => {
       // Do not save first on purpose
       cy.visit(`/course/${course.id}`);
       cy.get('[data-cy="manage-groups-button"]').click();
@@ -27,6 +27,7 @@ describe('Group creation', () => {
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.get('[data-cy="save-groups-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
+
       // Refresh to be sure that information is stored at backend
       cy.reload();
       cy.get('[data-cy="manage-groups-button"]').click();
@@ -34,6 +35,28 @@ describe('Group creation', () => {
       cy.get('table').contains(users[3].firstname);
       cy.contains('No groups generated').should('not.exist');
     });
+
+    // Testing the multiple-choice-button via same method as working-hours-button:
+    it('Can create and save groups based on multiple choices', () => {
+      cy.visit(`/course/${course.id}`);
+      cy.get('[data-cy="manage-groups-button"]').click();
+      cy.get('[data-cy="create-groups-bymultiple-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.reload();
+      cy.get('[data-cy="manage-groups-button"]').click();
+      cy.get('table').should('not.exist');
+      cy.contains('No groups generated');
+      cy.get('[data-cy="create-groups-bymultiple-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.get('[data-cy="save-groups-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.reload();
+      cy.get('[data-cy="manage-groups-button"]').click();
+      cy.get('table').contains(users[0].firstname);
+      cy.get('table').contains(users[3].firstname);
+      cy.contains('No groups generated').should('not.exist');
+    });
+
     it('Teacher can name a group', () => {
       const namedGroup = 'MyGroup';
 
@@ -52,8 +75,8 @@ describe('Group creation', () => {
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       cy.contains(namedGroup).should('exist');
-
     })
+
     it('Can drag a student from group to another', () => {
       const emptyGroup = 'Emptygroup';
       const groupToDrag = 'GroupToDrag';
@@ -74,7 +97,7 @@ describe('Group creation', () => {
         cy.contains(/^Group \d$/).click(); // Regex pattern dependent on language, fix
       });
       cy.get('[data-cy="group-name-input"]').type(`{selectAll}${groupToDrag}`);
-      
+
       const dataTransfer = new DataTransfer;
       cy.get('table').contains(users[3].firstname).trigger('dragstart', { dataTransfer });
       cy.get('table').contains(users[0].firstname).trigger('drop', { dataTransfer });
@@ -117,7 +140,7 @@ describe('Group creation', () => {
         cy.contains(/^Group \d$/).click(); // Regex pattern dependent on language, fix
       });
       cy.get('[data-cy="group-name-input"]').type(`{selectAll}${newGroupName}`);
-      
+
       cy.get('[data-cy="save-groups-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.get('[data-cy="publish-groups-button"]').click();
@@ -126,13 +149,13 @@ describe('Group creation', () => {
       cy.contains(newGroupName).should('exist');
 
       cy.get('[data-cy="back-to-info-from-groups-button"]').click();
-      
+
       cy.get('[data-cy="show-registrations-button"]').click();
       cy.contains(users[0].firstname).parents('[data-cy="student-registration-row"]').within(()=> {
         cy.get('[data-cy="remove-registration-button"]').click();
       });
       cy.get('[data-cy="confirmation-button-confirm"]').click();
-      
+
       cy.get('[data-cy="back-to-info-from-groups-button"]').click();
 
       cy.get('[data-cy="manage-groups-button"]').click();
@@ -156,20 +179,20 @@ describe('Group creation', () => {
         cy.contains(/^Group \d$/).click(); // Regex pattern dependent on language, fix
       });
       cy.get('[data-cy="group-name-input"]').type(`{selectAll}${groupForDelete}`);
-      
+
       cy.get('[data-cy="save-groups-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       cy.contains(groupForDelete).should('exist');
 
       cy.get('[data-cy="back-to-info-from-groups-button"]').click();
-      
+
       cy.get('[data-cy="show-registrations-button"]').click();
       cy.contains(users[0].firstname).parents('[data-cy="student-registration-row"]').within(()=> {
         cy.get('[data-cy="remove-registration-button"]').click();
       });
       cy.get('[data-cy="confirmation-button-confirm"]').click();
-      
+
       cy.get('[data-cy="back-to-info-from-groups-button"]').click();
 
       cy.get('[data-cy="manage-groups-button"]').click();
@@ -191,9 +214,6 @@ describe('Group creation', () => {
       cy.contains(groupForDelete).should('not.exist');
     });
 
-
     // No need to test publish feature here, it's done in student tests.
-
   });
-
 })
