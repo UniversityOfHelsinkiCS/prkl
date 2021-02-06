@@ -10,6 +10,7 @@ import ConfirmationButton from '../ui/ConfirmationButton';
 import SuccessMessage from '../ui/SuccessMessage';
 import { Prompt } from 'react-router-dom';
 import _ from 'lodash'
+import { MULTI_CHOICE } from '../../util/questionTypes'
 
 export default ({ course, registrations, regByStudentId }) => {
   const [generateGroups] = useMutation(GENERATE_GROUPS);
@@ -197,6 +198,10 @@ export default ({ course, registrations, regByStudentId }) => {
     setGroupsUnsaved(false);
   }
 
+  const courseHasMultipleChoices = course.questions.some(q =>
+    q.questionType === MULTI_CHOICE
+  )
+
   const sortOptions = [
     {
       key: 'By name, ascending',
@@ -281,6 +286,7 @@ export default ({ course, registrations, regByStudentId }) => {
             >
               <FormattedMessage id="groupsView.generateGroups" />
             </ConfirmationButton>
+            {courseHasMultipleChoices && 
             <ConfirmationButton
               onConfirm={handleSampleMultipleGroupCreation}
               modalMessage={ intl.formatMessage({ id: 'groupsView.confirmGroupGenration' }) }
@@ -289,6 +295,7 @@ export default ({ course, registrations, regByStudentId }) => {
             >
               <FormattedMessage id="groupsView.generateGroupsByMultiple" />
             </ConfirmationButton>
+            }
 
             {groupsUnsaved &&
             <>
