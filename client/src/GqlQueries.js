@@ -13,6 +13,9 @@ export const ALL_COURSES = gql`
       published
       teachers {
         id
+        firstname
+        lastname
+        email
       }
     }
   }
@@ -244,6 +247,14 @@ export const COURSE_REGISTRATION = gql`
   }
 `;
 
+export const COURSE_REGISTRATIONS_ID = gql`
+  query courseRegistrationsID($courseId: String!) {
+    courseRegistrationsID(courseId: $courseId) {
+      id
+    }
+  }
+`;
+
 export const COURSE_GROUPS = gql`
   query courseGroups($courseId: String!) {
     courseGroups(courseId: $courseId) {
@@ -265,6 +276,22 @@ export const COURSE_GROUPS = gql`
 export const GENERATE_GROUPS = gql`
   mutation createSampleGroups($data: GroupListInput!) {
     createSampleGroups(data: $data) {
+      courseId
+      students {
+        id
+        firstname
+        lastname
+        studentNo
+        email
+      }
+    }
+  }
+`;
+
+// TODO: Refactor to use only the query above.
+export const GENERATE_GROUPS_BY_MULTIPLE = gql`
+  mutation createSampleGroupsByMultiple($data: GroupListInput!) {
+    createSampleGroupsByMultiple(data: $data) {
       courseId
       students {
         id

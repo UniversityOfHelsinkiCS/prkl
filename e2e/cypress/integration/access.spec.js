@@ -9,7 +9,7 @@ describe('User access and content', () => {
   after(() => {
     cy.switchToAdmin();
     cy.seedDatabase();
-  })
+  });
 
   it('Student', () => {
     cy.switchToStudent();
@@ -22,16 +22,31 @@ describe('User access and content', () => {
     cy.get('[data-cy="menu-item-privacy-toggle"]').should('not.exist');
     cy.get('[data-cy="mockbar"]').should('exist');
 
-    //paths
+    // paths
     cy.visit('/addcourse');
     cy.contains('You do not have the required roles');
     cy.visit('/usermanagement');
     cy.contains('You do not have the required roles');
 
-    //course listing
+    // course listing
     cy.visit('/courses');
     cy.wait(500);
-    //cannot see staff controls
+
+    // course descriptions
+    cy.get(`[data-cy="${courses[0].code}"]`).within(() => {
+      cy.contains(courses[0].description);
+    });
+
+    // course teachers
+    cy.get(`[data-cy="${courses[0].code}"]`).within(() => {
+      cy.contains('Teachers').click();
+      cy.contains(courses[0].teachers[0].firstname);
+      cy.contains(courses[0].teachers[0].lastname);
+      cy.contains(courses[0].teachers[0].email);
+      cy.contains('Teachers').click();
+    });
+
+    // cannot see staff controls
     cy.get('[data-cy="checkbox-staff-controls"]').should('not.exist');
     // published course
     cy.contains(courses[0].title);
@@ -52,7 +67,11 @@ describe('User access and content', () => {
     cy.get('[data-cy="loader"]').should('not.exist');
     cy.contains(courses[0].title).should('not.exist');
 
-    //personal info
+    // course page
+    cy.contains(courses[1].title).click();
+    cy.get(`[href="https://courses.helsinki.fi/fi/${courses[1].code}"]`).should('exist');
+
+    // personal info
     cy.get('[data-cy="menu-item-info"]').click();
     cy.url().should('include', '/user');
     cy.contains(`Name: ${users[0].firstname} ${users[0].lastname}`);
@@ -60,11 +79,11 @@ describe('User access and content', () => {
     cy.contains(`Email: ${users[0].email}`);
     cy.contains(courses[3].title);
     cy.contains(courses[1].title).should('not.exist');
-	});
+  });
 
   it('Staff', () => {
     cy.switchToStaff();
-    //menu
+    // menu
     cy.get('[data-cy="menu-item-courses"]').should('exist');
     cy.get('[data-cy="menu-item-add-course"]').should('exist');
     cy.get('[data-cy="menu-item-user-mgmt"]').should('not.exist');
@@ -72,10 +91,10 @@ describe('User access and content', () => {
     cy.get('[data-cy="menu-item-privacy-toggle"]').should('not.exist');
     cy.get('[data-cy="mockbar"]').should('exist');
 
-    //course listing
-    //unpublished course visible
+    // course listing
+    // unpublished course visible
     cy.contains(courses[2].title);
-    //staff controls
+    // staff controls
     cy.get('[data-cy="checkbox-staff-controls"]').should('exist');
     // only own courses
     cy.get('[data-cy="checkbox-staff-controls"]').last().click();
@@ -107,38 +126,39 @@ describe('User access and content', () => {
     // tags in course listing
     cy.wait(500);
     cy.get('[data-cy="TC01"]').within(() => {
-      cy.get('[data-cy="tag-own"]').should("exist");
-      cy.get('[data-cy="tag-unpublished"]').should("not.exist");
-      cy.get('[data-cy="tag-dl"]').should("not.exist");
-      cy.get('[data-cy="tag-enrolled"]').should("not.exist");
+      cy.get('[data-cy="tag-own"]').should('exist');
+      cy.get('[data-cy="tag-unpublished"]').should('not.exist');
+      cy.get('[data-cy="tag-dl"]').should('not.exist');
+      cy.get('[data-cy="tag-enrolled"]').should('not.exist');
     });
-    
+
     cy.get('[data-cy="TC02"]').within(() => {
-      cy.get('[data-cy="tag-own"]').should("not.exist");
-      cy.get('[data-cy="tag-unpublished"]').should("not.exist");
-      cy.get('[data-cy="tag-dl"]').should("not.exist");
-      cy.get('[data-cy="tag-enrolled"]').should("not.exist");
+      cy.get('[data-cy="tag-own"]').should('not.exist');
+      cy.get('[data-cy="tag-unpublished"]').should('not.exist');
+      cy.get('[data-cy="tag-dl"]').should('not.exist');
+      cy.get('[data-cy="tag-enrolled"]').should('not.exist');
     });
-    
+
     cy.get('[data-cy="TC03"]').within(() => {
-      cy.get('[data-cy="tag-own"]').should("exist");
-      cy.get('[data-cy="tag-unpublished"]').should("exist");
-      cy.get('[data-cy="tag-dl"]').should("not.exist");
-      cy.get('[data-cy="tag-enrolled"]').should("not.exist");
+      cy.get('[data-cy="tag-own"]').should('exist');
+      cy.get('[data-cy="tag-unpublished"]').should('exist');
+      cy.get('[data-cy="tag-dl"]').should('not.exist');
+      cy.get('[data-cy="tag-enrolled"]').should('not.exist');
     });
-    
+
     cy.get('[data-cy="checkbox-staff-controls"]').first().click();
     cy.wait(500);
     cy.get('[data-cy="TC04"]').within(() => {
-      cy.get('[data-cy="tag-own"]').should("exist");
-      cy.get('[data-cy="tag-unpublished"]').should("not.exist");
-      cy.get('[data-cy="tag-dl"]').should("exist");
+      cy.get('[data-cy="tag-own"]').should('exist');
+      cy.get('[data-cy="tag-unpublished"]').should('not.exist');
+      cy.get('[data-cy="tag-dl"]').should('exist');
     });
   });
 
   it('Admin', () => {
+    cy.wait(500);
     cy.switchToAdmin();
-    //menu
+    // menu
     cy.get('[data-cy="menu-item-courses"]').should('exist');
     cy.get('[data-cy="menu-item-add-course"]').should('exist');
     cy.get('[data-cy="menu-item-user-mgmt"]').should('exist');
@@ -146,10 +166,10 @@ describe('User access and content', () => {
     cy.get('[data-cy="menu-item-privacy-toggle"]').should('exist');
     cy.get('[data-cy="mockbar"]').should('not.exist');
 
-    //course listing
-    //unpublished course visible
+    // course listing
+    // unpublished course visible
     cy.contains(courses[2].title);
-    //staff controls
+    // staff controls
     cy.get('[data-cy="checkbox-staff-controls"]').should('exist');
     // only own courses
     cy.get('[data-cy="checkbox-staff-controls"]').last().click();
@@ -173,36 +193,34 @@ describe('User access and content', () => {
     // tags in course listing
     cy.get('[data-cy="TC01"]').within(() => {
       cy.wait(500);
-      cy.get('[data-cy="tag-own"]').should("not.exist");
-      cy.get('[data-cy="tag-unpublished"]').should("not.exist");
-      cy.get('[data-cy="tag-dl"]').should("not.exist");
-      cy.get('[data-cy="tag-enrolled"]').should("not.exist");
+      cy.get('[data-cy="tag-own"]').should('not.exist');
+      cy.get('[data-cy="tag-unpublished"]').should('not.exist');
+      cy.get('[data-cy="tag-dl"]').should('not.exist');
+      cy.get('[data-cy="tag-enrolled"]').should('not.exist');
     });
-    
+
     cy.get('[data-cy="TC02"]').within(() => {
       cy.wait(500);
-      cy.get('[data-cy="tag-own"]').should("exist");
-      cy.get('[data-cy="tag-unpublished"]').should("not.exist");
-      cy.get('[data-cy="tag-dl"]').should("not.exist");
-      cy.get('[data-cy="tag-enrolled"]').should("not.exist");
+      cy.get('[data-cy="tag-own"]').should('exist');
+      cy.get('[data-cy="tag-unpublished"]').should('not.exist');
+      cy.get('[data-cy="tag-dl"]').should('not.exist');
+      cy.get('[data-cy="tag-enrolled"]').should('not.exist');
     });
-    
+
     cy.get('[data-cy="TC03"]').within(() => {
       cy.wait(500);
-      cy.get('[data-cy="tag-own"]').should("not.exist");
-      cy.get('[data-cy="tag-unpublished"]').should("exist");
-      cy.get('[data-cy="tag-dl"]').should("not.exist");
-      cy.get('[data-cy="tag-enrolled"]').should("not.exist");
+      cy.get('[data-cy="tag-own"]').should('not.exist');
+      cy.get('[data-cy="tag-unpublished"]').should('exist');
+      cy.get('[data-cy="tag-dl"]').should('not.exist');
+      cy.get('[data-cy="tag-enrolled"]').should('not.exist');
     });
-    
+
     cy.get('[data-cy="checkbox-staff-controls"]').first().click();
     cy.get('[data-cy="TC04"]').within(() => {
       cy.wait(500);
-      cy.get('[data-cy="tag-own"]').should("not.exist");
-      cy.get('[data-cy="tag-unpublished"]').should("not.exist");
-      cy.get('[data-cy="tag-dl"]').should("exist");
+      cy.get('[data-cy="tag-own"]').should('not.exist');
+      cy.get('[data-cy="tag-unpublished"]').should('not.exist');
+      cy.get('[data-cy="tag-dl"]').should('exist');
     });
-
   });
-
 });

@@ -5,7 +5,7 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Button, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import roles from '../../util/userRoles';
-import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION } from '../../GqlQueries';
+import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION, COURSE_REGISTRATIONS_ID } from '../../GqlQueries';
 import GroupsView from '../groups/GroupsView';
 import CourseForm from './CourseForm';
 import RegistrationList from '../registrations/RegistrationList';
@@ -20,6 +20,7 @@ export default ({ id }) => {
 
   const [course, setCourse] = useState({});
   const [registrations, setRegistrations] = useState([]);
+  const [registrationsCount, setRegistrationsCount] = useState(null);
   const [regByStudentId, setRegByStudentId] = useState([]);
   const [view, setView] = useState('info');
 
@@ -64,6 +65,18 @@ export default ({ id }) => {
       );
     }
   }, [data, loading, regData, regLoading]);
+
+  // Fetching the number of registrations:
+  const { loading: countLoading, data: countData } = useQuery(COURSE_REGISTRATIONS_ID, {
+    variables: { courseId: id },
+  });
+
+  useEffect(() => {
+    if (!countLoading && countData !== undefined) {
+      // FIXME: Make resolver return length integer
+      setRegistrationsCount(countData.courseRegistrationsID.length);
+    }
+  }, [countLoading, countData]);
 
   if (error !== undefined) {
     console.log('error:', error);
@@ -146,9 +159,9 @@ export default ({ id }) => {
     <div>
 
       {/* Course info, hide in edit and questions views */}
-      <h2>{`${course.code} - ${course.title}`}</h2>
+      <h2><a href={`https://courses.helsinki.fi/fi/${course.code}`}>{course.code}</a>{` - ${course.title}`}</h2>
       { view !== 'edit' && view !== 'questions' && <div>
-        <CourseInfo id={course.id} deadline={course.deadline} teachers={course.teachers} paragraphs={paragraphs} />
+        <CourseInfo id={course.id} deadline={course.deadline} teachers={course.teachers} paragraphs={paragraphs} registrations={registrationsCount} />
 				 &nbsp;
       </div>}
 
