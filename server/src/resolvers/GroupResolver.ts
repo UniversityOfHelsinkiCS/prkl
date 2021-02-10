@@ -5,7 +5,7 @@ import { User } from "../entities/User";
 import { Registration } from "../entities/Registration";
 import { GroupListInput } from "./../inputs/GroupListInput";
 import { STAFF, ADMIN } from "../utils/userRoles";
-//import { formGroups } from "../algorithm/algorithm"; // new new algorithm
+import { formGroupsByMultiple } from "../algorithm/algorithm"; // new new algorithm
 import { formGroups } from "../algorithm/new_algo";
 //import { formGroups } from "../algorithm/index"; old algorithm
 import { Course } from "../entities/Course";
@@ -33,7 +33,7 @@ export class GroupResolver {
   async courseGroups(@Ctx() context, @Arg("courseId") courseId: string): Promise<Group[]> {
     const { user } = context;
     const course = await Course.findOne({ where: { id: courseId }, relations: ["teachers"] });
-    
+
     if (user.role === ADMIN || course.teachers.find(t => t.id === user.id) !== undefined) {
       const groups = await Group.find({
         where: { courseId: courseId },
@@ -91,6 +91,23 @@ export class GroupResolver {
       }),
     );
   }
+
+  // TODO: Refactor the 'createSampleGroups' to be dynamic (via @Ctx() maybe?) and remove this function
+  @Authorized(STAFF)
+  @Mutation(() => [Group])
+  async createSampleGroupsByMultiple(@Arg("data") data: GroupListInput): Promise<Group[]> {
+    const { courseId, minGroupSize } = data;
+
+    const groups = data.groups && data.groups.length > 0 ? data.groups : await formNewGroups(formGroupsByMultiple, courseId, minGroupSize);
+
+    return Promise.all(
+      groups.map(async g => {
+        const students = await User.findByIds(g.userIds);
+        return Group.create({ courseId, students });
+      }),
+    );
+  }
+
 
   @Authorized(STAFF)
   @Mutation(() => [Group])

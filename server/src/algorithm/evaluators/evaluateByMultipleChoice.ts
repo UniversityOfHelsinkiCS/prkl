@@ -17,8 +17,9 @@ export const combinationsOfTwo = (arr: any[]): [any, any][] => {
 const scorePair = (pair: [Registration, Registration]): number => {
     const answers = _.map(pair, 
         registration => 
+
             _.flatMap(registration.questionAnswers.filter(answer => answer.question.questionType === "multipleChoice"),
-                answer => _.map(answer.answerChoices, 
+                answer => _.map(answer.answerChoices,
                     choice => ([answer.questionId, choice.id, answer.question.content, choice.content]))))
         
     const answerCount = answers[0].length + answers[1].length
@@ -39,7 +40,7 @@ const average = (arr: number[]) => arr.reduce((sum, elem) => sum + elem) / arr.l
 const mapOverMap = <K, V>(map: Map<K, V>, func: ([key, value]: [K, V]) => ([K, any]))  =>
     new Map(Array.from(map.entries()).map(func))
 
-    
+
 const calculateAnswerCounts = (group: Group) => {
     const answerCounts: Map<string, Map<string, number>> = new Map()
     group.forEach(
@@ -60,8 +61,8 @@ const calculateAnswerCounts = (group: Group) => {
 }
 
 const calculateQuestionScores = (answerCounts: Map<string, Map<string, number>>, groupSize: number): Map<string, Map<string, number>> => {
-    return mapOverMap(answerCounts, ([questionId, choices]) => 
-            [questionId, mapOverMap(choices, ([choiceId, count]) => 
+    return mapOverMap(answerCounts, ([questionId, choices]) =>
+            [questionId, mapOverMap(choices, ([choiceId, count]) =>
                     [choiceId, count > 1 ? count / groupSize : 0])]
     )
 }

@@ -206,7 +206,7 @@ const defaultCourses = [
     maxGroupSize: 10,
     minGroupSize: 5,
     published: true,
-    questions: [ 
+    questions: [
       {
         id:"4cc2324a-3b5a-4201-9a04-6333521fcac9",
         questionType: "times",
@@ -218,7 +218,7 @@ const defaultCourses = [
       {
         id: "bc385120-cf53-4fc2-a2b6-e7dc8bd6d233",
         student: userData[0],
-        workingTimes: [ 
+        workingTimes: [
           {
             id: "2fdadf42-f7f6-4746-a858-2901c24a7eda",
             startTime: "1970-01-05T12:00:00.000Z",
@@ -237,7 +237,7 @@ const defaultCourses = [
           },
         ]
       },
-      {       
+      {
         id: "23ebceeb-d2df-49e2-ac89-650e89ef3e28",
         student: userData[1],
         workingTimes: [
@@ -275,10 +275,10 @@ const defaultCourses = [
           },
         ]
       },
-      {        
+      {
         id: "e65d2919-e0f3-4466-b97d-987301a6af4d",
         student: userData[2],
-        workingTimes: [ 
+        workingTimes: [
           {
             id: "399a5e62-daf3-4cc4-8332-d5c5239cf6d7",
             startTime: "1970-01-05T10:00:00.000Z",
@@ -305,10 +305,10 @@ const defaultCourses = [
           },
         ]
       },
-      {        
+      {
         id: "df24fbbe-a93c-42a0-81f1-79df728879f7",
         student: userData[3],
-        workingTimes: [ 
+        workingTimes: [
           {
             id: "23c38a02-e1ef-4308-b90e-2b44dc67c67a",
             startTime: "1970-01-07T10:00:00.000Z",
@@ -352,6 +352,237 @@ const defaultCourses = [
         ]
       },
     ]
+  },
+  {
+    id: "6b0be887-6bfb-41a7-8908-205241811995",
+    title: "Test Course for Single and Multiple Choice Answers",
+    deadline: "2021-02-28T21:59:00.000Z",
+    code: "TC11",
+    description: "Testing the choice answers.",
+    teachers: [userData[1]],
+    maxGroupSize: 10,
+    minGroupSize: 5,
+    published: true,
+    questions: [
+      {
+        content: "Choose one",
+        id: "150e561d-cf97-4cb2-b910-7faa0984800e",
+        order: 0,
+        questionType: "singleChoice",
+        questionChoices: [
+          {
+            content: "Option 1",
+            id: "17f5b5de-1472-4f52-bf81-9ffd1933fd91",
+            order: 1,
+          },
+          {
+            content: "Option 2",
+            id: "a6e145da-e89d-4587-bc39-71a740cb8d41",
+            order: 2,
+          },
+        ],
+      },
+      {
+        content: "Choose multiple",
+        id: "540a97a4-7cd4-49ba-96f1-87b96a54575f",
+        order: 1,
+        questionType: "multipleChoice",
+        questionChoices: [
+          {
+            content: "Option 1",
+            id: "7d7f582c-5c82-4485-9d7e-2584770fa03e",
+            order: 1,
+          },
+          {
+            content: "Option 2",
+            id: "9aa0b61c-d7a9-4c24-81b7-ce41f5568855",
+            order: 2,
+          },
+          {
+            content: "Option 3",
+            id: "596e7c34-32f8-4b9e-a65b-43c2e1f69999",
+            order: 3,
+          },
+        ],
+      },
+    ],
+    registrations: [
+      {
+        id: "9ae43ec4-91bc-4623-8630-03b13f689fba",
+        student: userData[0],
+        workingTimes: [],
+        questionAnswers: [
+          {
+            id: "061ae932-37a0-474b-b380-e92a4fa9da37",
+            registrationId: "9ae43ec4-91bc-4623-8630-03b13f689fba",
+            questionId: "150e561d-cf97-4cb2-b910-7faa0984800e",
+            answerChoices: [
+              {
+                id: "17f5b5de-1472-4f52-bf81-9ffd1933fd91",
+                content: "Option 1",
+                order: 1,
+              },
+            ],
+          },
+          {
+            id: "e6e47fab-e410-4aef-87c5-1689143e404c",
+            registrationId: "9ae43ec4-91bc-4623-8630-03b13f689fba",
+            questionId: "540a97a4-7cd4-49ba-96f1-87b96a54575f",
+            answerChoices: [
+              {
+                content: "Option 1",
+                id: "7d7f582c-5c82-4485-9d7e-2584770fa03e",
+                order: 1,
+              },
+              {
+                content: "Option 3",
+                id: "596e7c34-32f8-4b9e-a65b-43c2e1f69999",
+                order: 3,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "3ed85bb8-15c9-420f-a440-28935d4ed5aa",
+        student: userData[3],
+        workingTimes: [],
+        questionAnswers: [
+          {
+            id: "bc9ccc90-a242-4581-8473-874536b54db0",
+            registrationId: "3ed85bb8-15c9-420f-a440-28935d4ed5aa",
+            questionId: "150e561d-cf97-4cb2-b910-7faa0984800e",
+            answerChoices: [
+              {
+                content: "Option 2",
+                id: "a6e145da-e89d-4587-bc39-71a740cb8d41",
+                order: 2,
+              },
+            ],
+          },
+          {
+            id: "23b41d4b-97e3-4296-b00a-b40b48e9fe1c",
+            registrationId: "3ed85bb8-15c9-420f-a440-28935d4ed5aa",
+            questionId: "540a97a4-7cd4-49ba-96f1-87b96a54575f",
+            answerChoices: [
+              {
+                content: "Option 2",
+                id: "9aa0b61c-d7a9-4c24-81b7-ce41f5568855",
+                order: 2,
+              },
+              {
+                content: "Option 3",
+                id: "596e7c34-32f8-4b9e-a65b-43c2e1f69999",
+                order: 3,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "677bf84d-ccdf-4bfa-9047-063ce0e7577d",
+        student: userData[6],
+        workingTimes: [],
+        questionAnswers: [
+          {
+            id: "3e80081d-2941-4554-a426-46eb067a6e02",
+            registrationId: "677bf84d-ccdf-4bfa-9047-063ce0e7577d",
+            questionId: "150e561d-cf97-4cb2-b910-7faa0984800e",
+            answerChoices: [
+              {
+                content: "Option 1",
+                id: "17f5b5de-1472-4f52-bf81-9ffd1933fd91",
+                order: 1,
+              },
+            ],
+          },
+          {
+            id: "162601ba-3419-439c-ac49-822dc0fd8522",
+            registrationId: "677bf84d-ccdf-4bfa-9047-063ce0e7577d",
+            questionId: "540a97a4-7cd4-49ba-96f1-87b96a54575f",
+            answerChoices: [
+              {
+                content: "Option 1",
+                id: "7d7f582c-5c82-4485-9d7e-2584770fa03e",
+                order: 1,
+              },
+              {
+                content: "Option 2",
+                id: "9aa0b61c-d7a9-4c24-81b7-ce41f5568855",
+                order: 2,
+              },
+              {
+                content: "Option 3",
+                id: "596e7c34-32f8-4b9e-a65b-43c2e1f69999",
+                order: 3,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "262a0cbb-f844-47f1-a36e-1a7564cdce1e",
+        student: userData[5],
+        workingTimes: [],
+        questionAnswers: [
+          {
+            id: "c70a58b9-a399-455c-9e20-ebc7e6e25feb",
+            registrationId: "262a0cbb-f844-47f1-a36e-1a7564cdce1e",
+            questionId: "150e561d-cf97-4cb2-b910-7faa0984800e",
+            answerChoices: [
+              {
+                content: "Option 1",
+                id: "17f5b5de-1472-4f52-bf81-9ffd1933fd91",
+                order: 1,
+              },
+            ],
+          },
+          {
+            id: "2dc0159a-c688-4e9e-bb22-af2051330d47",
+            registrationId: "262a0cbb-f844-47f1-a36e-1a7564cdce1e",
+            questionId: "540a97a4-7cd4-49ba-96f1-87b96a54575f",
+            answerChoices: [
+              {
+                content: "Option 2",
+                id: "9aa0b61c-d7a9-4c24-81b7-ce41f5568855",
+                order: 2,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "f9515ce3-f750-4c8e-b369-5df661e656e1",
+        student: userData[4],
+        workingTimes: [],
+        questionAnswers: [
+          {
+            id: "e52be248-e43d-4a56-8436-f0bf0791677c",
+            registrationId: "f9515ce3-f750-4c8e-b369-5df661e656e1",
+            questionId: "150e561d-cf97-4cb2-b910-7faa0984800e",
+            answerChoices: [
+              {
+                content: "Option 2",
+                id: "a6e145da-e89d-4587-bc39-71a740cb8d41",
+                order: 2,
+              },
+            ],
+          },
+          {
+            id: "c46b0e56-becd-4208-8504-b3c2f7fd1f69",
+            registrationId: "f9515ce3-f750-4c8e-b369-5df661e656e1",
+            questionId: "540a97a4-7cd4-49ba-96f1-87b96a54575f",
+            answerChoices: [
+              {
+                content: "Option 3",
+                id: "596e7c34-32f8-4b9e-a65b-43c2e1f69999",
+                order: 3,
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
 ];
 

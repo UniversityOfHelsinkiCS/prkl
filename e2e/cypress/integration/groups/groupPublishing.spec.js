@@ -12,10 +12,10 @@ describe('Group publishing', () => {
 
     // Test 4 times with different groups sizes, generated groups are going to be random, of course
     for (let i = 0; i < 4; i++) {
-      it(`Test ${i+1}: Can see published groups on the course page of a course they have registered to, with the right group members and correct group-specific message`, () => {
+      it(`Test ${i + 1}: Can see published groups on the course page of a course they have registered to, with the right group members and correct group-specific message`, () => {
 
-        //const groupSize = Math.floor(Math.random() * (users.length - 2));
-        const groupSize = i+1;
+        // const groupSize = Math.floor(Math.random() * (users.length - 2));
+        const groupSize = i + 1;
         let namesInGroup = [];
         let groupMessage = '';
         let groupName = 'TESTGROUP';
@@ -33,7 +33,7 @@ describe('Group publishing', () => {
 
         cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(gc => {
           cy.get('[data-cy="group-name-label"]').click();
-        })
+        });
         cy.wait(20);
         cy.get('[data-cy="group-name-input"]').type(`{selectAll}${groupName}`);
 
