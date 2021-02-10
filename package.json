@@ -16,7 +16,7 @@
     "start:prod": "cd server && npm start:prod",
     "start:dev": "cd server && npm run start:dev",
     "start:test": "cd server && npm run start:test",
-    "test": "docker-compose build test-app && docker-compose run tests; docker-compose down",
+    "test": "npm run start:test && docker-compose build test-app && docker-compose run tests; docker-compose down",
     "dev": "docker-compose up db adminer app; exit 0"
   },
   "repository": {

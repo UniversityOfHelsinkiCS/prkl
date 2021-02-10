@@ -1,4 +1,3 @@
-import { registerDecorator } from "class-validator";
 import _ from "lodash";
 import { Registration } from "../../entities/Registration";
 import { Evaluator, Group } from "../algorithm";
@@ -16,16 +15,14 @@ export const combinationsOfTwo = (arr: any[]): [any, any][] => {
 }
 
 const scorePair = (pair: [Registration, Registration]): number => {
-    const answers = 
-    _.map(pair, 
+    const answers = _.map(pair, 
         registration => 
             _.flatMap(registration.questionAnswers.filter(answer => answer.question.questionType === "multipleChoice"),
                 answer => _.map(answer.answerChoices, 
                     choice => ([answer.questionId, choice.id, answer.question.content, choice.content]))))
         
-
     const answerCount = answers[0].length + answers[1].length
-    const sameAnswerCount = _.intersectionWith(answers[0], answers[1], _.isEqual).length
+    const sameAnswerCount = _.intersectionWith(answers[0], answers[1], _.isEqual).length * 2
 
     return sameAnswerCount / answerCount
 }
@@ -33,7 +30,7 @@ const scorePair = (pair: [Registration, Registration]): number => {
 const evaluateGroupByMultipleChoice: Evaluator = (group: Group) => {
     const uniquePairs = combinationsOfTwo(group)
     const scores = uniquePairs.map(scorePair)
-    const score = scores.reduce((sum, val) => sum + val, 0)
+    const score = average(scores)
     return score
 }
 
