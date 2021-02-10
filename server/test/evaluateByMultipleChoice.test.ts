@@ -81,4 +81,12 @@ describe("evaluateByMultipleChoice", () => {
 
         expect(evaluateGroupByMultipleChoice(registrations)).toEqual(0.5)
     })
+
+    it("returns 0 when the group has only one person", () => {
+        const registrations = [
+            createFakeRegistration([["firstChoice", "secondChoice"], ["firstChoice", "secondChoice"]])
+        ]
+
+        expect(evaluateGroupByMultipleChoice(registrations)).toEqual(0)
+    })
 })
