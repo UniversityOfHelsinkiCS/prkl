@@ -65,6 +65,10 @@ npm run test:dev
 
 This command configures Cypress and our tests to use different URL's for client and server requests, enabling you to take advantage of hotloading on both sides of the stack when writing tests. It is recommended that you have Cypress installed globally (`npm i -g cypress`) for local development.
 
+## Backend unit tests
+
+The server has unit tests written with Jest. You can run them with `cd server` and `npm run start:test`
+
 #### Run all tests in containers (like they are run on CI)
 
 ```bash
