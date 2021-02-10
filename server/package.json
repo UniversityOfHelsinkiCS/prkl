@@ -12,7 +12,7 @@
     "build": "npx tsc",
     "start": "node dist/app.js",
     "start:prod": "NODE_ENV=production node dist/app.js",
-    "start:test": "NODE_ENV=test jest"
+    "start:test": "NODE_ENV=test jest && node dist/app.js"
   },
   "author": "",
   "license": "MIT",
