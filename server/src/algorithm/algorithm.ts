@@ -1,9 +1,9 @@
 import { Registration } from "../entities/Registration";
 import { GroupInput } from "../inputs/GroupInput";
-import * as _ from "lodash";
+import * as _ from "lodash"
 
-import evaluateGroupByMultipleChoice from "./evaluators/evaluateByMultipleChoice";
-import evaluateGroupByWorkingHours from "./evaluators/evaluateByWorkingHours";
+import evaluateGroupByMultipleChoice from "./evaluators/evaluateByMultipleChoice"
+import evaluateGroupByWorkingHours from './evaluators/evaluateByWorkingHours';
 
 export type Algorithm = (targetGroupSize: number, registrations: Registration[]) => GroupInput[]
 
@@ -18,8 +18,10 @@ const sum = (arr: number[]) => arr.reduce((sum, val) => sum + val, 0)
 
 // PSEUDOCODE
 
+
 const EVALUATORS = [
-    [evaluateGroupByMultipleChoice, evaluateGroupByWorkingHours]
+    [evaluateGroupByMultipleChoice, 0.5],
+    [evaluateGroupByWorkingHours, 0.5]
 ]
 
 const ITERATIONS = 200
@@ -28,37 +30,13 @@ const scoreGrouping = (grouping: Grouping) => {
     return sum(grouping.map(evaluateGroupByWorkingHours))
 }
 
-// TODO: refactoring
-const scoreGroupingByChoices = (grouping: Grouping) => {
-    return sum(grouping.map(evaluateGroupByMultipleChoice))
-}
-
-// TODO: refactoring
-export const formGroupsByMultiple: Algorithm = (targetGroupSize: number, registrations: Registration[]): GroupInput[] => {
-    let grouping: Group[] = createRandomGrouping(targetGroupSize, registrations)
-    let score = scoreGroupingByChoices(grouping)
-
-    for (let i = 0; i < ITERATIONS; i++) {
-        const newGrouping = mutateGrouping(grouping)
-
-        if (scoreGroupingByChoices(newGrouping) > score) {
-            score = scoreGroupingByChoices(newGrouping)
-            grouping = newGrouping
-        }
-    }
-
-    console.log("Final grouping score: " + score)
-
-    return grouping.map(group => ({userIds: group.map(registration => registration.student.id)}) as GroupInput)
-}
-
 export const formGroups: Algorithm = (targetGroupSize: number, registrations: Registration[]): GroupInput[] => {
     let grouping: Group[] = createRandomGrouping(targetGroupSize, registrations)
     let score = scoreGrouping(grouping)
 
     for (let i = 0; i < ITERATIONS; i++) {
         const newGrouping = mutateGrouping(grouping)
-
+        
         if (scoreGrouping(newGrouping) > score) {
             score = scoreGrouping(newGrouping)
             grouping = newGrouping
@@ -73,6 +51,19 @@ export const formGroups: Algorithm = (targetGroupSize: number, registrations: Re
 const createRandomGrouping = (targetGroupSize: number, registrations: Registration[]) => {
     const shuffled = _.shuffle(registrations)
     const groups = _.chunk(shuffled, targetGroupSize)
+    const leftOverGroup = groups[groups.length - 1]
+    if (leftOverGroup.length <= groups.length && targetGroupSize - leftOverGroup.length > 1) {
+        return groups.slice(0, groups.length - 1).map(
+            (group, index) => {
+                if (index < leftOverGroup.length) {
+                    return group.concat(leftOverGroup[index])
+                } else {
+                    return group
+                }
+            }
+        )
+    }
+
     return groups
 }
 
