@@ -15,13 +15,13 @@ export const combinationsOfTwo = (arr: any[]): [any, any][] => {
 }
 
 const scorePair = (pair: [Registration, Registration]): number => {
-    const answers = _.map(pair, 
-        registration => 
+    const answers = _.map(pair,
+        registration =>
 
             _.flatMap(registration.questionAnswers.filter(answer => answer.question.questionType === "multipleChoice"),
                 answer => _.map(answer.answerChoices,
                     choice => ([answer.questionId, choice.id, answer.question.content, choice.content]))))
-        
+
     const answerCount = answers[0].length + answers[1].length
     const sameAnswerCount = _.intersectionWith(answers[0], answers[1], _.isEqual).length * 2
 
@@ -29,7 +29,6 @@ const scorePair = (pair: [Registration, Registration]): number => {
 }
 
 const evaluateGroupByMultipleChoice: Evaluator = (group: Group) => {
-
     if (group.length === 1) {
         return 0;
     }

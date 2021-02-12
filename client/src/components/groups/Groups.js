@@ -59,7 +59,7 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
     const newGroupMsgs = [ ...groupMessages ];
     newGroupMsgs.push('');
     setGroupMessages(newGroupMsgs);
-    
+
     const newGroupNames = [ ...groupNames ];
     newGroupNames.push(newGroupName);
     setGroupNames(newGroupNames);
@@ -85,7 +85,6 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
     const newShowGroups = [...showGroupTimes];
     newShowGroups.splice(index, 1);
     setShowGroupTimes(newShowGroups);
-    
     setGroupsUnsaved(true);
   };
 
@@ -112,7 +111,7 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
   };
 
   const swapElements = (fromIndex, toIndex, fromTable, toTable) => {
-    if (fromTable == toTable) {
+    if (fromTable === toTable) {
       return;
     }
     const newGroups = _.cloneDeep(groups);
@@ -156,15 +155,15 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
       ) : (
         <div>
           {groups.map((grop, tableIndex) => {
-            
+
             return (
             // eslint-disable-next-line react/no-array-index-key
             <Segment.Group data-cy="group-container" key={`Group-${tableIndex}`}>
               <Segment>
-                <Popup 
+                <Popup
                   data-cy="group-name-popup"
                   content={
-                  <input 
+                  <input
                     data-cy="group-name-input"
                     value={groupNames[tableIndex] || ''}
                     onChange={e => handleGroupNameChange(e, tableIndex)}
@@ -189,7 +188,7 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
                   attached="top"
                 >
 
-                  <FormattedMessage id="groups.title" /> 
+                  <FormattedMessage id="groups.title" />
                   {tableIndex + 1}
                 </Label>*/}
                 <Header style={{marginBottom: 5}} as="h5">Message for the group:</Header>
@@ -230,8 +229,8 @@ export default ({ course, regByStudentId, groupNames, setGroupNames, groupMessag
                         index={rowIndex}
                         tableIndex={tableIndex}
                       >
-                        <Popup 
-                          content={() => popupTimesDisplay(student)} 
+                        <Popup
+                          content={() => popupTimesDisplay(student)}
                           trigger={
                           <Table.Cell>{`${student.firstname} ${student.lastname}`}</Table.Cell>
                           }
