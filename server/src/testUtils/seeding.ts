@@ -1,12 +1,12 @@
 import { getConnection, getRepository } from "typeorm";
 import { Request, Response } from "express";
 import { plainToClass } from "class-transformer";
-import userData from "../../data/users";
-import demoUserData from "../../data/demoUsers";
+import userData from "~/../../data/users";
+import demoUserData from "~/../../data/demoUsers";
 import { User } from "../entities/User";
 import { UserInput } from "../inputs/UserInput";
-import courseData from "../../data/courses";
-import demoCourseData from "../../data/demoCourses";
+import courseData from "~/../../data/courses";
+import demoCourseData from "~/../../data/demoCourses";
 import { Course } from "../entities/Course";
 import { CourseInput } from "../inputs/CourseInput";
 
@@ -14,7 +14,7 @@ import { CourseInput } from "../inputs/CourseInput";
  * Seed an empty database with mock data from `../../data`.
  */
 const seed = async (): Promise<void> => {
-  console.log(userData);
+  console.log("Userdata in seeding: ", userData);
   const userRepo = getRepository(User);
   const users = userData.map(user => userRepo.create(plainToClass(UserInput, user)));
   await userRepo.save(users);
@@ -81,7 +81,7 @@ export default (router): void => {
   });
 
   router.get("/seed", async (req: Request, res: Response) => {
-		try {
+    try {
       await reset();
       await seed();
     } catch (error) {

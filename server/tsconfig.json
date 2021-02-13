@@ -64,6 +64,5 @@
     "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
-  },
-  "exclude": ["test/*.ts"]
+  }
 }

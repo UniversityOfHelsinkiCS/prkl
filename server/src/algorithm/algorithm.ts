@@ -1,9 +1,9 @@
 import { Registration } from "../entities/Registration";
 import { GroupInput } from "../inputs/GroupInput";
-import * as _ from "lodash";
+import * as _ from "lodash"
 
-import evaluateGroupByMultipleChoice from "./evaluators/evaluateByMultipleChoice";
-import evaluateGroupByWorkingHours from "./evaluators/evaluateByWorkingHours";
+import evaluateGroupByMultipleChoice from "./evaluators/evaluateByMultipleChoice"
+import evaluateGroupByWorkingHours from './evaluators/evaluateByWorkingHours';
 
 export type Algorithm = (targetGroupSize: number, registrations: Registration[]) => GroupInput[];
 
@@ -50,10 +50,23 @@ const scoreGroupingByChoices = (grouping: Grouping) => {
 };
 
 const createRandomGrouping = (targetGroupSize: number, registrations: Registration[]) => {
-  const shuffled = _.shuffle(registrations);
-  const groups = _.chunk(shuffled, targetGroupSize);
-  return groups;
-};
+    const shuffled = _.shuffle(registrations)
+    const groups = _.chunk(shuffled, targetGroupSize)
+    const leftOverGroup = groups[groups.length - 1]
+    if (leftOverGroup.length <= groups.length && targetGroupSize - leftOverGroup.length > 1) {
+        return groups.slice(0, groups.length - 1).map(
+            (group, index) => {
+                if (index < leftOverGroup.length) {
+                    return group.concat(leftOverGroup[index])
+                } else {
+                    return group
+                }
+            }
+        )
+    }
+
+    return groups
+}
 
 const mutateGrouping = (grouping: Grouping) => {
   if (grouping.length < 2) {
@@ -104,6 +117,7 @@ export const formGroupsByMultiple: Algorithm = (targetGroupSize: number, registr
       grouping = newGrouping;
     }
   }
+
 
   console.log("Final grouping score: " + score);
   return grouping.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput));

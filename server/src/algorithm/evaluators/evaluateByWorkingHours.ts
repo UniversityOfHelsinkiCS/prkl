@@ -19,7 +19,7 @@ const evaluateByWorkingHours: Evaluator = (group: Group): number => {
     console.log('scores:', scores)
     const score = scores.reduce((sum, val) => sum + val, 0)
     return score
-} 
+}
 
 const scorePair = (pair: [Registration, Registration]): number => {
 
@@ -48,12 +48,12 @@ const scorePair = (pair: [Registration, Registration]): number => {
                 addMissingHoursBetweenStartAndEnd(list[i], times);
             } else {
                 list[i].times.push(times)
-            }            
+            }
         }
     }
 
-    console.log('1: ',pairOneWorkingHours.times.length, pairOneWorkingHours.times)
-    console.log('2: ',pairTwoWorkingHours.times.length, pairTwoWorkingHours.times);
+    // console.log('1: ',pairOneWorkingHours.times.length, pairOneWorkingHours.times)
+    // console.log('2: ',pairTwoWorkingHours.times.length, pairTwoWorkingHours.times);
 
     let result = 0;
     for (const pairOne of pairOneWorkingHours.times) {
@@ -65,13 +65,17 @@ const scorePair = (pair: [Registration, Registration]): number => {
             }
         }
     }
+
     console.log('RESULT: ' , result)
+
     if (Math.min(pairOneWorkingHours.times.length, pairTwoWorkingHours.times.length) !== 0) {
         result = result / Math.min(pairOneWorkingHours.times.length, pairTwoWorkingHours.times.length);
     } else {
         result = 0;
     }
+
     console.log('RESULT: ' , result)
+
     return result;
 }
 
