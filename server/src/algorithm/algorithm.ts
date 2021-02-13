@@ -117,7 +117,7 @@ export const formGroupsByMultiple: Algorithm = (targetGroupSize: number, registr
       grouping = newGrouping;
     }
   }
-  
+
 
   console.log("Final grouping score: " + score);
   return grouping.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput));
