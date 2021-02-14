@@ -14,7 +14,7 @@ export const combinationsOfTwo = (arr: any[]): [any, any][] => {
     return combinations
 }
 
-const scorePair = (pair: [Registration, Registration]): number => {
+export const multipleScorePair = (pair: [Registration, Registration]): number => {
     const answers = _.map(pair,
         registration =>
 
@@ -34,7 +34,7 @@ const evaluateGroupByMultipleChoice: Evaluator = (group: Group) => {
     }
 
     const uniquePairs = combinationsOfTwo(group)
-    const scores = uniquePairs.map(scorePair)
+    const scores = uniquePairs.map(multipleScorePair)
     const score = average(scores)
     return score
 }

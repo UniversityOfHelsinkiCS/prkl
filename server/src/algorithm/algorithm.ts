@@ -4,10 +4,13 @@ import * as _ from "lodash";
 
 import evaluateGroupByMultipleChoice from "./evaluators/evaluateByMultipleChoice";
 import evaluateGroupByWorkingHours from "./evaluators/evaluateByWorkingHours";
+import evaluateBoth from "./evaluators/bothEvaluators";
+
+import { performance } from "perf_hooks";
 
 export type Algorithm = (targetGroupSize: number, registrations: Registration[]) => GroupInput[];
 
-export type Evaluator = (group: Group) => number;
+export type Evaluator = (group: Group, start, end) => number;
 
 export type Group = Registration[];
 
@@ -33,15 +36,15 @@ const EVALUATORS = [
   },
 ];
 
-const ITERATIONS = 100;
+const ITERATIONS = 10000;
+
+const scoreBoth = (grouping: Grouping) => {
+    return sum(grouping.map(evaluateBoth));
+  };
 
 // Goes through both evaluators with multipliers
 const scoreGrouping = (grouping: Grouping) => {
-  return sum(grouping.map(group =>
-            sum(EVALUATORS.map(evaluator =>
-                evaluator.evaluate(group) * evaluator.multiply)
-            ))
-         );
+    return sum(grouping.map(evaluateGroupByWorkingHours));
 };
 
 // Only multiple-choice-evaluating
@@ -75,21 +78,44 @@ const mutateGrouping = (grouping: Grouping) => {
 // Uses both evaluators.
 export const combinedAlgo: Algorithm = (targetGroupSize: number, registrations: Registration[]): GroupInput[] => {
   let grouping: Group[] = createRandomGrouping(targetGroupSize, registrations);
-  let score = scoreGrouping(grouping);
+  let score = scoreBoth(grouping);
 
+  const times = [];
   for (let i = 0; i < ITERATIONS; i++) {
+ //   const t0 = performance.now();
     const newGrouping = mutateGrouping(grouping);
-    const newScore = scoreGrouping(newGrouping);
+    const newScore = scoreBoth(newGrouping);
 
     if (newScore > score) {
       score = newScore;
       grouping = newGrouping;
     }
+  //  const t1 = performance.now();
+    times.push(newScore)
+ //   console.log('aikaa meni: ',(t1 - t0) / 1000);
   }
-
+  const combalgo = times.reduce((sum, val) => sum + val, 0)
+  console.log('combinedAlgo ', combalgo)
   console.log("Final grouping score: ", score);
   return grouping.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput));
 };
+
+export const formGroupsByWorkingTime: Algorithm = (targetGroupSize: number, registrations: Registration[]): GroupInput[] => {
+    let grouping: Group[] = createRandomGrouping(targetGroupSize, registrations);
+    let score = scoreGroupingByChoices(grouping);
+    let topScore = 0;
+    for (let i = 0; i < ITERATIONS; i++) {
+      const newGrouping = mutateGrouping(grouping);
+      score = scoreGrouping(newGrouping);
+      if (score > topScore) {
+        topScore = score;
+        grouping = newGrouping;
+      }
+    }
+  
+    console.log("Final grouping score: " + score);
+    return grouping.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput));
+  };
 
 // Based solely on given single- / multiple-choice-answers
 export const formGroupsByMultiple: Algorithm = (targetGroupSize: number, registrations: Registration[]): GroupInput[] => {

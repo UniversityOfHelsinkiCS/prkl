@@ -5,7 +5,7 @@ import { User } from "../entities/User";
 import { Registration } from "../entities/Registration";
 import { GroupListInput } from "../inputs/GroupListInput";
 import { STAFF, ADMIN } from "../utils/userRoles";
-import { formGroupsByMultiple } from "../algorithm/algorithm"; // new new algorithm
+import { formGroupsByMultiple, formGroupsByWorkingTime } from "../algorithm/algorithm"; // new new algorithm
 import { combinedAlgo } from "../algorithm/algorithm";
 //import { formGroups } from "../algorithm/index"; old algorithm
 import { Course } from "../entities/Course";
