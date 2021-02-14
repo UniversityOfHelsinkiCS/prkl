@@ -288,22 +288,6 @@ export const GENERATE_GROUPS = gql`
   }
 `;
 
-// TODO: Refactor to use only the query above.
-export const GENERATE_GROUPS_BY_MULTIPLE = gql`
-  mutation createSampleGroupsByMultiple($data: GroupListInput!) {
-    createSampleGroupsByMultiple(data: $data) {
-      courseId
-      students {
-        id
-        firstname
-        lastname
-        studentNo
-        email
-      }
-    }
-  }
-`;
-
 export const SAVE_GROUPS = gql`
   mutation saveGeneratedGroups($data: GroupListInput!) {
     saveGeneratedGroups(data: $data) {

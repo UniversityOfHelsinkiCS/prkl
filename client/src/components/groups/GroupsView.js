@@ -3,18 +3,16 @@ import { useStore } from 'react-hookstore';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Form, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { GENERATE_GROUPS, GENERATE_GROUPS_BY_MULTIPLE, SAVE_GROUPS, COURSE_GROUPS, PUBLISH_COURSE_GROUPS } from '../../GqlQueries';
+import { GENERATE_GROUPS, SAVE_GROUPS, COURSE_GROUPS, PUBLISH_COURSE_GROUPS } from '../../GqlQueries';
 import Groups from './Groups';
 import userRoles from '../../util/userRoles';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import SuccessMessage from '../ui/SuccessMessage';
 import { Prompt } from 'react-router-dom';
 import _ from 'lodash';
-import { SINGLE_CHOICE, MULTI_CHOICE } from '../../util/questionTypes';
 
 export default ({ course, registrations, regByStudentId }) => {
   const [generateGroups] = useMutation(GENERATE_GROUPS);
-  const [generateGroupsByMultiple] = useMutation(GENERATE_GROUPS_BY_MULTIPLE);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
 
@@ -117,30 +115,6 @@ export default ({ course, registrations, regByStudentId }) => {
       }
   };
 
-  // Testing the new multiple-choice algorithm
-  // FIXME: Refactor to only use the function above.
-  const handleSampleMultipleGroupCreation = async () => {
-    const minGroupSz = minGroupSize ? minGroupSize : 1;
-    const variables = { data: { courseId: course.id, minGroupSize: minGroupSz } };
-    try {
-      const res = await generateGroupsByMultiple({
-        variables,
-      });
-      const mappedGroups = res.data.createSampleGroupsByMultiple.map((e, i) => {
-        return {
-          groupId: '',
-          students: e.students,
-          groupMessage: '',
-          groupName: `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${i + 1}`,
-        };
-      });
-      handleGroupsMessagesAndNames(sortGroups(mappedGroups, groupSorting));
-      setGroupsUnsaved(true);
-    } catch (groupError) {
-      console.log('error: ', groupError);
-    }
-  };
-
   const saveSampleGroups = async () => {
     // Known bug while saving groups: The current user that does the saving,
     // does not get their own (if they are enrolled to a course & assigned to a group)
@@ -197,10 +171,6 @@ export default ({ course, registrations, regByStudentId }) => {
     handleGroupsMessagesAndNames(sortGroups(groups, value));
     setGroupsUnsaved(false);
   }
-
-  const courseHasMultipleChoices = course.questions.some(q =>
-    q.questionType === MULTI_CHOICE || q.questionType === SINGLE_CHOICE
-  );
 
   const sortOptions = [
     {
@@ -286,16 +256,6 @@ export default ({ course, registrations, regByStudentId }) => {
             >
               <FormattedMessage id="groupsView.generateGroups" />
             </ConfirmationButton>
-            {courseHasMultipleChoices &&
-            <ConfirmationButton
-              onConfirm={handleSampleMultipleGroupCreation}
-              modalMessage={ intl.formatMessage({ id: 'groupsView.confirmGroupGenration' }) }
-              buttonDataCy="create-groups-bymultiple-submit"
-              color="yellow"
-            >
-              <FormattedMessage id="groupsView.generateGroupsByMultiple" />
-            </ConfirmationButton>
-            }
 
             {groupsUnsaved &&
             <>
