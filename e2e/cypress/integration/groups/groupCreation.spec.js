@@ -10,11 +10,10 @@ describe('Group creation', () => {
   describe('teacher', () => {
     const course = courses[3];
 
-    it('Can create and save groups based on working hours', () => {
+    it('Can create and save groups', () => {
       // Do not save first on purpose
       cy.visit(`/course/${course.id}`);
       cy.get('[data-cy="manage-groups-button"]').click();
-      cy.get('[data-cy="create-groups-bymultiple-submit"]').should('not.exist');
       cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       // Refresh to check that no info was stored
@@ -35,33 +34,6 @@ describe('Group creation', () => {
       cy.get('table').contains(users[0].firstname);
       cy.get('table').contains(users[3].firstname);
       cy.contains('No groups generated').should('not.exist');
-    });
-
-    // Testing the multiple-choice-button via same method as working-hours-button:
-    it('Can create and save groups based on multiple choices', () => {
-      cy.visit(`/course/${course.id}`);
-      cy.get('[data-cy="manage-groups-button"]').click();
-      cy.get('[data-cy="create-groups-bymultiple-submit"]').should('not.exist');
-
-      // Inside a course which has implemented multiple choice questions:
-      cy.visit(`/course/${courses[10].id}`);
-      cy.get('[data-cy="manage-groups-button"]').click();
-      cy.get('[data-cy="create-groups-bymultiple-submit"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.reload();
-      cy.get('[data-cy="manage-groups-button"]').click();
-      cy.get('table').should('not.exist');
-      cy.contains('No groups generated');
-      cy.get('[data-cy="create-groups-bymultiple-submit"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.get('[data-cy="save-groups-button"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.reload();
-      cy.get('[data-cy="manage-groups-button"]').click();
-      cy.get('table').contains(users[0].firstname);
-      cy.get('table').contains(users[3].firstname);
-      cy.contains('No groups generated').should('not.exist');
-
     });
 
     it('Teacher can name a group', () => {
