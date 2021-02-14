@@ -162,6 +162,11 @@ export default {
     'groups.addGroupButton': 'Add new group',
     'groups.published': 'Your group has been published:',
     'groups.notPublished': 'Groups are coming soon after enrollment deadline.',
+    'groups.switchGroupButton': 'Move to another group',
+    'groups.switchGroupLabel': 'Move student to another group',
+    'groups.message': 'Message for the group:',
+    'groups.messageInfo': 'Use this to send a message to members of this group...',
+    'groups.students': 'Students in this group:',
 
     'groupsView.noRegistrations': 'No registrations',
     'groupsView.matchingTimes': 'Matching times',
@@ -170,7 +175,7 @@ export default {
     'groupsView.confirmGroupGenration':
       'Are you sure you want to generate new groups?',
     'groupsView.confirmGroupsSave': 'Save and overwrite existing groups?',
-    'groupsView.generateGroups': 'Generate new groups by working hours',
+    'groupsView.generateGroups': 'Generate new groups (hours+answers)',
     'groupsView.generateGroupsByMultiple': 'Generate new groups by multiple choices',
     'groupsView.saveGroups': 'Save groups',
     'groupsView.unsavedGroupsInfo': 'Remember to save groups!',
