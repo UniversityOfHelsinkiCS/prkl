@@ -1,7 +1,7 @@
 const devMode = process.env.NODE_ENV === "development";
 const testMode = process.env.NODE_ENV === "test";
 
-const prefix = devMode ? "src" : "dist";
+const prefix = devMode ? "src" : "dist/src";
 const ext = devMode ? "ts" : "js";
 
 const dbHost = testMode ? "test-db" : "db";
