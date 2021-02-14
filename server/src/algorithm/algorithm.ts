@@ -10,7 +10,7 @@ import { performance } from "perf_hooks";
 
 export type Algorithm = (targetGroupSize: number, registrations: Registration[]) => GroupInput[];
 
-export type Evaluator = (group: Group, start, end) => number;
+export type Evaluator = (group: Group) => number;
 
 export type Group = Registration[];
 
@@ -80,9 +80,7 @@ export const combinedAlgo: Algorithm = (targetGroupSize: number, registrations: 
   let grouping: Group[] = createRandomGrouping(targetGroupSize, registrations);
   let score = scoreBoth(grouping);
 
-  const times = [];
   for (let i = 0; i < ITERATIONS; i++) {
- //   const t0 = performance.now();
     const newGrouping = mutateGrouping(grouping);
     const newScore = scoreBoth(newGrouping);
 
@@ -90,12 +88,7 @@ export const combinedAlgo: Algorithm = (targetGroupSize: number, registrations: 
       score = newScore;
       grouping = newGrouping;
     }
-  //  const t1 = performance.now();
-    times.push(newScore)
- //   console.log('aikaa meni: ',(t1 - t0) / 1000);
   }
-  const combalgo = times.reduce((sum, val) => sum + val, 0)
-  console.log('combinedAlgo ', combalgo)
   console.log("Final grouping score: ", score);
   return grouping.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput));
 };

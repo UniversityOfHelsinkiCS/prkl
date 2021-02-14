@@ -20,7 +20,7 @@ const evaluateByWorkingHours: Evaluator = (group: Group): number => {
 //    console.log('scores:', scores)
     const score = scores.reduce((sum, val) => sum + val, 0)
     return score
-} 
+}
 
 export const hoursScorePair = (pair: [Registration, Registration]): number => {
   //  console.log('Alkaa uusi hyypiö');
@@ -71,7 +71,6 @@ export const hoursScorePair = (pair: [Registration, Registration]): number => {
             })
         }
     }
-
 //    console.log('total hours:', 'one:', pairOneTotalHours.length, 'two:', pairTwoTotalHours.length)
 //    console.log('result:', result)
     if (Math.min(pairOneTotalHours.length, pairTwoTotalHours.length) !==0) {
@@ -79,7 +78,6 @@ export const hoursScorePair = (pair: [Registration, Registration]): number => {
     } else {
         result = 0;
     }
-
     return result;
 }
 
