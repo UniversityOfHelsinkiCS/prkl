@@ -36,7 +36,7 @@ const EVALUATORS = [
   },
 ];
 
-const ITERATIONS = 10000;
+const ITERATIONS = 2000;
 
 const scoreBoth = (grouping: Grouping) => {
     return sum(grouping.map(evaluateBoth));
@@ -95,7 +95,7 @@ export const combinedAlgo: Algorithm = (targetGroupSize: number, registrations: 
 
 export const formGroupsByWorkingTime: Algorithm = (targetGroupSize: number, registrations: Registration[]): GroupInput[] => {
     let grouping: Group[] = createRandomGrouping(targetGroupSize, registrations);
-    let score = scoreGroupingByChoices(grouping);
+    let score = scoreGrouping(grouping);
     let topScore = 0;
     for (let i = 0; i < ITERATIONS; i++) {
       const newGrouping = mutateGrouping(grouping);
