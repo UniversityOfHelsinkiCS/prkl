@@ -164,6 +164,7 @@ export default {
     'groups.notPublished': 'Groups are coming soon after enrollment deadline.',
     'groups.switchGroupButton': 'Move to another group',
     'groups.switchGroupLabel': 'Move student to another group',
+    'groups.removeFromGroupLabel': 'Remove student from group',
     'groups.message': 'Message for the group:',
     'groups.messageInfo': 'Use this to send a message to members of this group...',
     'groups.students': 'Students in this group:',
@@ -172,7 +173,7 @@ export default {
     'groupsView.matchingTimes': 'Matching times',
     'groupsView.maxGroupSize': 'Maximum group size',
     'groupsView.targetGroupSize': 'Target group size',
-    'groupsView.confirmGroupGenration':
+    'groupsView.confirmGroupGeneration':
       'Are you sure you want to generate new groups?',
     'groupsView.confirmGroupsSave': 'Save and overwrite existing groups?',
     'groupsView.generateGroups': 'Generate new groups',
@@ -187,6 +188,7 @@ export default {
     'groupsView.publishedGroupsInfo': 'Groups have been published, future changes are visible immediately to students.',
     'groupsView.defaultGroupNamePrefix': 'Group',
     'groupsView.groupListingOrder': 'Groups listing order',
+    'groupsView.showGrouplessStudents': 'Show groupless students',
 
     'util.notAllowed': 'You do not have the required roles to access this content.',
   },
