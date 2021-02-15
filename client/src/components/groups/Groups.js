@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
-import { Table, Header, List, Button, Segment, Popup, Input, Label, Form } from 'semantic-ui-react';
+import { Table, Header, List, Button, Segment, Popup, Input, Label, Form, Icon } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import _ from 'lodash';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
@@ -19,6 +19,7 @@ export default ({
   const [privacyToggle] = useStore('toggleStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [groups, setGroups] = useStore('groupsStore');
+  const [grouplessStudents, setGroupless] = useStore('grouplessStore');
 
   const [showGroupTimes, setShowGroupTimes] = useState([]);
   const [groupTimesVisible, setGroupTimesVisible] = useState([]);
@@ -139,6 +140,13 @@ export default ({
     setGroupsUnsaved(true);
   };
 
+  const removeStudentFromGroup = (fromTable, fromIndex) => {
+    const newGroups = _.cloneDeep(groups);
+    newGroups[fromTable].students.splice(fromIndex, 1);
+    setGroups(newGroups);
+    setGroupsUnsaved(true);
+  }
+
   const handleShowGroupTimesClick = index => {
     const newGroupTimesVisible = [...groupTimesVisible];
     newGroupTimesVisible[index] = !groupTimesVisible[index];
@@ -181,7 +189,7 @@ export default ({
         </div>
       ) : (
         <div>
-          {groups.map((grop, tableIndex) => {
+          {groups.map((group, tableIndex) => {
             return (
               // eslint-disable-next-line react/no-array-index-key
               <Segment.Group data-cy="group-container" key={`Group-${tableIndex}`}>
@@ -233,6 +241,7 @@ export default ({
                     <FormattedMessage id="groups.students" />
                   </Header>
                   <Table singleLine fixed>
+
                     <Table.Header>
                       <DraggableRow action={swapElements} index={0} tableIndex={tableIndex}>
                         <Table.HeaderCell>
@@ -251,17 +260,19 @@ export default ({
                             </Table.HeaderCell>
                           ) : null
                         )}
-                        <Table.HeaderCell></Table.HeaderCell>
+                        <Table.HeaderCell/>
                       </DraggableRow>
                     </Table.Header>
+
                     <Table.Body>
-                      {grop.students.map((student, rowIndex) => (
+                      {group.students.map((student, rowIndex) => (
                         <DraggableRow
                           key={student.id}
                           action={swapElements}
                           index={rowIndex}
                           tableIndex={tableIndex}
                         >
+                        
                           <Popup
                             content={() => popupTimesDisplay(student)}
                             trigger={
@@ -279,6 +290,9 @@ export default ({
                           {regByStudentId[student.studentNo]?.questionAnswers.map(qa =>
                             questionSwitch(qa)
                           )}
+
+                          <Table.Cell> 
+
                           <Popup
                             content={
                               <Form>
@@ -296,15 +310,26 @@ export default ({
                             }
                             on="click"
                             trigger={
-                              <Table.Cell>
                                 <Button>
                                   <FormattedMessage id="groups.switchGroupButton" />
                                 </Button>
-                              </Table.Cell>
-                            }
-                          />
+                            }/>
+
+                            <Popup
+                              content={intl.formatMessage({id: 'groups.removeFromGroupLabel'})}
+                              trigger={
+                                <Button 
+                                  icon='delete' 
+                                  color='red'
+                                  onClick={(e) => removeStudentFromGroup(tableIndex, rowIndex)}
+                                /> 
+                              }
+                            />  
+
+                            </Table.Cell>                                                             
                         </DraggableRow>
                       ))}
+
                     </Table.Body>
                   </Table>
 
@@ -326,14 +351,14 @@ export default ({
                       <List.Item>
                         <HourDisplay
                           header="Combined"
-                          groupId={grop.id}
-                          students={grop.students.length}
+                          groupId={group.id}
+                          students={group.students.length}
                           times={count(
-                            grop.students.map(student => regByStudentId[student.studentNo])
+                            group.students.map(student => regByStudentId[student.studentNo])
                           )}
                         />
                       </List.Item>
-                      {grop.students.map(student => {
+                      {group.students.map(student => {
                         regByStudentId[student.studentNo].questionAnswers.map(qa =>
                           questionSwitch(qa)
                         );

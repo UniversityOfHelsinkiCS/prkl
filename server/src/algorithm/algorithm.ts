@@ -18,7 +18,7 @@ export type Grouping = Group[];
 
 const sum = (arr: number[]) => arr.reduce((sum, val) => sum + val, 0);
 
-const ITERATIONS = 10000;
+//const ITERATIONS = 10000;
 
 const scoreBoth = (grouping: Grouping) => {
   return sum(grouping.map(evaluateBoth));
@@ -62,7 +62,7 @@ export const formGroups: Algorithm = (targetGroupSize: number, registrations: Re
   let grouping: Group[] = createRandomGrouping(targetGroupSize, registrations);
   let score = scoreBoth(grouping);
 
-  for (let i = 0; i < ITERATIONS; i++) {
+  for (let i = 0; i < Math.pow(registrations.length, 2); i++) {
     const newGrouping = mutateGrouping(grouping);
     const newScore = scoreBoth(newGrouping);
 

@@ -1,3 +1,5 @@
+// FIXME: This data is coupled with mockHeaders.js in client code.
+
 const { v4: uuidv4 } = require('uuid');
 
 const defaultUsers = [
@@ -52,4 +54,4 @@ const generateUsers = n =>
       role: 1,
     }));
 
-module.exports = defaultUsers.concat(generateUsers(5));
+module.exports = defaultUsers.concat(generateUsers(100));

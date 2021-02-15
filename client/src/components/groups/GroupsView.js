@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { Form, Loader } from 'semantic-ui-react';
+import { Form, Loader, Button } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { GENERATE_GROUPS, SAVE_GROUPS, COURSE_GROUPS, PUBLISH_COURSE_GROUPS } from '../../GqlQueries';
 import Groups from './Groups';
@@ -19,6 +19,7 @@ export default ({ course, registrations, regByStudentId }) => {
   const [groups, setGroups] = useStore('groupsStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [user] = useStore('userStore');
+  const [grouplessStudents, setGroupless] = useStore('grouplessStore');
 
   const [oldGroups, setOldGroups] = useState([]);
   const [minGroupSize, setMinGroupSize] = useState(1);
@@ -27,6 +28,8 @@ export default ({ course, registrations, regByStudentId }) => {
   const [groupMessages, setGroupMessages] = useState(['']);
   const [groupNames, setGroupNames] = useState(['']);
   const [groupSorting, setGroupSorting] = useState('nameAscending');
+  
+  const [registrationsWithoutGroups, setregistrationsWithoutGroups] = useState(true)
 
   const intl = useIntl();
 
@@ -42,6 +45,13 @@ export default ({ course, registrations, regByStudentId }) => {
   useEffect(() => {
     setGroupsPublished(course.groupsPublished);
   }, [course]);
+
+  // groupless students update
+  /*useEffect(() => {
+    let grouplessStudents = [];
+    setGroupless(grouplessStudents);
+  }, [registrationsWithoutGroups])
+  */
 
   useEffect(() => {
     if (!loading && data !== undefined) {
@@ -250,7 +260,7 @@ export default ({ course, registrations, regByStudentId }) => {
             </Form.Group>
             <ConfirmationButton
               onConfirm={handleSampleGroupCreation}
-              modalMessage={ intl.formatMessage({ id: 'groupsView.confirmGroupGenration' }) }
+              modalMessage={ intl.formatMessage({ id: 'groupsView.confirmGroupGeneration' }) }
               buttonDataCy="create-groups-submit"
               color="orange"
             >
@@ -283,6 +293,16 @@ export default ({ course, registrations, regByStudentId }) => {
             >
               <FormattedMessage id='groupsView.publishGroupsBtn' />
             </ConfirmationButton>}
+
+            {registrationsWithoutGroups && 
+              <Button
+                //onConfirm={showStudentsWithoutGroups}
+                //buttonDataCy="show-groupless-button"
+                color='grey'
+              >
+                <FormattedMessage id='groupsView.showGrouplessStudents' />
+            </Button>}
+
           </Form>
           <p />
 
