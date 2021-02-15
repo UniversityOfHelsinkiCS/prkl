@@ -28,7 +28,6 @@ export default ({ course, registrations, regByStudentId }) => {
   const [groupMessages, setGroupMessages] = useState(['']);
   const [groupNames, setGroupNames] = useState(['']);
   const [groupSorting, setGroupSorting] = useState('nameAscending');
-  
   const [registrationsWithoutGroups, setregistrationsWithoutGroups] = useState(true)
 
   const intl = useIntl();
@@ -46,9 +45,12 @@ export default ({ course, registrations, regByStudentId }) => {
     setGroupsPublished(course.groupsPublished);
   }, [course]);
 
-  // groupless students update
-  /*useEffect(() => {
+  /* groupless students update
+  useEffect(() => {
     let grouplessStudents = [];
+    for each group
+      check if student is in any group
+      if not, add student to grouplessStudents
     setGroupless(grouplessStudents);
   }, [registrationsWithoutGroups])
   */
@@ -181,6 +183,12 @@ export default ({ course, registrations, regByStudentId }) => {
     handleGroupsMessagesAndNames(sortGroups(groups, value));
     setGroupsUnsaved(false);
   }
+  
+  /*
+  const handleShowingGrouplessStudents = () => {
+
+  }
+  */
 
   const sortOptions = [
     {
@@ -296,7 +304,7 @@ export default ({ course, registrations, regByStudentId }) => {
 
             {registrationsWithoutGroups && 
               <Button
-                //onConfirm={showStudentsWithoutGroups}
+                //onClick={showStudentsWithoutGroups}
                 //buttonDataCy="show-groupless-button"
                 color='grey'
               >

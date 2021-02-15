@@ -23,6 +23,7 @@ export default ({
 
   const [showGroupTimes, setShowGroupTimes] = useState([]);
   const [groupTimesVisible, setGroupTimesVisible] = useState([]);
+  const [registrationsWithoutGroups, setregistrationsWithoutGroups] = useState(true)
 
   const intl = useIntl();
 
