@@ -163,7 +163,7 @@ export default ({
   };
 
   const switchGroupOptions = groups.map((group, tableIndex) => ({
-    key: group.groupId,
+    key: tableIndex,
     text:
       group.groupName ||
       `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${tableIndex + 1}`,
@@ -280,6 +280,7 @@ export default ({
                             questionSwitch(qa)
                           )}
                           <Popup
+                            data-cy="student-options-popup"
                             content={
                               <Form>
                                 <Form.Field>
@@ -290,6 +291,7 @@ export default ({
                                     onChange={(e, { value }) =>
                                       handleSwitchingGroup(tableIndex, rowIndex, value)
                                     }
+                                    data-cy="switch-group-select"
                                   />
                                 </Form.Field>
                               </Form>
@@ -297,7 +299,7 @@ export default ({
                             on="click"
                             trigger={
                               <Table.Cell>
-                                <Button>
+                                <Button data-cy="switch-group-button">
                                   <FormattedMessage id="groups.switchGroupButton" />
                                 </Button>
                               </Table.Cell>
