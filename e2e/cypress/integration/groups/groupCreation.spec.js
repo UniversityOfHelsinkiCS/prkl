@@ -47,7 +47,7 @@ describe('Group creation', () => {
 
       cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(() => {
         cy.get('[data-cy="group-remove-button"]').should('not.exist');
-        cy.contains(/^Group \d$/).click(); // Regex pattern dependent on language, fix
+        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
       });
       cy.get('[data-cy="group-name-input"]').type(`{selectAll}${namedGroup}`);
       cy.get('[data-cy="save-groups-button"]').click();
@@ -67,13 +67,13 @@ describe('Group creation', () => {
 
       cy.contains(users[3].firstname).parents('[data-cy="group-container"]').within(() => {
         cy.get('[data-cy="group-remove-button"]').should('not.exist');
-        cy.contains(/^Group \d$/).click(); // Regex pattern dependent on language, fix
+        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
       });
       cy.get('[data-cy="group-name-input"]').type(`{selectAll}${emptyGroup}`);
 
       cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(() => {
         cy.get('[data-cy="group-remove-button"]').should('not.exist');
-        cy.contains(/^Group \d$/).click(); // Regex pattern dependent on language, fix
+        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
       });
       cy.get('[data-cy="group-name-input"]').type(`{selectAll}${groupToDrag}`);
 
@@ -106,13 +106,13 @@ describe('Group creation', () => {
 
       cy.contains(users[3].firstname).parents('[data-cy="group-container"]').within(() => {
         cy.get('[data-cy="group-remove-button"]').should('not.exist');
-        cy.contains(/^Group \d$/).click(); // Regex pattern dependent on language, fix
+        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
       });
       cy.get('[data-cy="group-name-input"]').type(`{selectAll}${groupToMoveFrom}`);
 
       cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(() => {
         cy.get('[data-cy="group-remove-button"]').should('not.exist');
-        cy.contains(/^Group \d$/).click(); // Regex pattern dependent on language, fix
+        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
       });
       cy.get('[data-cy="group-name-input"]').type(`{selectAll}${groupToMoveTo}`);
 
@@ -161,7 +161,7 @@ describe('Group creation', () => {
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(() => {
         cy.get('[data-cy="group-remove-button"]').should('not.exist');
-        cy.contains(/^Group \d$/).click(); // Regex pattern dependent on language, fix
+        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
       });
       cy.get('[data-cy="group-name-input"]').type(`{selectAll}${newGroupName}`);
 
@@ -200,7 +200,7 @@ describe('Group creation', () => {
       cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(() => {
-        cy.contains(/^Group \d$/).click(); // Regex pattern dependent on language, fix
+        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
       });
       cy.get('[data-cy="group-name-input"]').type(`{selectAll}${groupForDelete}`);
 

@@ -273,7 +273,7 @@ export default ({
                           index={rowIndex}
                           tableIndex={tableIndex}
                         >
-                        
+
                           <Popup
                             content={() => popupTimesDisplay(student)}
                             trigger={
@@ -292,7 +292,7 @@ export default ({
                             questionSwitch(qa)
                           )}
 
-                          <Table.Cell> 
+                          <Table.Cell>
 
                           <Popup
                             data-cy="student-options-popup"
@@ -300,13 +300,13 @@ export default ({
                               <Form>
                                 <Form.Field>
                                   <Form.Select
+                                    data-cy="switch-group-select"
                                     label={intl.formatMessage({ id: 'groups.switchGroupLabel' })}
                                     options={switchGroupOptions}
                                     defaultValue={switchGroupOptions[tableIndex].value}
                                     onChange={(e, { value }) =>
                                       handleSwitchingGroup(tableIndex, rowIndex, value)
                                     }
-                                    data-cy="switch-group-select"
                                   />
                                 </Form.Field>
                               </Form>
@@ -321,15 +321,15 @@ export default ({
                             <Popup
                               content={intl.formatMessage({id: 'groups.removeFromGroupLabel'})}
                               trigger={
-                                <Button 
-                                  icon='delete' 
+                                <Button
+                                  icon='delete'
                                   color='red'
                                   onClick={(e) => removeStudentFromGroup(tableIndex, rowIndex)}
-                                /> 
+                                />
                               }
-                            />  
+                            />
 
-                            </Table.Cell>                                                             
+                            </Table.Cell>
                         </DraggableRow>
                       ))}
 
