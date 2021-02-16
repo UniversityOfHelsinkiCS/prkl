@@ -10,11 +10,10 @@ describe('Group creation', () => {
   describe('teacher', () => {
     const course = courses[3];
 
-    it('Can create and save groups based on working hours', () => {
+    it('Can create and save groups', () => {
       // Do not save first on purpose
       cy.visit(`/course/${course.id}`);
       cy.get('[data-cy="manage-groups-button"]').click();
-      cy.get('[data-cy="create-groups-bymultiple-submit"]').should('not.exist');
       cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       // Refresh to check that no info was stored
@@ -37,33 +36,6 @@ describe('Group creation', () => {
       cy.contains('No groups generated').should('not.exist');
     });
 
-    // Testing the multiple-choice-button via same method as working-hours-button:
-    it('Can create and save groups based on multiple choices', () => {
-      cy.visit(`/course/${course.id}`);
-      cy.get('[data-cy="manage-groups-button"]').click();
-      cy.get('[data-cy="create-groups-bymultiple-submit"]').should('not.exist');
-
-      // Inside a course which has implemented multiple choice questions:
-      cy.visit(`/course/${courses[10].id}`);
-      cy.get('[data-cy="manage-groups-button"]').click();
-      cy.get('[data-cy="create-groups-bymultiple-submit"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.reload();
-      cy.get('[data-cy="manage-groups-button"]').click();
-      cy.get('table').should('not.exist');
-      cy.contains('No groups generated');
-      cy.get('[data-cy="create-groups-bymultiple-submit"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.get('[data-cy="save-groups-button"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.reload();
-      cy.get('[data-cy="manage-groups-button"]').click();
-      cy.get('table').contains(users[0].firstname);
-      cy.get('table').contains(users[3].firstname);
-      cy.contains('No groups generated').should('not.exist');
-
-    });
-
     it('Teacher can name a group', () => {
       const namedGroup = 'MyGroup';
 
@@ -73,16 +45,16 @@ describe('Group creation', () => {
       cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
-      cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(gc =>{
+      cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(() => {
         cy.get('[data-cy="group-remove-button"]').should('not.exist');
-        cy.contains(/^Group \d$/).click(); // Regex pattern dependent on language, fix
+        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
       });
       cy.get('[data-cy="group-name-input"]').type(`{selectAll}${namedGroup}`);
       cy.get('[data-cy="save-groups-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       cy.contains(namedGroup).should('exist');
-    })
+    });
 
     it('Can drag a student from group to another', () => {
       const emptyGroup = 'Emptygroup';
@@ -93,15 +65,15 @@ describe('Group creation', () => {
       cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
-      cy.contains(users[3].firstname).parents('[data-cy="group-container"]').within(gc =>{
+      cy.contains(users[3].firstname).parents('[data-cy="group-container"]').within(() => {
         cy.get('[data-cy="group-remove-button"]').should('not.exist');
-        cy.contains(/^Group \d$/).click(); // Regex pattern dependent on language, fix
+        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
       });
       cy.get('[data-cy="group-name-input"]').type(`{selectAll}${emptyGroup}`);
 
-      cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(gc =>{
+      cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(() => {
         cy.get('[data-cy="group-remove-button"]').should('not.exist');
-        cy.contains(/^Group \d$/).click(); // Regex pattern dependent on language, fix
+        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
       });
       cy.get('[data-cy="group-name-input"]').type(`{selectAll}${groupToDrag}`);
 
@@ -112,16 +84,61 @@ describe('Group creation', () => {
       cy.get('[data-cy="save-groups-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
-      cy.contains(emptyGroup).parents('[data-cy="group-container"]').within(gc => {
+      cy.contains(emptyGroup).parents('[data-cy="group-container"]').within(() => {
         cy.get('tr').should('have.length', 1);
         cy.get('[data-cy="group-remove-button"]').should('exist');
       });
 
-      cy.contains(groupToDrag).parents('[data-cy="group-container"]').within(gc => {
+      cy.contains(groupToDrag).parents('[data-cy="group-container"]').within(() => {
         cy.get('tr').should('have.length', 3);
         cy.get('[data-cy="group-remove-button"]').should('not.exist');
       });
-    })
+    });
+
+    it('Can move a student to another group using dropdown', () => {
+      const groupToMoveFrom = 'GroupToMoveFrom';
+      const groupToMoveTo = 'GroupToMoveTo';
+
+      cy.visit(`/course/${course.id}`);
+      cy.get('[data-cy="manage-groups-button"]').click();
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+      cy.contains(users[3].firstname).parents('[data-cy="group-container"]').within(() => {
+        cy.get('[data-cy="group-remove-button"]').should('not.exist');
+        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
+      });
+      cy.get('[data-cy="group-name-input"]').type(`{selectAll}${groupToMoveFrom}`);
+
+      cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(() => {
+        cy.get('[data-cy="group-remove-button"]').should('not.exist');
+        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
+      });
+      cy.get('[data-cy="group-name-input"]').type(`{selectAll}${groupToMoveTo}`);
+
+      cy.get('[data-cy="save-groups-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.wait(1000);
+
+      cy.contains(groupToMoveFrom).parents('[data-cy="group-container"]').within(() => {
+        cy.get('[data-cy="switch-group-button"]').click();
+      });
+
+      cy.get('[data-cy="switch-group-select"]')
+        .click()
+        .contains(groupToMoveTo)
+        .click();
+
+      cy.contains(groupToMoveFrom).parents('[data-cy="group-container"]').within(() => {
+        cy.get('tr').should('have.length', 1);
+        cy.get('[data-cy="group-remove-button"]').should('exist');
+      });
+
+      cy.contains(groupToMoveTo).parents('[data-cy="group-container"]').within(() => {
+        cy.get('tr').should('have.length', 3);
+        cy.get('[data-cy="group-remove-button"]').should('not.exist');
+      });
+    });
 
     it('Can edit existing groups', () => {
       cy.visit(`/course/${course.id}`);
@@ -142,9 +159,9 @@ describe('Group creation', () => {
 
       cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(gc =>{
+      cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(() => {
         cy.get('[data-cy="group-remove-button"]').should('not.exist');
-        cy.contains(/^Group \d$/).click(); // Regex pattern dependent on language, fix
+        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
       });
       cy.get('[data-cy="group-name-input"]').type(`{selectAll}${newGroupName}`);
 
@@ -158,7 +175,7 @@ describe('Group creation', () => {
       cy.get('[data-cy="back-to-info-from-groups-button"]').click();
 
       cy.get('[data-cy="show-registrations-button"]').click();
-      cy.contains(users[0].firstname).parents('[data-cy="student-registration-row"]').within(()=> {
+      cy.contains(users[0].firstname).parents('[data-cy="student-registration-row"]').within(() => {
         cy.get('[data-cy="remove-registration-button"]').click();
       });
       cy.get('[data-cy="confirmation-button-confirm"]').click();
@@ -169,7 +186,7 @@ describe('Group creation', () => {
       cy.wait(300);
       cy.contains('Testgroup').should('exist');
       cy.contains(users[0].firstname).should('not.exist');
-      cy.contains(newGroupName).parents('[data-cy="group-container"]').within(gc => {
+      cy.contains(newGroupName).parents('[data-cy="group-container"]').within(() => {
         cy.get('tr').should('have.length', 1);
         cy.get('[data-cy="group-remove-button"]').should('exist');
       });
@@ -182,8 +199,8 @@ describe('Group creation', () => {
 
       cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(gc =>{
-        cy.contains(/^Group \d$/).click(); // Regex pattern dependent on language, fix
+      cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(() => {
+        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
       });
       cy.get('[data-cy="group-name-input"]').type(`{selectAll}${groupForDelete}`);
 
@@ -195,7 +212,7 @@ describe('Group creation', () => {
       cy.get('[data-cy="back-to-info-from-groups-button"]').click();
 
       cy.get('[data-cy="show-registrations-button"]').click();
-      cy.contains(users[0].firstname).parents('[data-cy="student-registration-row"]').within(()=> {
+      cy.contains(users[0].firstname).parents('[data-cy="student-registration-row"]').within(() => {
         cy.get('[data-cy="remove-registration-button"]').click();
       });
       cy.get('[data-cy="confirmation-button-confirm"]').click();
@@ -206,7 +223,7 @@ describe('Group creation', () => {
       cy.wait(300);
       cy.contains(groupForDelete).should('exist');
       cy.contains(users[0].firstname).should('not.exist');
-      cy.contains(groupForDelete).parents('[data-cy="group-container"]').within(gc => {
+      cy.contains(groupForDelete).parents('[data-cy="group-container"]').within(() => {
         cy.get('tr').should('have.length', 1);
         cy.get('[data-cy="group-remove-button"]').click();
       });

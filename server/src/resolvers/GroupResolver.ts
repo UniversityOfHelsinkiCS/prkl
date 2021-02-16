@@ -5,8 +5,7 @@ import { User } from "../entities/User";
 import { Registration } from "../entities/Registration";
 import { GroupListInput } from "../inputs/GroupListInput";
 import { STAFF, ADMIN } from "../utils/userRoles";
-import { formGroupsByMultiple } from "../algorithm/algorithm"; // new new algorithm
-import { combinedAlgo } from "../algorithm/algorithm";
+import { formGroups } from "../algorithm/algorithm";
 //import { formGroups } from "../algorithm/index"; old algorithm
 import { Course } from "../entities/Course";
 import { Algorithm } from "../algorithm/algorithm";
@@ -82,7 +81,7 @@ export class GroupResolver {
   async createSampleGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
     const { courseId, minGroupSize } = data;
 
-    const groups = data.groups && data.groups.length > 0 ? data.groups : await formNewGroups(combinedAlgo, courseId, minGroupSize);
+    const groups = data.groups && data.groups.length > 0 ? data.groups : await formNewGroups(formGroups, courseId, minGroupSize);
 
     return Promise.all(
       groups.map(async g => {
@@ -91,22 +90,6 @@ export class GroupResolver {
       }),
     );
   }
-
-  @Authorized(STAFF)
-  @Mutation(() => [Group])
-  async createSampleGroupsByMultiple(@Arg("data") data: GroupListInput): Promise<Group[]> {
-    const { courseId, minGroupSize } = data;
-
-    const groups = data.groups && data.groups.length > 0 ? data.groups : await formNewGroups(formGroupsByMultiple, courseId, minGroupSize);
-
-    return Promise.all(
-      groups.map(async g => {
-        const students = await User.findByIds(g.userIds);
-        return Group.create({ courseId, students });
-      }),
-    );
-  }
-
 
   @Authorized(STAFF)
   @Mutation(() => [Group])

@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { Form, Loader } from 'semantic-ui-react';
+import { Form, Loader, Button } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { GENERATE_GROUPS, GENERATE_GROUPS_BY_MULTIPLE, SAVE_GROUPS, COURSE_GROUPS, PUBLISH_COURSE_GROUPS } from '../../GqlQueries';
+import { GENERATE_GROUPS, SAVE_GROUPS, COURSE_GROUPS, PUBLISH_COURSE_GROUPS } from '../../GqlQueries';
 import Groups from './Groups';
 import userRoles from '../../util/userRoles';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import SuccessMessage from '../ui/SuccessMessage';
 import { Prompt } from 'react-router-dom';
 import _ from 'lodash';
-import { SINGLE_CHOICE, MULTI_CHOICE } from '../../util/questionTypes';
 
 export default ({ course, registrations, regByStudentId }) => {
-  const [generateGroups] = useMutation(GENERATE_GROUPS);
-  const [generateGroupsByMultiple] = useMutation(GENERATE_GROUPS_BY_MULTIPLE);
+  const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
 
   const [groups, setGroups] = useStore('groupsStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [user] = useStore('userStore');
+  const [grouplessStudents, setGroupless] = useStore('grouplessStore');
 
   const [oldGroups, setOldGroups] = useState([]);
   const [minGroupSize, setMinGroupSize] = useState(1);
@@ -29,6 +28,7 @@ export default ({ course, registrations, regByStudentId }) => {
   const [groupMessages, setGroupMessages] = useState(['']);
   const [groupNames, setGroupNames] = useState(['']);
   const [groupSorting, setGroupSorting] = useState('nameAscending');
+  const [registrationsWithoutGroups, setregistrationsWithoutGroups] = useState(true)
 
   const intl = useIntl();
 
@@ -44,6 +44,16 @@ export default ({ course, registrations, regByStudentId }) => {
   useEffect(() => {
     setGroupsPublished(course.groupsPublished);
   }, [course]);
+
+  /* groupless students update
+  useEffect(() => {
+    let grouplessStudents = [];
+    for each group
+      check if student is in any group
+      if not, add student to grouplessStudents
+    setGroupless(grouplessStudents);
+  }, [registrationsWithoutGroups])
+  */
 
   useEffect(() => {
     if (!loading && data !== undefined) {
@@ -112,33 +122,10 @@ export default ({ course, registrations, regByStudentId }) => {
         });
         handleGroupsMessagesAndNames(sortGroups(mappedGroups, groupSorting));
         setGroupsUnsaved(true);
+        setGroups(mappedGroups)
       } catch (groupError) {
         console.log('error:', groupError);
       }
-  };
-
-  // Testing the new multiple-choice algorithm
-  // FIXME: Refactor to only use the function above.
-  const handleSampleMultipleGroupCreation = async () => {
-    const minGroupSz = minGroupSize ? minGroupSize : 1;
-    const variables = { data: { courseId: course.id, minGroupSize: minGroupSz } };
-    try {
-      const res = await generateGroupsByMultiple({
-        variables,
-      });
-      const mappedGroups = res.data.createSampleGroupsByMultiple.map((e, i) => {
-        return {
-          groupId: '',
-          students: e.students,
-          groupMessage: '',
-          groupName: `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${i + 1}`,
-        };
-      });
-      handleGroupsMessagesAndNames(sortGroups(mappedGroups, groupSorting));
-      setGroupsUnsaved(true);
-    } catch (groupError) {
-      console.log('error: ', groupError);
-    }
   };
 
   const saveSampleGroups = async () => {
@@ -197,10 +184,12 @@ export default ({ course, registrations, regByStudentId }) => {
     handleGroupsMessagesAndNames(sortGroups(groups, value));
     setGroupsUnsaved(false);
   }
+  
+  /*
+  const handleShowingGrouplessStudents = () => {
 
-  const courseHasMultipleChoices = course.questions.some(q =>
-    q.questionType === MULTI_CHOICE || q.questionType === SINGLE_CHOICE
-  );
+  }
+  */
 
   const sortOptions = [
     {
@@ -227,6 +216,10 @@ export default ({ course, registrations, regByStudentId }) => {
 
   if (loading || !groups) {
     return <Loader active />;
+  }
+
+  if (generateGroupsLoading) {
+    return <Loader active content="Generating groups" />;
   }
 
   return (
@@ -280,22 +273,12 @@ export default ({ course, registrations, regByStudentId }) => {
             </Form.Group>
             <ConfirmationButton
               onConfirm={handleSampleGroupCreation}
-              modalMessage={ intl.formatMessage({ id: 'groupsView.confirmGroupGenration' }) }
+              modalMessage={ intl.formatMessage({ id: 'groupsView.confirmGroupGeneration' }) }
               buttonDataCy="create-groups-submit"
               color="orange"
             >
               <FormattedMessage id="groupsView.generateGroups" />
             </ConfirmationButton>
-            {courseHasMultipleChoices &&
-            <ConfirmationButton
-              onConfirm={handleSampleMultipleGroupCreation}
-              modalMessage={ intl.formatMessage({ id: 'groupsView.confirmGroupGenration' }) }
-              buttonDataCy="create-groups-bymultiple-submit"
-              color="yellow"
-            >
-              <FormattedMessage id="groupsView.generateGroupsByMultiple" />
-            </ConfirmationButton>
-            }
 
             {groupsUnsaved &&
             <>
@@ -323,6 +306,16 @@ export default ({ course, registrations, regByStudentId }) => {
             >
               <FormattedMessage id='groupsView.publishGroupsBtn' />
             </ConfirmationButton>}
+
+            {registrationsWithoutGroups && 
+              <Button
+                //onClick={showStudentsWithoutGroups}
+                //buttonDataCy="show-groupless-button"
+                color='grey'
+              >
+                <FormattedMessage id='groupsView.showGrouplessStudents' />
+            </Button>}
+
           </Form>
           <p />
 
