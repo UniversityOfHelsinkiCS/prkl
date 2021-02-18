@@ -19,7 +19,7 @@ export default ({ course, registrations, regByStudentId }) => {
   const [groups, setGroups] = useStore('groupsStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [user] = useStore('userStore');
-  const [grouplessStudents, setGroupless] = useStore('grouplessStore');
+  const [grouplessStudents, setGrouplessStudents] = useStore('grouplessStudentsStore');
 
   const [oldGroups, setOldGroups] = useState([]);
   const [minGroupSize, setMinGroupSize] = useState(1);
@@ -28,7 +28,7 @@ export default ({ course, registrations, regByStudentId }) => {
   const [groupMessages, setGroupMessages] = useState(['']);
   const [groupNames, setGroupNames] = useState(['']);
   const [groupSorting, setGroupSorting] = useState('nameAscending');
-  const [registrationsWithoutGroups, setregistrationsWithoutGroups] = useState(true)
+  const [registrationsWithoutGroups, setRegistrationsWithoutGroups] = useState(true)
 
   const intl = useIntl();
 
@@ -45,16 +45,6 @@ export default ({ course, registrations, regByStudentId }) => {
     setGroupsPublished(course.groupsPublished);
   }, [course]);
 
-  /* groupless students update
-  useEffect(() => {
-    let grouplessStudents = [];
-    for each group
-      check if student is in any group
-      if not, add student to grouplessStudents
-    setGroupless(grouplessStudents);
-  }, [registrationsWithoutGroups])
-  */
-
   useEffect(() => {
     if (!loading && data !== undefined) {
       const fetchedGroups = data.courseGroups.map(e => {
@@ -70,6 +60,26 @@ export default ({ course, registrations, regByStudentId }) => {
       setGroupsUnsaved(false);
     }
   }, [data, loading]);
+
+  useEffect(() => {
+    console.log("this was run");
+
+    let studentIds = [];
+    let groupless = [];
+
+    groups.map(g => {
+      g.students.map(({id}) => {
+        if(id)
+          studentIds.push(id)})
+    })
+
+    registrations.forEach(r => {
+      if (!studentIds.includes(r.student.id)) 
+        groupless.push(r.student);
+    })
+
+    setGrouplessStudents(groupless);
+  }, [registrationsWithoutGroups])
 
   if (error !== undefined) {
     console.log('error:', error);
@@ -122,6 +132,7 @@ export default ({ course, registrations, regByStudentId }) => {
         });
         handleGroupsMessagesAndNames(sortGroups(mappedGroups, groupSorting));
         setGroupsUnsaved(true);
+        setRegistrationsWithoutGroups(false);
       } catch (groupError) {
         console.log('error:', groupError);
       }
@@ -170,6 +181,7 @@ export default ({ course, registrations, regByStudentId }) => {
   const cancelGroups = () => {
     setGroups(oldGroups);
     setGroupsUnsaved(false);
+    setRegistrationsWithoutGroups(true);
     //console.log("old", oldGroups);
   }
 
@@ -184,12 +196,6 @@ export default ({ course, registrations, regByStudentId }) => {
     setGroupsUnsaved(false);
   }
   
-  /*
-  const handleShowingGrouplessStudents = () => {
-
-  }
-  */
-
   const sortOptions = [
     {
       key: 'By name, ascending',
@@ -304,8 +310,6 @@ export default ({ course, registrations, regByStudentId }) => {
 
             {registrationsWithoutGroups && 
               <Button
-                //onClick={showStudentsWithoutGroups}
-                //buttonDataCy="show-groupless-button"
                 color='grey'
               >
                 <FormattedMessage id='groupsView.showGrouplessStudents' />
@@ -329,6 +333,17 @@ export default ({ course, registrations, regByStudentId }) => {
             {intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' })}
           </SuccessMessage>}
 
+          {console.log(registrationsWithoutGroups)}
+          {registrationsWithoutGroups &&
+          <div>
+            {grouplessStudents.map(s => {
+              return <li>{s.id}</li>
+            })}
+          </div>
+          }
+
+          {console.log('groupless students: ', grouplessStudents)}
+
           <Groups
             course={course}
             regByStudentId={regByStudentId}
@@ -336,6 +351,10 @@ export default ({ course, registrations, regByStudentId }) => {
             setGroupNames={setGroupNames}
             groupMessages={groupMessages}
             setGroupMessages={setGroupMessages}
+            registrationsWithoutGroups={registrationsWithoutGroups}
+            setRegistrationsWithoutGroups={setRegistrationsWithoutGroups}
+            grouplessStudents={grouplessStudents}
+            setGrouplessStudents={setGrouplessStudents}
           />
         </div>
       )}

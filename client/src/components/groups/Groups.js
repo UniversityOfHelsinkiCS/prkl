@@ -15,18 +15,19 @@ export default ({
   setGroupNames,
   groupMessages,
   setGroupMessages,
+  setRegistrationsWithoutGroups,
+  grouplessStudents,
+  setGrouplessStudents
 }) => {
   const [privacyToggle] = useStore('toggleStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [groups, setGroups] = useStore('groupsStore');
-  const [grouplessStudents, setGroupless] = useStore('grouplessStore');
 
   const [showGroupTimes, setShowGroupTimes] = useState([]);
   const [groupTimesVisible, setGroupTimesVisible] = useState([]);
-  const [registrationsWithoutGroups, setregistrationsWithoutGroups] = useState(true)
 
   const intl = useIntl();
-
+  
   useEffect(() => {
     if (groups.length > 0) {
       setShowGroupTimes(Array(groups.length).fill(false));
@@ -143,9 +144,12 @@ export default ({
 
   const removeStudentFromGroup = (fromTable, fromIndex) => {
     const newGroups = _.cloneDeep(groups);
-    newGroups[fromTable].students.splice(fromIndex, 1);
+    const removed = newGroups[fromTable].students.splice(fromIndex, 1);
+
     setGroups(newGroups);
+    setGrouplessStudents([...grouplessStudents, removed[0]]);
     setGroupsUnsaved(true);
+    setRegistrationsWithoutGroups(true);
   }
 
   const handleShowGroupTimesClick = index => {

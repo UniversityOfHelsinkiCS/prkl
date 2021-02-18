@@ -22,7 +22,7 @@ import { initShibbolethPinger } from 'unfuck-spa-shibboleth-session';
 createStore('coursesStore', []);
 createStore('groupsStore', []);
 createStore('teacherStore', []);
-createStore('grouplessStore', []);
+createStore('grouplessStudentsStore', []);
 createStore('userStore', {});
 createStore('toggleStore', false);
 createStore('groupsUnsavedStore', false);
