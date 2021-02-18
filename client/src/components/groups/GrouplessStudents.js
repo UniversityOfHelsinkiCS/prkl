@@ -1,0 +1,1 @@
+// make component for groupless students here, use Groups.js segments as base

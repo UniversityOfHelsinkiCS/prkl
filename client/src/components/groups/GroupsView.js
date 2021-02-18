@@ -28,7 +28,8 @@ export default ({ course, registrations, regByStudentId }) => {
   const [groupMessages, setGroupMessages] = useState(['']);
   const [groupNames, setGroupNames] = useState(['']);
   const [groupSorting, setGroupSorting] = useState('nameAscending');
-  const [registrationsWithoutGroups, setRegistrationsWithoutGroups] = useState(true)
+  const [registrationsWithoutGroups, setRegistrationsWithoutGroups] = useState(false);
+  const [showGrouplessStudents, setShowGrouplessStudents] = useState(false);
 
   const intl = useIntl();
 
@@ -62,21 +63,22 @@ export default ({ course, registrations, regByStudentId }) => {
   }, [data, loading]);
 
   useEffect(() => {
-    console.log("this was run");
-
     let studentIds = [];
     let groupless = [];
 
     groups.map(g => {
       g.students.map(({id}) => {
-        if(id)
-          studentIds.push(id)})
-    })
+        if (id)
+          studentIds.push(id)});
+    });
 
     registrations.forEach(r => {
       if (!studentIds.includes(r.student.id)) 
         groupless.push(r.student);
-    })
+    });
+
+    if (groupless.length > 0) 
+      setRegistrationsWithoutGroups(true);
 
     setGrouplessStudents(groupless);
   }, [registrationsWithoutGroups])
@@ -316,6 +318,9 @@ export default ({ course, registrations, regByStudentId }) => {
             {registrationsWithoutGroups && 
               <Button
                 color='grey'
+                onClick={(e) => {
+                  setShowGrouplessStudents(!showGrouplessStudents);
+                }}
               >
                 <FormattedMessage id='groupsView.showGrouplessStudents' />
             </Button>}
@@ -338,16 +343,14 @@ export default ({ course, registrations, regByStudentId }) => {
             {intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' })}
           </SuccessMessage>}
 
-          {console.log(registrationsWithoutGroups)}
-          {registrationsWithoutGroups &&
+          {/*implement component for this - GrouplessStudents.js*/}
+          {showGrouplessStudents && registrationsWithoutGroups &&
           <div>
             {grouplessStudents.map(s => {
-              return <li>{s.id}</li>
+              return <li key={s.id}>{`${s.firstname} ${s.lastname}`}</li>
             })}
           </div>
           }
-
-          {console.log('groupless students: ', grouplessStudents)}
 
           <Groups
             course={course}
