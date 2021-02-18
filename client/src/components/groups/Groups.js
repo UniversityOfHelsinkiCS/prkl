@@ -176,7 +176,7 @@ export default ({
   };
 
   const switchGroupOptions = groups.map((group, tableIndex) => ({
-    key: group.groupId,
+    key: tableIndex,
     text:
       group.groupName ||
       `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${tableIndex + 1}`,
@@ -277,7 +277,7 @@ export default ({
                           index={rowIndex}
                           tableIndex={tableIndex}
                         >
-                        
+
                           <Popup
                             content={() => popupTimesDisplay(student)}
                             trigger={
@@ -296,13 +296,15 @@ export default ({
                             questionSwitch(qa)
                           )}
 
-                          <Table.Cell> 
+                          <Table.Cell>
 
                           <Popup
+                            data-cy="student-options-popup"
                             content={
                               <Form>
                                 <Form.Field>
                                   <Form.Select
+                                    data-cy="switch-group-select"
                                     label={intl.formatMessage({ id: 'groups.switchGroupLabel' })}
                                     options={switchGroupOptions}
                                     defaultValue={switchGroupOptions[tableIndex].value}
@@ -315,7 +317,7 @@ export default ({
                             }
                             on="click"
                             trigger={
-                                <Button>
+                                <Button data-cy="switch-group-button">
                                   <FormattedMessage id="groups.switchGroupButton" />
                                 </Button>
                             }/>
@@ -323,15 +325,15 @@ export default ({
                             <Popup
                               content={intl.formatMessage({id: 'groups.removeFromGroupLabel'})}
                               trigger={
-                                <Button 
-                                  icon='delete' 
+                                <Button
+                                  icon='delete'
                                   color='red'
                                   onClick={(e) => removeStudentFromGroup(tableIndex, rowIndex)}
-                                /> 
+                                />
                               }
-                            />  
+                            />
 
-                            </Table.Cell>                                                             
+                            </Table.Cell>
                         </DraggableRow>
                       ))}
 

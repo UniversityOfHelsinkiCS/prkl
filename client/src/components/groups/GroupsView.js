@@ -12,7 +12,7 @@ import { Prompt } from 'react-router-dom';
 import _ from 'lodash';
 
 export default ({ course, registrations, regByStudentId }) => {
-  const [generateGroups] = useMutation(GENERATE_GROUPS);
+  const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
 
@@ -133,6 +133,7 @@ export default ({ course, registrations, regByStudentId }) => {
         handleGroupsMessagesAndNames(sortGroups(mappedGroups, groupSorting));
         setGroupsUnsaved(true);
         setRegistrationsWithoutGroups(false);
+        setGroups(mappedGroups);
       } catch (groupError) {
         console.log('error:', groupError);
       }
@@ -221,6 +222,10 @@ export default ({ course, registrations, regByStudentId }) => {
 
   if (loading || !groups) {
     return <Loader active />;
+  }
+
+  if (generateGroupsLoading) {
+    return <Loader active content="Generating groups" />;
   }
 
   return (

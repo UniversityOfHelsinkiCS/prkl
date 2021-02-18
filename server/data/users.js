@@ -54,4 +54,4 @@ const generateUsers = n =>
       role: 1,
     }));
 
-module.exports = defaultUsers.concat(generateUsers(100));
+module.exports = defaultUsers.concat(generateUsers(5));
