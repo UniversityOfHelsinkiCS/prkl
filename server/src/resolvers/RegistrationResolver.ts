@@ -1,10 +1,9 @@
-import {Arg, Authorized, Ctx, Mutation, Query, Resolver} from "type-graphql";
-import {Registration} from "../entities/Registration";
-import {RegistrationInput} from "../inputs/RegistrationInput";
-import {ADMIN, STAFF} from "../utils/userRoles";
-
-import {Course} from "../entities/Course";
-import {User} from "../entities/User";
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { Registration } from "../entities/Registration";
+import { RegistrationInput } from "../inputs/RegistrationInput";
+import { ADMIN, STAFF } from "../utils/userRoles";
+import { Course } from "../entities/Course";
+import { User } from "../entities/User";
 
 @Resolver()
 export class RegistrationResolver {
@@ -28,16 +27,6 @@ export class RegistrationResolver {
       });
     }
     throw new Error("Not your course.");
-  }
-
-  @Query(() => [Registration])
-  async courseRegistrationsID(@Arg("courseId") courseId: string) {
-    // FIXME: The best option would be to get this to return the size of the array.
-    // It appears that it isn't as simple as it sounds. '"Int!" subfield...' -error occurs.
-    // If changed, remember: Registration.ts, GqlQueries.js and Course.js
-    return await Registration.find({
-      where: { courseId: courseId },
-    });
   }
 
   @Mutation(() => Registration)

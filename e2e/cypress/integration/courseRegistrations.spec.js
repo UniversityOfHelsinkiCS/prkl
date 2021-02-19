@@ -20,24 +20,24 @@ describe('Course registrations', () => {
     it('Can enrol on a course', () => {
       const course = courses[1];
       cy.contains(courses[1].title).click();
-  
+
       cy.get('[data-cy="question-0"]').click();
       const answers = [course.questions[0].questionChoices[1].content];
       cy.contains(answers[0]).click();
-  
+
       cy.get('[data-cy="question-1"]').click();
       answers.push(course.questions[1].questionChoices[1].content);
       cy.get('[data-cy="question-1"]').contains(answers[1]).then((item) => {
         item.click();
       });
-  
+
       answers.push('My cool answer');
       cy.get('[data-cy="question-2"]').type(answers[2]);
-  
+
       cy.get('[data-cy="toc-checkbox"]').click();
       cy.get('[data-cy="register-on-course-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
-  
+
       cy.get('[data-cy="registered"]').should('exist');
       cy.contains('Groups are not ready yet...');
 
@@ -49,20 +49,20 @@ describe('Course registrations', () => {
         cy.contains(answer);
       }
     });
-  
+
     it('Can not enrol with answers missing', () => {
       cy.contains(courses[1].title).click();
-  
+
       cy.get('[data-cy="register-on-course-button"]').click();
       cy.wait(500);
       cy.get('[data-cy="confirmation-button-confirm"]').should('not.exist');
 
       cy.contains('Please answer all questions!');
     });
-  
+
     it('Can not enrol without accepting the privacy terms', () => {
       cy.contains(courses[0].title).click();
-  
+
       // Cycle the checkbox on once to account for a past validation bug.
       cy.get('[data-cy="toc-checkbox"]').click();
       cy.get('[data-cy="toc-checkbox"]').click();
@@ -72,14 +72,14 @@ describe('Course registrations', () => {
 
       cy.contains('Please answer all questions!');
     });
-  
+
     it('Can not enrol twice on the same course', () => {
       cy.contains(courses[0].title).click();
-  
+
       cy.get('[data-cy="toc-checkbox"]').click();
       cy.get('[data-cy="register-on-course-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
-  
+
       cy.visit('/');
       cy.contains(courses[0].title).click();
       cy.contains('Already registered!');
@@ -95,7 +95,7 @@ describe('Course registrations', () => {
     it('Can cancel registration before deadline, frontend', () => {
       //frontend
       cy.contains(courses[0].title).click();
-  
+
       cy.get('[data-cy="toc-checkbox"]').click();
       cy.get('[data-cy="register-on-course-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
@@ -111,26 +111,26 @@ describe('Course registrations', () => {
       cy.contains(courses[0].title).click();
       cy.get('[data-cy="register-on-course-button"]').should('exist');
 
-      // backend 
+      // backend
       cy.createRegistration(0, 0).then((resp) => {
         expect(resp.status).to.eq(200);
       })
-      
+
       cy.deleteRegistration(0, 0, 0).then((resp) => {
         expect(resp.status).to.eq(200);
-      }); 
+      });
     });
 
     it('Can not cancel registration after deadline', () => {
       cy.deleteRegistration(0, 3, 0).then((resp) => {
         expect(resp.status).to.eq(500);
-      }); 
+      });
     });
 
     it('Can not cancel someone elses registration', () => {
       cy.deleteRegistration(3, 0, 0).then((resp) => {
         expect(resp.status).to.eq(500);
-      }); 
+      });
     });
   });
 
@@ -140,8 +140,8 @@ describe('Course registrations', () => {
     });
 
     it('Can see enrolled students only on own course', () => {
-			cy.contains(courses[0].title).click();
-			cy.get('[data-cy="show-registrations-button"]').click();
+            cy.contains(courses[0].title).click();
+            cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="registration-table"]').contains(users[3].firstname);
       cy.contains("Students enrolled to the course:");
 
@@ -175,14 +175,14 @@ describe('Course registrations', () => {
         expect(resp.status).to.eq(500);
       });
     });
-  }); 
+  });
 
-  describe('Enrolment management for admin', () => {   
+  describe('Enrolment management for admin', () => {
     beforeEach(() => {
       cy.switchToAdmin();
     });
 
-    it('Admin can remove enrollments from any course', () => {  
+    it('Admin can remove enrollments from any course', () => {
       // remove student from own course
 			cy.contains(courses[4].title).click();
 			cy.get('[data-cy="show-registrations-button"]').click();
@@ -212,7 +212,7 @@ describe('Course registrations', () => {
       cy.get('[data-cy="question-0"]').click();
       const answers = [course.questions[0].questionChoices[1].content];
       cy.contains(answers[0]).click();
-  
+
       cy.get('[data-cy="question-1"]').click();
       answers.push(course.questions[1].questionChoices[1].content);
       cy.get('[data-cy="question-1"]').contains(answers[1]).then((item) => {
@@ -220,7 +220,7 @@ describe('Course registrations', () => {
       });
 
       answers.push('My cool answer');
-      cy.get('[data-cy="question-2"]').type(answers[2]); 
+      cy.get('[data-cy="question-2"]').type(answers[2]);
       cy.get('[data-cy="toc-checkbox"]').click();
       cy.get('[data-cy="register-on-course-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
