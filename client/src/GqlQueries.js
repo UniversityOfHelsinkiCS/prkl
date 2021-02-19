@@ -288,6 +288,21 @@ export const GENERATE_GROUPS = gql`
   }
 `;
 
+export const FIND_GROUP_FOR_ONE_STUDENT = gql`
+  mutation findGroupForOne($data: GroupListInput!, $studentId: String!) {
+    findGroupForOne(data: $data, studentId: $studentId) {
+      courseId
+      students {
+        id
+        firstname
+        lastname
+        studentNo
+        email
+      }
+    }
+  }
+`;
+
 export const SAVE_GROUPS = gql`
   mutation saveGeneratedGroups($data: GroupListInput!) {
     saveGeneratedGroups(data: $data) {

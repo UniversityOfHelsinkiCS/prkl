@@ -149,13 +149,27 @@ export const findGroupForOneStudent = (student: Registration, grouping: Grouping
 
   for (const workingTime of studentsWorkingTimeList) {
     for (const group of groupsWithWorkingTimesMap) {
-      if (group.workingTimes.has(workingTime.startDay)) {
-        if (group.workingTimes.get(workingTime.startDay).has(workingTime.startHour)) {
-          
-        }
+      if (group.workingTimes.get(workingTime.startDay).has(workingTime.startHour)) {
+        groupWithMostCommonHours.set(group.id, group.workingTimes.get(workingTime.startDay).get(workingTime.startHour));
       }
     }
   }
 
-  return grouping.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput));
+  let topScore = 0;
+  let groupId;
+
+  for (let i = 0; i < id; i++) {
+    if (groupWithMostCommonHours.get(i) > topScore) {
+      topScore = groupWithMostCommonHours.get(i);
+      groupId = i;
+    } 
+  }
+
+  groupsWithWorkingTimesMap.map(group => {
+    if (group.id === groupId) {
+      group.Group.push(student);
+    }
+  })
+
+  return groupsWithWorkingTimesMap.map(group => ({ userIds: group.Group.map(registration => registration.student.id) } as GroupInput));
 };

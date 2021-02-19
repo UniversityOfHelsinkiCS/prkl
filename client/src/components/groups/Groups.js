@@ -7,6 +7,8 @@ import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import DraggableRow from './DraggableRow';
 import questionSwitch, { count } from '../../util/functions';
 import HourDisplay from '../misc/HourDisplay';
+import { FIND_GROUP_FOR_ONE_STUDENT } from '../../GqlQueries';
+import { useMutation } from '@apollo/react-hooks';
 
 export default ({
   course,
@@ -25,6 +27,8 @@ export default ({
 
   const [showGroupTimes, setShowGroupTimes] = useState([]);
   const [groupTimesVisible, setGroupTimesVisible] = useState([]);
+
+  const [findGroupForOne] = useMutation(FIND_GROUP_FOR_ONE_STUDENT);
 
   const intl = useIntl();
   
@@ -141,6 +145,28 @@ export default ({
     setGroups(newGroups);
     setGroupsUnsaved(true);
   };
+
+  const findGroup = async (fromTable, fromIndex) => {
+    const student = groups[fromTable].students[fromIndex];
+    console.log('findgroup', student.id)
+    const groupsWithUserIds = groups.map(group => {
+      const userIds = group.students.map(student => student.id)
+      return ({
+        userIds,
+        id: group.groupId,
+        groupName: group.groupName,
+        groupMessage: group.groupMessage
+      })
+    })
+    const variables = { data: { courseId: course.id, groups: groupsWithUserIds }, studentId: student.id };
+    try {
+      const res = await findGroupForOne({
+        variables,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   const removeStudentFromGroup = (fromTable, fromIndex) => {
     const newGroups = _.cloneDeep(groups);
@@ -323,6 +349,17 @@ export default ({
                                   <FormattedMessage id="groups.switchGroupButton" />
                                 </Button>
                             }/>
+
+                            <Popup
+                              content={intl.formatMessage({id: 'groups.removeFromGroupLabel'})}
+                              trigger={
+                                <Button
+                                  icon='delete'
+                                  color='green'
+                                  onClick={(e) => findGroup(tableIndex, rowIndex)}
+                                />
+                              }
+                            />
 
                             <Popup
                               content={intl.formatMessage({id: 'groups.removeFromGroupLabel'})}
