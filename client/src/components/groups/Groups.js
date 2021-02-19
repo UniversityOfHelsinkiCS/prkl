@@ -288,9 +288,11 @@ export default ({
                               !course.questions.some(q => q.questionType === 'times')
                             }
                           />
+
                           <Table.Cell>
                             {privacyToggle ? dummyStudentNumber : student.studentNo}
                           </Table.Cell>
+                          
                           <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
                           {regByStudentId[student.studentNo]?.questionAnswers.map(qa =>
                             questionSwitch(qa)

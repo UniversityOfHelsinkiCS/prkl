@@ -5,6 +5,7 @@ import { Form, Loader, Button } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { GENERATE_GROUPS, SAVE_GROUPS, COURSE_GROUPS, PUBLISH_COURSE_GROUPS } from '../../GqlQueries';
 import Groups from './Groups';
+import GrouplessStudents from './GrouplessStudents';
 import userRoles from '../../util/userRoles';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import SuccessMessage from '../ui/SuccessMessage';
@@ -77,9 +78,13 @@ export default ({ course, registrations, regByStudentId }) => {
         groupless.push(r.student);
     });
 
-    if (groupless.length > 0) 
-      setRegistrationsWithoutGroups(true);
+    groupless.length > 0 ?
+      setRegistrationsWithoutGroups(true) :
+      setRegistrationsWithoutGroups(false);
 
+    console.log('Groups: ', groups);
+    console.log('Students in groups: ', studentIds);
+    console.log('Groupless: ', groupless);
     setGrouplessStudents(groupless);
   }, [registrationsWithoutGroups])
 
@@ -315,7 +320,7 @@ export default ({ course, registrations, regByStudentId }) => {
               <FormattedMessage id='groupsView.publishGroupsBtn' />
             </ConfirmationButton>}
 
-            {registrationsWithoutGroups && 
+            {groups.length > 0 && registrationsWithoutGroups && 
               <Button
                 color='grey'
                 onClick={(e) => {
@@ -323,7 +328,8 @@ export default ({ course, registrations, regByStudentId }) => {
                 }}
               >
                 <FormattedMessage id='groupsView.showGrouplessStudents' />
-            </Button>}
+              </Button>
+            }
 
           </Form>
           <p />
@@ -343,14 +349,10 @@ export default ({ course, registrations, regByStudentId }) => {
             {intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' })}
           </SuccessMessage>}
 
-          {/*implement component for this - GrouplessStudents.js*/}
           {showGrouplessStudents && registrationsWithoutGroups &&
-          <div>
-            {grouplessStudents.map(s => {
-              return <li key={s.id}>{`${s.firstname} ${s.lastname}`}</li>
-            })}
-          </div>
-          }
+          <GrouplessStudents 
+            grouplessStudents={grouplessStudents} 
+          />}
 
           <Groups
             course={course}
