@@ -3,7 +3,7 @@ import { Registration } from "../../entities/Registration";
 import { Evaluator, Group } from "../algorithm";
 import { combinationsOfTwo } from './evaluateByMultipleChoice';
 
-type workingTimeObject = {
+export type workingTimeObject = {
     startDay: number,
     startHour: number,
     endHour: number,
