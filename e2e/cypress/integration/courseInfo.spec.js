@@ -1,12 +1,13 @@
 const courses = require('../fixtures/courses');
 const users = require('../fixtures/users');
 
+/*
 describe('Course information', () => {
     beforeEach(() => {
       cy.seedDatabase();
       cy.switchToAdmin();
     });
-  
+
     after(() => {
       cy.switchToAdmin();
       cy.seedDatabase();
@@ -27,3 +28,5 @@ describe('Course information', () => {
     });
 
 });
+
+ */
