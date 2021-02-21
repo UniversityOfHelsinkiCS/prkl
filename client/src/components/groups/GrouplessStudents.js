@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Segment, Label } from 'semantic-ui-react';
+import { Table, Segment, Label, Popup, Form, Button } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 export default ({
@@ -56,6 +56,34 @@ export default ({
                       <Table.Cell>
                         {student.email}
                       </Table.Cell>
+
+                      <Table.Cell>
+
+                      <Popup
+                        data-cy="student-options-popup"
+                        content={
+                          <Form>
+                            <Form.Field>
+                              <Form.Select
+                                data-cy="switch-group-select"
+                                label={'Add student to a group'}
+                                //options={switchGroupOptions}
+                                defaultValue={"eka group tähän"}
+                                //onChange={(e, { value }) =>
+                                  //handleSwitchingGroup(tableIndex, rowIndex, value)
+                                //}
+                              />
+                            </Form.Field>
+                          </Form>
+                        }
+                        on="click"
+                        trigger={
+                            <Button data-cy="switch-group-button">
+                              {'Add student to a group'}
+                            </Button>
+                        }/>
+
+                        </Table.Cell>
 
                     </Table.Row>
                   )

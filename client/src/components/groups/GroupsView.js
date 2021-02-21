@@ -12,12 +12,17 @@ import SuccessMessage from '../ui/SuccessMessage';
 import { Prompt } from 'react-router-dom';
 import _ from 'lodash';
 
-export default ({ course, registrations, regByStudentId }) => {
+export default ({ 
+  course, 
+  registrations, 
+  regByStudentId,
+  groups,
+  setGroups,
+}) => {
   const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
-
-  const [groups, setGroups] = useStore('groupsStore');
+  
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [user] = useStore('userStore');
   const [grouplessStudents, setGrouplessStudents] = useStore('grouplessStudentsStore');
@@ -81,10 +86,7 @@ export default ({ course, registrations, regByStudentId }) => {
     groupless.length > 0 ?
       setRegistrationsWithoutGroups(true) :
       setRegistrationsWithoutGroups(false);
-
-    console.log('Groups: ', groups);
-    console.log('Students in groups: ', studentIds);
-    console.log('Groupless: ', groupless);
+      
     setGrouplessStudents(groupless);
   }, [registrationsWithoutGroups])
 
@@ -320,7 +322,7 @@ export default ({ course, registrations, regByStudentId }) => {
               <FormattedMessage id='groupsView.publishGroupsBtn' />
             </ConfirmationButton>}
 
-            {groups.length > 0 && registrationsWithoutGroups && 
+            {/*groups.length > 0 &&*/ registrationsWithoutGroups && 
               <Button
                 color='grey'
                 onClick={(e) => {
