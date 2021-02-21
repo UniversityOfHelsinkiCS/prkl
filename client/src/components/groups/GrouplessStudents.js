@@ -59,7 +59,7 @@ export default ({
 
                       <Table.Cell>
 
-                      <Popup
+                      {/*<Popup
                         data-cy="student-options-popup"
                         content={
                           <Form>
@@ -81,7 +81,7 @@ export default ({
                             <Button data-cy="switch-group-button">
                               {'Add student to a group'}
                             </Button>
-                        }/>
+                        }/>*/}
 
                         </Table.Cell>
 
