@@ -35,7 +35,6 @@ export default ({
   const [groupNames, setGroupNames] = useState(['']);
   const [groupSorting, setGroupSorting] = useState('nameAscending');
   const [registrationsWithoutGroups, setRegistrationsWithoutGroups] = useState(false);
-  const [showGrouplessStudents, setShowGrouplessStudents] = useState(false);
 
   const intl = useIntl();
 
