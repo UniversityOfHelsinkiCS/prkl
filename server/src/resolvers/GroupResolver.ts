@@ -5,10 +5,11 @@ import { User } from "../entities/User";
 import { Registration } from "../entities/Registration";
 import { GroupListInput } from "../inputs/GroupListInput";
 import { STAFF, ADMIN } from "../utils/userRoles";
-import { formGroups } from "../algorithm/algorithm";
+import { formGroups, findGroupForOneStudent, Grouping, Group as regArray } from "../algorithm/algorithm";
 //import { formGroups } from "../algorithm/index"; old algorithm
 import { Course } from "../entities/Course";
 import { Algorithm } from "../algorithm/algorithm";
+import { GroupInput } from "../inputs/GroupInput";
 
 const formNewGroups = async (algorithm: Algorithm, courseId: string, minGroupSize: number) => {
   const registrations = await Registration.find({
@@ -83,6 +84,56 @@ export class GroupResolver {
 
     const groups = data.groups && data.groups.length > 0 ? data.groups : await formNewGroups(formGroups, courseId, minGroupSize);
 
+    return Promise.all(
+      groups.map(async g => {
+        const students = await User.findByIds(g.userIds);
+        return Group.create({ courseId, students });
+      }),
+    );
+  }
+
+  @Authorized(STAFF)
+  @Mutation(() => [Group])
+  async findGroupForOne(@Arg("data") data: GroupListInput, @Arg("studentId") studentId: string): Promise<Group[]> {
+    const { courseId, groups } = data;
+    console.log('student id', studentId);
+    let student;
+
+    const registrations = await Registration.find({
+      where: { courseId: courseId },
+      relations: [
+        "student",
+        "questionAnswers",
+        "questionAnswers.question",
+        "questionAnswers.answerChoices",
+        "questionAnswers.question.questionChoices",
+        "workingTimes",
+      ],
+    });
+
+    const groupsToGroupingType = (groups: GroupInput[], registrations: Registration[]): Grouping => {
+      const grouping: Grouping = [];
+
+      for (const group of groups) {
+        const regArray: regArray = [];
+        for (const userId of group.userIds) {
+          for (const registration of registrations) {
+            if (registration.studentId === userId) {
+              regArray.push(registration);
+            }
+            if (registration.studentId === studentId) {
+              student = registration
+            }
+          }
+        }     
+        grouping.push(regArray); 
+      }   
+      return grouping;
+    };
+
+    const grouping = groupsToGroupingType(groups, registrations);
+
+    const newGroups = findGroupForOneStudent(student, grouping);
     return Promise.all(
       groups.map(async g => {
         const students = await User.findByIds(g.userIds);

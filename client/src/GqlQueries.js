@@ -247,14 +247,6 @@ export const COURSE_REGISTRATION = gql`
   }
 `;
 
-export const COURSE_REGISTRATIONS_ID = gql`
-  query courseRegistrationsID($courseId: String!) {
-    courseRegistrationsID(courseId: $courseId) {
-      id
-    }
-  }
-`;
-
 export const COURSE_GROUPS = gql`
   query courseGroups($courseId: String!) {
     courseGroups(courseId: $courseId) {
@@ -276,6 +268,21 @@ export const COURSE_GROUPS = gql`
 export const GENERATE_GROUPS = gql`
   mutation createSampleGroups($data: GroupListInput!) {
     createSampleGroups(data: $data) {
+      courseId
+      students {
+        id
+        firstname
+        lastname
+        studentNo
+        email
+      }
+    }
+  }
+`;
+
+export const FIND_GROUP_FOR_ONE_STUDENT = gql`
+  mutation findGroupForOne($data: GroupListInput!, $studentId: String!) {
+    findGroupForOne(data: $data, studentId: $studentId) {
       courseId
       students {
         id

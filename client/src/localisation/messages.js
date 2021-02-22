@@ -188,7 +188,7 @@ export default {
     'groupsView.publishedGroupsInfo': 'Groups have been published, future changes are visible immediately to students.',
     'groupsView.defaultGroupNamePrefix': 'Group',
     'groupsView.groupListingOrder': 'Groups listing order',
-    'groupsView.showGrouplessStudents': 'Show groupless students',
+    'groupsView.showGrouplessStudents': 'Toggle groupless students',
 
     'util.notAllowed': 'You do not have the required roles to access this content.',
   },

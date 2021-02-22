@@ -5,7 +5,8 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Button, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import roles from '../../util/userRoles';
-import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION, COURSE_REGISTRATIONS_ID } from '../../GqlQueries';
+import userRoles from '../../util/userRoles';
+import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION, COURSE_GROUPS } from '../../GqlQueries';
 import GroupsView from '../groups/GroupsView';
 import CourseForm from './CourseForm';
 import RegistrationList from '../registrations/RegistrationList';
@@ -16,11 +17,11 @@ import CourseInfo from './CourseInfo';
 export default ({ id }) => {
   const [courses, setCourses] = useStore('coursesStore');
   const [user] = useStore('userStore');
+  const [groups, setGroups] = useStore('groupsStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
 
   const [course, setCourse] = useState({});
   const [registrations, setRegistrations] = useState([]);
-  const [registrationsCount, setRegistrationsCount] = useState(null);
   const [regByStudentId, setRegByStudentId] = useState([]);
   const [view, setView] = useState('info');
 
@@ -32,6 +33,8 @@ export default ({ id }) => {
   // course description
   const paragraphs = course.description ? course.description.split('\n\n') : [];
 
+  // GRAPHQL
+
   const { loading, error, data } = useQuery(COURSE_BY_ID, {
     variables: { id },
   });
@@ -41,6 +44,13 @@ export default ({ id }) => {
       || (!course.teachers.some(t => t.id === user.id) && user.role !== roles.ADMIN_ROLE),
     variables: { courseId: id },
   });
+
+  const { loading: groupLoading,  data: groupData} = useQuery(COURSE_GROUPS, {
+    skip: user.role === userRoles.STUDENT_ROLE,
+    variables: { courseId: course.id },
+  });
+
+  // USEEFFECT
 
   useEffect(() => {
     if (!loading && data !== undefined) {
@@ -64,19 +74,19 @@ export default ({ id }) => {
         }, {})
       );
     }
-  }, [data, loading, regData, regLoading]);
 
-  // Fetching the number of registrations:
-  const { loading: countLoading, data: countData } = useQuery(COURSE_REGISTRATIONS_ID, {
-    variables: { courseId: id },
-  });
-
-  useEffect(() => {
-    if (!countLoading && countData !== undefined) {
-      // FIXME: Make resolver return length integer
-      setRegistrationsCount(countData.courseRegistrationsID.length);
+    if (!groupLoading && groupData !== undefined) {
+      const fetchedGroups = groupData.courseGroups.map(e => {
+        return {
+          groupId: e.id,
+          students: e.students,
+          groupMessage: e.groupMessage,
+          groupName: e.groupName
+        }
+      });
     }
-  }, [countLoading, countData]);
+
+  }, [data, loading, regData, regLoading, groupLoading, groupData]);
 
   if (error !== undefined) {
     console.log('error:', error);
@@ -88,6 +98,8 @@ export default ({ id }) => {
   if (loading || !course) {
     return <Loader active />;
   }
+
+  // HANDLERS
 
   const handleDeletion = async () => {
     const variables = { id };
@@ -157,11 +169,12 @@ export default ({ id }) => {
 
   return (
     <div>
+      {console.log(groups)}
 
       {/* Course info, hide in edit and questions views */}
       <h2><a href={`https://courses.helsinki.fi/fi/${course.code}`}>{course.code}</a>{` - ${course.title}`}</h2>
       { view !== 'edit' && view !== 'questions' && <div>
-        <CourseInfo id={course.id} deadline={course.deadline} teachers={course.teachers} paragraphs={paragraphs} registrations={registrationsCount} />
+        <CourseInfo id={course.id} deadline={course.deadline} teachers={course.teachers} paragraphs={paragraphs} />
 				 &nbsp;
       </div>}
 
@@ -224,6 +237,8 @@ export default ({ id }) => {
                           course={course}
                           registrations={registrations}
                           regByStudentId={regByStudentId}
+                          groups={groups}
+                          setGroups={setGroups}
                         />
                         <br></br>
                         <Button onClick={handleGroupsView} color="blue" data-cy="back-to-info-from-groups-button">

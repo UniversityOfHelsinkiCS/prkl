@@ -2,6 +2,7 @@ import React from 'react';
 import { Table } from 'semantic-ui-react/';
 
 const DraggableRow = ({ index, action, children, tableIndex }) => {
+  
   const onDragStart = ev => {
     ev.dataTransfer.setData('index', index);
     ev.dataTransfer.setData('tableIndex', tableIndex);
@@ -10,6 +11,7 @@ const DraggableRow = ({ index, action, children, tableIndex }) => {
   const onDragOver = ev => {
     ev.preventDefault();
   };
+
   const onDrop = (ev, to) => {
     const from = ev.dataTransfer.getData('index');
     const fromTable = ev.dataTransfer.getData('tableIndex');

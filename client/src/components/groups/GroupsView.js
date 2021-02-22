@@ -5,21 +5,27 @@ import { Form, Loader, Button } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { GENERATE_GROUPS, SAVE_GROUPS, COURSE_GROUPS, PUBLISH_COURSE_GROUPS } from '../../GqlQueries';
 import Groups from './Groups';
+import GrouplessStudents from './GrouplessStudents';
 import userRoles from '../../util/userRoles';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import SuccessMessage from '../ui/SuccessMessage';
 import { Prompt } from 'react-router-dom';
 import _ from 'lodash';
 
-export default ({ course, registrations, regByStudentId }) => {
+export default ({ 
+  course, 
+  registrations, 
+  regByStudentId,
+  groups,
+  setGroups,
+}) => {
   const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
-
-  const [groups, setGroups] = useStore('groupsStore');
+  
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [user] = useStore('userStore');
-  const [grouplessStudents, setGroupless] = useStore('grouplessStore');
+  const [grouplessStudents, setGrouplessStudents] = useStore('grouplessStudentsStore');
 
   const [oldGroups, setOldGroups] = useState([]);
   const [minGroupSize, setMinGroupSize] = useState(1);
@@ -28,7 +34,8 @@ export default ({ course, registrations, regByStudentId }) => {
   const [groupMessages, setGroupMessages] = useState(['']);
   const [groupNames, setGroupNames] = useState(['']);
   const [groupSorting, setGroupSorting] = useState('nameAscending');
-  const [registrationsWithoutGroups, setregistrationsWithoutGroups] = useState(true)
+  const [registrationsWithoutGroups, setRegistrationsWithoutGroups] = useState(false);
+  const [showGrouplessStudents, setShowGrouplessStudents] = useState(false);
 
   const intl = useIntl();
 
@@ -45,16 +52,6 @@ export default ({ course, registrations, regByStudentId }) => {
     setGroupsPublished(course.groupsPublished);
   }, [course]);
 
-  /* groupless students update
-  useEffect(() => {
-    let grouplessStudents = [];
-    for each group
-      check if student is in any group
-      if not, add student to grouplessStudents
-    setGroupless(grouplessStudents);
-  }, [registrationsWithoutGroups])
-  */
-
   useEffect(() => {
     if (!loading && data !== undefined) {
       const fetchedGroups = data.courseGroups.map(e => {
@@ -70,6 +67,28 @@ export default ({ course, registrations, regByStudentId }) => {
       setGroupsUnsaved(false);
     }
   }, [data, loading]);
+
+  useEffect(() => {
+    let studentIds = [];
+    let groupless = [];
+
+    groups.map(g => {
+      g.students.map(({id}) => {
+        if (id)
+          studentIds.push(id)});
+    });
+
+    registrations.forEach(r => {
+      if (!studentIds.includes(r.student.id)) 
+        groupless.push(r.student);
+    });
+
+    groupless.length > 0 ?
+      setRegistrationsWithoutGroups(true) :
+      setRegistrationsWithoutGroups(false);
+      
+    setGrouplessStudents(groupless);
+  }, [registrationsWithoutGroups])
 
   if (error !== undefined) {
     console.log('error:', error);
@@ -122,7 +141,8 @@ export default ({ course, registrations, regByStudentId }) => {
         });
         handleGroupsMessagesAndNames(sortGroups(mappedGroups, groupSorting));
         setGroupsUnsaved(true);
-        setGroups(mappedGroups)
+        setRegistrationsWithoutGroups(false);
+        setGroups(mappedGroups);
       } catch (groupError) {
         console.log('error:', groupError);
       }
@@ -171,6 +191,7 @@ export default ({ course, registrations, regByStudentId }) => {
   const cancelGroups = () => {
     setGroups(oldGroups);
     setGroupsUnsaved(false);
+    setRegistrationsWithoutGroups(true);
     //console.log("old", oldGroups);
   }
 
@@ -185,12 +206,6 @@ export default ({ course, registrations, regByStudentId }) => {
     setGroupsUnsaved(false);
   }
   
-  /*
-  const handleShowingGrouplessStudents = () => {
-
-  }
-  */
-
   const sortOptions = [
     {
       key: 'By name, ascending',
@@ -307,14 +322,16 @@ export default ({ course, registrations, regByStudentId }) => {
               <FormattedMessage id='groupsView.publishGroupsBtn' />
             </ConfirmationButton>}
 
-            {registrationsWithoutGroups && 
+            {/*groups.length > 0 &&*/ registrationsWithoutGroups && 
               <Button
-                //onClick={showStudentsWithoutGroups}
-                //buttonDataCy="show-groupless-button"
                 color='grey'
+                onClick={(e) => {
+                  setShowGrouplessStudents(!showGrouplessStudents);
+                }}
               >
                 <FormattedMessage id='groupsView.showGrouplessStudents' />
-            </Button>}
+              </Button>
+            }
 
           </Form>
           <p />
@@ -334,6 +351,11 @@ export default ({ course, registrations, regByStudentId }) => {
             {intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' })}
           </SuccessMessage>}
 
+          {showGrouplessStudents && registrationsWithoutGroups &&
+          <GrouplessStudents 
+            grouplessStudents={grouplessStudents} 
+          />}
+
           <Groups
             course={course}
             regByStudentId={regByStudentId}
@@ -341,6 +363,10 @@ export default ({ course, registrations, regByStudentId }) => {
             setGroupNames={setGroupNames}
             groupMessages={groupMessages}
             setGroupMessages={setGroupMessages}
+            registrationsWithoutGroups={registrationsWithoutGroups}
+            setRegistrationsWithoutGroups={setRegistrationsWithoutGroups}
+            grouplessStudents={grouplessStudents}
+            setGrouplessStudents={setGrouplessStudents}
           />
         </div>
       )}

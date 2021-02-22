@@ -7,6 +7,8 @@ import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import DraggableRow from './DraggableRow';
 import questionSwitch, { count } from '../../util/functions';
 import HourDisplay from '../misc/HourDisplay';
+import { FIND_GROUP_FOR_ONE_STUDENT } from '../../GqlQueries';
+import { useMutation } from '@apollo/react-hooks';
 
 export default ({
   course,
@@ -15,18 +17,21 @@ export default ({
   setGroupNames,
   groupMessages,
   setGroupMessages,
+  setRegistrationsWithoutGroups,
+  grouplessStudents,
+  setGrouplessStudents
 }) => {
   const [privacyToggle] = useStore('toggleStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [groups, setGroups] = useStore('groupsStore');
-  const [grouplessStudents, setGroupless] = useStore('grouplessStore');
 
   const [showGroupTimes, setShowGroupTimes] = useState([]);
   const [groupTimesVisible, setGroupTimesVisible] = useState([]);
-  const [registrationsWithoutGroups, setregistrationsWithoutGroups] = useState(true)
+
+  const [findGroupForOne] = useMutation(FIND_GROUP_FOR_ONE_STUDENT);
 
   const intl = useIntl();
-
+  
   useEffect(() => {
     if (groups.length > 0) {
       setShowGroupTimes(Array(groups.length).fill(false));
@@ -141,11 +146,36 @@ export default ({
     setGroupsUnsaved(true);
   };
 
+  const findGroup = async (fromTable, fromIndex) => {
+    const student = groups[fromTable].students[fromIndex];
+    console.log('findgroup', student.id)
+    const groupsWithUserIds = groups.map(group => {
+      const userIds = group.students.map(student => student.id)
+      return ({
+        userIds,
+        id: group.groupId,
+        groupName: group.groupName,
+        groupMessage: group.groupMessage
+      })
+    })
+    const variables = { data: { courseId: course.id, groups: groupsWithUserIds }, studentId: student.id };
+    try {
+      const res = await findGroupForOne({
+        variables,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   const removeStudentFromGroup = (fromTable, fromIndex) => {
     const newGroups = _.cloneDeep(groups);
-    newGroups[fromTable].students.splice(fromIndex, 1);
+    const removed = newGroups[fromTable].students.splice(fromIndex, 1);
+
     setGroups(newGroups);
+    setGrouplessStudents([...grouplessStudents, removed[0]]);
     setGroupsUnsaved(true);
+    setRegistrationsWithoutGroups(true);
   }
 
   const handleShowGroupTimesClick = index => {
@@ -284,9 +314,11 @@ export default ({
                               !course.questions.some(q => q.questionType === 'times')
                             }
                           />
+
                           <Table.Cell>
                             {privacyToggle ? dummyStudentNumber : student.studentNo}
                           </Table.Cell>
+                          
                           <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
                           {regByStudentId[student.studentNo]?.questionAnswers.map(qa =>
                             questionSwitch(qa)
@@ -317,6 +349,17 @@ export default ({
                                   <FormattedMessage id="groups.switchGroupButton" />
                                 </Button>
                             }/>
+
+                            <Popup
+                              content={intl.formatMessage({id: 'groups.removeFromGroupLabel'})}
+                              trigger={
+                                <Button
+                                  icon='delete'
+                                  color='green'
+                                  onClick={(e) => findGroup(tableIndex, rowIndex)}
+                                />
+                              }
+                            />
 
                             <Popup
                               content={intl.formatMessage({id: 'groups.removeFromGroupLabel'})}
