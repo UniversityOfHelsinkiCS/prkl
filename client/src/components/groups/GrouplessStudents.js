@@ -11,7 +11,7 @@ export default ({
           <Segment>
 
             <Label
-              color="grey"
+              color="red"
               size="large"
               attached="top"
               data-cy="group-name-label"
