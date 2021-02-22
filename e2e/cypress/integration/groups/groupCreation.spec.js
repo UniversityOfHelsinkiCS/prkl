@@ -238,6 +238,54 @@ describe('Group creation', () => {
       cy.contains(groupForDelete).should('not.exist');
     });
 
+    it('Groupless students section contains all students before groups are generated', () => {
+      cy.visit(`/course/${course.id}`);
+      cy.wait(500);
+      cy.get('[data-cy="manage-groups-button"]').click();
+
+      cy.get('[data-cy="groupless-container"]').within(() => {
+        cy.get('tr').should('have.length', users.length + 1);
+        for (let i = 0; i < users.length; i++) {
+          cy.contains(users[i].firstname);
+        }
+      });
+    });
+
+    it('Groupless students section is empty after generating new groups', () => {
+      cy.visit(`/course/${course.id}`);
+      cy.get('[data-cy="manage-groups-button"]').click();
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.wait(300);
+
+      cy.get('[data-cy="groupless-container"]').should('not.exist');
+    });
+
+    it('Students removed from groups are shown in groupless students', () => {
+      const groupToRemoveFrom = 'Remove';
+
+      cy.visit(`/course/${course.id}`);
+      cy.get('[data-cy="manage-groups-button"]').click();
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+      cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(() => {
+        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
+      });
+      cy.get('[data-cy="group-name-input"]').type(`{selectAll}${groupToRemoveFrom}`);
+
+      cy.contains(users[0].firstname).parents('[data-cy="draggable-row"]').within(() => {
+        cy.get('[data-cy="remove-from-group-button"]').click();
+      });
+
+      cy.contains(groupToRemoveFrom)
+        .parents('[data-cy="group-container"]')
+        .should('not.contain', users[0].firstname);
+
+      cy.get('[data-cy="groupless-container"]').contains(users[0].firstname);
+    });
+
+
     // No need to test publish feature here, it's done in student tests.
   });
-})
+});

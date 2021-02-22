@@ -1,14 +1,15 @@
+/* eslint-disable react/jsx-wrap-multilines */
 import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
 import { Table, Header, List, Button, Segment, Popup, Input, Label, Form, Icon } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import _ from 'lodash';
+import { useMutation } from '@apollo/react-hooks';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import DraggableRow from './DraggableRow';
 import questionSwitch, { count } from '../../util/functions';
 import HourDisplay from '../misc/HourDisplay';
 import { FIND_GROUP_FOR_ONE_STUDENT } from '../../GqlQueries';
-import { useMutation } from '@apollo/react-hooks';
 
 export default ({
   course,
@@ -19,7 +20,7 @@ export default ({
   setGroupMessages,
   setRegistrationsWithoutGroups,
   grouplessStudents,
-  setGrouplessStudents
+  setGrouplessStudents,
 }) => {
   const [privacyToggle] = useStore('toggleStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
@@ -31,7 +32,7 @@ export default ({
   const [findGroupForOne] = useMutation(FIND_GROUP_FOR_ONE_STUDENT);
 
   const intl = useIntl();
-  
+
   useEffect(() => {
     if (groups.length > 0) {
       setShowGroupTimes(Array(groups.length).fill(false));
@@ -148,17 +149,20 @@ export default ({
 
   const findGroup = async (fromTable, fromIndex) => {
     const student = groups[fromTable].students[fromIndex];
-    console.log('findgroup', student.id)
+    console.log('findgroup', student.id);
     const groupsWithUserIds = groups.map(group => {
-      const userIds = group.students.map(student => student.id)
-      return ({
+      const userIds = group.students.map(student => student.id);
+      return {
         userIds,
         id: group.groupId,
         groupName: group.groupName,
-        groupMessage: group.groupMessage
-      })
-    })
-    const variables = { data: { courseId: course.id, groups: groupsWithUserIds }, studentId: student.id };
+        groupMessage: group.groupMessage,
+      };
+    });
+    const variables = {
+      data: { courseId: course.id, groups: groupsWithUserIds },
+      studentId: student.id,
+    };
     try {
       const res = await findGroupForOne({
         variables,
@@ -166,7 +170,7 @@ export default ({
     } catch (e) {
       console.log(e);
     }
-  }
+  };
 
   const removeStudentFromGroup = (fromTable, fromIndex) => {
     const newGroups = _.cloneDeep(groups);
@@ -176,7 +180,7 @@ export default ({
     setGrouplessStudents([...grouplessStudents, removed[0]]);
     setGroupsUnsaved(true);
     setRegistrationsWithoutGroups(true);
-  }
+  };
 
   const handleShowGroupTimesClick = index => {
     const newGroupTimesVisible = [...groupTimesVisible];
@@ -272,7 +276,6 @@ export default ({
                     <FormattedMessage id="groups.students" />
                   </Header>
                   <Table singleLine fixed>
-
                     <Table.Header>
                       <DraggableRow action={swapElements} index={0} tableIndex={tableIndex}>
                         <Table.HeaderCell>
@@ -291,7 +294,7 @@ export default ({
                             </Table.HeaderCell>
                           ) : null
                         )}
-                        <Table.HeaderCell/>
+                        <Table.HeaderCell />
                       </DraggableRow>
                     </Table.Header>
 
@@ -303,7 +306,6 @@ export default ({
                           index={rowIndex}
                           tableIndex={tableIndex}
                         >
-
                           <Popup
                             content={() => popupTimesDisplay(student)}
                             trigger={
@@ -318,64 +320,63 @@ export default ({
                           <Table.Cell>
                             {privacyToggle ? dummyStudentNumber : student.studentNo}
                           </Table.Cell>
-                          
+
                           <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
                           {regByStudentId[student.studentNo]?.questionAnswers.map(qa =>
                             questionSwitch(qa)
                           )}
 
                           <Table.Cell>
-
-                          <Popup
-                            data-cy="student-options-popup"
-                            content={
-                              <Form>
-                                <Form.Field>
-                                  <Form.Select
-                                    data-cy="switch-group-select"
-                                    label={intl.formatMessage({ id: 'groups.switchGroupLabel' })}
-                                    options={switchGroupOptions}
-                                    defaultValue={switchGroupOptions[tableIndex].value}
-                                    onChange={(e, { value }) =>
-                                      handleSwitchingGroup(tableIndex, rowIndex, value)
-                                    }
-                                  />
-                                </Form.Field>
-                              </Form>
-                            }
-                            on="click"
-                            trigger={
+                            <Popup
+                              data-cy="student-options-popup"
+                              content={
+                                <Form>
+                                  <Form.Field>
+                                    <Form.Select
+                                      data-cy="switch-group-select"
+                                      label={intl.formatMessage({ id: 'groups.switchGroupLabel' })}
+                                      options={switchGroupOptions}
+                                      defaultValue={switchGroupOptions[tableIndex].value}
+                                      onChange={(e, { value }) =>
+                                        handleSwitchingGroup(tableIndex, rowIndex, value)
+                                      }
+                                    />
+                                  </Form.Field>
+                                </Form>
+                              }
+                              on="click"
+                              trigger={
                                 <Button data-cy="switch-group-button">
                                   <FormattedMessage id="groups.switchGroupButton" />
                                 </Button>
-                            }/>
+                              }
+                            />
 
                             <Popup
-                              content={intl.formatMessage({id: 'groups.removeFromGroupLabel'})}
+                              content={intl.formatMessage({ id: 'groups.removeFromGroupLabel' })}
                               trigger={
                                 <Button
-                                  icon='delete'
-                                  color='green'
-                                  onClick={(e) => findGroup(tableIndex, rowIndex)}
+                                  icon="delete"
+                                  color="green"
+                                  onClick={() => findGroup(tableIndex, rowIndex)}
                                 />
                               }
                             />
 
                             <Popup
-                              content={intl.formatMessage({id: 'groups.removeFromGroupLabel'})}
+                              content={intl.formatMessage({ id: 'groups.removeFromGroupLabel' })}
                               trigger={
                                 <Button
-                                  icon='delete'
-                                  color='red'
-                                  onClick={(e) => removeStudentFromGroup(tableIndex, rowIndex)}
+                                  data-cy="remove-from-group-button"
+                                  icon="delete"
+                                  color="red"
+                                  onClick={() => removeStudentFromGroup(tableIndex, rowIndex)}
                                 />
                               }
                             />
-
-                            </Table.Cell>
+                          </Table.Cell>
                         </DraggableRow>
                       ))}
-
                     </Table.Body>
                   </Table>
 
