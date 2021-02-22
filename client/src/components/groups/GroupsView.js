@@ -17,7 +17,7 @@ export default ({
   registrations, 
   regByStudentId,
   groups,
-  setGroups,
+  setGroups
 }) => {
   const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
@@ -35,7 +35,6 @@ export default ({
   const [groupNames, setGroupNames] = useState(['']);
   const [groupSorting, setGroupSorting] = useState('nameAscending');
   const [registrationsWithoutGroups, setRegistrationsWithoutGroups] = useState(false);
-  const [showGrouplessStudents, setShowGrouplessStudents] = useState(false);
 
   const intl = useIntl();
 
@@ -322,17 +321,6 @@ export default ({
               <FormattedMessage id='groupsView.publishGroupsBtn' />
             </ConfirmationButton>}
 
-            {/*groups.length > 0 &&*/ registrationsWithoutGroups && 
-              <Button
-                color='grey'
-                onClick={(e) => {
-                  setShowGrouplessStudents(!showGrouplessStudents);
-                }}
-              >
-                <FormattedMessage id='groupsView.showGrouplessStudents' />
-              </Button>
-            }
-
           </Form>
           <p />
 
@@ -351,7 +339,7 @@ export default ({
             {intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' })}
           </SuccessMessage>}
 
-          {showGrouplessStudents && registrationsWithoutGroups &&
+          {registrationsWithoutGroups &&
           <GrouplessStudents 
             grouplessStudents={grouplessStudents} 
           />}
