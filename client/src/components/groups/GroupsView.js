@@ -341,7 +341,10 @@ export default ({
 
           {registrationsWithoutGroups &&
           <GrouplessStudents 
-            grouplessStudents={grouplessStudents} 
+            grouplessStudents={grouplessStudents}
+            setGrouplessStudents={setGrouplessStudents}
+            setRegistrationsWithoutGroups={setRegistrationsWithoutGroups}
+            course={course}
           />}
 
           <Groups

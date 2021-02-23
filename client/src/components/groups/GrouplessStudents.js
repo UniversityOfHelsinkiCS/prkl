@@ -1,8 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Segment, Label, Popup, Form, Button } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { FIND_GROUP_FOR_ONE_STUDENT } from '../../GqlQueries';
+import { useMutation } from '@apollo/react-hooks';
+import { useStore } from 'react-hookstore';
 
-export default ({ grouplessStudents }) => {
+export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrationsWithoutGroups }) => {
+
+  const [findGroupForOne] = useMutation(FIND_GROUP_FOR_ONE_STUDENT);
+  const [groups, setGroups] = useStore('groupsStore');
+
+  const intl = useIntl();
+
+  const findGroup = async ( student ) => {
+    console.log(student);
+    const groupsWithUserIds = groups.map(group => {
+      const userIds = group.students.map(student => student.id);
+      return {
+        userIds,
+        id: group.groupId,
+        groupName: group.groupName,
+        groupMessage: group.groupMessage,
+      };
+    });
+    const variables = {
+      data: { courseId: course.id, groups: groupsWithUserIds },
+      studentId: student.id,
+    };
+    try {
+      const res = await findGroupForOne({
+        variables,
+      });
+
+      const mappedGroups = res.data.findGroupForOne.map((e,i) => {
+        return {
+          groupId: '',
+          students: e.students,
+          groupMessage: '',
+          groupName: `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${i+1}`
+        }
+      });
+      setGroups(mappedGroups);
+      const newGroupless = grouplessStudents.filter(groupless => groupless !== student)
+      console.log(newGroupless)
+      setGrouplessStudents(newGroupless);
+    } catch (e) {
+      console.log(e);
+    }
+
+//    setGroups(res);
+  };
+
   return (
     <div>
       <Segment data-cy="groupless-container">
@@ -51,6 +99,17 @@ export default ({ grouplessStudents }) => {
                   </Table.Cell>
 
                   <Table.Cell>
+
+                  <Popup
+                    content={intl.formatMessage({ id: 'groups.findGroupForOne' })}
+                    trigger={
+                      <Button
+                        content='Find Group'
+                        color="green"
+                        onClick={() => findGroup(student)}
+                      />
+                    }
+                  />
 
                   {/*<Popup
                     data-cy="student-options-popup"

@@ -134,7 +134,7 @@ export class GroupResolver {
 
     const newGroups = findGroupForOneStudent(student, grouping);
     return Promise.all(
-      groups.map(async g => {
+      newGroups.map(async g => {
         const students = await User.findByIds(g.userIds);
         return Group.create({ courseId, students });
       }),

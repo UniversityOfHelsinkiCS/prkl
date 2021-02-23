@@ -198,5 +198,7 @@ export const findGroupForOneStudent = (student: Registration, grouping: Grouping
     }
   });
   
+//  console.log(groupsWithWorkingTimesMap)
+
   return groupsWithWorkingTimesMap.map(group => ({ userIds: group.Group.map(registration => registration.student.id) } as GroupInput));
 };

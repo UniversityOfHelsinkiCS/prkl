@@ -168,6 +168,7 @@ export default {
     'groups.message': 'Message for the group:',
     'groups.messageInfo': 'Use this to send a message to members of this group...',
     'groups.students': 'Students in this group:',
+    'groups.findGroupForOne': 'Find group for student',
 
     'groupsView.noRegistrations': 'No registrations',
     'groupsView.matchingTimes': 'Matching times',
