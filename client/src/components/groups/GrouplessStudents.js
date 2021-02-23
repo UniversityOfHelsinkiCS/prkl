@@ -43,7 +43,13 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
       setGroups(mappedGroups);
       const newGroupless = grouplessStudents.filter(groupless => groupless !== student)
       console.log(newGroupless)
+
+      newGroupless.length > 0 ?
+        setRegistrationsWithoutGroups(true) :
+        setRegistrationsWithoutGroups(false);
+        
       setGrouplessStudents(newGroupless);
+
     } catch (e) {
       console.log(e);
     }
