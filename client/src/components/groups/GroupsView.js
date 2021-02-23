@@ -12,9 +12,9 @@ import SuccessMessage from '../ui/SuccessMessage';
 import { Prompt } from 'react-router-dom';
 import _ from 'lodash';
 
-export default ({ 
-  course, 
-  registrations, 
+export default ({
+  course,
+  registrations,
   regByStudentId,
   groups,
   setGroups
@@ -22,7 +22,7 @@ export default ({
   const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
-  
+
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [user] = useStore('userStore');
   const [grouplessStudents, setGrouplessStudents] = useStore('grouplessStudentsStore');
@@ -78,14 +78,14 @@ export default ({
     });
 
     registrations.forEach(r => {
-      if (!studentIds.includes(r.student.id)) 
+      if (!studentIds.includes(r.student.id))
         groupless.push(r.student);
     });
 
     groupless.length > 0 ?
       setRegistrationsWithoutGroups(true) :
       setRegistrationsWithoutGroups(false);
-      
+
     setGrouplessStudents(groupless);
   }, [registrationsWithoutGroups])
 
@@ -204,7 +204,7 @@ export default ({
     handleGroupsMessagesAndNames(sortGroups(groups, value));
     setGroupsUnsaved(false);
   }
-  
+
   const sortOptions = [
     {
       key: 'By name, ascending',
@@ -340,7 +340,7 @@ export default ({
           </SuccessMessage>}
 
           {registrationsWithoutGroups &&
-          <GrouplessStudents 
+          <GrouplessStudents
             grouplessStudents={grouplessStudents}
             setGrouplessStudents={setGrouplessStudents}
             setRegistrationsWithoutGroups={setRegistrationsWithoutGroups}
