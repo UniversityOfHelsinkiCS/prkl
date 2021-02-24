@@ -253,6 +253,7 @@ export default ({ id }) => {
                                 course={course}
                                 registrations={registrations}
                                 setRegistrations={setRegistrations}
+                                regByStudentId={regByStudentId}
                               />
                               <br></br>
                               <Button onClick={handleRegistrationsView} color="blue" data-cy="back-to-info-from-groups-button">
