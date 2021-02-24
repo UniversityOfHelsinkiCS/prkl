@@ -20,7 +20,7 @@ describe('Group creation', () => {
       // Refresh to check that no info was stored
       cy.reload();
       cy.get('[data-cy="manage-groups-button"]').click();
-      cy.get('table').should('not.exist');
+      cy.get('[data-cy="generated-groups"]').should('not.exist');
       cy.contains('No groups generated');
 
       // Generate groups and save them

@@ -6,6 +6,7 @@ import { hoursScorePair } from "./evaluateByWorkingHours";
 
 import { performance } from "perf_hooks";
 
+// Remove unused attributes?
 export const evaluateBoth = (group: Group, start, end): number => {
   const uniquePairs = combinationsOfTwo(group);
   const hourScores = uniquePairs.map(hoursScorePair);
