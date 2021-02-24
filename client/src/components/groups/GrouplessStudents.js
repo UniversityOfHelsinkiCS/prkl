@@ -112,6 +112,7 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
                       <Button
                         content='Find Group'
                         color="green"
+                        data-cy="find-group-button"
                         onClick={() => findGroup(student)}
                       />
                     }
