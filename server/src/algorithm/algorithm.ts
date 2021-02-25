@@ -182,7 +182,7 @@ export const findGroupForOneStudent = (student: Registration, grouping: Grouping
   }
 */
 
-  let topScore = 0;
+  let topScore = -1;
   let groupId = -1;
 
   for (let i = 0; i < groupWithMostCommonHours.size; i++) {
@@ -191,14 +191,15 @@ export const findGroupForOneStudent = (student: Registration, grouping: Grouping
       groupId = i;
     }
   }
+
   
-  groupsWithWorkingTimesMap.map(group => {
+  groupsWithWorkingTimesMap.forEach(group => {
     if (group.id === groupId) {
       group.Group.push(student);
     }
   });
   
-//  console.log(groupsWithWorkingTimesMap)
+  console.log(groupsWithWorkingTimesMap)
 
   return groupsWithWorkingTimesMap.map(group => ({ userIds: group.Group.map(registration => registration.student.id) } as GroupInput));
 };
