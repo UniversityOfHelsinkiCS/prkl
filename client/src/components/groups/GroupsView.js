@@ -87,7 +87,7 @@ export default ({
       setRegistrationsWithoutGroups(false);
 
     setGrouplessStudents(groupless);
-  }, [registrationsWithoutGroups])
+  }, [registrationsWithoutGroups, groups])
 
   if (error !== undefined) {
     console.log('error:', error);
