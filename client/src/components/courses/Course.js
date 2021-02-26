@@ -39,7 +39,7 @@ export default ({ id }) => {
     variables: { id },
   });
 
-  const { loading: regLoading, data: regData } = useQuery(COURSE_REGISTRATION, {
+  const { loading: regLoading, data: regData, refetch: refetchRegistrations } = useQuery(COURSE_REGISTRATION, {
     skip: course.teachers === undefined
       || (!course.teachers.some(t => t.id === user.id) && user.role !== roles.ADMIN_ROLE),
     variables: { courseId: id },
@@ -66,6 +66,7 @@ export default ({ id }) => {
         r.questionAnswers.forEach(qa => qa.answerChoices.sort((a, b) => a.order - b.order));
         return r;
       });
+
       setRegistrations(reg);
       setRegByStudentId(
         reg.reduce((acc, elem) => {
@@ -250,7 +251,7 @@ export default ({ id }) => {
                               <RegistrationList
                                 course={course}
                                 registrations={registrations}
-                                setRegistrations={setRegistrations}
+                                refetchRegistrations={refetchRegistrations}
                                 regByStudentId={regByStudentId}
                               />
                               <br></br>

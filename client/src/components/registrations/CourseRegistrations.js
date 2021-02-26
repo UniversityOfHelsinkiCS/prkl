@@ -11,7 +11,7 @@ import ConfirmationButton from '../ui/ConfirmationButton';
 import HourDisplay from '../misc/HourDisplay';
 import { TIMES } from '../../util/questionTypes';
 
-const CourseRegistrations = ({ course, registrations, setRegistrations, regByStudentId }) => {
+const CourseRegistrations = ({ course, registrations, refetchRegistrations, regByStudentId }) => {
   const intl = useIntl();
   const [privacyToggle] = useStore('toggleStore');
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
@@ -24,8 +24,7 @@ const CourseRegistrations = ({ course, registrations, setRegistrations, regByStu
       await deleteRegistration({
         variables,
       });
-      const newRegs = registrations.filter(r => r.student.id !== studentId);
-      setRegistrations(newRegs);
+      refetchRegistrations();
     } catch (deletionError) {
       console.log('error:', deletionError);
     }

@@ -3,7 +3,7 @@ import { useStore } from 'react-hookstore';
 import CourseRegistrations from './CourseRegistrations';
 import roles from '../../util/userRoles';
 
-export default ({ course, registrations, setRegistrations, regByStudentId }) => {
+export default ({ course, registrations, refetchRegistrations, regByStudentId }) => {
   const [user] = useStore('userStore');
 
   const hasAccess = () => {
@@ -24,7 +24,7 @@ export default ({ course, registrations, setRegistrations, regByStudentId }) => 
             <CourseRegistrations
               course={course}
               registrations={registrations}
-              setRegistrations={setRegistrations}
+              refetchRegistrations={refetchRegistrations}
               regByStudentId={regByStudentId}
             />
           </div>
