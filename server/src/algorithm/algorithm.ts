@@ -81,11 +81,16 @@ export const formGroups: Algorithm = (targetGroupSize: number, registrations: Re
   return grouping.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput));
 };
 
-export const findGroupForOneStudent = (student: Registration, grouping: Grouping): GroupInput[] => {
+export const findGroupForOneStudent = (student: Registration, grouping: Grouping, maxGroupSize: number): GroupInput[] => {
   
+  const tooLargeGroups = [];
+
   const addWorkingTimesMapToGroup = (grouping: Grouping): GroupTimes[] => {
     return grouping.map((group, index) => {
       const groupWorkingTimes = new Map<number, Map<number,number>>();
+      if (group.length >= maxGroupSize) {
+        tooLargeGroups.push(index);
+      }
       return {
         id: index,
         Group: group,
@@ -186,7 +191,7 @@ export const findGroupForOneStudent = (student: Registration, grouping: Grouping
   let groupId = -1;
 
   for (let i = 0; i < groupWithMostCommonHours.size; i++) {
-    if (groupWithMostCommonHours.get(i) > topScore) {
+    if (groupWithMostCommonHours.get(i) > topScore && !tooLargeGroups.includes(i)) {
       topScore = groupWithMostCommonHours.get(i);
       groupId = i;
     }

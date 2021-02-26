@@ -281,8 +281,8 @@ export const GENERATE_GROUPS = gql`
 `;
 
 export const FIND_GROUP_FOR_ONE_STUDENT = gql`
-  mutation findGroupForOne($data: GroupListInput!, $studentId: String!) {
-    findGroupForOne(data: $data, studentId: $studentId) {
+  mutation findGroupForOne($data: GroupListInput!, $studentId: String!, $maxGroupSize: Float!) {
+    findGroupForOne(data: $data, studentId: $studentId, maxGroupSize: $maxGroupSize) {
       courseId
       students {
         id

@@ -93,7 +93,11 @@ export class GroupResolver {
 
   @Authorized(STAFF)
   @Mutation(() => [Group])
-  async findGroupForOne(@Arg("data") data: GroupListInput, @Arg("studentId") studentId: string): Promise<Group[]> {
+  async findGroupForOne(
+      @Arg("data") data: GroupListInput,
+      @Arg("studentId") studentId: string,
+      @Arg("maxGroupSize") maxGroupSize: number
+    ): Promise<Group[]> {
     const { courseId, groups } = data;
 
     let student;
@@ -132,7 +136,7 @@ export class GroupResolver {
 
     const grouping = groupsToGroupingType(groups, registrations);
 
-    const newGroups = findGroupForOneStudent(student, grouping);
+    const newGroups = findGroupForOneStudent(student, grouping, maxGroupSize);
     return Promise.all(
       newGroups.map(async g => {
         const students = await User.findByIds(g.userIds);
