@@ -30,7 +30,7 @@ export default {
       'Answer options in single choice questions are assumed to be on a continuum '
       + '(ie. choices 1 and 2 are more similar than 1 and 3), give options in order. '
       + 'In multiple choice question the order does not matter.',
-    'courseForm.publishAlert':'Note: Admin privileges are required to edit published courses!',
+    'courseForm.publishAlert': 'Note: Admin privileges are required to edit published courses!',
     'courseForm.confirmSubmit': 'Confirm course creation?',
     'courseForm.confirmPublishSubmit': 'Create and publish course?',
     'courseForm.teacherInfo': 'Choose teachers for your course from this list',
@@ -42,12 +42,15 @@ export default {
     'courseForm.calendarDescValidationFailMsg': 'Calendar description required',
 
     'editView.pageTitle': 'Modify Course',
-    'editView.coursePublishedNotification': "Course has been published, adding or removing new questions is not allowed. Texts of existing questions and their answer choices may be edited.",
-    'editView.confirmPublishSubmit': 'Confirm all edits and publish course? Published courses can only be edited by admins!',
+    'editView.coursePublishedNotification':
+      'Course has been published, adding or removing new questions is not allowed. Texts of existing questions and their answer choices may be edited.',
+    'editView.confirmPublishSubmit':
+      'Confirm all edits and publish course? Published courses can only be edited by admins!',
     'editView.confirmSubmit': 'Confirm all edits?',
     'editView.closeRegistrationLabel': 'Immediately close registration (for admin)',
     'editView.closeRegistrationBtn': 'Close registration',
-    'editView.pastDeadlineWarning': 'Warning: You have set a registration deadline that has already passed. Registration will be effectively closed.',
+    'editView.pastDeadlineWarning':
+      'Warning: You have set a registration deadline that has already passed. Registration will be effectively closed.',
     'editView.cancelEditsButton': 'Cancel',
     'editView.confirmCancelEdits': 'Discard all changes?',
 
@@ -94,22 +97,23 @@ export default {
     'course.delete': 'Delete course',
     'course.confirmDelete': 'Delete this course?',
     'course.userHasRegistered': 'Already registered!',
-		'course.groupsComeHere': 'Groups are still under construction...',
-		'course.disabledShowUserGroup': 'Groups are not ready yet...',
-		'course.contactTeacher': 'If you want to cancel your registration, please contact course teacher.',
+    'course.groupsComeHere': 'Groups are still under construction...',
+    'course.disabledShowUserGroup': 'Groups are not ready yet...',
+    'course.contactTeacher':
+      'If you want to cancel your registration, please contact course teacher.',
     'course.seeGroups': 'Generated groups',
     'course.hideTeachers': 'Hide teachers',
     'course.showTeachers': 'Show teachers',
-		'course.switchGroupsView': 'Manage groups',
-		'course.switchInfoView': 'Back to course info',
-		'course.switchQuestionsView': 'Join groups here',
-		'course.showUserGroup': 'Check your group here',
+    'course.switchGroupsView': 'Manage groups',
+    'course.switchInfoView': 'Back to course info',
+    'course.switchQuestionsView': 'Join groups here',
+    'course.showUserGroup': 'Check your group here',
     'course.switchRegistrationsView': 'Show enrolled students',
     'course.switchEditView': 'Edit course',
-		'course.noTeachers': 'This course has no teachers. You will be set as a teacher',
-		'course.joinToGroups': 'Join group here',
+    'course.noTeachers': 'This course has no teachers. You will be set as a teacher',
+    'course.joinToGroups': 'Join group here',
 
-		'courseInfo.teachers': 'Teachers: ',
+    'courseInfo.teachers': 'Teachers: ',
 
     'studentInfo.header': 'Student Info',
     'studentInfo.fullname': 'Name: {fullname}',
@@ -123,7 +127,8 @@ export default {
     'forms.submitRegistration': 'Register On The Course',
     'forms.confirmRegistration': 'Confirm Registration',
     'forms.registrationSuccess': 'Great success! Your registration was received.',
-    'forms.toc': 'Assembler may disclose my name and e-mail address to students in my group (required).',
+    'forms.toc':
+      'Assembler may disclose my name and e-mail address to students in my group (required).',
 
     'timeForm.hours': 'Hour',
     'timeForm.monday': 'Mon',
@@ -143,6 +148,7 @@ export default {
     'courseRegistration.lastName': 'Last name',
     'courseRegistration.studentNumber': 'Student number',
     'courseRegistration.email': 'Email',
+    'courseRegistration.times': 'Times',
     'courseRegistration.cancel': 'Cancel registration',
     'courseRegistration.remove': 'Remove from course',
     'courseRegistration.cancelConfirmation': 'Confirm registration cancelation?',
@@ -174,19 +180,20 @@ export default {
     'groupsView.matchingTimes': 'Matching times',
     'groupsView.maxGroupSize': 'Maximum group size',
     'groupsView.targetGroupSize': 'Target group size',
-    'groupsView.confirmGroupGeneration':
-      'Are you sure you want to generate new groups?',
+    'groupsView.confirmGroupGeneration': 'Are you sure you want to generate new groups?',
     'groupsView.confirmGroupsSave': 'Save and overwrite existing groups?',
     'groupsView.generateGroups': 'Generate new groups',
     'groupsView.saveGroups': 'Save groups',
     'groupsView.unsavedGroupsInfo': 'Remember to save groups!',
-    'groupsView.unsavedGroupsPrompt' : 'Warning: you have unsaved edits to your groups. Are you sure you want to discard them?',
+    'groupsView.unsavedGroupsPrompt':
+      'Warning: you have unsaved edits to your groups. Are you sure you want to discard them?',
     'groupsView.groupsSavedSuccessMsg': 'New groups saved.',
     'groupsView.confirmCancelGroups': 'Are you sure?',
     'groupsView.cancelGroups': 'Cancel',
     'groupsView.publishGroupsBtn': 'Publish groups',
     'groupsView.publishGroupsConfirm': 'Are you sure you want to publish groups?',
-    'groupsView.publishedGroupsInfo': 'Groups have been published, future changes are visible immediately to students.',
+    'groupsView.publishedGroupsInfo':
+      'Groups have been published, future changes are visible immediately to students.',
     'groupsView.defaultGroupNamePrefix': 'Group',
     'groupsView.groupListingOrder': 'Groups listing order',
     'groupsView.showGrouplessStudents': 'Toggle groupless students',

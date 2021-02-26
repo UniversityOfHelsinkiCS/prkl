@@ -1,33 +1,44 @@
+/* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
-import { Table } from 'semantic-ui-react';
+import { Table, Popup, Icon, Button } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from 'react-apollo';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import { DELETE_REGISTRATION } from '../../GqlQueries';
-import questionSwitch from "../../util/functions";
+import questionSwitch, { count } from '../../util/functions';
 import ConfirmationButton from '../ui/ConfirmationButton';
+import HourDisplay from '../misc/HourDisplay';
+import { TIMES } from '../../util/questionTypes';
 
-
-const CourseRegistrations = ({ course, registrations, setRegistrations }) => {
+const CourseRegistrations = ({ course, registrations, setRegistrations, regByStudentId }) => {
   const intl = useIntl();
   const [privacyToggle] = useStore('toggleStore');
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
   const courseId = course.id;
 
-  const handleRegistrationDeletion = async (student) => {
+  const handleRegistrationDeletion = async student => {
     const studentId = student.id;
     const variables = { studentId, courseId };
     try {
       await deleteRegistration({
-        variables
+        variables,
       });
       const newRegs = registrations.filter(r => r.student.id !== studentId);
       setRegistrations(newRegs);
     } catch (deletionError) {
       console.log('error:', deletionError);
     }
-  }
+  };
+
+  const popupTimesDisplay = student => (
+    <HourDisplay
+      groupId={student.id}
+      header={`${student.firstname} ${student.lastname}`}
+      students={1}
+      times={count([regByStudentId[student.studentNo]])}
+    />
+  );
 
   return (
     <>
@@ -51,8 +62,14 @@ const CourseRegistrations = ({ course, registrations, setRegistrations }) => {
               <Table.HeaderCell>
                 <FormattedMessage id="courseRegistration.email" />
               </Table.HeaderCell>
+              {course.questions.some(q => q.questionType === TIMES) ? (
+                <Table.HeaderCell>
+                  <FormattedMessage id="courseRegistration.times" />
+                </Table.HeaderCell>
+              ) : null}
+
               {course.questions.map(question =>
-                question.questionType !== 'times' ? (
+                question.questionType !== TIMES ? (
                   <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
                 ) : null
               )}
@@ -69,11 +86,26 @@ const CourseRegistrations = ({ course, registrations, setRegistrations }) => {
                   {privacyToggle ? dummyStudentNumber : reg.student.studentNo}
                 </Table.Cell>
                 <Table.Cell>{privacyToggle ? dummyEmail : reg.student.email}</Table.Cell>
-                {reg.questionAnswers.map(qa => (questionSwitch(qa)))}
+                {course.questions.some(q => q.questionType === TIMES) ? (
+                  <Popup
+                    content={() => popupTimesDisplay(reg.student)}
+                    trigger={
+                      <Table.Cell>
+                        <Button icon>
+                          <Icon name="calendar alternate outline" color="blue" size="large" />
+                        </Button>
+                      </Table.Cell>
+                    }
+                  />
+                ) : null}
+
+                {reg.questionAnswers.map(qa => questionSwitch(qa))}
                 <Table.Cell>
                   <ConfirmationButton
                     onConfirm={() => handleRegistrationDeletion(reg.student)}
-                    modalMessage={intl.formatMessage({ id: "courseRegistration.removeConfirmation" }) + ' (' + reg.student.firstname + ' ' + reg.student.lastname + ')'}
+                    modalMessage={`${intl.formatMessage({
+                      id: 'courseRegistration.removeConfirmation',
+                    })} (${reg.student.firstname} ${reg.student.lastname})`}
                     buttonDataCy="remove-registration-button"
                     color="red"
                   >

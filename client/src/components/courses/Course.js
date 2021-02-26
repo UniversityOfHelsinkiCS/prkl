@@ -169,8 +169,6 @@ export default ({ id }) => {
 
   return (
     <div>
-      {console.log(groups)}
-
       {/* Course info, hide in edit and questions views */}
       <h2><a href={`https://courses.helsinki.fi/fi/${course.code}`}>{course.code}</a>{` - ${course.title}`}</h2>
       { view !== 'edit' && view !== 'questions' && <div>
@@ -253,6 +251,7 @@ export default ({ id }) => {
                                 course={course}
                                 registrations={registrations}
                                 setRegistrations={setRegistrations}
+                                regByStudentId={regByStudentId}
                               />
                               <br></br>
                               <Button onClick={handleRegistrationsView} color="blue" data-cy="back-to-info-from-groups-button">
