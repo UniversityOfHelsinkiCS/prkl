@@ -175,6 +175,7 @@ export default {
     'groups.messageInfo': 'Use this to send a message to members of this group...',
     'groups.students': 'Students in this group:',
     'groups.findGroupForOne': 'Find group for student',
+    'groups.maxSize': 'Max Group Size',
 
     'groupsView.noRegistrations': 'No registrations',
     'groupsView.matchingTimes': 'Matching times',

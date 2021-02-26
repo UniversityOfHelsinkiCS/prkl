@@ -197,7 +197,6 @@ export const findGroupForOneStudent = (student: Registration, grouping: Grouping
     }
   }
 
-  
   groupsWithWorkingTimesMap.forEach(group => {
     if (group.id === groupId) {
       group.Group.push(student);

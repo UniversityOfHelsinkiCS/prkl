@@ -9,6 +9,7 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
 
   const [findGroupForOne] = useMutation(FIND_GROUP_FOR_ONE_STUDENT);
   const [groups, setGroups] = useStore('groupsStore');
+  const [maxGroupSize, setMaxGroupSize] = useState(5);
 
   const intl = useIntl();
 
@@ -26,6 +27,7 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
     const variables = {
       data: { courseId: course.id, groups: groupsWithUserIds },
       studentId: student.id,
+      maxGroupSize: maxGroupSize
     };
     try {
       const res = await findGroupForOne({
@@ -84,6 +86,9 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
                 <FormattedMessage id="groups.email" />
               </Table.HeaderCell>
 
+              <Table.HeaderCell>
+                <FormattedMessage id="groups.maxSize" />
+              </Table.HeaderCell>
               <Table.HeaderCell />
             </Table.Row>
           </Table.Header>
@@ -105,19 +110,34 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
                   </Table.Cell>
 
                   <Table.Cell>
+                    <Form.Input
+                      required
+                      value={maxGroupSize}
+                      type="number"
+                      min="1"
+                      max="9999999"
 
-                  <Popup
-                    content={intl.formatMessage({ id: 'groups.findGroupForOne' })}
-                    trigger={
-                      <Button
-                        content='Find Group'
-                        color="green"
-                        data-cy="find-group-button"
-                        onClick={() => findGroup(student)}
-                      />
-                    }
-                  />
-
+                      onChange={event => setMaxGroupSize(Number.parseInt(event.target.value, 10)
+                        ? Number.parseInt(event.target.value, 10)
+                        : '')}
+                    />
+                  </Table.Cell>
+                  
+                  <Table.Cell>
+                    <Popup
+                        content={intl.formatMessage({ id: 'groups.findGroupForOne' })}
+                        trigger={
+                          <Button
+                            content='Find Group'
+                            color="green"
+                            data-cy="find-group-button"
+                            onClick={() => findGroup(student)}
+                          />
+                        }
+                    />
+                  </Table.Cell>
+                    
+                  
                   {/*<Popup
                     data-cy="student-options-popup"
                     content={
@@ -141,8 +161,6 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
                           {'Add student to a group'}
                         </Button>
                     }/>*/}
-
-                  </Table.Cell>
 
                 </Table.Row>
               );
