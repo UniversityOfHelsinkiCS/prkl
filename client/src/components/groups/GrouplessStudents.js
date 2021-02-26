@@ -4,6 +4,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { FIND_GROUP_FOR_ONE_STUDENT } from '../../GqlQueries';
 import { useMutation } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
+import _ from 'lodash';
 
 export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrationsWithoutGroups }) => {
 
@@ -14,7 +15,6 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
   const intl = useIntl();
 
   const findGroup = async ( student ) => {
-    console.log(student);
     const groupsWithUserIds = groups.map(group => {
       const userIds = group.students.map(student => student.id);
       return {
@@ -44,7 +44,6 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
       });
       setGroups(mappedGroups);
       const newGroupless = grouplessStudents.filter(groupless => groupless !== student)
-      console.log(newGroupless)
 
       newGroupless.length > 0 ?
         setRegistrationsWithoutGroups(true) :
@@ -55,9 +54,34 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
     } catch (e) {
       console.log(e);
     }
-
-//    setGroups(res);
   };
+
+  const handleSwitchingGroup = ( student, toGroup ) => {
+    const newGroups = groups[toGroup];
+    newGroups.students.push(student);
+    setGroups(groups);
+
+    const newGroupless = grouplessStudents.filter(groupless => groupless !== student)
+
+      newGroupless.length > 0 ?
+        setRegistrationsWithoutGroups(true) :
+        setRegistrationsWithoutGroups(false);
+        
+      setGrouplessStudents(newGroupless);
+  }
+
+  const switchGroupOptions = groups.map((group, tableIndex) => ({
+    key: tableIndex,
+    text:
+      group.groupName ||
+      `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${tableIndex + 1}`,
+    value: tableIndex,
+  }));
+
+  const findGroupForall = async () => {
+
+  }
+  
 
   return (
     <div>
@@ -90,6 +114,7 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
                 <FormattedMessage id="groups.maxSize" />
               </Table.HeaderCell>
               <Table.HeaderCell />
+              <Table.HeaderCell />
             </Table.Row>
           </Table.Header>
 
@@ -116,7 +141,6 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
                       type="number"
                       min="1"
                       max="9999999"
-
                       onChange={event => setMaxGroupSize(Number.parseInt(event.target.value, 10)
                         ? Number.parseInt(event.target.value, 10)
                         : '')}
@@ -134,6 +158,32 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
                             onClick={() => findGroup(student)}
                           />
                         }
+                    />
+                  </Table.Cell>
+
+                  <Table.Cell>
+                    <Popup
+                      data-cy="student-options-popup"
+                      content={
+                        <Form>
+                          <Form.Field>
+                            <Form.Select
+                              data-cy="switch-group-select"
+                              label={intl.formatMessage({ id: 'groups.switchGroupLabel' })}
+                              options={switchGroupOptions}
+                              onChange={(e, { value }) =>
+                              handleSwitchingGroup(student, value)
+                              }
+                            />
+                          </Form.Field>
+                        </Form>
+                      }
+                    on="click"
+                    trigger={
+                      <Button data-cy="switch-group-button">
+                        <FormattedMessage id="groups.switchGroupButton" />
+                      </Button>
+                    }
                     />
                   </Table.Cell>
                     
@@ -167,6 +217,11 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
             })}
           </Table.Body>
         </Table>
+        <Button
+        fluid
+        content={'Find Group For All Groupless Students'}
+        onClick={() => findGroupForall()}
+        /> 
       </Segment>
       <br />
     </div>
