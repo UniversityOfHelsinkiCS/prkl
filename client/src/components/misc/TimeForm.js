@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Table, Icon } from 'semantic-ui-react';
+import { Table, Icon, Message } from 'semantic-ui-react';
 import { useIntl } from 'react-intl';
 import timeChoices from '../../util/timeFormChoices';
 
@@ -87,6 +87,12 @@ const TimeForm = ({ onChange, description }) => {
   return (
     <div>
       <h3>{description}</h3>
+
+      {Intl.DateTimeFormat().resolvedOptions().timeZone !== "Europe/Helsinki"
+        ? <Message warning>
+          This calendar is in Eastern European Standard Time. You seem to be in a different timezone. Please pay attention when you enter your working times.
+        </Message>
+        : null}
 
       <Table
         unstackable
