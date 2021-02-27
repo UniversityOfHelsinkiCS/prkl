@@ -27,7 +27,7 @@ export const hoursScorePair = (pair: [Registration, Registration]): number => {
     const pairOneWorkingTimes = new Map<number, Set<workingTimeObject>>();
     const pairOneHelperMap = new Map<number, Set<number>>();
     const pairOneTotalHours = [];
-    
+
     const pairTwoWorkingTimes = new Map<number, Set<workingTimeObject>>();
     const pairTwoHelperMap = new Map<number, Set<number>>();
     const pairTwoTotalHours = [];
@@ -37,7 +37,7 @@ export const hoursScorePair = (pair: [Registration, Registration]): number => {
         const startHour = workingTime.startTime.getHours();
         const endHour = workingTime.endTime.getHours();
         const workDay: workingTimeObject = { startDay, startHour, endHour, handled: false };
-        
+
         if (!pairOneWorkingTimes.has(startDay)) {
             pairOneWorkingTimes.set(startDay, new Set<workingTimeObject>());
             pairOneHelperMap.set(startDay, new Set<number>());
@@ -92,7 +92,7 @@ const allWorkingHours = ( map: Map<number, Set<workingTimeObject>>, helperMap: M
             helperMap.get(startDay).add(i);
             map.get(workDay.startDay).add(times);
             totalHours.push(i);
-        }        
+        }
     }
 
     return map;

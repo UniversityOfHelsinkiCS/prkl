@@ -81,15 +81,18 @@ export const formGroups: Algorithm = (targetGroupSize: number, registrations: Re
   return grouping.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput));
 };
 
+export const findGroupForOneStudent = (student: Registration, grouping: Grouping, maxGroupSize: number): GroupInput[] => {
+  
+  const tooLargeGroups = [];
 
-export const findGroupForOneStudent = (student: Registration, grouping: Grouping): GroupInput[] => {
-  let id = -1;
-  const mapWorkingTimes = (grouping: Grouping): GroupTimes[] => {
-    return grouping.map(group => {
-      id++;
+  const addWorkingTimesMapToGroup = (grouping: Grouping): GroupTimes[] => {
+    return grouping.map((group, index) => {
       const groupWorkingTimes = new Map<number, Map<number,number>>();
+      if (group.length >= maxGroupSize) {
+        tooLargeGroups.push(index);
+      }
       return {
-        id: id,
+        id: index,
         Group: group,
         workingTimes: groupWorkingTimes
       };
@@ -97,13 +100,21 @@ export const findGroupForOneStudent = (student: Registration, grouping: Grouping
   };
 
   const allHours = (workDay: workingTimeObject, map: Map<number, Map<number,number>>) => {
-    for (let i = workDay.startHour; i < workDay.endHour; i++) {
+    for (let hour = workDay.startHour; hour < workDay.endHour; hour++) {
+
       if (!map.has(workDay.startDay)) {
         map.set(workDay.startDay, new Map<number,number>());
       };
+
+      if (!map.get(workDay.startDay).has(hour)) {
+        map.get(workDay.startDay).set(hour, 0);
+      }
+
       const totalHours = map.get(workDay.startDay);
-      totalHours.set(workDay.startHour, totalHours.get(workDay.startHour) +1);
-      map.set(workDay.startDay, totalHours);
+      totalHours.set(hour, totalHours.get(hour) +1);
+      map.set(workDay.startDay, totalHours); 
+
+//      console.log('group id: ', group.id, 'paiva: ', workDay.startDay, 'tunti: ', hour, 'total: ', totalHours.get(hour))
     };
   };
 
@@ -118,7 +129,7 @@ export const findGroupForOneStudent = (student: Registration, grouping: Grouping
     return workingTimeList;
   }
 
-  const groupsWithWorkingTimesMap = mapWorkingTimes(grouping);
+  const groupsWithWorkingTimesMap = addWorkingTimesMapToGroup(grouping);
 
   groupsWithWorkingTimesMap.map(group => {
     group.Group.map(registration => {
@@ -141,35 +152,58 @@ export const findGroupForOneStudent = (student: Registration, grouping: Grouping
       studentsMissingTimes(workingTime, studentsWorkingTimeList);
   });
 
+/*  
+  for (let g = 0; g < 2; g++) {
+    console.log('group', g);
+    for (let d = 0; d < 7; d++) {
+      for (let h = 6; h < 20; h++) {
+        console.log('day: ', d, 'hour', h , 'total: ', groupsWithWorkingTimesMap[g].workingTimes.get(d).get(h));
+      }
+    }
+  }
+*/
+
   const groupWithMostCommonHours = new Map<number, number>()
 
-  for (let i = 0; i < id; i++) {
+  for (let i = 0; i < groupsWithWorkingTimesMap.length; i++) {
     groupWithMostCommonHours.set(i, 0);
   }
 
   for (const workingTime of studentsWorkingTimeList) {
-    for (const group of groupsWithWorkingTimesMap) {
-      if (group.workingTimes.get(workingTime.startDay).has(workingTime.startHour)) {
-        groupWithMostCommonHours.set(group.id, group.workingTimes.get(workingTime.startDay).get(workingTime.startHour));
+    groupsWithWorkingTimesMap.map(group => {
+      if (group.workingTimes.has(workingTime.startDay)) {
+        if (group.workingTimes.get(workingTime.startDay).has(workingTime.startHour)) {
+          const commonHours = group.workingTimes.get(workingTime.startDay).get(workingTime.startHour);
+          const totalHours = groupWithMostCommonHours.get(group.id) + commonHours;
+          groupWithMostCommonHours.set(group.id, totalHours);
+        }
       }
+    })
+  }
+
+  /*
+  for (let i = 0; i < 2; i++) {
+    console.log('tunnit:', groupWithMostCommonHours.get(i))
+  }
+*/
+
+  let topScore = -1;
+  let groupId = -1;
+
+  for (let i = 0; i < groupWithMostCommonHours.size; i++) {
+    if (groupWithMostCommonHours.get(i) > topScore && !tooLargeGroups.includes(i)) {
+      topScore = groupWithMostCommonHours.get(i);
+      groupId = i;
     }
   }
 
-  let topScore = 0;
-  let groupId;
-
-  for (let i = 0; i < id; i++) {
-    if (groupWithMostCommonHours.get(i) > topScore) {
-      topScore = groupWithMostCommonHours.get(i);
-      groupId = i;
-    } 
-  }
-
-  groupsWithWorkingTimesMap.map(group => {
+  groupsWithWorkingTimesMap.forEach(group => {
     if (group.id === groupId) {
       group.Group.push(student);
     }
-  })
+  });
+  
+  console.log(groupsWithWorkingTimesMap)
 
   return groupsWithWorkingTimesMap.map(group => ({ userIds: group.Group.map(registration => registration.student.id) } as GroupInput));
 };

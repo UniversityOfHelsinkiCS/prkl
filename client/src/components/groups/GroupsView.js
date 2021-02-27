@@ -12,17 +12,17 @@ import SuccessMessage from '../ui/SuccessMessage';
 import { Prompt } from 'react-router-dom';
 import _ from 'lodash';
 
-export default ({ 
-  course, 
-  registrations, 
+export default ({
+  course,
+  registrations,
   regByStudentId,
   groups,
-  setGroups,
+  setGroups
 }) => {
   const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
-  
+
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [user] = useStore('userStore');
   const [grouplessStudents, setGrouplessStudents] = useStore('grouplessStudentsStore');
@@ -35,7 +35,6 @@ export default ({
   const [groupNames, setGroupNames] = useState(['']);
   const [groupSorting, setGroupSorting] = useState('nameAscending');
   const [registrationsWithoutGroups, setRegistrationsWithoutGroups] = useState(false);
-  const [showGrouplessStudents, setShowGrouplessStudents] = useState(false);
 
   const intl = useIntl();
 
@@ -79,16 +78,16 @@ export default ({
     });
 
     registrations.forEach(r => {
-      if (!studentIds.includes(r.student.id)) 
+      if (!studentIds.includes(r.student.id))
         groupless.push(r.student);
     });
 
     groupless.length > 0 ?
       setRegistrationsWithoutGroups(true) :
       setRegistrationsWithoutGroups(false);
-      
+
     setGrouplessStudents(groupless);
-  }, [registrationsWithoutGroups])
+  }, [registrationsWithoutGroups, groups])
 
   if (error !== undefined) {
     console.log('error:', error);
@@ -205,7 +204,7 @@ export default ({
     handleGroupsMessagesAndNames(sortGroups(groups, value));
     setGroupsUnsaved(false);
   }
-  
+
   const sortOptions = [
     {
       key: 'By name, ascending',
@@ -322,17 +321,6 @@ export default ({
               <FormattedMessage id='groupsView.publishGroupsBtn' />
             </ConfirmationButton>}
 
-            {/*groups.length > 0 &&*/ registrationsWithoutGroups && 
-              <Button
-                color='grey'
-                onClick={(e) => {
-                  setShowGrouplessStudents(!showGrouplessStudents);
-                }}
-              >
-                <FormattedMessage id='groupsView.showGrouplessStudents' />
-              </Button>
-            }
-
           </Form>
           <p />
 
@@ -351,9 +339,12 @@ export default ({
             {intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' })}
           </SuccessMessage>}
 
-          {showGrouplessStudents && registrationsWithoutGroups &&
-          <GrouplessStudents 
-            grouplessStudents={grouplessStudents} 
+          {registrationsWithoutGroups &&
+          <GrouplessStudents
+            grouplessStudents={grouplessStudents}
+            setGrouplessStudents={setGrouplessStudents}
+            setRegistrationsWithoutGroups={setRegistrationsWithoutGroups}
+            course={course}
           />}
 
           <Groups

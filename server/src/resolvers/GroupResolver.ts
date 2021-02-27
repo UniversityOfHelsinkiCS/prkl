@@ -25,7 +25,6 @@ const formNewGroups = async (algorithm: Algorithm, courseId: string, minGroupSiz
   });
   return algorithm(minGroupSize, registrations);
 };
-
 @Resolver()
 export class GroupResolver {
   @Authorized(STAFF)
@@ -94,9 +93,13 @@ export class GroupResolver {
 
   @Authorized(STAFF)
   @Mutation(() => [Group])
-  async findGroupForOne(@Arg("data") data: GroupListInput, @Arg("studentId") studentId: string): Promise<Group[]> {
+  async findGroupForOne(
+      @Arg("data") data: GroupListInput,
+      @Arg("studentId") studentId: string,
+      @Arg("maxGroupSize") maxGroupSize: number
+    ): Promise<Group[]> {
     const { courseId, groups } = data;
-    console.log('student id', studentId);
+
     let student;
 
     const registrations = await Registration.find({
@@ -133,9 +136,9 @@ export class GroupResolver {
 
     const grouping = groupsToGroupingType(groups, registrations);
 
-    const newGroups = findGroupForOneStudent(student, grouping);
+    const newGroups = findGroupForOneStudent(student, grouping, maxGroupSize);
     return Promise.all(
-      groups.map(async g => {
+      newGroups.map(async g => {
         const students = await User.findByIds(g.userIds);
         return Group.create({ courseId, students });
       }),
