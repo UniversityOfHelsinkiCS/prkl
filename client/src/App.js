@@ -16,6 +16,7 @@ import userService from './services/userService';
 import './App.css';
 import KeepAlive from './components/misc/KeepAlive';
 import Users from './components/users/Users';
+import GroupsView from './components/groups/GroupsView';
 import PrivateRoute from './components/ui/PrivateRoute';
 import { initShibbolethPinger } from 'unfuck-spa-shibboleth-session';
 
@@ -80,8 +81,8 @@ export default () => {
               />
               <Route
                 exact
-                path="/course/:id"
-                render={({ match }) => <Course id={match.params.id} />}
+                path="/course/:id/:subpage?"
+                render={({ match }) => <Course id={match.params.id} match={match} />}
               />
               <Route exact path={['/', '/courses']} component={Courses} />
             </div>

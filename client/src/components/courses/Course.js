@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Route } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Button, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -14,7 +14,7 @@ import Registration from '../registrations/Registration';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import CourseInfo from './CourseInfo';
 
-export default ({ id }) => {
+export default ({ id, match }) => {
   const [courses, setCourses] = useStore('coursesStore');
   const [user] = useStore('userStore');
   const [groups, setGroups] = useStore('groupsStore');
@@ -39,7 +39,7 @@ export default ({ id }) => {
     variables: { id },
   });
 
-  const { loading: regLoading, data: regData, refetch: refetchRegistrations } = useQuery(COURSE_REGISTRATION, {
+  const { loading: regLoading, data: regData } = useQuery(COURSE_REGISTRATION, {
     skip: course.teachers === undefined
       || (!course.teachers.some(t => t.id === user.id) && user.role !== roles.ADMIN_ROLE),
     variables: { courseId: id },
@@ -66,7 +66,6 @@ export default ({ id }) => {
         r.questionAnswers.forEach(qa => qa.answerChoices.sort((a, b) => a.order - b.order));
         return r;
       });
-
       setRegistrations(reg);
       setRegByStudentId(
         reg.reduce((acc, elem) => {
@@ -123,38 +122,38 @@ export default ({ id }) => {
   };
 
   const handleEditCourse = () => {
-    if (view !== 'edit') {
-      setView('edit');
-    } else if (view === 'groups') {
+    if (match.params.subpage !== 'edit') {
+      history.push(`/course/${course.id}/edit`);
+    } else if (match.params.subpage === 'groups') {
       if (groupsUnsaved
         && window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' }))) {
-        setView('edit');
         setGroupsUnsaved(false);
+        history.push(`/course/${course.id}/edit`);
       } else if (!groupsUnsaved) {
-        setView('edit');
+        history.push(`/course/${course.id}/edit`);
       }
     } else {
-      setView('info');
+      history.push(`/course/${course.id}`);
     }
   };
 
   const handleGroupsView = () => {
-    if (view !== 'groups') {
-      setView('groups');
+    if (match.params.subpage !== 'groups') {
+      history.push(`/course/${course.id}/groups`);
     } else {
       if (!groupsUnsaved || (groupsUnsaved
         && window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' })))) {
         setGroupsUnsaved(false);
-        setView('info');
+        history.push(`/course/${course.id}`);
       }
     }
   };
 
   const handleRegistrationsView = () => {
-    if (view !== 'registrations') {
-      setView('registrations');
+    if (match.params.subpage !== 'registrations') {
+      history.push(`/course/${course.id}/registrations`);
     } else {
-      setView('info');
+      history.push(`/course/${course.id}`);
     }
   };
 
@@ -172,16 +171,18 @@ export default ({ id }) => {
     <div>
       {/* Course info, hide in edit and questions views */}
       <h2><a href={`https://courses.helsinki.fi/fi/${course.code}`}>{course.code}</a>{` - ${course.title}`}</h2>
-      { view !== 'edit' && view !== 'questions' && <div>
+      { match.params.subpage !== 'edit' && view !== 'questions' && <div>
         <CourseInfo id={course.id} deadline={course.deadline} teachers={course.teachers} paragraphs={paragraphs} />
 				 &nbsp;
       </div>}
+
+      {console.log(match.params.subpage)}
 
       {/* Staff and admin control buttons */}
       <div>
         {userHasAccess() ? (
           <div>
-            { view === 'edit' ? (
+            { match.params.subpage === 'edit' ? (
               <CourseForm
                 course={course}
                 user={user}
@@ -193,7 +194,7 @@ export default ({ id }) => {
                   <div style={{ maxWidth: '800px' }}>
                     <Button.Group widths='4'>
                       {/* Only admin can edit or delete after publish */}
-                      {(!course.published || user.role === roles.ADMIN_ROLE) && view === 'info' ? (
+                      {(!course.published || user.role === roles.ADMIN_ROLE) && match.params.subpage === undefined ? (
                         <>
 
                           <Button onClick={handleEditCourse} color="blue" data-cy="edit-course-button">
@@ -212,7 +213,7 @@ export default ({ id }) => {
                       ) : null}
                       {/* Group management and enroll list available regardless of publish status */}
                       <>
-                        {view === 'info' ?
+                        {match.params.subpage === undefined ?
                           <>
 
                             <Button onClick={handleGroupsView} color="green" data-cy="manage-groups-button">
@@ -230,7 +231,7 @@ export default ({ id }) => {
 
                   {/* Views for staff */}
                   <div>
-                    {view === 'groups' ? (
+                    {match.params.subpage === 'groups' ? (
                       <div>
                         <GroupsView
                           course={course}
@@ -246,12 +247,12 @@ export default ({ id }) => {
                       </div>
                     ) : (
                         <div>
-                          {view === 'registrations' ?
+                          {match.params.subpage === 'registrations' ?
                             <div>
                               <RegistrationList
                                 course={course}
                                 registrations={registrations}
-                                refetchRegistrations={refetchRegistrations}
+                                setRegistrations={setRegistrations}
                                 regByStudentId={regByStudentId}
                               />
                               <br></br>
@@ -271,12 +272,13 @@ export default ({ id }) => {
 
         {/* Views for everyone */}
         <div>
-          {view === 'info' ?
+          {match.params.subpage === undefined ?
             <Registration course={course} />
             : null}
         </div>
       	&nbsp;
-{/*
+
+        {/*
 				<div>
 					{ view === 'userGroup' ? (
 						<div>
@@ -284,7 +286,7 @@ export default ({ id }) => {
 						</div>
 					) : null}
 				</div>
-					*/}
+			  */}
 
       </div>
     </div>
