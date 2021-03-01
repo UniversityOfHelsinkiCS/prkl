@@ -10,9 +10,7 @@ export type workingTimeObject = {
     handled: boolean
 }
 
-type workingTimeList = {
-    times: workingTimeObject[];
-}
+export type workingTimeList = workingTimeObject[];
 
 const evaluateByWorkingHours: Evaluator = (group: Group): number => {
     const uniquePairs = combinationsOfTwo(group);
