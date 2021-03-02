@@ -89,7 +89,7 @@ export const formGroups: Algorithm = (targetGroupSize: number, registrations: Re
 };
 
 export const findGroupForGrouplessStudents = (students: Registration[], grouping: Grouping, maxGroupSize: number): GroupInput[] => {
-  
+
   const tooLargeGroups = [];
   const grouplessStudents: GrouplessStudent[] = []
 
@@ -133,8 +133,6 @@ export const findGroupForGrouplessStudents = (students: Registration[], grouping
       const totalHours = map.get(workDay.startDay);
       totalHours.set(hour, totalHours.get(hour) +1);
       map.set(workDay.startDay, totalHours); 
-
-//      console.log('group id: ', group.id, 'paiva: ', workDay.startDay, 'tunti: ', hour, 'total: ', totalHours.get(hour))
     };
   };
 
@@ -175,7 +173,6 @@ export const findGroupForGrouplessStudents = (students: Registration[], grouping
 
   const grouplessStudentsWorkingTimeList: grouplessStudentsWorkingTimes = [];
 
-//  console.log('grouplessstudents length', grouplessStudents.length)
   students.map((student, index) => {
     student.workingTimes.map(times => {
       const startDay = times.startTime.getDay();
@@ -185,8 +182,6 @@ export const findGroupForGrouplessStudents = (students: Registration[], grouping
       studentsMissingTimes(workingTime, grouplessStudentsWorkingTimeList, index);
     });
   })
-  
- // console.log(grouplessStudentsWorkingTimeList[0], grouplessStudentsWorkingTimeList.length);
 
   grouplessStudents.map((student, index) => {
     grouplessStudentsWorkingTimeList[index].map(workingTime => {
@@ -195,7 +190,7 @@ export const findGroupForGrouplessStudents = (students: Registration[], grouping
           if (group.workingTimes.get(workingTime.startDay).has(workingTime.startHour)) {
             const commonHours = group.workingTimes.get(workingTime.startDay).get(workingTime.startHour);
             const totalHours = student.commonHoursWithOtherGroups.get(group.id) + commonHours;
-            student.commonHoursWithOtherGroups.set(group.id, totalHours);
+            student.commonHoursWithOtherGroups.set(group.id, totalHours / group.Group.length);
           }
         }
       })

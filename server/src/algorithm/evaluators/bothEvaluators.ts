@@ -1,18 +1,12 @@
 import _ from "lodash";
-import { Registration } from "../../entities/Registration";
-import { Evaluator, Group } from "../algorithm";
+import { Group } from "../algorithm";
 import { combinationsOfTwo, multipleScorePair } from "./evaluateByMultipleChoice";
 import { hoursScorePair } from "./evaluateByWorkingHours";
 
-import { performance } from "perf_hooks";
-
-// Remove unused attributes?
-export const evaluateBoth = (group: Group, start, end): number => {
+export const evaluateBoth = (group: Group): number => {
   const uniquePairs = combinationsOfTwo(group);
   const hourScores = uniquePairs.map(hoursScorePair);
-  // console.log('Hourscore: ', hourScores);
   const multipleScores = uniquePairs.map(multipleScorePair);
-  // console.log('Multiplescore: ', multipleScores);
   let score = hourScores.reduce((sum, val) => sum + val, 0);
   score += multipleScores.reduce((sum, val) => sum + val, 0);
   return score;

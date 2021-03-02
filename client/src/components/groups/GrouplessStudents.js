@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Table, Segment, Label, Popup, Form, Button } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { FIND_GROUP_FOR_ONE_STUDENT, FIND_GROUP_FOR_MULTIPLE_STUDENTS } from '../../GqlQueries';
@@ -16,6 +16,7 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
   const intl = useIntl();
 
   const findGroup = async ( student ) => {
+    console.log(groups);
     const groupsWithUserIds = groups.map(group => {
       const userIds = group.students.map(student => student.id);
       return {
@@ -121,10 +122,9 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
         }
       });
       setGroups(mappedGroups);
-      
 
     } catch (e) {
-
+      console.log(e);
     }
   }
   
@@ -158,8 +158,21 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
 
               <Table.HeaderCell>
                 <FormattedMessage id="groups.maxSize" />
+                <Form.Input
+                  required
+                  value={maxGroupSize}
+                  type="number"
+                  min="1"
+                  max="9999999"
+                  onChange={event => setMaxGroupSize(Number.parseInt(event.target.value, 10)
+                    ? Number.parseInt(event.target.value, 10)
+                    : '')}
+                />
               </Table.HeaderCell>
-              <Table.HeaderCell />
+              <Table.HeaderCell>
+                
+              </Table.HeaderCell>
+
               <Table.HeaderCell />
             </Table.Row>
           </Table.Header>
@@ -181,16 +194,7 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
                   </Table.Cell>
 
                   <Table.Cell>
-                    <Form.Input
-                      required
-                      value={maxGroupSize}
-                      type="number"
-                      min="1"
-                      max="9999999"
-                      onChange={event => setMaxGroupSize(Number.parseInt(event.target.value, 10)
-                        ? Number.parseInt(event.target.value, 10)
-                        : '')}
-                    />
+                    
                   </Table.Cell>
                   
                   <Table.Cell>
@@ -265,6 +269,7 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
         </Table>
         <Button
         fluid
+        data-cy="find-group-for-all-button"
         content={'Find Group For All Groupless Students'}
         onClick={() => findGroupForall()}
         /> 
