@@ -20,7 +20,7 @@ describe("Both evaluators combined", () => {
     reg.workingTimes = [];
     reg.questionAnswers = [];
 
-    expect(evaluateBoth([reg, reg], "start", "end")).toEqual(0);
+    expect(evaluateBoth([reg, reg])).toEqual(0);
   });
 
   it("Two people with exactly same answers and times scores 2?", () => {
@@ -39,6 +39,6 @@ describe("Both evaluators combined", () => {
     regs[0].workingTimes = times;
     regs[1].workingTimes = times;
 
-    expect(evaluateBoth(regs, "start", "end")).toEqual(2);
+    expect(evaluateBoth(regs)).toEqual(2);
   });
 });
