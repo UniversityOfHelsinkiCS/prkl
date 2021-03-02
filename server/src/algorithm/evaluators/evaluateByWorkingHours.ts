@@ -10,20 +10,16 @@ export type workingTimeObject = {
     handled: boolean
 }
 
-type workingTimeList = {
-    times: workingTimeObject[];
-}
+export type workingTimeList = workingTimeObject[];
 
 const evaluateByWorkingHours: Evaluator = (group: Group): number => {
     const uniquePairs = combinationsOfTwo(group);
     const scores = uniquePairs.map(hoursScorePair)
-//    console.log('scores:', scores)
     const score = scores.reduce((sum, val) => sum + val, 0)
     return score
 }
 
 export const hoursScorePair = (pair: [Registration, Registration]): number => {
-  //  console.log('Alkaa uusi hyypiö');
     const pairOneWorkingTimes = new Map<number, Set<workingTimeObject>>();
     const pairOneHelperMap = new Map<number, Set<number>>();
     const pairOneTotalHours = [];
@@ -43,9 +39,6 @@ export const hoursScorePair = (pair: [Registration, Registration]): number => {
             pairOneHelperMap.set(startDay, new Set<number>());
         }
         allWorkingHours(pairOneWorkingTimes, pairOneHelperMap, pairOneTotalHours, workDay);
-
-   //     let setti = pairOneWorkingTimes.get(startDay);
-     //   setti.forEach(s => console.log('workday:', s))
     }
 
     let result = 0;
@@ -71,8 +64,7 @@ export const hoursScorePair = (pair: [Registration, Registration]): number => {
             })
         }
     }
-//    console.log('total hours:', 'one:', pairOneTotalHours.length, 'two:', pairTwoTotalHours.length)
-//    console.log('result:', result)
+    
     if (Math.min(pairOneTotalHours.length, pairTwoTotalHours.length) !==0) {
         result = result / Math.min(pairOneTotalHours.length, pairTwoTotalHours.length);
     } else {

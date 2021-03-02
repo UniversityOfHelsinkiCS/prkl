@@ -297,6 +297,21 @@ export const FIND_GROUP_FOR_ONE_STUDENT = gql`
   }
 `;
 
+export const FIND_GROUP_FOR_MULTIPLE_STUDENTS = gql`
+  mutation findGroupForMultipleStudents($data: GroupListInput!, $maxGroupSize: Float!, $groupless: GroupListInput!) {
+    findGroupForMultipleStudents(data: $data, maxGroupSize: $maxGroupSize, groupless: $groupless) {
+      courseId
+      students {
+        id
+        firstname
+        lastname
+        studentNo
+        email
+      }
+    }
+  }
+`;
+
 export const SAVE_GROUPS = gql`
   mutation saveGeneratedGroups($data: GroupListInput!) {
     saveGeneratedGroups(data: $data) {

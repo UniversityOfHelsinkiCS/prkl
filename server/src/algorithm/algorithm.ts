@@ -6,7 +6,7 @@ import * as _ from "lodash";
 // import evaluateGroupByWorkingHours from "./evaluators/evaluateByWorkingHours";
 import evaluateBoth from "./evaluators/bothEvaluators";
 
-import { workingTimeObject } from "./evaluators/evaluateByWorkingHours";
+import { workingTimeObject, workingTimeList } from "./evaluators/evaluateByWorkingHours";
 
 export type Algorithm = (targetGroupSize: number, registrations: Registration[]) => GroupInput[];
 
@@ -21,6 +21,13 @@ export type GroupTimes = {
   Group: Group,
   workingTimes: Map<number, Map<number,number>>
 }
+
+export type GrouplessStudent = {
+  registration: Registration
+  commonHoursWithOtherGroups: Map<number, number>
+}
+
+export type grouplessStudentsWorkingTimes = workingTimeList[];
 
 const sum = (arr: number[]) => arr.reduce((sum, val) => sum + val, 0);
 
@@ -81,9 +88,22 @@ export const formGroups: Algorithm = (targetGroupSize: number, registrations: Re
   return grouping.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput));
 };
 
-export const findGroupForOneStudent = (student: Registration, grouping: Grouping, maxGroupSize: number): GroupInput[] => {
-  
+export const findGroupForGrouplessStudents = (students: Registration[], grouping: Grouping, maxGroupSize: number): GroupInput[] => {
+
   const tooLargeGroups = [];
+  const grouplessStudents: GrouplessStudent[] = []
+
+  students.map(student => {
+    const map = new Map<number, number>();
+    for (let i = 0; i < grouping.length; i++) {
+      map.set(i, 0);
+    }
+    const groupless: GrouplessStudent = {
+      registration: student,
+      commonHoursWithOtherGroups: map
+    }
+    grouplessStudents.push(groupless)
+  })
 
   const addWorkingTimesMapToGroup = (grouping: Grouping): GroupTimes[] => {
     return grouping.map((group, index) => {
@@ -99,7 +119,7 @@ export const findGroupForOneStudent = (student: Registration, grouping: Grouping
     });
   };
 
-  const allHours = (workDay: workingTimeObject, map: Map<number, Map<number,number>>) => {
+  const groupsCombinedHours = (workDay: workingTimeObject, map: Map<number, Map<number,number>>) => {
     for (let hour = workDay.startHour; hour < workDay.endHour; hour++) {
 
       if (!map.has(workDay.startDay)) {
@@ -113,20 +133,28 @@ export const findGroupForOneStudent = (student: Registration, grouping: Grouping
       const totalHours = map.get(workDay.startDay);
       totalHours.set(hour, totalHours.get(hour) +1);
       map.set(workDay.startDay, totalHours); 
-
-//      console.log('group id: ', group.id, 'paiva: ', workDay.startDay, 'tunti: ', hour, 'total: ', totalHours.get(hour))
     };
   };
 
-  const studentsMissingTimes = (timeObject: workingTimeObject, workingTimeList: workingTimeObject[]): workingTimeObject[] => {
+  const studentsMissingTimes = (
+    timeObject: workingTimeObject,
+    grouplessStudentsWorkingTimeList: grouplessStudentsWorkingTimes,
+    index: number
+  ): grouplessStudentsWorkingTimes => {
+
+    if (grouplessStudentsWorkingTimeList[index] === undefined) {
+      const workingTimeList: workingTimeList = [];
+      grouplessStudentsWorkingTimeList[index] = workingTimeList
+    }
     for (let i = timeObject.startHour; i < timeObject.endHour; i++) {
       const startDay = timeObject.startDay;
       const startHour = i;
       const endHour = i + 1;
       const workingTime = {startDay, startHour, endHour, handled: false};
-      workingTimeList.push(workingTime);
+      const studentsWorkingTimeList = grouplessStudentsWorkingTimeList[index]
+      studentsWorkingTimeList.push(workingTime);
     }
-    return workingTimeList;
+    return grouplessStudentsWorkingTimeList;
   }
 
   const groupsWithWorkingTimesMap = addWorkingTimesMapToGroup(grouping);
@@ -138,72 +166,61 @@ export const findGroupForOneStudent = (student: Registration, grouping: Grouping
         const startHour = times.startTime.getHours();
         const endHour = times.endTime.getHours();
         const workingTime = {startDay, startHour, endHour, handled: false};
-        allHours(workingTime, group.workingTimes);
+        groupsCombinedHours(workingTime, group.workingTimes);
       });
     });
   });
 
-  const studentsWorkingTimeList: workingTimeObject[] = [];
-  student.workingTimes.map(times => {
+  const grouplessStudentsWorkingTimeList: grouplessStudentsWorkingTimes = [];
+
+  students.map((student, index) => {
+    student.workingTimes.map(times => {
       const startDay = times.startTime.getDay();
       const startHour = times.startTime.getHours();
       const endHour = times.endTime.getHours();
       const workingTime = {startDay, startHour, endHour, handled: false};
-      studentsMissingTimes(workingTime, studentsWorkingTimeList);
-  });
+      studentsMissingTimes(workingTime, grouplessStudentsWorkingTimeList, index);
+    });
+  })
 
-/*  
-  for (let g = 0; g < 2; g++) {
-    console.log('group', g);
-    for (let d = 0; d < 7; d++) {
-      for (let h = 6; h < 20; h++) {
-        console.log('day: ', d, 'hour', h , 'total: ', groupsWithWorkingTimesMap[g].workingTimes.get(d).get(h));
+  grouplessStudents.map((student, index) => {
+    grouplessStudentsWorkingTimeList[index].map(workingTime => {
+      groupsWithWorkingTimesMap.map(group => {
+        if (group.workingTimes.has(workingTime.startDay)) {
+          if (group.workingTimes.get(workingTime.startDay).has(workingTime.startHour)) {
+            const commonHours = group.workingTimes.get(workingTime.startDay).get(workingTime.startHour);
+            const totalHours = student.commonHoursWithOtherGroups.get(group.id) + commonHours;
+            student.commonHoursWithOtherGroups.set(group.id, totalHours / group.Group.length);
+          }
+        }
+      })
+    })
+  })
+
+  let index = 0;
+
+  for (const student of grouplessStudents) {
+    let topScore = -1;
+    let groupId = -1;
+
+    for (let i = 0; i < student.commonHoursWithOtherGroups.size; i++) {
+      if (student.commonHoursWithOtherGroups.get(i) > topScore && !tooLargeGroups.includes(i)) {
+        topScore = student.commonHoursWithOtherGroups.get(i);
+        groupId = i;
       }
     }
-  }
-*/
 
-  const groupWithMostCommonHours = new Map<number, number>()
-
-  for (let i = 0; i < groupsWithWorkingTimesMap.length; i++) {
-    groupWithMostCommonHours.set(i, 0);
-  }
-
-  for (const workingTime of studentsWorkingTimeList) {
-    groupsWithWorkingTimesMap.map(group => {
-      if (group.workingTimes.has(workingTime.startDay)) {
-        if (group.workingTimes.get(workingTime.startDay).has(workingTime.startHour)) {
-          const commonHours = group.workingTimes.get(workingTime.startDay).get(workingTime.startHour);
-          const totalHours = groupWithMostCommonHours.get(group.id) + commonHours;
-          groupWithMostCommonHours.set(group.id, totalHours);
+    groupsWithWorkingTimesMap.forEach(group => {
+      if (group.id === groupId) {
+        group.Group.push(students[index]);
+        if (group.Group.length >= maxGroupSize) {
+          tooLargeGroups.push(group.id);
         }
       }
-    })
+    });
+
+    index++;
   }
-
-  /*
-  for (let i = 0; i < 2; i++) {
-    console.log('tunnit:', groupWithMostCommonHours.get(i))
-  }
-*/
-
-  let topScore = -1;
-  let groupId = -1;
-
-  for (let i = 0; i < groupWithMostCommonHours.size; i++) {
-    if (groupWithMostCommonHours.get(i) > topScore && !tooLargeGroups.includes(i)) {
-      topScore = groupWithMostCommonHours.get(i);
-      groupId = i;
-    }
-  }
-
-  groupsWithWorkingTimesMap.forEach(group => {
-    if (group.id === groupId) {
-      group.Group.push(student);
-    }
-  });
-  
-  console.log(groupsWithWorkingTimesMap)
 
   return groupsWithWorkingTimesMap.map(group => ({ userIds: group.Group.map(registration => registration.student.id) } as GroupInput));
 };
