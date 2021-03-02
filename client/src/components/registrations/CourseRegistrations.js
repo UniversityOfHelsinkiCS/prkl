@@ -69,7 +69,9 @@ const CourseRegistrations = ({ course, registrations, refetchRegistrations, regB
 
               {course.questions.map(question =>
                 question.questionType !== TIMES ? (
-                  <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
+                  <Table.HeaderCell key={question.id}>
+                    {question.content}
+                  </Table.HeaderCell>
                 ) : null
               )}
               <Table.HeaderCell></Table.HeaderCell>

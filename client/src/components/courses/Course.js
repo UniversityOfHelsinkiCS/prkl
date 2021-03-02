@@ -176,8 +176,6 @@ export default ({ id, match }) => {
 				 &nbsp;
       </div>}
 
-      {console.log(match.params.subpage)}
-
       {/* Staff and admin control buttons */}
       <div>
         {userHasAccess() ? (

@@ -17,6 +17,7 @@ const Question = ({ question, hookForm }) => {
             name={question.id}
             type={Form.Input}
             placeholder={intl.formatMessage({ id: 'course.freeFormPlaceholder' })}
+            optionality={question.optional}
             formControl={hookForm}
             data-cy={`question-${question.order}`}
           />
@@ -31,6 +32,7 @@ const Question = ({ question, hookForm }) => {
               value: choice.id,
               text: choice.content,
             }))}
+            optionality={question.optional}
             formControl={hookForm}
             type={Form.Dropdown}
             selection
@@ -47,6 +49,7 @@ const Question = ({ question, hookForm }) => {
               value: choice.id,
               text: choice.content,
             }))}
+            optionality={question.optional}
             formControl={hookForm}
             type={Form.Dropdown}
             selection
@@ -78,7 +81,7 @@ const Question = ({ question, hookForm }) => {
 
   return (
     <div style={{ paddingTop: 5, paddingBottom: 5 }}>
-      <Segment key={question.content} raised data-cy="coursepage-question" >
+      <Segment key={question.content} raised data-cy="coursepage-question">
         <Grid>
           <Grid.Row columns={2}>
             <Grid.Column verticalAlign="middle">

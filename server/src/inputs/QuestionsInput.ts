@@ -23,6 +23,9 @@ export class QuestionsInput {
   @Field()
   order: number;
 
+  @Field()
+  optional: boolean;
+
   @Field(type => [QuestionChoiceInput], { nullable: true })
   questionChoices: QuestionChoiceInput[];
 

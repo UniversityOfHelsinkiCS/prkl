@@ -33,6 +33,10 @@ export class Question extends BaseEntity {
   @Column()
   order: number;
 
+  @Field(() => Boolean)
+  @Column({ default: false })
+  optional: boolean;
+
   @Field(type => Course)
   @ManyToOne(
     type => Course,

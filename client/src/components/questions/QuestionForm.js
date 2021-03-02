@@ -9,9 +9,11 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
     questionType: 'singleChoice',
     content: '',
     order: questionIndex,
-    qKey: qName
-  }
+    optional: false,
+    qKey: qName,
+  };
 
+  const [questionOptionality, setQuestionOptionality] = useState(false);
   const [questionType, setQuestionType] = useState('singleChoice');
   const [options, setOptions] = useState([]);
   const [question, setQuestion] = useState(defaultQuestion);
@@ -33,16 +35,18 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
   useEffect(() => {
     const qstn = questions[questionIndex]
       ? {
-        id: questions[questionIndex].id,
-        questionType: questions[questionIndex].questionType
-          ? questions[questionIndex].questionType 
-          : defaultQuestion.questionType,
-        content: questions[questionIndex].content,
-        questionChoices: questions[questionIndex].questionChoices,
-        order: questionIndex,
-        qKey: qName
-      }
+          id: questions[questionIndex].id,
+          questionType: questions[questionIndex].questionType
+            ? questions[questionIndex].questionType
+            : defaultQuestion.questionType,
+          content: questions[questionIndex].content,
+          questionChoices: questions[questionIndex].questionChoices,
+          optional: questions[questionIndex].optional,
+          order: questionIndex,
+          qKey: qName,
+        }
       : defaultQuestion;
+    setQuestionOptionality(qstn.optional);
     setQuestionType(qstn.questionType);
     setQuestion(qstn);
     setValue(qName, qstn.content);
@@ -50,23 +54,37 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
       setQuestions(questions.map(q => q.qKey !== question.qKey ? q : question));
       setInit(false);
     }
-    const opts = questions[questionIndex]?.questionChoices 
+    const opts = questions[questionIndex]?.questionChoices
       ? questions[questionIndex].questionChoices.map(qc => {
-        const oName = qc.id 
-          ? qc.id : qc.oName 
-          ? qc.oName : 'question-' + qName + '-o-' + new Date().getTime().toString();
-        if (!qc.oName) register({name: oName}, {required: intl.formatMessage({ id: 'questionForm.questionChoiceTitleValidationFaildMsg' }) });
-        return {
-          id: qc.id,
-          content: qc.content,
-          order: qc.order,
-          oName: oName
-        }
-      })
+          const oName = qc.id
+            ? qc.id : qc.oName
+            ? qc.oName : 'question-' + qName + '-o-' + new Date().getTime().toString();
+          if (!qc.oName) register({name: oName}, {required: intl.formatMessage({ id: 'questionForm.questionChoiceTitleValidationFaildMsg' }) });
+          return {
+            id: qc.id,
+            content: qc.content,
+            order: qc.order,
+            oName: oName,
+          };
+        })
       : options;
     setOptions(opts);
     opts.forEach(o => { setValue(o.oName, o.content) });
   }, [questions]);
+
+  const handleOptionalityChange = () => {
+    const questionObject = {
+      ...question,
+      optional: !questionOptionality,
+    };
+
+    setQuestionOptionality(!questionOptionality)
+    setQuestion(questionObject);
+
+    const newQuestions = [...questions];
+    newQuestions[questionIndex] = questionObject;
+    setQuestions(newQuestions);
+  };
 
   const handleOptionChange = (e, index, value) => {
     const newOptions = options;
@@ -126,31 +144,36 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
     setQuestions(newQuestions);
   };
 
-  const removeQuestion = (e) => {
+  const removeQuestion = e => {
     e.preventDefault();
     unregister(qName);
     options.forEach(o => unregister(o.oName));
     clearErrors(missingChoicesErr);
     setOptions([]);
-    const newQuestions = questions.filter((q, i) => {
-      return i !== questionIndex;
-    }).map((q, i) => {
-      return i < questionIndex ? q : { ...q, order: q.order-1 }
-    });
+    const newQuestions = questions
+      .filter((q, i) => {
+        return i !== questionIndex;
+      })
+      .map((q, i) => {
+        return i < questionIndex ? q : { ...q, order: q.order-1 }
+      });
     setQuestions(newQuestions);
-  }
+  };
 
   return (
     <Segment style={{ padding: 15, margin: 10 }}>
-      {!hideAddRemoveButtons && <Form.Button
-        onClick={removeQuestion}
-        floated="right"
-        data-cy="question-remove-button"
-      >X
-      </Form.Button>}
+      {!hideAddRemoveButtons &&
+        <Form.Button
+          onClick={removeQuestion}
+          floated="right"
+          data-cy="question-remove-button"
+        >
+          X
+        </Form.Button>
+      }
       <Form.Field
         name={qName}
-        onChange={async (e, {name, value}) => {
+        onChange={async (e, { name, value }) => {
           handleTitleChange(e, value);
           setValue(name, value);
           await trigger(name);
@@ -166,66 +189,74 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
         })}
         data-cy="question-title"
       />
-      {!hideAddRemoveButtons && <Form.Group inline>
-        <label>
-          <FormattedMessage id="questionForm.questionTypeLabel" />
-        </label>
-        <Form.Field
-          control={Radio}
-          label={intl.formatMessage({
-            id: 'questionForm.numericalQuestion',
-          })}
-          value="singleChoice"
-          checked={question.questionType === 'singleChoice'}
-          onChange={() => handleTypeChange('singleChoice')}
-          data-cy="question-type-single"
-        />
-        <Form.Field
-          control={Radio}
-          label={intl.formatMessage({
-            id: 'questionForm.multipleSelectOne',
-          })}
-          value="multipleChoice"
-          checked={question.questionType === 'multipleChoice'}
-          onChange={() => handleTypeChange('multipleChoice')}
-          data-cy="question-type-multi"
-        />
-        <Form.Field
-          control={Radio}
-          label={intl.formatMessage({
-            id: 'questionForm.freeformQuestion',
-          })}
-          value="freeForm"
-          checked={question.questionType === 'freeForm'}
-          onChange={() => handleTypeChange('freeForm')}
-          data-cy="question-type-freeform"
-        />
-      </Form.Group>}
+      {!hideAddRemoveButtons &&
+        <Form.Group inline>
+          <label>
+            <FormattedMessage id="questionForm.questionTypeLabel" />
+          </label>
+          <Form.Field
+            control={Radio}
+            label={intl.formatMessage({
+              id: 'questionForm.numericalQuestion',
+            })}
+            value="singleChoice"
+            checked={question.questionType === 'singleChoice'}
+            onChange={() => handleTypeChange('singleChoice')}
+            data-cy="question-type-single"
+          />
+          <Form.Field
+            control={Radio}
+            label={intl.formatMessage({
+              id: 'questionForm.multipleSelectOne',
+            })}
+            value="multipleChoice"
+            checked={question.questionType === 'multipleChoice'}
+            onChange={() => handleTypeChange('multipleChoice')}
+            data-cy="question-type-multi"
+          />
+          <Form.Field
+            control={Radio}
+            label={intl.formatMessage({
+              id: 'questionForm.freeformQuestion',
+            })}
+            value="freeForm"
+            checked={question.questionType === 'freeForm'}
+            onChange={() => handleTypeChange('freeForm')}
+            data-cy="question-type-freeform"
+          />
+        </Form.Group>
+      }
+
+      <Form.Checkbox
+        name="questionOptionality"
+        label="Optional question"
+        checked={questionOptionality === true}
+        onClick={() => handleOptionalityChange()}
+        data-cy="question-optionality-checkbox"
+      />
+
       {question.questionType !== 'freeForm' ? (
         <>
+          {!hideAddRemoveButtons &&
+            <Form.Group>
+              <Form.Button type="button" onClick={handleAddForm} color="green" data-cy="add-question-choice-button">
+                <FormattedMessage id="questionForm.addQuestion" />
+              </Form.Button>
 
-        {!hideAddRemoveButtons && 
-          <Form.Group>
-            <Form.Button type="button" onClick={handleAddForm} color="green" data-cy="add-question-choice-button">
-              <FormattedMessage id="questionForm.addQuestion" />
-            </Form.Button>
-
-            <Form.Button type="button" onClick={handleRemoveForm} color="red" data-cy="remove-question-choice-button">
-              <FormattedMessage id="questionForm.removeQuestion" />
-            </Form.Button>
-          </Form.Group>
+              <Form.Button type="button" onClick={handleRemoveForm} color="red" data-cy="remove-question-choice-button">
+                <FormattedMessage id="questionForm.removeQuestion" />
+              </Form.Button>
+            </Form.Group>
           }
 
           {errors[missingChoicesErr] &&
-          <Message
-            negative
-            header={errors[missingChoicesErr]?.message}
-          />}
+            <Message negative header={errors[missingChoicesErr]?.message} />
+          }
           <Form.Group style={{ flexWrap: 'wrap' }}>
             {options.map((q, index) => (
               <Form.Field
                 name={q.oName}
-                onChange={async (e, {name, value}) => {
+                onChange={async (e, { name, value }) => {
                   handleOptionChange(e, index, value);
                   setValue(name, value);
                   await trigger(name);

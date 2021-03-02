@@ -29,8 +29,8 @@ export const ALL_USERS = gql`
       lastname
       studentNo
       email
-			role
-			shibbolethUid
+      role
+      shibbolethUid
     }
   }
 `;
@@ -102,6 +102,7 @@ export const COURSE_BY_ID = gql`
         id
         content
         questionType
+        optional
         questionChoices {
           content
           order
@@ -165,6 +166,7 @@ export const UPDATE_COURSE = gql`
         id
         content
         questionType
+        optional
         questionChoices {
           content
           order
