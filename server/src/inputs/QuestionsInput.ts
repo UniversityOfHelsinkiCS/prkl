@@ -26,6 +26,9 @@ export class QuestionsInput {
   @Field()
   optional: boolean;
 
+  @Field()
+  useInGroupCreation: boolean;
+
   @Field(type => [QuestionChoiceInput], { nullable: true })
   questionChoices: QuestionChoiceInput[];
 

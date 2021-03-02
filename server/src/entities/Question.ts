@@ -37,6 +37,10 @@ export class Question extends BaseEntity {
   @Column({ default: false })
   optional: boolean;
 
+  @Field(() => Boolean)
+  @Column({ default: true })
+  useInGroupCreation: boolean;
+
   @Field(type => Course)
   @ManyToOne(
     type => Course,

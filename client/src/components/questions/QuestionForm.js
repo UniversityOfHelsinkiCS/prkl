@@ -10,10 +10,12 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
     content: '',
     order: questionIndex,
     optional: false,
+    useInGroupCreation: true,
     qKey: qName,
   };
 
   const [questionOptionality, setQuestionOptionality] = useState(false);
+  const [useInGroupCreation, setUseInGroupCreation] = useState(true)
   const [questionType, setQuestionType] = useState('singleChoice');
   const [options, setOptions] = useState([]);
   const [question, setQuestion] = useState(defaultQuestion);
@@ -42,11 +44,13 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
           content: questions[questionIndex].content,
           questionChoices: questions[questionIndex].questionChoices,
           optional: questions[questionIndex].optional,
+          useInGroupCreation: questions[questionIndex].useInGroupCreation,
           order: questionIndex,
           qKey: qName,
         }
       : defaultQuestion;
     setQuestionOptionality(qstn.optional);
+    setUseInGroupCreation(qstn.useInGroupCreation);
     setQuestionType(qstn.questionType);
     setQuestion(qstn);
     setValue(qName, qstn.content);
@@ -72,18 +76,37 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
     opts.forEach(o => { setValue(o.oName, o.content) });
   }, [questions]);
 
+  useEffect(() => {
+    if (questionOptionality || questionType === 'freeForm') {
+      handleUseInGroupCreationChange(false);
+    }
+  }, [questionOptionality, questionType]);
+
+  const updateQuestions = questionObject => {
+    const newQuestions = [...questions];
+    newQuestions[questionIndex] = questionObject;
+    setQuestion(questionObject);
+    setQuestions(newQuestions);
+  };
+
   const handleOptionalityChange = () => {
     const questionObject = {
       ...question,
       optional: !questionOptionality,
     };
 
-    setQuestionOptionality(!questionOptionality)
-    setQuestion(questionObject);
+    setQuestionOptionality(!questionOptionality);
+    updateQuestions(questionObject);
+  };
 
-    const newQuestions = [...questions];
-    newQuestions[questionIndex] = questionObject;
-    setQuestions(newQuestions);
+  const handleUseInGroupCreationChange = value => {
+    const questionObject = {
+      ...question,
+      useInGroupCreation: value,
+    };
+
+    setUseInGroupCreation(value);
+    updateQuestions(questionObject);
   };
 
   const handleOptionChange = (e, index, value) => {
@@ -95,11 +118,7 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
       ...question,
       questionChoices: newOptions,
     };
-    const newQuestions = [...questions];
-
-    newQuestions[questionIndex] = questionObject;
-    setQuestion(questionObject);
-    setQuestions(newQuestions);
+    updateQuestions(questionObject)
   };
 
   const handleTypeChange = value => {
@@ -111,19 +130,12 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
       setOptions([]);
     }
     setQuestionType(value);
-
-    const newQuestions = [...questions];
-    newQuestions[questionIndex] = questionObject;
-    setQuestion(questionObject);
-    setQuestions(newQuestions);
+    updateQuestions(questionObject)
   };
 
   const handleTitleChange = (e, value) => {
     const questionObject = { ...question, content: value };
-    const newQuestions = [...questions];
-    newQuestions[questionIndex] = questionObject;
-    setQuestion(questionObject);
-    setQuestions(newQuestions);
+    updateQuestions(questionObject)
   };
 
   const handleAddForm = () => {
@@ -227,14 +239,6 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
         </Form.Group>
       }
 
-      <Form.Checkbox
-        name="questionOptionality"
-        label="Optional question"
-        checked={questionOptionality === true}
-        onClick={() => handleOptionalityChange()}
-        data-cy="question-optionality-checkbox"
-      />
-
       {question.questionType !== 'freeForm' ? (
         <>
           {!hideAddRemoveButtons &&
@@ -288,6 +292,22 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
           </Form.Group>
         </>
       ) : null}
+
+      <Form.Checkbox
+        name="questionOptionality"
+        label={intl.formatMessage({ id: 'questionForm.optional' })}
+        checked={questionOptionality === true}
+        onClick={() => handleOptionalityChange()}
+        data-cy="question-optionality-checkbox"
+      />
+
+      <Form.Checkbox
+        name="useInGroupCreation"
+        label={intl.formatMessage({ id: 'questionForm.useInGroupCreation' })}
+        checked={useInGroupCreation}
+        onClick={() => handleUseInGroupCreationChange(!useInGroupCreation)}
+        disabled={questionOptionality || questionType === 'freeForm'}
+      />
     </Segment>
   );
 };

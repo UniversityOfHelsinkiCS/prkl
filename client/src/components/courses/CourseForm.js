@@ -63,6 +63,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
     questionType: 'times',
     content: 'times',
     optional: false,
+    useInGroupCreation: true,
     order: questions.length + 1,
   };
 
@@ -104,6 +105,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
             content: q.content,
             questionType: q.questionType,
             optional: q.optional,
+            useInGroupCreation: q.useInGroupCreation,
             questionChoices: q.questionChoices.map(qc => {
               return { id: qc.id, content: qc.content, order: qc.order };
             }),

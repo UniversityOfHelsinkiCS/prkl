@@ -103,6 +103,7 @@ export const COURSE_BY_ID = gql`
         content
         questionType
         optional
+        useInGroupCreation
         questionChoices {
           content
           order
@@ -167,6 +168,7 @@ export const UPDATE_COURSE = gql`
         content
         questionType
         optional
+        useInGroupCreation
         questionChoices {
           content
           order
