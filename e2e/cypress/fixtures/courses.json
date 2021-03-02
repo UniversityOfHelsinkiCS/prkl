@@ -12,12 +12,16 @@
       {
         "questionType": "freeForm",
         "content": "Freeform question",
-        "order": 0
+        "order": 0,
+        "optional": true,
+        "useInGroupCreation": false
       },
       {
         "questionType": "singleChoice",
         "content": "Single-choice question",
         "order": 1,
+        "optional": false,
+        "useInGroupCreation": true,
         "questionChoices": [
           { "content": "First choice", "order": 0 },
           { "content": "Second choice", "order": 1 }
@@ -27,6 +31,8 @@
         "questionType": "multipleChoice",
         "content": "Multiple-choice question",
         "order": 2,
+        "optional": false,
+        "useInGroupCreation": true,
         "questionChoices": [
           { "content": "First choice", "order": 0 },
           { "content": "Second choice", "order": 1 }

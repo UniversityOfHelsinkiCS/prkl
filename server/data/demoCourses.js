@@ -14,6 +14,8 @@ const demoCourses = [
     questions: [
       {
         questionType: "times",
+        optional: false,
+        useInGroupCreation: true,
         content: "Merkitse aikatauluun sinulle sopivat työskentelyajat.",
         order: 2,
       },
@@ -22,6 +24,8 @@ const demoCourses = [
         questionType: "singleChoice",
         content: "Mitä arvosanaa tavoittelet kurssilta?",
         order: 0,
+        optional: false,
+        useInGroupCreation: true,
         questionChoices: [
           {
             order: 0,
@@ -49,6 +53,8 @@ const demoCourses = [
         questionType: "multipleChoice",
         content: "Mitä seuraavista ohjelmointikielistä hallitset?",
         order: 1,
+        optional: false,
+        useInGroupCreation: true,
         questionChoices: [
           {
             order: 0,
@@ -73,7 +79,7 @@ const demoCourses = [
       {
         id: "4b96a634-5851-4eed-a59b-36f96582d89f",
         student: userData[0],
-      }
+      },
     ],
   },
 ];
