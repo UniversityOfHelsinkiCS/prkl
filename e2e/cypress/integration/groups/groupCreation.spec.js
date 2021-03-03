@@ -19,7 +19,6 @@ describe('Group creation', () => {
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       // Refresh to check that no info was stored
       cy.reload();
-      cy.get('[data-cy="manage-groups-button"]').click();
       cy.get('[data-cy="generated-groups"]').should('not.exist');
       cy.contains('No groups generated');
 
@@ -31,7 +30,6 @@ describe('Group creation', () => {
 
       // Refresh to be sure that information is stored at backend
       cy.reload();
-      cy.get('[data-cy="manage-groups-button"]').click();
       cy.get('table').contains(users[0].firstname);
       cy.get('table').contains(users[3].firstname);
       cy.contains('No groups generated').should('not.exist');
