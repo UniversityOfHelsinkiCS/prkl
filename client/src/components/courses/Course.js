@@ -39,7 +39,7 @@ export default ({ id, match }) => {
     variables: { id },
   });
 
-  const { loading: regLoading, data: regData } = useQuery(COURSE_REGISTRATION, {
+  const { loading: regLoading, data: regData, refetch: refetchRegistrations } = useQuery(COURSE_REGISTRATION, {
     skip: course.teachers === undefined
       || (!course.teachers.some(t => t.id === user.id) && user.role !== roles.ADMIN_ROLE),
     variables: { courseId: id },
@@ -251,6 +251,7 @@ export default ({ id, match }) => {
                                 course={course}
                                 registrations={registrations}
                                 setRegistrations={setRegistrations}
+                                refetchRegistrations={refetchRegistrations}
                                 regByStudentId={regByStudentId}
                               />
                               <br></br>
