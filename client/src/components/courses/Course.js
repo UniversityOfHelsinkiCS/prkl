@@ -44,7 +44,6 @@ export default ({ id, match }) => {
       || (!course.teachers.some(t => t.id === user.id) && user.role !== roles.ADMIN_ROLE),
     variables: { courseId: id },
   });
-
   const { loading: groupLoading,  data: groupData} = useQuery(COURSE_GROUPS, {
     skip: user.role === userRoles.STUDENT_ROLE,
     variables: { courseId: course.id },
