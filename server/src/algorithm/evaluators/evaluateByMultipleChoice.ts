@@ -17,12 +17,11 @@ export const combinationsOfTwo = (arr: any[]): [any, any][] => {
 export const multipleScorePair = (pair: [Registration, Registration]): number => {
     const answers = _.map(pair,
         registration =>
-
-            _.flatMap(registration.questionAnswers.filter(answer => (answer.question.questionType === "multipleChoice" || answer.question.questionType === "singleChoice")),
+            _.flatMap(registration.questionAnswers.filter(answer =>
+                    (answer.question.useInGroupCreation && (answer.question.questionType === "multipleChoice" || answer.question.questionType === "singleChoice"))),
                 answer => _.map(answer.answerChoices,
                     choice => ([answer.questionId, choice.id, answer.question.content, choice.content]))))
 
-    // If single- or multiple-choices exist, at least one answer is required to register.
     if (answers[0].length === 0 || answers[1].length === 0) {
         return 0;
     }

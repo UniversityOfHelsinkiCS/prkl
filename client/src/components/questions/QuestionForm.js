@@ -15,7 +15,7 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
   };
 
   const [questionOptionality, setQuestionOptionality] = useState(false);
-  const [useInGroupCreation, setUseInGroupCreation] = useState(true)
+  const [useInGroupCreation, setUseInGroupCreation] = useState(true);
   const [questionType, setQuestionType] = useState('singleChoice');
   const [options, setOptions] = useState([]);
   const [question, setQuestion] = useState(defaultQuestion);
@@ -26,9 +26,16 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
   const missingChoicesErr = 'choice-' + qName;
 
   useEffect(() => {
-    register({ name: qName }, { required: intl.formatMessage({ id: 'questionForm.questionTitleValidationFailedMsg' }) });
+    register(
+      { name: qName },
+      { required: intl.formatMessage({ id: 'questionForm.questionTitleValidationFailedMsg' }) }
+    );
     if (questionType !== 'freeForm' && !options.length) {
-      setError(missingChoicesErr, {message: intl.formatMessage({ id: 'questionForm.questionChoicesMissingValidationFailedMsg' }) });
+      setError(missingChoicesErr, {
+        message: intl.formatMessage({
+          id: 'questionForm.questionChoicesMissingValidationFailedMsg',
+        }),
+      });
     } else {
       clearErrors(missingChoicesErr);
     }
@@ -63,7 +70,15 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
           const oName = qc.id
             ? qc.id : qc.oName
             ? qc.oName : 'question-' + qName + '-o-' + new Date().getTime().toString();
-          if (!qc.oName) register({name: oName}, {required: intl.formatMessage({ id: 'questionForm.questionChoiceTitleValidationFaildMsg' }) });
+          if (!qc.oName)
+            register(
+              { name: oName },
+              {
+                required: intl.formatMessage({
+                  id: 'questionForm.questionChoiceTitleValidationFaildMsg',
+                }),
+              }
+            );
           return {
             id: qc.id,
             content: qc.content,
@@ -73,30 +88,16 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
         })
       : options;
     setOptions(opts);
-    opts.forEach(o => { setValue(o.oName, o.content) });
+    opts.forEach(o => {
+      setValue(o.oName, o.content);
+    });
   }, [questions]);
-
-  useEffect(() => {
-    if (questionOptionality || questionType === 'freeForm') {
-      handleUseInGroupCreationChange(false);
-    }
-  }, [questionOptionality, questionType]);
 
   const updateQuestions = questionObject => {
     const newQuestions = [...questions];
     newQuestions[questionIndex] = questionObject;
     setQuestion(questionObject);
     setQuestions(newQuestions);
-  };
-
-  const handleOptionalityChange = () => {
-    const questionObject = {
-      ...question,
-      optional: !questionOptionality,
-    };
-
-    setQuestionOptionality(!questionOptionality);
-    updateQuestions(questionObject);
   };
 
   const handleUseInGroupCreationChange = value => {
@@ -109,6 +110,22 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
     updateQuestions(questionObject);
   };
 
+  useEffect(() => {
+    if (questionOptionality || questionType === 'freeForm') {
+      handleUseInGroupCreationChange(false);
+    }
+  }, [questionOptionality, questionType]);
+
+  const handleOptionalityChange = () => {
+    const questionObject = {
+      ...question,
+      optional: !questionOptionality,
+    };
+
+    setQuestionOptionality(!questionOptionality);
+    updateQuestions(questionObject);
+  };
+
   const handleOptionChange = (e, index, value) => {
     const newOptions = options;
     newOptions[index] = { ...newOptions[index], content: value };
@@ -118,7 +135,8 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
       ...question,
       questionChoices: newOptions,
     };
-    updateQuestions(questionObject)
+
+    updateQuestions(questionObject);
   };
 
   const handleTypeChange = value => {
@@ -130,23 +148,26 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
       setOptions([]);
     }
     setQuestionType(value);
-    updateQuestions(questionObject)
+    updateQuestions(questionObject);
   };
 
   const handleTitleChange = (e, value) => {
     const questionObject = { ...question, content: value };
-    updateQuestions(questionObject)
+    updateQuestions(questionObject);
   };
 
   const handleAddForm = () => {
     const oName = 'question-' + qName + '-o-' + new Date().getTime().toString();
-    register({name: oName}, {required: intl.formatMessage({ id: 'questionForm.questionChoiceTitleValidationFaildMsg' }) });
-    setOptions([...options, { oName: oName, order: options.length + 1, content: '' }]);
+    register(
+      { name: oName },
+      { required: intl.formatMessage({ id: 'questionForm.questionChoiceTitleValidationFaildMsg' }) }
+    );
+    setOptions([...options, { oName, order: options.length + 1, content: '' }]);
   };
 
   const handleRemoveForm = () => {
     if (options.length === 0) return;
-    if (options) unregister(options[options.length-1].oName);
+    if (options) unregister(options[options.length - 1].oName);
     const newOptions = options.slice(0, options.length - 1);
     const newQuestion = { ...question, questionChoices: newOptions };
     const newQuestions = [...questions];

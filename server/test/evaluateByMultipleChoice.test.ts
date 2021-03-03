@@ -16,7 +16,7 @@ const createFakeRegistration = (answers: string[][]): Registration => {
       answerChoices: choices.map(choice => ({
         id: choice,
       })),
-      question: { questionType: "multipleChoice" },
+      question: { questionType: "multipleChoice", useInGroupCreation: true },
       questionId: index.toString(),
     })),
   } as Registration;
