@@ -19,7 +19,6 @@ describe('Group creation', () => {
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       // Refresh to check that no info was stored
       cy.reload();
-      cy.get('[data-cy="manage-groups-button"]').click();
       cy.get('[data-cy="generated-groups"]').should('not.exist');
       cy.contains('No groups generated');
 
@@ -31,7 +30,6 @@ describe('Group creation', () => {
 
       // Refresh to be sure that information is stored at backend
       cy.reload();
-      cy.get('[data-cy="manage-groups-button"]').click();
       cy.get('table').contains(users[0].firstname);
       cy.get('table').contains(users[3].firstname);
       cy.contains('No groups generated').should('not.exist');
@@ -335,9 +333,10 @@ describe('Group creation', () => {
     });
 
     it('Can use find group button to find group for a groupless student', () => {
+      const course9 = courses[9];
       const user = users[0];
 
-      cy.visit(`/course/${course.id}`);
+      cy.visit(`/course/${course9.id}`);
       cy.get('[data-cy="manage-groups-button"]').click();
       cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
@@ -360,6 +359,41 @@ describe('Group creation', () => {
       cy.contains(user.firstname)
         .parents('[data-cy="group-container"]');
     });
+
+    it('Can use find group for all groupless students', () => {
+      const course9 = courses[9];
+      const user0 = users[0];
+      const user2 = users[2];
+
+      cy.visit(`/course/${course9.id}`);
+      cy.get('[data-cy="manage-groups-button"]').click();
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+      cy.contains(user0.firstname).parents('[data-cy="draggable-row"]').within(() => {
+        cy.get('[data-cy="remove-from-group-button"]').click();
+      });
+
+      cy.contains(user2.firstname).parents('[data-cy="draggable-row"]').within(() => {
+        cy.get('[data-cy="remove-from-group-button"]').click();
+      });
+
+      cy.get('[data-cy="find-group-for-all-button"]').click();
+
+      cy.wait(500);
+
+      cy.get('[data-cy="groupless-container"]')
+        .should('not.contain', user0.firstname);
+
+      cy.get('[data-cy="groupless-container"]')
+        .should('not.contain', user2.firstname);
+
+      cy.contains(user0.firstname)
+        .parents('[data-cy="group-container"]');
+
+      cy.contains(user2.firstname)
+        .parents('[data-cy="group-container"]');
+    })
 
 
     // No need to test publish feature here, it's done in student tests.

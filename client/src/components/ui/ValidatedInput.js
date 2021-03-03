@@ -10,12 +10,16 @@ import PropTypes from 'prop-types';
  * Extra props are passed to the child component so you can use this as if you were using the
  * inner Semantic component.
  */
-const ValidatedInput = ({ name, type, formControl, ...rest }) => {
+const ValidatedInput = ({ name, type, formControl, optionality, ...rest }) => {
   const { setValue, trigger, errors, register } = formControl;
   const Inner = type;
 
   useEffect(() => {
-    register({ name }, { required: true });
+    if (!optionality) {
+      register({ name }, { required: true });
+    } else {
+      register({ name }, { required: false });
+    }
   });
 
   return (

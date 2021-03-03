@@ -44,7 +44,9 @@ export default ({
   });
 
   useEffect(() => {
-    refetch();
+    if (course.id !== undefined) {
+      refetch();
+    }
   }, []);
 
   useEffect(() => {

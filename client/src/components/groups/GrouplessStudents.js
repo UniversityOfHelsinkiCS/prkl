@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Table, Segment, Label, Popup, Form, Button } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { FIND_GROUP_FOR_ONE_STUDENT } from '../../GqlQueries';
+import { FIND_GROUP_FOR_ONE_STUDENT, FIND_GROUP_FOR_MULTIPLE_STUDENTS } from '../../GqlQueries';
 import { useMutation } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
 import _ from 'lodash';
 
 export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrationsWithoutGroups }) => {
 
+  const [findGroupForMultipleStudents] = useMutation(FIND_GROUP_FOR_MULTIPLE_STUDENTS);
   const [findGroupForOne] = useMutation(FIND_GROUP_FOR_ONE_STUDENT);
   const [groups, setGroups] = useStore('groupsStore');
   const [maxGroupSize, setMaxGroupSize] = useState(5);
@@ -15,6 +16,7 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
   const intl = useIntl();
 
   const findGroup = async ( student ) => {
+    console.log(groups);
     const groupsWithUserIds = groups.map(group => {
       const userIds = group.students.map(student => student.id);
       return {
@@ -79,7 +81,51 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
   }));
 
   const findGroupForall = async () => {
+    const groupsWithUserIds = groups.map(group => {
+      const userIds = group.students.map(student => student.id);
+      return {
+        userIds,
+        id: group.groupId,
+        groupName: group.groupName,
+        groupMessage: group.groupMessage,
+      };
+    });
 
+    const grouplessUserId = grouplessStudents.map(student => student.id);
+
+    const grouplessStudentsWithUserIds = grouplessStudents.map(student => {
+      return {
+        userIds: grouplessUserId,
+        id: 'groupless',
+        groupName: 'groupless',
+        groupMessage: 'groupless'
+      }
+    })
+
+    const variables = {
+      data: { courseId: course.id, groups: groupsWithUserIds },
+      maxGroupSize: maxGroupSize,
+      groupless: { courseId: course.id, groups: grouplessStudentsWithUserIds }
+    };
+
+    try {
+      const res = await findGroupForMultipleStudents({
+        variables,
+      });
+
+      const mappedGroups = res.data.findGroupForMultipleStudents.map((e,i) => {
+        return {
+          groupId: '',
+          students: e.students,
+          groupMessage: '',
+          groupName: `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${i+1}`
+        }
+      });
+      setGroups(mappedGroups);
+
+    } catch (e) {
+      console.log(e);
+    }
   }
   
 
@@ -112,8 +158,21 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
 
               <Table.HeaderCell>
                 <FormattedMessage id="groups.maxSize" />
+                <Form.Input
+                  required
+                  value={maxGroupSize}
+                  type="number"
+                  min="1"
+                  max="9999999"
+                  onChange={event => setMaxGroupSize(Number.parseInt(event.target.value, 10)
+                    ? Number.parseInt(event.target.value, 10)
+                    : '')}
+                />
               </Table.HeaderCell>
-              <Table.HeaderCell />
+              <Table.HeaderCell>
+                
+              </Table.HeaderCell>
+
               <Table.HeaderCell />
             </Table.Row>
           </Table.Header>
@@ -135,16 +194,7 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
                   </Table.Cell>
 
                   <Table.Cell>
-                    <Form.Input
-                      required
-                      value={maxGroupSize}
-                      type="number"
-                      min="1"
-                      max="9999999"
-                      onChange={event => setMaxGroupSize(Number.parseInt(event.target.value, 10)
-                        ? Number.parseInt(event.target.value, 10)
-                        : '')}
-                    />
+                    
                   </Table.Cell>
                   
                   <Table.Cell>
@@ -219,6 +269,7 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
         </Table>
         <Button
         fluid
+        data-cy="find-group-for-all-button"
         content={'Find Group For All Groupless Students'}
         onClick={() => findGroupForall()}
         /> 

@@ -67,15 +67,15 @@ export const timeParse = props => {
   return groupTimesMap;
 };
 
-  
+
 export default qa => {
     switch (qa.question.questionType) {
       case 'multipleChoice':
         return <Table.Cell key={qa.id}>{mapshit(qa)}</Table.Cell>;
       case 'singleChoice':
-        return <Table.Cell key={qa.id}>{qa.answerChoices[0].content}</Table.Cell>;
+        return <Table.Cell key={qa.id}>{(qa.answerChoices[0] !== undefined) ? qa.answerChoices[0].content : ''}</Table.Cell>;
       case 'freeForm':
-        return <Table.Cell key={qa.id}>{qa.content}</Table.Cell>;
+        return <Table.Cell key={qa.id}>{(qa.content !== undefined) ? qa.content : ''}</Table.Cell>;
       default:
         return null;
     }

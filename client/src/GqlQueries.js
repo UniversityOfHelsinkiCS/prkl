@@ -29,8 +29,8 @@ export const ALL_USERS = gql`
       lastname
       studentNo
       email
-			role
-			shibbolethUid
+      role
+      shibbolethUid
     }
   }
 `;
@@ -102,6 +102,8 @@ export const COURSE_BY_ID = gql`
         id
         content
         questionType
+        optional
+        useInGroupCreation
         questionChoices {
           content
           order
@@ -165,6 +167,8 @@ export const UPDATE_COURSE = gql`
         id
         content
         questionType
+        optional
+        useInGroupCreation
         questionChoices {
           content
           order
@@ -283,6 +287,21 @@ export const GENERATE_GROUPS = gql`
 export const FIND_GROUP_FOR_ONE_STUDENT = gql`
   mutation findGroupForOne($data: GroupListInput!, $studentId: String!, $maxGroupSize: Float!) {
     findGroupForOne(data: $data, studentId: $studentId, maxGroupSize: $maxGroupSize) {
+      courseId
+      students {
+        id
+        firstname
+        lastname
+        studentNo
+        email
+      }
+    }
+  }
+`;
+
+export const FIND_GROUP_FOR_MULTIPLE_STUDENTS = gql`
+  mutation findGroupForMultipleStudents($data: GroupListInput!, $maxGroupSize: Float!, $groupless: GroupListInput!) {
+    findGroupForMultipleStudents(data: $data, maxGroupSize: $maxGroupSize, groupless: $groupless) {
       courseId
       students {
         id

@@ -1,4 +1,4 @@
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 
 // make timetable question!
 const defaultQuestions = [
@@ -6,6 +6,8 @@ const defaultQuestions = [
     content: "Choose one",
     id: "150e561d-cf97-4cb2-b910-7faa0984800e",
     order: 0,
+    optional: false,
+    useInGroupCreation: true,
     questionType: "singleChoice",
     questionChoices: [
       {
@@ -24,6 +26,8 @@ const defaultQuestions = [
     content: "Choose multiple",
     id: "841201f7-8166-4a0e-a255-4015301af00d",
     order: 1,
+    optional: false,
+    useInGroupCreation: true,
     questionType: "multipleChoice",
     questionChoices: [
       {
@@ -42,7 +46,7 @@ const defaultQuestions = [
         order: 3,
       },
     ],
-  }
-]
+  },
+];
 
-module.exports = defaultQuestions
+module.exports = defaultQuestions;

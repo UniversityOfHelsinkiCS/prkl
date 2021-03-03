@@ -10,7 +10,7 @@ Cypress.Commands.add('seedDatabase', () => {
 });
 
 Cypress.Commands.add('createCourse', (courseIndex, userIndex) => {
-  //only test where courses.json is used
+  // only test where courses.json is used
   cy.fixture('courses').then((courses) => {
     const body = {
       operationName: 'createCourse',
@@ -47,7 +47,7 @@ Cypress.Commands.add('courseRegistrations', (courseIndex, userIndex) => {
       courseRegistrations(courseId: $courseId) {
         id
       }
-    }`
+    }`,
   };
 
   cy.request({
@@ -68,8 +68,8 @@ Cypress.Commands.add('createRegistration', (courseIndex, userIndex) => {
       data: {
         courseId: courses[courseIndex].id,
         questionAnswers: [],
-        workingTimes: []
-      }
+        workingTimes: [],
+      },
     },
     query: `
       mutation createRegistration($data: RegistrationInput!) {
@@ -112,7 +112,6 @@ Cypress.Commands.add('deleteRegistration', (studentIndex, courseIndex, userIndex
     },
     failOnStatusCode: false,
   });
-
 });
 
 Cypress.Commands.add('deleteCourse', (courseIndex, userIndex) => {
@@ -147,4 +146,3 @@ const switchUser = (role) => {
 Cypress.Commands.add('switchToStudent', () => switchUser('student'));
 Cypress.Commands.add('switchToStaff', () => switchUser('staff'));
 Cypress.Commands.add('switchToAdmin', () => switchUser('admin'));
-

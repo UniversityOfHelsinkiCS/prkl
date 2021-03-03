@@ -101,11 +101,19 @@ export default ({ course }) => {
           break;
 
         case SINGLE_CHOICE:
-          res.answerChoices = [{ id: data[key] }];
+          if (data[key] === undefined) {
+            res.answerChoices = [];
+          } else {
+            res.answerChoices = [{ id: data[key] }];
+          }
           break;
 
         case MULTI_CHOICE:
-          res.answerChoices = data[key].map(id => ({ id }));
+          if (data[key] !== undefined) {
+            res.answerChoices = data[key].map(id => ({ id }));
+          } else {
+            res.answerChoices = [];
+          }
           break;
 
         case TIMES:
@@ -123,10 +131,10 @@ export default ({ course }) => {
     try {
       // TODO: Add spinner before next line and disable the submit button on click.
       const response = await createRegistration({ variables: { data: answer } });
-  
+
       const updatedUser = user;
       const newReg = {
-        course: { 
+        course: {
           id: course.id,
           title: course.title,
           code: course.code,
@@ -202,7 +210,7 @@ export default ({ course }) => {
 											<FormattedMessage id="course.contactTeacher" />
 										</Header.Content>
 									</Header>
-								</div>		
+								</div>
 							)}
 							<div>
 								{course.groupsPublished ? (
@@ -230,7 +238,7 @@ export default ({ course }) => {
 									questions={course.questions}
 									formControl={hookForm}
 								/>
-							) : null} 
+							) : null}
 						</div>
 					)}
 				</div>

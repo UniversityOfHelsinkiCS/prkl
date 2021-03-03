@@ -88,6 +88,8 @@ export default {
     'questionForm.questionTitleValidationFailedMsg': 'Question title required',
     'questionForm.questionChoicesMissingValidationFailedMsg': 'At least one answer option required',
     'questionForm.questionChoiceTitleValidationFaildMsg': 'Choice label required',
+    'questionForm.optional': 'Optional question',
+    'questionForm.useInGroupCreation': 'Use in group creation',
 
     'course.deadline': 'Enrollment deadline:',
     'course.questionsPreface': 'Answer the questions below',

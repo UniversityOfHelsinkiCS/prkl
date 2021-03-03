@@ -15,7 +15,7 @@ export default ({ questions, formControl, onSubmit }) => {
   });
 
   return (
-    <Form style={{ marginTop: '2rem' }}>
+    <Form style={{ marginTop: '2rem' }} warning>
       <Header as="h3">
         <FormattedMessage id="course.questionsPreface" />
       </Header>
