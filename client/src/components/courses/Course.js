@@ -249,6 +249,7 @@ export default ({ id, match }) => {
                               <RegistrationList
                                 course={course}
                                 registrations={registrations}
+                                setRegistrations={setRegistrations}
                                 refetchRegistrations={refetchRegistrations}
                                 regByStudentId={regByStudentId}
                               />
