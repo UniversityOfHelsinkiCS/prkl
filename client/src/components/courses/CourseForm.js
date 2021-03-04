@@ -200,7 +200,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
     } catch (error) {
       console.log('error:', error);
     }
-    history.push('/courses');
+    history.push(`/course/${course.id}`);
   };
 
   const handleAddForm = e => {

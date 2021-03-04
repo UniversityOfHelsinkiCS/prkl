@@ -24,6 +24,7 @@ export default ({ id, match }) => {
   const [registrations, setRegistrations] = useState([]);
   const [regByStudentId, setRegByStudentId] = useState([]);
   const [view, setView] = useState('info');
+  const [editView, setEditView] = useState(false)
 
   const [deleteCourse] = useMutation(DELETE_COURSE);
 
@@ -36,17 +37,13 @@ export default ({ id, match }) => {
   // GRAPHQL
 
   const { loading, error, data } = useQuery(COURSE_BY_ID, {
-    variables: { id },
+    variables: { id }
   });
 
   const { loading: regLoading, data: regData, refetch: refetchRegistrations } = useQuery(COURSE_REGISTRATION, {
     skip: course.teachers === undefined
       || (!course.teachers.some(t => t.id === user.id) && user.role !== roles.ADMIN_ROLE),
-    variables: { courseId: id },
-  });
-  const { loading: groupLoading,  data: groupData} = useQuery(COURSE_GROUPS, {
-    skip: user.role === userRoles.STUDENT_ROLE,
-    variables: { courseId: course.id },
+    variables: { courseId: id }
   });
 
   // USEEFFECT
@@ -57,6 +54,8 @@ export default ({ id, match }) => {
         ...data.course,
         questions: data.course.questions.sort((a, b) => a.order - b.order),
       });
+      // only show editView if course is loaded, used for routing:
+      setEditView(true);
     }
 
     if (!regLoading && regData !== undefined) {
@@ -73,19 +72,7 @@ export default ({ id, match }) => {
         }, {})
       );
     }
-
-    if (!groupLoading && groupData !== undefined) {
-      const fetchedGroups = groupData.courseGroups.map(e => {
-        return {
-          groupId: e.id,
-          students: e.students,
-          groupMessage: e.groupMessage,
-          groupName: e.groupName
-        }
-      });
-    }
-
-  }, [data, loading, regData, regLoading, groupLoading, groupData]);
+  }, [data, loading, regData, regLoading]);
 
   if (error !== undefined) {
     console.log('error:', error);
@@ -184,7 +171,7 @@ export default ({ id, match }) => {
                 course={course}
                 user={user}
                 onCancelEdit={handleEditCourse}
-                editView={true}
+                editView={editView}
               />
             ) : (
                 <div>
