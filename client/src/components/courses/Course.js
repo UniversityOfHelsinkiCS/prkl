@@ -85,6 +85,11 @@ export default ({ id, match }) => {
     return <Loader active />;
   }
 
+  if (regLoading || !registrations) {
+    // Waiting data for GrouplessStudents.js
+    return <Loader active />;
+  }
+
   // HANDLERS
 
   const handleDeletion = async () => {
@@ -223,6 +228,7 @@ export default ({ id, match }) => {
                           regByStudentId={regByStudentId}
                           groups={groups}
                           setGroups={setGroups}
+                          refetchRegistrations={refetchRegistrations}
                         />
                         <br></br>
                         <Button onClick={handleGroupsView} color="blue" data-cy="back-to-info-from-groups-button">

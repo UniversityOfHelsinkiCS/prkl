@@ -6,15 +6,19 @@ import { useMutation } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
 import _ from 'lodash';
 
-export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrationsWithoutGroups }) => {
+export default ({
+  grouplessStudents,
+  course,
+  setGrouplessStudents,
+  setRegistrationsWithoutGroups
+}) => {
 
   const [findGroupForMultipleStudents] = useMutation(FIND_GROUP_FOR_MULTIPLE_STUDENTS);
   const [findGroupForOne] = useMutation(FIND_GROUP_FOR_ONE_STUDENT);
   const [groups, setGroups] = useStore('groupsStore');
-  const [maxGroupSize, setMaxGroupSize] = useState(5);
+  const [maxGroupSize, setMaxGroupSize] = useState(course.maxGroupSize);
 
   const intl = useIntl();
-
   const findGroup = async ( student ) => {
     console.log(groups);
     const groupsWithUserIds = groups.map(group => {
@@ -192,10 +196,6 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
                   <Table.Cell>
                     {student.email}
                   </Table.Cell>
-
-                  <Table.Cell>
-                    
-                  </Table.Cell>
                   
                   <Table.Cell>
                     <Popup
@@ -236,6 +236,7 @@ export default ({ grouplessStudents, course, setGrouplessStudents, setRegistrati
                     }
                     />
                   </Table.Cell>
+                  <Table.Cell />
                     
                   
                   {/*<Popup
