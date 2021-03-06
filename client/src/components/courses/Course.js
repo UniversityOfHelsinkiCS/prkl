@@ -81,7 +81,7 @@ export default ({ id, match }) => {
     );
   }
 
-  if (loading || !course) {
+  if (loading || !course.id) {
     return <Loader active />;
   }
 
