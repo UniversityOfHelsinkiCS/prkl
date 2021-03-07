@@ -352,8 +352,7 @@ describe('Group creation', () => {
       });
 
       // check that removed from groupless
-      cy.get('[data-cy="groupless-container"]')
-        .should('not.contain', user.firstname);
+      cy.get('[data-cy="groupless-container"]').should('not.exist');
 
       // check that added to a group
       cy.contains(user.firstname)
@@ -382,11 +381,7 @@ describe('Group creation', () => {
 
       cy.wait(500);
 
-      cy.get('[data-cy="groupless-container"]')
-        .should('not.contain', user0.firstname);
-
-      cy.get('[data-cy="groupless-container"]')
-        .should('not.contain', user2.firstname);
+      cy.get('[data-cy="groupless-container"]').should('not.exist');
 
       cy.contains(user0.firstname)
         .parents('[data-cy="group-container"]');

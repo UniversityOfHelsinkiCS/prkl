@@ -17,7 +17,7 @@ export default ({
   registrations,
   regByStudentId,
   groups,
-  setGroups
+  setGroups,
 }) => {
   const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
@@ -34,7 +34,7 @@ export default ({
   const [groupMessages, setGroupMessages] = useState(['']);
   const [groupNames, setGroupNames] = useState(['']);
   const [groupSorting, setGroupSorting] = useState('nameAscending');
-  const [registrationsWithoutGroups, setRegistrationsWithoutGroups] = useState(false);
+  const [registrationsWithoutGroups, setRegistrationsWithoutGroups] = useState(true);
 
   const intl = useIntl();
 
