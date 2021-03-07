@@ -120,5 +120,39 @@ describe('Adding a new course', () => {
       cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="registration-table"]').should('exist');
     });
+
+    it('Can make questions optional', () => {
+      cy.get('[data-cy="menu-item-add-course"]').click();
+
+      // input course details
+      cy.get('[data-cy="course-title-input"]').type('OptionalQuestionsTest');
+      cy.get('[data-cy="course-code-input"]').type('123');
+      cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
+      cy.get('[data-cy="course-description-input"]').type('Description for test course.');
+
+      // add optional freeform question
+      cy.get('[data-cy="add-question-button"]').click();
+      cy.get('[data-cy="question-title"]').type('Optional freeform');
+      cy.get('[data-cy="question-type-freeform"]').click();
+      cy.get('[data-cy="question-optionality-checkbox"]').click();
+
+      // add required freeform question
+      cy.get('[data-cy="add-question-button"]').click();
+      cy.get('[data-cy="question-title"]').last().type('Required freeform');
+      cy.get('[data-cy="question-type-freeform"]').last().click();
+
+      // confirm
+      cy.get('[data-cy="create-course-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+      // check that questions are marked correctly on course page
+      cy.contains('Optional freeform')
+        .parents('[data-cy="coursepage-question"]')
+        .should('not.contain', '*');
+
+      cy.contains('Required freeform')
+        .parents('[data-cy="coursepage-question"]')
+        .should('contain', '*');
+    });
   });
 });

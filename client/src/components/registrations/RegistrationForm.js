@@ -19,6 +19,12 @@ export default ({ questions, formControl, onSubmit }) => {
       <Header as="h3">
         <FormattedMessage id="course.questionsPreface" />
       </Header>
+      {questions.some(q => q.questionType !== 'times') && (
+        <div>
+          Required questions are marked with
+          <span style={{ color: 'red' }}> *</span>
+        </div>
+      )}
       {questions &&
         questions.map(question => (
           <Question key={question.id} question={question} hookForm={formControl} />
@@ -43,9 +49,9 @@ export default ({ questions, formControl, onSubmit }) => {
 
       <ConfirmationButton
         onConfirm={onSubmit}
-        modalMessage={intl.formatMessage({ id: "forms.confirmRegistration" })}
-				buttonDataCy="register-on-course-button"
-				color="green"
+        modalMessage={intl.formatMessage({ id: 'forms.confirmRegistration' })}
+        buttonDataCy="register-on-course-button"
+        color="green"
         formControl={formControl}
       >
         <FormattedMessage id="forms.submitRegistration" />

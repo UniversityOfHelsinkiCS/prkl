@@ -196,6 +196,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
           variables,
         });
         setCourses(courses.concat(result.data.createCourse));
+        course = result.data.createCourse;
       }
     } catch (error) {
       console.log('error:', error);

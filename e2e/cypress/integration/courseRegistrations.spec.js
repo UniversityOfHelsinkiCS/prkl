@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 const courses = require('../fixtures/courses');
 const users = require('../fixtures/users');
 
@@ -10,7 +11,7 @@ describe('Course registrations', () => {
   after(() => {
     cy.switchToAdmin();
     cy.seedDatabase();
-  })
+  });
 
   describe('Course enrolment for student', () => {
     beforeEach(() => {
@@ -43,8 +44,8 @@ describe('Course registrations', () => {
 
       // Admin-role check for correct answers.
       cy.switchToAdmin();
-			cy.visit(`/course/${course.id}`);
-			cy.get('[data-cy="show-registrations-button"]').click();
+      cy.visit(`/course/${course.id}`);
+      cy.get('[data-cy="show-registrations-button"]').click();
       for (const answer of answers) {
         cy.contains(answer);
       }
@@ -73,6 +74,18 @@ describe('Course registrations', () => {
       cy.contains('Please answer all questions!');
     });
 
+    it('Can enrol without answering optional questions', () => {
+      const course = courses[11];
+      cy.contains(course.title).click();
+      cy.contains(course.questions[0].content);
+      cy.contains(course.questions[1].content);
+      cy.contains(course.questions[2].content);
+      cy.get('[data-cy="toc-checkbox"]').click();
+      cy.get('[data-cy="register-on-course-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.contains('Already registered!');
+    });
+
     it('Can not enrol twice on the same course', () => {
       cy.contains(courses[0].title).click();
 
@@ -93,7 +106,7 @@ describe('Course registrations', () => {
       cy.switchToStudent();
     });
     it('Can cancel registration before deadline, frontend', () => {
-      //frontend
+      // frontend
       cy.contains(courses[0].title).click();
 
       cy.get('[data-cy="toc-checkbox"]').click();
@@ -114,7 +127,7 @@ describe('Course registrations', () => {
       // backend
       cy.createRegistration(0, 0).then((resp) => {
         expect(resp.status).to.eq(200);
-      })
+      });
 
       cy.deleteRegistration(0, 0, 0).then((resp) => {
         expect(resp.status).to.eq(200);
@@ -143,14 +156,14 @@ describe('Course registrations', () => {
       cy.contains(courses[0].title).click();
       cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="registration-table"]').contains(users[3].firstname);
-      cy.contains("Students enrolled to the course:");
+      cy.contains('Students enrolled to the course:');
 
       cy.visit('/courses');
-			cy.contains(courses[4].title).click();
-			cy.wait(500);
-			cy.get('[data-cy="show-registrations-button"]').should('not.exist');
+      cy.contains(courses[4].title).click();
+      cy.wait(500);
+      cy.get('[data-cy="show-registrations-button"]').should('not.exist');
       cy.get('[data-cy="registration-table"]').should('not.exist');
-      cy.contains("Students enrolled to the course:").should('not.exist');
+      cy.contains('Students enrolled to the course:').should('not.exist');
 
       // Test that restrictions apply to backend too.
       cy.courseRegistrations(0, 1).then((resp) => {
@@ -163,10 +176,10 @@ describe('Course registrations', () => {
 
     it('Can remove enrollments only from own course', () => {
       // can remove student from own course
-			cy.contains(courses[0].title).click();
-			cy.get('[data-cy="show-registrations-button"]').click();
+      cy.contains(courses[0].title).click();
+      cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="remove-registration-button"]').first().click();
-			cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.wait(500);
       cy.get('[data-cy="registration-table"]').contains(users[3].firstname).should('not.exist');
 
@@ -184,10 +197,10 @@ describe('Course registrations', () => {
 
     it('Admin can remove enrollments from any course', () => {
       // remove student from own course
-			cy.contains(courses[4].title).click();
-			cy.get('[data-cy="show-registrations-button"]').click();
+      cy.contains(courses[4].title).click();
+      cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="remove-registration-button"]').first().click();
-			cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       cy.wait(500);
       cy.get('[data-cy="registration-table"]').contains(users[3].firstname).should('not.exist');
@@ -195,8 +208,8 @@ describe('Course registrations', () => {
       // remove student from other's course
       cy.visit('/courses');
       cy.contains(courses[0].title).click();
-			// check that admin sees list of enrollments
-			cy.get('[data-cy="show-registrations-button"]').click();
+      // check that admin sees list of enrollments
+      cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="registration-table"]').contains(users[3].firstname);
       cy.get('[data-cy="remove-registration-button"]').first().click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
@@ -227,14 +240,12 @@ describe('Course registrations', () => {
 
       cy.visit('/courses');
       cy.switchToAdmin();
-			cy.contains(courses[1].title).click();
-			cy.get('[data-cy="show-registrations-button"]').click();
+      cy.contains(courses[1].title).click();
+      cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="remove-registration-button"]').first().click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.wait(500);
       cy.get('[data-cy="registration-table"]').contains(users[0].firstname).should('not.exist');
     });
-
   });
-
 });
