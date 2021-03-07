@@ -140,8 +140,8 @@ describe('Course registrations', () => {
     });
 
     it('Can see enrolled students only on own course', () => {
-            cy.contains(courses[0].title).click();
-            cy.get('[data-cy="show-registrations-button"]').click();
+      cy.contains(courses[0].title).click();
+      cy.get('[data-cy="show-registrations-button"]').click();
       cy.get('[data-cy="registration-table"]').contains(users[3].firstname);
       cy.contains("Students enrolled to the course:");
 
