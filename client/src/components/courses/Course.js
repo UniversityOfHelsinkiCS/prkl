@@ -171,7 +171,7 @@ export default ({ id, match }) => {
       <div>
         {userHasAccess() ? (
           <div>
-            { match.params.subpage === 'edit' ? (
+            { (!course.published || user.role === roles.ADMIN_ROLE) && match.params.subpage === 'edit' ? (
               <CourseForm
                 course={course}
                 user={user}
