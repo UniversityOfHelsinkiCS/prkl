@@ -16,7 +16,6 @@ import userService from './services/userService';
 import './App.css';
 import KeepAlive from './components/misc/KeepAlive';
 import Users from './components/users/Users';
-import GroupsView from './components/groups/GroupsView';
 import PrivateRoute from './components/ui/PrivateRoute';
 import { initShibbolethPinger } from 'unfuck-spa-shibboleth-session';
 

@@ -24,7 +24,7 @@ export default ({ id, match }) => {
   const [registrations, setRegistrations] = useState([]);
   const [regByStudentId, setRegByStudentId] = useState([]);
   const [view, setView] = useState('info');
-  const [editView, setEditView] = useState(false)
+  const [editView, setEditView] = useState(false);
 
   const [deleteCourse] = useMutation(DELETE_COURSE);
 
@@ -263,8 +263,8 @@ export default ({ id, match }) => {
 
         {/* Views for everyone */}
         <div>
-          {match.params.subpage === undefined ?
-            <Registration course={course} />
+          {match.params.subpage === undefined || match.params.subpage === 'usergroup' ?
+            <Registration course={course} match={match} />
             : null}
         </div>
       	&nbsp;
