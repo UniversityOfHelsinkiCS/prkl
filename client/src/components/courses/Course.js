@@ -24,7 +24,7 @@ export default ({ id, match }) => {
   const [registrations, setRegistrations] = useState([]);
   const [regByStudentId, setRegByStudentId] = useState([]);
   const [view, setView] = useState('info');
-  const [editView, setEditView] = useState(false)
+  const [editView, setEditView] = useState(false);
 
   const [deleteCourse] = useMutation(DELETE_COURSE);
 
@@ -171,7 +171,7 @@ export default ({ id, match }) => {
       <div>
         {userHasAccess() ? (
           <div>
-            { match.params.subpage === 'edit' ? (
+            { (!course.published || user.role === roles.ADMIN_ROLE) && match.params.subpage === 'edit' ? (
               <CourseForm
                 course={course}
                 user={user}
@@ -182,10 +182,10 @@ export default ({ id, match }) => {
                 <div>
                   <div style={{ maxWidth: '800px' }}>
                     <Button.Group widths='4'>
-                      {/* Only admin can edit or delete after publish */}
-                      {(!course.published || user.role === roles.ADMIN_ROLE) && match.params.subpage === undefined ? (
-                        <>
 
+                      {/* Only admin can edit or delete after publish */}
+                      {(!course.published || user.role === roles.ADMIN_ROLE) ? (
+                        <>
                           <Button onClick={handleEditCourse} color="blue" data-cy="edit-course-button">
                             <FormattedMessage id="course.switchEditView" />
                           </Button>
@@ -194,27 +194,21 @@ export default ({ id, match }) => {
                             modalMessage={intl.formatMessage({ id: "course.confirmDelete" })}
                             buttonDataCy="delete-course-button"
                             color="red"
+                            floated="right"
                           >
                             <FormattedMessage id="course.delete" />
                           </ConfirmationButton>
-
                         </>
                       ) : null}
+
                       {/* Group management and enroll list available regardless of publish status */}
-                      <>
-                        {match.params.subpage === undefined ?
-                          <>
-
-                            <Button onClick={handleGroupsView} color="green" data-cy="manage-groups-button">
-                              <FormattedMessage id="course.switchGroupsView" />
-                            </Button>
-                            <Button onClick={handleRegistrationsView} color="orange" data-cy="show-registrations-button">
-                              <FormattedMessage id="course.switchRegistrationsView" />
-                            </Button>
-
-                          </>
-                          : null}
-                      </>
+                      <Button onClick={handleGroupsView} color="green" data-cy="manage-groups-button">
+                        <FormattedMessage id="course.switchGroupsView" />
+                      </Button>
+                      <Button onClick={handleRegistrationsView} color="orange" data-cy="show-registrations-button">
+                        <FormattedMessage id="course.switchRegistrationsView" />
+                      </Button>
+                      
                     </Button.Group>
                   </div>
 
@@ -263,8 +257,8 @@ export default ({ id, match }) => {
 
         {/* Views for everyone */}
         <div>
-          {match.params.subpage === undefined ?
-            <Registration course={course} />
+          {match.params.subpage === undefined || match.params.subpage === 'usergroup' ?
+            <Registration course={course} match={match} />
             : null}
         </div>
       	&nbsp;
