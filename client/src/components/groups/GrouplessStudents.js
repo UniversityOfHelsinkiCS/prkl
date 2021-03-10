@@ -219,8 +219,9 @@ export default ({
                           <Form.Field>
                             <Form.Select
                               data-cy="switch-group-select"
-                              label={intl.formatMessage({ id: 'groups.switchGroupLabel' })}
+                              label={intl.formatMessage({ id: 'groups.moveToGroupLabel' })}
                               options={switchGroupOptions}
+                              defaultValue={"..."}
                               onChange={(e, { value }) =>
                               handleSwitchingGroup(student, value)
                               }
@@ -231,7 +232,7 @@ export default ({
                     on="click"
                     trigger={
                       <Button data-cy="switch-group-button">
-                        <FormattedMessage id="groups.switchGroupButton" />
+                        <FormattedMessage id="groups.moveToGroupButton" />
                       </Button>
                     }
                     />

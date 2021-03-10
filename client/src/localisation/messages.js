@@ -170,6 +170,8 @@ export default {
     'groups.addGroupButton': 'Add new group',
     'groups.published': 'Your group has been published:',
     'groups.notPublished': 'Groups are coming soon after enrollment deadline.',
+    'groups.moveToGroupButton': 'Move to a group',
+    'groups.moveToGroupLabel': 'Move student to a group',
     'groups.switchGroupButton': 'Move to another group',
     'groups.switchGroupLabel': 'Move student to another group',
     'groups.removeFromGroupLabel': 'Remove student from group',
