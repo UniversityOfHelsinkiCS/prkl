@@ -12,14 +12,13 @@ import ConfirmationButton from '../ui/ConfirmationButton';
 import timeChoices from '../../util/timeFormChoices';
 import UserGroup from '../users/UserGroup';
 
-export default ({ course }) => {
+export default ({ course, match }) => {
   const hookForm = useForm({ mode: 'onChange' });
   const { handleSubmit } = hookForm;
   const [createRegistration] = useMutation(REGISTER_TO_COURSE);
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
 
 	const [user, setUser] = useStore('userStore');
-	const [view, setView] = useState('info');
   const courseId = course.id;
   const studentId = user.id;
 
@@ -76,10 +75,10 @@ export default ({ course }) => {
 	};
 
 	const handleUserGroupView = () => {
-    if (view !== 'userGroup') {
-      setView('userGroup');
+    if (match.params.subpage !== 'usergroup') {
+      history.push(`/course/${course.id}/usergroup`);
     } else {
-      setView('info');
+      history.push(`/course/${course.id}`);
 		}
   };
 
@@ -181,7 +180,7 @@ export default ({ course }) => {
 
   return (
 		<div>
-			{ view === 'info' ? (
+			{ match.params.subpage === undefined ? (
 				<div>
 					{userIsRegistered() ? (
 						<div>

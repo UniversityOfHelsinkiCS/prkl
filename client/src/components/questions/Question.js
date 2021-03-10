@@ -86,6 +86,7 @@ const Question = ({ question, hookForm }) => {
           <Grid.Row columns={2}>
             <Grid.Column verticalAlign="middle">
               <b>{question.content}</b>
+              {!question.optional && <span style={{ color: 'red' }}> *</span>}
             </Grid.Column>
             <Grid.Column textAlign="right">
               <Form.Field>{changeType()}</Form.Field>

@@ -114,8 +114,8 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
       setQuestions(qstns);
       const dateParts = intl
         .formatDate(course.deadline, { year: 'numeric', month: '2-digit', day: '2-digit' })
-        .split('/');
-      const dateString = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`;
+        .split('.');
+      const dateString = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
       setDeadline(dateString);
       setValue('nameDeadline', dateString);
       setPublishToggle(course.published);
@@ -196,6 +196,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
           variables,
         });
         setCourses(courses.concat(result.data.createCourse));
+        course = result.data.createCourse;
       }
     } catch (error) {
       console.log('error:', error);

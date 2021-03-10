@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import './index.css';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { IntlProvider } from 'react-intl';
+import { createStore, useStore } from 'react-hookstore';
 import App from './App';
 import messages from './localisation/messages';
-import { useEffect } from 'react';
-import { createStore, useStore } from 'react-hookstore';
 
 createStore('mocking', {
   mockedBy: null,
@@ -42,9 +41,7 @@ const MockingEnabledClient = () => {
   });
 
   if (!mocking.mockedUser) {
-    return (
-      <></>
-    )
+    return <></>;
   }
   return (
     <ApolloProvider client={apolloClient}>
@@ -54,7 +51,7 @@ const MockingEnabledClient = () => {
 };
 
 ReactDOM.render(
-  <IntlProvider locale="en" messages={messages.en}>
+  <IntlProvider locale="fi" messages={messages.en}>
     <MockingEnabledClient />
   </IntlProvider>,
   document.getElementById('root')
