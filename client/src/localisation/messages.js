@@ -178,6 +178,7 @@ export default {
     'groups.students': 'Students in this group:',
     'groups.findGroupForOne': 'Find group for student',
     'groups.maxSize': 'Max Group Size',
+    'groups.maxSizeInfo': 'Set maximum group size for groups, which will not be exceeded when searching new group for students. If all groups are larger than max limit, student(s) will not be added to any group',
 
     'groupsView.noRegistrations': 'No registrations',
     'groupsView.matchingTimes': 'Matching times',

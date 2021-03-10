@@ -17,8 +17,10 @@ export default ({
   const [findGroupForOne] = useMutation(FIND_GROUP_FOR_ONE_STUDENT);
   const [groups, setGroups] = useStore('groupsStore');
   const [maxGroupSize, setMaxGroupSize] = useState(course.maxGroupSize);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const intl = useIntl();
+
   const findGroup = async ( student ) => {
     console.log(groups);
     const groupsWithUserIds = groups.map(group => {
@@ -48,9 +50,19 @@ export default ({
           groupName: `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${i+1}`
         }
       });
-      setGroups(mappedGroups);
+      
       const newGroupless = grouplessStudents.filter(groupless => groupless !== student)
+      const grouplessStudent = mappedGroups.map(group => {
+        return group.students.find(s => s.id === student.id)
+      })
 
+      if (grouplessStudent[0] === undefined) {
+        alert("No group found for student, check max group size");
+        return;
+      }
+
+      setGroups(mappedGroups);
+      
       newGroupless.length > 0 ?
         setRegistrationsWithoutGroups(true) :
         setRegistrationsWithoutGroups(false);
@@ -125,7 +137,35 @@ export default ({
           groupName: `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${i+1}`
         }
       });
+
       setGroups(mappedGroups);
+
+      let studentIds = [];
+
+      mappedGroups.map(g => {
+        g.students.map(({id}) => {
+          if (id)
+            studentIds.push(id)});
+      });
+
+      let grouplessStudentIds = [];
+
+      grouplessStudents.map(({id}) => {
+        if (id)
+          grouplessStudentIds.push(id)
+      })
+
+      let groupless = false;
+
+      grouplessStudentIds.map(id => {
+        if (!studentIds.includes(id)) {
+          groupless = true;
+        }
+      })
+
+      if (groupless) {
+        alert("At least one student still remains groupless");
+      }
 
     } catch (e) {
       console.log(e);
@@ -161,8 +201,15 @@ export default ({
               </Table.HeaderCell>
 
               <Table.HeaderCell>
-                <FormattedMessage id="groups.maxSize" />
+                <FormattedMessage id="groups.maxSize" />  
+                <Popup
+                  content={intl.formatMessage({ id: 'groups.maxSizeInfo' })}
+                  trigger={
+                    <i class="question circle icon"></i>
+                  }
+                /> 
                 <Form.Input
+                  data-cy="max-group-size"
                   required
                   value={maxGroupSize}
                   type="number"
@@ -172,6 +219,7 @@ export default ({
                     ? Number.parseInt(event.target.value, 10)
                     : '')}
                 />
+                               
               </Table.HeaderCell>
               <Table.HeaderCell>
                 

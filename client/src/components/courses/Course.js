@@ -5,7 +5,6 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Button, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import roles from '../../util/userRoles';
-import userRoles from '../../util/userRoles';
 import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION, COURSE_GROUPS } from '../../GqlQueries';
 import GroupsView from '../groups/GroupsView';
 import CourseForm from './CourseForm';
