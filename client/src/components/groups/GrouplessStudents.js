@@ -201,7 +201,7 @@ export default ({
               </Table.HeaderCell>
 
               <Table.HeaderCell>
-                <FormattedMessage id="groups.maxSize" />  
+                <FormattedMessage id="groups.maxSize" />&nbsp; 
                 <Popup
                   content={intl.formatMessage({ id: 'groups.maxSizeInfo' })}
                   trigger={

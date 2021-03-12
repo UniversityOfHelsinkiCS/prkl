@@ -246,7 +246,11 @@ export default ({
                   <Header as="h5">
                     <FormattedMessage id="groups.students" />
                   </Header>
-                  <Table singleLine fixed data-cy="generated-groups">
+                  <Table 
+                    singleLine 
+                    fixed 
+                    data-cy="generated-groups"
+                  >
                     <Table.Header>
                       <DraggableRow action={swapElements} index={0} tableIndex={tableIndex}>
                         <Table.HeaderCell>
@@ -265,7 +269,8 @@ export default ({
                             </Table.HeaderCell>
                           ) : null
                         )}
-                        <Table.HeaderCell />
+                        <Table.HeaderCell width={1} />
+                        <Table.HeaderCell width={1} />
                       </DraggableRow>
                     </Table.Header>
 
@@ -317,13 +322,16 @@ export default ({
                               }
                               on="click"
                               trigger={
-                                <Button data-cy="switch-group-button">
-                                  <FormattedMessage id="groups.switchGroupButton" />
-                                </Button>
+                                <Button 
+                                  data-cy="switch-group-button"
+                                  icon="exchange"
+                                />                              
                               }
                             />
+                          </Table.Cell>
 
-                            <Popup
+                          <Table.Cell>
+                          <Popup
                               content={intl.formatMessage({ id: 'groups.removeFromGroupLabel' })}
                               trigger={
                                 <Button
@@ -335,6 +343,7 @@ export default ({
                               }
                             />
                           </Table.Cell>
+
                         </DraggableRow>
                       ))}
                     </Table.Body>

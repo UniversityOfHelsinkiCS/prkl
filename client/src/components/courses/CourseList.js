@@ -31,11 +31,11 @@ export default ({ courses, user }) => {
                   <Dropdown text='Teachers' onClick={e => {e.preventDefault()}}>
                     <Dropdown.Menu>
                         {course.teachers.map(t =>
-                        <Dropdown.Item 
-                          key={t.id} 
-                          onClick={e => {e.stopPropagation()}}>
-                            <a href={`mailto:${t.email}`}>{t.firstname} {t.lastname} <span style={{color: '#f2f2f2'}}>{' | '}</span> {t.email}</a>
-                        </Dropdown.Item>
+                          <Dropdown.Item 
+                            key={t.id} 
+                            onClick={e => {e.stopPropagation()}}>
+                              <a href={`mailto:${t.email}`}>{t.firstname} {t.lastname} <span style={{color: '#f2f2f2'}}>{' | '}</span> {t.email}</a>
+                          </Dropdown.Item>
                         )}
                   </Dropdown.Menu>
                 </Dropdown>
