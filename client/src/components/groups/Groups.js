@@ -247,8 +247,6 @@ export default ({
                     <FormattedMessage id="groups.students" />
                   </Header>
                   <Table 
-                    singleLine 
-                    fixed 
                     data-cy="generated-groups"
                   >
                     <Table.Header>
@@ -269,8 +267,10 @@ export default ({
                             </Table.HeaderCell>
                           ) : null
                         )}
-                        <Table.HeaderCell width={1} />
-                        <Table.HeaderCell width={1} />
+
+                        <Table.HeaderCell />
+                        <Table.HeaderCell />
+
                       </DraggableRow>
                     </Table.Header>
 
@@ -302,7 +302,7 @@ export default ({
                             questionSwitch(qa)
                           )}
 
-                          <Table.Cell>
+                          <Table.Cell singleLine>
                             <Popup
                               data-cy="student-options-popup"
                               content={
@@ -328,10 +328,8 @@ export default ({
                                 />                              
                               }
                             />
-                          </Table.Cell>
 
-                          <Table.Cell>
-                          <Popup
+                            <Popup
                               content={intl.formatMessage({ id: 'groups.removeFromGroupLabel' })}
                               trigger={
                                 <Button
@@ -343,7 +341,6 @@ export default ({
                               }
                             />
                           </Table.Cell>
-
                         </DraggableRow>
                       ))}
                     </Table.Body>

@@ -185,7 +185,7 @@ export default ({
           {'Groupless students'}
         </Label>
 
-        <Table singleLine fixed>
+        <Table>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>
@@ -221,11 +221,10 @@ export default ({
                 />
                                
               </Table.HeaderCell>
-              <Table.HeaderCell>
-                
-              </Table.HeaderCell>
 
               <Table.HeaderCell />
+              <Table.HeaderCell />
+
             </Table.Row>
           </Table.Header>
 
