@@ -246,9 +246,7 @@ export default ({
                   <Header as="h5">
                     <FormattedMessage id="groups.students" />
                   </Header>
-                  <Table 
-                    data-cy="generated-groups"
-                  >
+                  <Table data-cy="generated-groups" fixed>
                     <Table.Header>
                       <DraggableRow action={swapElements} index={0} tableIndex={tableIndex}>
                         <Table.HeaderCell>
@@ -268,8 +266,9 @@ export default ({
                           ) : null
                         )}
 
-                        <Table.HeaderCell />
-                        <Table.HeaderCell />
+                        <Table.HeaderCell>
+                          <FormattedMessage id="groups.options" />
+                        </Table.HeaderCell>
 
                       </DraggableRow>
                     </Table.Header>

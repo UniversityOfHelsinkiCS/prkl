@@ -161,6 +161,7 @@ export default {
     'groups.name': 'Name',
     'groups.studentNumber': 'Student number',
     'groups.email': 'Email',
+    'groups.options': 'Options',
     'groups.loadingError': 'Error loading groups',
     'groups.showTimes': 'Show matching times',
     'groups.toggleGroupTimes': 'Toggle group times',
