@@ -42,7 +42,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
     `${intl.formatMessage({ id: 'courseForm.timeQuestionDefault' })}`
   );
 
-  let promptText = undefined;
+  let promptText;
   if (editView) {
     promptText = intl.formatMessage({
       id: publishToggle ? 'editView.confirmPublishSubmit' : 'editView.confirmSubmit',
@@ -72,7 +72,10 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
 
   useEffect(() => {
     if (calendarToggle) {
-      register({ name: 'nameCalendarDesc' }, { required: intl.formatMessage({ id: 'courseForm.calendarDescValidationFailMsg' }) });
+      register(
+        { name: 'nameCalendarDesc' },
+        { required: intl.formatMessage({ id: 'courseForm.calendarDescValidationFailMsg' }) }
+      );
       setValue('nameCalendarDesc', calendarDescription);
     } else {
       unregister('nameCalendarDesc');
@@ -80,12 +83,34 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
   }, [calendarToggle]);
 
   useEffect(() => {
-    register({ name: 'nameTitle' }, { required: intl.formatMessage({id: 'courseForm.titleValidationFailMsg',}) });
-    register({ name: 'nameCode' }, { required: intl.formatMessage({id: 'courseForm.courseCodeValidationFailMsg',}) });
-    register({ name: 'nameDeadline' }, { required: intl.formatMessage({id: 'courseForm.deadlineValidationFailMsg',}),
-      min: editView ? { value: user === undefined || user.role === roles.ADMIN_ROLE ? null : getFormattedDate(), message: intl.formatMessage({id: 'courseForm.deadlinePassedValidationFailMsg',}) }
-                    : { value: todayParsed, message: intl.formatMessage({id: 'courseForm.deadlinePassedValidationFailMsg',}) } });
-    register({ name: 'nameDescription' }, { required: intl.formatMessage({id: 'courseForm.descriptionValidationFailMsg',}) });
+    register(
+      { name: 'nameTitle' },
+      { required: intl.formatMessage({ id: 'courseForm.titleValidationFailMsg' }) }
+    );
+    register(
+      { name: 'nameCode' },
+      { required: intl.formatMessage({ id: 'courseForm.courseCodeValidationFailMsg' }) }
+    );
+    register(
+      { name: 'nameDeadline' },
+      {
+        required: intl.formatMessage({ id: 'courseForm.deadlineValidationFailMsg' }),
+        min: editView
+          ? {
+              value:
+                user === undefined || user.role === roles.ADMIN_ROLE ? null : getFormattedDate(),
+              message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationFailMsg' }),
+            }
+          : {
+              value: todayParsed,
+              message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationFailMsg' }),
+            },
+      }
+    );
+    register(
+      { name: 'nameDescription' },
+      { required: intl.formatMessage({ id: 'courseForm.descriptionValidationFailMsg' }) }
+    );
   }, []);
 
   useEffect(() => {
@@ -112,10 +137,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
           };
         });
       setQuestions(qstns);
-      const dateParts = intl
-        .formatDate(course.deadline, { year: 'numeric', month: '2-digit', day: '2-digit' })
-        .split('.');
-      const dateString = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+      const dateString = course.deadline.substring(0, 10)
       setDeadline(dateString);
       setValue('nameDeadline', dateString);
       setPublishToggle(course.published);
@@ -129,7 +151,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
     }
   }, []);
 
-  const getFormattedDate = (setYesterday) => {
+  const getFormattedDate = setYesterday => {
     const date = new Date();
     if (setYesterday) date.setDate(date.getDate() - 1);
     const dd = String(date.getDate()).padStart(2, '0');
@@ -146,7 +168,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
   const handleSubmit = async () => {
     // TODO: Add logic for checking whether there is actually anything to update
     if (editView && calendarToggle) {
-      calendarQuestion.id = calendarId ? calendarId : undefined;
+      calendarQuestion.id = calendarId;
       calendarQuestion.content = calendarDescription;
       calendarQuestion.order = questions.length;
     }
@@ -161,9 +183,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
     });
 
     const questionsWOKeys = questions.map(q => {
-      const opts = q.questionChoices
-      ? q.questionChoices.map(qc => _.omit(qc, 'oName'))
-      : [];
+      const opts = q.questionChoices ? q.questionChoices.map(qc => _.omit(qc, 'oName')) : [];
       const newQ = _.omit(q, 'qKey');
       newQ.questionChoices = opts;
       return newQ;
@@ -272,7 +292,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
             data-cy="course-deadline-input"
           />
 
-          {(editView && user.role === roles.ADMIN_ROLE) &&
+          {editView && user.role === roles.ADMIN_ROLE && (
             <Form.Button
               onClick={closeRegistration}
               label={intl.formatMessage({ id: 'editView.closeRegistrationLabel' })}
@@ -280,7 +300,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
             >
               {intl.formatMessage({ id: 'editView.closeRegistrationBtn' })}
             </Form.Button>
-          }
+          )}
         </Form.Group>
 
         <Form.Field>
@@ -321,10 +341,17 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
         />
 
         {editView && course.published ? (
-          <p style={{ "color": "#b00" }}> {intl.formatMessage({ id: 'editView.coursePublishedNotification' })} </p>
+          <p style={{ color: '#b00' }}>
+            {intl.formatMessage({ id: 'editView.coursePublishedNotification' })}
+          </p>
         ) : (
           <Form.Group>
-            <Form.Button type="button" onClick={handleAddForm} color="green" data-cy="add-question-button">
+            <Form.Button
+              type="button"
+              onClick={handleAddForm}
+              color="green"
+              data-cy="add-question-button"
+            >
               <FormattedMessage id="courseForm.addQuestion" />
             </Form.Button>
 
@@ -367,9 +394,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
               </Message.Header>
             </Message.Content>
           </Message>
-        ) : (
-          null
-        )}
+        ) : null}
 
         <Form.Checkbox
           label={intl.formatMessage({ id: 'courseForm.publishCourse' })}
@@ -387,14 +412,14 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
               </Message.Header>
             </Message.Content>
           </Message>
-        ) : (
-          null
-        )}
+        ) : null}
 
         {currentUser.role === roles.ADMIN_ROLE &&
-          new Date(deadline).getTime() <= new Date().getTime() &&
-            <p style={{ "color": "#b00" }}> { intl.formatMessage({ id: 'editView.pastDeadlineWarning' }) } </p>
-        }
+          new Date(deadline).getTime() <= new Date().getTime() && (
+            <p style={{ color: '#b00' }}>
+              {intl.formatMessage({ id: 'editView.pastDeadlineWarning' })}
+            </p>
+          )}
 
         <ConfirmationButton
           onConfirm={handleSubmit}
@@ -414,9 +439,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
           >
             <FormattedMessage id="editView.cancelEditsButton" />
           </ConfirmationButton>
-        ) : (
-          null
-        )}
+        ) : null}
       </Form>
     </div>
   );

@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
-import { Table, Header, List, Button, Segment, Popup, Input, Label, Form, Icon } from 'semantic-ui-react';
+import { Table, Header, List, Button, Segment, Popup, Input, Label, Form } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import _ from 'lodash';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
@@ -269,7 +269,6 @@ export default ({
                         <Table.HeaderCell>
                           <FormattedMessage id="groups.options" />
                         </Table.HeaderCell>
-
                       </DraggableRow>
                     </Table.Header>
 
@@ -303,7 +302,7 @@ export default ({
 
                           <Table.Cell singleLine>
                             <Popup
-                              data-cy="student-options-popup"
+                              data-cy="switch-group-popup"
                               content={
                                 <Form>
                                   <Form.Field>
@@ -320,12 +319,7 @@ export default ({
                                 </Form>
                               }
                               on="click"
-                              trigger={
-                                <Button 
-                                  data-cy="switch-group-button"
-                                  icon="exchange"
-                                />                              
-                              }
+                              trigger={<Button data-cy="switch-group-button" icon="exchange" />}
                             />
 
                             <Popup
@@ -362,7 +356,7 @@ export default ({
                     <List horizontal verticalAlign="top">
                       <List.Item>
                         <HourDisplay
-                          header="Combined"
+                          header={intl.formatMessage({ id: 'groups.combinedHourDisplay' })}
                           groupId={group.id}
                           students={group.students.length}
                           times={count(
