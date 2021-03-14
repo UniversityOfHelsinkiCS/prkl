@@ -88,11 +88,9 @@ const TimeForm = ({ onChange, description }) => {
     <div>
       <h3>{description}</h3>
 
-      {Intl.DateTimeFormat().resolvedOptions().timeZone !== "Europe/Helsinki"
-        ? <Message warning>
-          This calendar is in Eastern European Standard Time. You seem to be in a different timezone. Please pay attention when you enter your working times.
-        </Message>
-        : null}
+      {Intl.DateTimeFormat().resolvedOptions().timeZone !== 'Europe/Helsinki' ? (
+        <Message warning>{intl.formatMessage({ id: 'timeForm.timeZoneWarning' })}</Message>
+      ) : null}
 
       <Table
         unstackable

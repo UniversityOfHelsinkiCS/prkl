@@ -21,7 +21,7 @@ export default ({ questions, formControl, onSubmit }) => {
       </Header>
       {questions.some(q => q.questionType !== 'times') && (
         <div>
-          Required questions are marked with
+          <FormattedMessage id="forms.requiredQuestions" />
           <span style={{ color: 'red' }}> *</span>
         </div>
       )}
