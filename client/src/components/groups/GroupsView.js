@@ -127,7 +127,7 @@ export default ({
 
   const handleSampleGroupCreation = async () => {
     const minGroupS = minGroupSize ? minGroupSize : 1;
-    const variables = { data: { courseId: course.id, minGroupSize: minGroupS} };
+    const variables = { data: { courseId: course.id, minGroupSize: minGroupS } };
       try {
         const res = await generateGroups({
           variables,

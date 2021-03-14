@@ -183,7 +183,7 @@ export default ({
       `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${tableIndex + 1}`,
     value: tableIndex,
   }));
-
+  
   return (
     <div>
       {groups.length === 0 ? (
@@ -246,18 +246,25 @@ export default ({
                   <Header as="h5">
                     <FormattedMessage id="groups.students" />
                   </Header>
-                  <Table data-cy="generated-groups" fixed>
+                  <Table 
+                    data-cy="generated-groups" 
+                    fixed
+                  >
                     <Table.Header>
                       <DraggableRow action={swapElements} index={0} tableIndex={tableIndex}>
+
                         <Table.HeaderCell>
                           <FormattedMessage id="groups.name" />
                         </Table.HeaderCell>
+
                         <Table.HeaderCell>
                           <FormattedMessage id="groups.studentNumber" />
                         </Table.HeaderCell>
+
                         <Table.HeaderCell>
                           <FormattedMessage id="groups.email" />
                         </Table.HeaderCell>
+
                         {course.questions.map(question =>
                           question.questionType !== 'times' ? (
                             <Table.HeaderCell key={question.id}>
@@ -296,7 +303,10 @@ export default ({
                             {privacyToggle ? dummyStudentNumber : student.studentNo}
                           </Table.Cell>
 
-                          <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
+                          <Table.Cell>
+                            {privacyToggle ? dummyEmail : student.email}
+                          </Table.Cell>
+
                           {regByStudentId[student.studentNo]?.questionAnswers.map(qa =>
                             questionSwitch(qa)
                           )}
@@ -340,6 +350,7 @@ export default ({
                               }
                             />
                           </Table.Cell>
+
                         </DraggableRow>
                       ))}
                     </Table.Body>
