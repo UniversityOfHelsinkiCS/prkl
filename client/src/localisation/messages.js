@@ -40,10 +40,11 @@ export default {
     'courseForm.deadlinePassedValidationFailMsg': 'Date passed',
     'courseForm.descriptionValidationFailMsg': 'Description required',
     'courseForm.calendarDescValidationFailMsg': 'Calendar description required',
+    'courseForm.teachers': 'Teachers',
 
     'editView.pageTitle': 'Modify Course',
     'editView.coursePublishedNotification':
-      'Course has been published, adding or removing new questions is not allowed. Texts of existing questions and their answer choices may be edited.',
+      'Course has been published, adding or removing questions is not allowed. Texts of existing questions and their answer choices may be edited.',
     'editView.confirmPublishSubmit':
       'Confirm all edits and publish course? Published courses can only be edited by admins!',
     'editView.confirmSubmit': 'Confirm all edits?',
@@ -56,7 +57,7 @@ export default {
 
     'courses.searchPlaceholder': 'Search courses',
     'courses.deadline': 'Enrollment deadline',
-    'courses.teachers': 'Teachers:',
+    'courses.teachers': 'Teachers',
     'courses.showPastCoursesButtonLabel': 'Show past courses',
     'courses.showMyCourses': 'Show only my courses',
     'courses.orderByLabel': 'Order by:',
@@ -131,6 +132,7 @@ export default {
     'forms.registrationSuccess': 'Great success! Your registration was received.',
     'forms.toc':
       'Assembler may disclose my name and e-mail address to students in my group (required).',
+    'forms.requiredQuestions': 'Required questions are marked with',
 
     'timeForm.hours': 'Hour',
     'timeForm.monday': 'Mon',
@@ -140,6 +142,8 @@ export default {
     'timeForm.friday': 'Fri',
     'timeForm.saturday': 'Sat',
     'timeForm.sunday': 'Sun',
+    'timeForm.timeZoneWarning':
+      'This calendar is in Eastern European Standard Time. You seem to be in a different timezone. Please pay attention when you enter your working times.',
 
     'tag.own': 'Own Course',
     'tag.unpublished': 'Unpublished',
@@ -161,6 +165,7 @@ export default {
     'groups.name': 'Name',
     'groups.studentNumber': 'Student number',
     'groups.email': 'Email',
+    'groups.options': 'Options',
     'groups.loadingError': 'Error loading groups',
     'groups.showTimes': 'Show matching times',
     'groups.toggleGroupTimes': 'Toggle group times',
@@ -180,7 +185,11 @@ export default {
     'groups.students': 'Students in this group:',
     'groups.findGroupForOne': 'Find group for student',
     'groups.maxSize': 'Max Group Size',
-    'groups.maxSizeInfo': 'Set maximum group size for groups, which will not be exceeded when searching new group for students. Using this feature requires timetables on registrations. If all groups are larger than max limit, student(s) will not be added to any group',
+    'groups.maxSizeInfo':
+      'Set maximum group size for groups, which will not be exceeded when searching new group for students. If all groups are larger than max limit, student(s) will not be added to any group',
+    'groups.combinedHourDisplay': 'Combined',
+    'groups.newMessage': 'Your group has a new message:',
+    'groups.lockGroup': 'Lock Group',
 
     'groupsView.noRegistrations': 'No registrations',
     'groupsView.matchingTimes': 'Matching times',
@@ -203,6 +212,18 @@ export default {
     'groupsView.defaultGroupNamePrefix': 'Group',
     'groupsView.groupListingOrder': 'Groups listing order',
     'groupsView.showGrouplessStudents': 'Toggle groupless students',
+    'groupsView.noGroupFoundAlert': 'No group found for student, check max group size',
+    'groupsView.grouplessStudentAlert': 'At least one student still remains groupless',
+    'groupsView.grouplessHeader': 'Groupless students',
+    'groupsView.findGroup': 'Find group',
+    'groupsView.findGroupForAll': 'Find group for all groupless students',
+    'groupsView.orderByNameAsc': 'By name, ascending',
+    'groupsView.orderByNameDesc': 'By name, descending',
+    'groupsView.orderBySizeAsc': 'By size, ascending',
+    'groupsView.orderBySizeDesc': 'By size, descending',
+    'groupsView.generatingGroups': 'Generating groups',
+    'groupsView.createGroupsForNonLockedGroups': 'Generate new groups from non-locked groups',
+    'groupsView.confirmGeneratingNewGroups': 'Are you sure you want to generate new groups for non-locked groups?',
 
     'util.notAllowed': 'You do not have the required roles to access this content.',
   },

@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
-import { Table, Header, List, Button, Segment, Popup, Input, Label, Form, Icon } from 'semantic-ui-react';
+import { Table, Header, List, Button, Segment, Popup, Input, Label, Form } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import _ from 'lodash';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
@@ -183,7 +183,7 @@ export default ({
       `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${tableIndex + 1}`,
     value: tableIndex,
   }));
-
+  
   return (
     <div>
       {groups.length === 0 ? (
@@ -234,8 +234,8 @@ export default ({
                 </Label>*/}
 
                   <div class="ui checkbox">
-                    <input type="checkbox" name="example" />
-                    <label> Lock group </label>
+                    <input type="checkbox" name="lockGroup" />
+                    <label> <FormattedMessage id="groups.lockGroup" /> </label>
                   </div>
                   <Header style={{ marginBottom: 5 }} as="h5">
                     <FormattedMessage id="groups.message" />
@@ -252,18 +252,25 @@ export default ({
                   <Header as="h5">
                     <FormattedMessage id="groups.students" />
                   </Header>
-                  <Table singleLine fixed data-cy="generated-groups">
+                  <Table 
+                    data-cy="generated-groups" 
+                    fixed
+                  >
                     <Table.Header>
                       <DraggableRow action={swapElements} index={0} tableIndex={tableIndex}>
+
                         <Table.HeaderCell>
                           <FormattedMessage id="groups.name" />
                         </Table.HeaderCell>
+
                         <Table.HeaderCell>
                           <FormattedMessage id="groups.studentNumber" />
                         </Table.HeaderCell>
+
                         <Table.HeaderCell>
                           <FormattedMessage id="groups.email" />
                         </Table.HeaderCell>
+
                         {course.questions.map(question =>
                           question.questionType !== 'times' ? (
                             <Table.HeaderCell key={question.id}>
@@ -271,7 +278,10 @@ export default ({
                             </Table.HeaderCell>
                           ) : null
                         )}
-                        <Table.HeaderCell />
+
+                        <Table.HeaderCell>
+                          <FormattedMessage id="groups.options" />
+                        </Table.HeaderCell>
                       </DraggableRow>
                     </Table.Header>
 
@@ -298,14 +308,17 @@ export default ({
                             {privacyToggle ? dummyStudentNumber : student.studentNo}
                           </Table.Cell>
 
-                          <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
+                          <Table.Cell>
+                            {privacyToggle ? dummyEmail : student.email}
+                          </Table.Cell>
+
                           {regByStudentId[student.studentNo]?.questionAnswers.map(qa =>
                             questionSwitch(qa)
                           )}
 
-                          <Table.Cell>
+                          <Table.Cell singleLine>
                             <Popup
-                              data-cy="student-options-popup"
+                              data-cy="switch-group-popup"
                               content={
                                 <Form>
                                   <Form.Field>
@@ -322,11 +335,7 @@ export default ({
                                 </Form>
                               }
                               on="click"
-                              trigger={
-                                <Button data-cy="switch-group-button">
-                                  <FormattedMessage id="groups.switchGroupButton" />
-                                </Button>
-                              }
+                              trigger={<Button data-cy="switch-group-button" icon="exchange" />}
                             />
 
                             <Popup
@@ -341,6 +350,7 @@ export default ({
                               }
                             />
                           </Table.Cell>
+
                         </DraggableRow>
                       ))}
                     </Table.Body>
@@ -363,7 +373,7 @@ export default ({
                     <List horizontal verticalAlign="top">
                       <List.Item>
                         <HourDisplay
-                          header="Combined"
+                          header={intl.formatMessage({ id: 'groups.combinedHourDisplay' })}
                           groupId={group.id}
                           students={group.students.length}
                           times={count(
