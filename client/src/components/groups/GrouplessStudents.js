@@ -56,10 +56,19 @@ export default ({
         return group.students.find(s => s.id === student.id)
       })
 
-      if (grouplessStudent[0] === undefined) {
+      let studentIds = [];
+
+      mappedGroups.map(g => {
+        g.students.map(({id}) => {
+          if (id)
+            studentIds.push(id)});
+      });
+
+      if (!studentIds.includes(student.id)) {
         alert("No group found for student, check max group size");
         return;
       }
+
 
       setGroups(mappedGroups);
       

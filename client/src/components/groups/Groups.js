@@ -220,6 +220,7 @@ export default ({
                       >
                         {groupNames[tableIndex] || ''}
                       </Label>
+                      
                     }
                   />
                 {/*<Label
@@ -231,6 +232,11 @@ export default ({
                   <FormattedMessage id="groups.title" />
                   {tableIndex + 1}
                 </Label>*/}
+
+                  <div class="ui checkbox">
+                    <input type="checkbox" name="example" />
+                    <label> Lock group </label>
+                  </div>
                   <Header style={{ marginBottom: 5 }} as="h5">
                     <FormattedMessage id="groups.message" />
                   </Header>
