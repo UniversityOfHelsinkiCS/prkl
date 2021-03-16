@@ -94,6 +94,52 @@ export class GroupResolver {
 
   @Authorized(STAFF)
   @Mutation(() => [Group])
+  async generateGroupsForNonLockedGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
+    const { courseId, minGroupSize, groups } = data;
+    console.log(groups);
+
+    const registrations = await Registration.find({
+      where: { courseId: courseId },
+      relations: [
+        "student",
+        "questionAnswers",
+        "questionAnswers.question",
+        "questionAnswers.answerChoices",
+        "questionAnswers.question.questionChoices",
+        "workingTimes",
+      ],
+    });
+
+    const registrationsUsedForAlgorithm = () => {
+      const returnedRegs: Registration[] = [];
+      groups.map(g => {
+        g.userIds.map(id => {
+          registrations.map(r => {
+            if (r.studentId === id) {
+              returnedRegs.push(r);
+            }
+          })
+        })
+      })
+      return returnedRegs
+    }
+
+    const regsForAlgo = registrationsUsedForAlgorithm();
+
+    console.log('registrations', regsForAlgo);
+    const newGroups = formGroups(minGroupSize, regsForAlgo);
+
+    console.log('newgroups:', newGroups)
+    return Promise.all(
+      newGroups.map(async g => {
+        const students = await User.findByIds(g.userIds);
+        return Group.create({ courseId, students });
+      }),
+    );
+  }
+
+  @Authorized(STAFF)
+  @Mutation(() => [Group])
   async findGroupForOne(
       @Arg("data") data: GroupListInput,
       @Arg("studentId") studentId: string,

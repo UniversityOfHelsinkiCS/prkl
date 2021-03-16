@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
-import { Table, Header, List, Button, Segment, Popup, Input, Label, Form } from 'semantic-ui-react';
+import { Table, Header, List, Button, Segment, Popup, Input, Label, Form, Checkbox } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import _ from 'lodash';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
@@ -233,8 +233,8 @@ export default ({
                   {tableIndex + 1}
                 </Label>*/}
 
-                  <div class="ui checkbox">
-                    <input type="checkbox" name="lockGroup" />
+                  <div className="ui checkbox">
+                    <input type="checkbox" name="lockGroup" value={group.groupId}/>
                     <label> <FormattedMessage id="groups.lockGroup" /> </label>
                   </div>
                   <Header style={{ marginBottom: 5 }} as="h5">

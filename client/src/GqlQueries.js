@@ -284,6 +284,21 @@ export const GENERATE_GROUPS = gql`
   }
 `;
 
+export const GENERATE_GROUPS_FOR_NON_LOCKED_GROUPS = gql`
+  mutation generateGroupsForNonLockedGroups($data: GroupListInput!) {
+    generateGroupsForNonLockedGroups(data: $data) {
+      courseId
+      students {
+        id
+        firstname
+        lastname
+        studentNo
+        email
+      }
+    }
+  }
+`;
+
 export const FIND_GROUP_FOR_ONE_STUDENT = gql`
   mutation findGroupForOne($data: GroupListInput!, $studentId: String!, $maxGroupSize: Float!) {
     findGroupForOne(data: $data, studentId: $studentId, maxGroupSize: $maxGroupSize) {

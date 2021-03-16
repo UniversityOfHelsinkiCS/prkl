@@ -11,6 +11,7 @@ import {
   SAVE_GROUPS,
   COURSE_GROUPS,
   PUBLISH_COURSE_GROUPS,
+  GENERATE_GROUPS_FOR_NON_LOCKED_GROUPS
 } from '../../GqlQueries';
 import Groups from './Groups';
 import GrouplessStudents from './GrouplessStudents';
@@ -20,6 +21,7 @@ import SuccessMessage from '../ui/SuccessMessage';
 
 export default ({ course, registrations, regByStudentId, groups, setGroups }) => {
   const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
+  const [generateGroupsForNonLockedGroups] = useMutation(GENERATE_GROUPS_FOR_NON_LOCKED_GROUPS);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
 
@@ -151,7 +153,56 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
   };
 
   const generateNewGroupsForNonLockedGroups = async () => {
-
+    const groupIds = document.getElementsByName("lockGroup");
+    const newGroups = [];
+    const lockedGroups = [];
+    for (let i = 0; i < groupIds.length; i++) {
+      if (groupIds[i].checked === false) {
+        newGroups.push(groups.find(g => {
+          return g.groupId === groupIds[i].value;
+        }))       
+      } else {
+        lockedGroups.push(groups.find(g => {
+          return g.groupId === groupIds[i].value;
+        }))       
+      }
+    }
+    console.log('new', newGroups)
+    console.log('locked', lockedGroups)
+    const groupsWithUserIds = newGroups.map(group => {
+      const userIds = group.students.map(student => student.id);
+      return {
+        userIds,
+        id: group.groupId,
+        groupName: group.groupName,
+        groupMessage: group.groupMessage,
+      };
+    });
+    console.log('withuserid', groupsWithUserIds)
+    
+    const minGroupS = minGroupSize || 1;
+    const variables = { data: { courseId: course.id, minGroupSize: minGroupS, groups: groupsWithUserIds } };
+    try {
+      const res = await generateGroupsForNonLockedGroups({
+        variables,
+      });
+      const mappedGroups = res.data.generateGroupsForNonLockedGroups.map((e, i) => {
+        return {
+          groupId: '',
+          students: e.students,
+          groupMessage: '',
+          groupName: `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${i + 1}`,
+        };
+      });
+      const combinedGroups = mappedGroups.concat(lockedGroups)
+      handleGroupsMessagesAndNames(sortGroups(mappedGroups, groupSorting));
+      setGroupsUnsaved(true);
+      setRegistrationsWithoutGroups(false);
+      setGroups(combinedGroups);
+    } catch (groupError) {
+      console.log('error:', groupError);
+    }
+    
   }
 
   const saveSampleGroups = async () => {
