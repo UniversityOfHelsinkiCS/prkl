@@ -31,3 +31,15 @@
   cursor: -moz-grab;
   cursor: -webkit-grab;
 }
+
+.ui.fixed.table td:hover {
+  text-overflow: clip;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.ui.fixed.table th:hover {
+  text-overflow: clip;
+  word-break: break-word;
+  white-space: normal;
+}

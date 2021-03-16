@@ -18,7 +18,7 @@ export default ({ courses, user }) => {
             fluid
             as={Link}
             to={`/course/${course.id}`}
-            className={new Date(course.deadline) < new Date() ? 'course-past' : null}       
+            className={new Date(course.deadline) < new Date() ? 'course-past' : null}
           >
             <Card.Content>
               <Card.Header>
@@ -26,29 +26,37 @@ export default ({ courses, user }) => {
               </Card.Header>
 
               <Card.Description>
-                {intl.formatMessage({id: 'courses.deadline'})} {intl.formatDate(course.deadline)} 
-                <span style={{color: '#f2f2f2'}}>{' | '}</span>
-                  <Dropdown text='Teachers' onClick={e => {e.preventDefault()}}>
-                    <Dropdown.Menu>
-                        {course.teachers.map(t =>
-                        <Dropdown.Item 
-                          key={t.id} 
-                          onClick={e => {e.stopPropagation()}}>
-                            <a href={`mailto:${t.email}`}>{t.firstname} {t.lastname} <span style={{color: '#f2f2f2'}}>{' | '}</span> {t.email}</a>
-                        </Dropdown.Item>
-                        )}
+                {intl.formatMessage({ id: 'courses.deadline' })} {intl.formatDate(course.deadline)}
+                <span style={{ color: '#f2f2f2' }}>{' | '}</span>
+                <Dropdown
+                  text={intl.formatMessage({ id: 'courses.teachers' })}
+                  onClick={e => {
+                    e.preventDefault();
+                  }}
+                >
+                  <Dropdown.Menu>
+                    {course.teachers.map(t => (
+                      <Dropdown.Item
+                        key={t.id}
+                        onClick={e => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        <a href={`mailto:${t.email}`}>{t.firstname} {t.lastname} <span style={{color: '#f2f2f2'}}>{' | '}</span> {t.email}</a>
+                      </Dropdown.Item>
+                    ))}
                   </Dropdown.Menu>
                 </Dropdown>
               </Card.Description>
             </Card.Content>
 
             <Card.Content extra>
-              <Card.Description 
+              <Card.Description
                 style={{
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
-                  width: '50%'
+                  width: '50%',
                 }}
               >
                 {course.description}
@@ -58,11 +66,9 @@ export default ({ courses, user }) => {
             <Card.Content extra>
               <CourseTag course={course} user={user} />
             </Card.Content>
-
           </Card>
         ))}
       </div>
-    </Card.Group>   
+    </Card.Group>
   );
 };
-

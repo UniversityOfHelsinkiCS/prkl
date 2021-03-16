@@ -346,6 +346,11 @@ describe('Group creation', () => {
         cy.get('[data-cy="remove-from-group-button"]').click();
       });
 
+      cy.get('[data-cy="max-group-size"]').within(() => {
+        cy.get('input').clear();
+        cy.get('input').type(`10`);
+      });
+
       // click find group
       cy.contains(user.firstname).parents('tr').within(() => {
         cy.get('[data-cy="find-group-button"]').click();
@@ -375,6 +380,11 @@ describe('Group creation', () => {
 
       cy.contains(user2.firstname).parents('[data-cy="draggable-row"]').within(() => {
         cy.get('[data-cy="remove-from-group-button"]').click();
+      });
+
+      cy.get('[data-cy="max-group-size"]').within(() => {
+        cy.get('input').clear();
+        cy.get('input').type(`10`);
       });
 
       cy.get('[data-cy="find-group-for-all-button"]').click();

@@ -412,6 +412,69 @@ const defaultCourses = [
     ],
     registrations: regsForSingleAndMultipleChoiceCourse,
   },
+  {
+    id: '5d265279-1cf7-46ca-b0a3-bb38cb418c04',
+    title: 'Test Course with Optional Questions',
+    deadline: '2121-02-28T21:59:00.000Z',
+    code: 'TC12',
+    description: 'Testing optional questions.',
+    teachers: [userData[1]],
+    maxGroupSize: 10,
+    minGroupSize: 5,
+    published: true,
+    questions: [
+      {
+        content: 'Optional Single Choice',
+        id: '4be90562-9358-40b6-8ddc-a9c5aefd7836',
+        order: 0,
+        optional: true,
+        useInGroupCreation: false,
+        questionType: 'singleChoice',
+        questionChoices: [
+          {
+            content: 'Option 1',
+            id: '8779b42d-6b38-4a24-9f7e-29276843eb19',
+            order: 1,
+          },
+          {
+            content: 'Option 2',
+            id: 'cde4be79-034c-4e42-8eb0-4fb766253095',
+            order: 2,
+          },
+        ],
+      },
+      {
+        content: 'Optional Multiple Choice',
+        id: '7d06b041-dc7c-46a4-8bd6-0f3943a9acec',
+        order: 1,
+        optional: true,
+        useInGroupCreation: false,
+        questionType: 'multipleChoice',
+        questionChoices: [
+          {
+            content: 'Option 1',
+            id: '2f6ec907-7609-4dda-8c93-7ac34ccace1a',
+            order: 1,
+          },
+          {
+            content: 'Option 2',
+            id: 'b1e04135-caae-4b26-80c8-969841a3029e',
+            order: 2,
+          },
+        ],
+      },
+      {
+        content: 'Optional Freeform',
+        id: '776a494b-6586-4c57-b9e5-f31c95d47485',
+        order: 2,
+        optional: true,
+        useInGroupCreation: false,
+        questionType: 'freeForm',
+        questionChoices: [],
+      },
+    ],
+    registrations: [],
+  },
 ];
 
 module.exports = defaultCourses;

@@ -15,14 +15,13 @@ export default ({ user, course }) => {
   });
 
   useEffect(() => {
-    if (!loading && data !== undefined ) {
+    if (!loading && data !== undefined) {
       setGroupTimes(timeParse(data.groupTimes));
     }
 
     if (user.groups && course.id) {
       setGroup(user.groups.filter(g => g.course.id === course.id));
     }
-
   }, [data, loading, user, course]);
 
   if (error !== undefined) {
@@ -39,7 +38,7 @@ export default ({ user, course }) => {
       return false;
     }
     return true;
-  }
+  };
 
   const userIsRegistered = () => {
     const found = user.registrations?.find(r => r.course.id === course.id);
@@ -57,7 +56,9 @@ export default ({ user, course }) => {
           <div>
             {group[0].groupMessage && group[0].groupMessage !== '' && 
             <Container fluid textAlign='justified'>
-              <Header as="h4">Your group has a new message:</Header>
+              <Header as="h4">
+                <FormattedMessage id="groups.newMessage" />
+              </Header>
               <p>{group[0].groupMessage}</p>
             </Container>}
             <Header as="h4">
