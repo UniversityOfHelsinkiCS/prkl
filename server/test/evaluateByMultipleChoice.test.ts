@@ -1,127 +1,84 @@
 import evaluateGroupByMultipleChoice from "../src/algorithm/evaluators/evaluateByMultipleChoice";
-import { Registration } from "../src/entities/Registration";
-import { QuestionChoice } from "../src/entities/QuestionChoice";
+import { createFakeRegistration, genericAnswerSet } from "./util/jestUtils";
 
-const answerChoiceTemplate = (choice: string, index: number): QuestionChoice => {
-  return {
-    content: choice,
-    id: index.toString(),
-    order: index,
-  } as QuestionChoice;
-};
-
-/*
-    The 2d array is interpreted as follows:
-    [
-        [],                             // answers to the first question
-        ["a choice", "another choice"], // answers to the second question
-        ["Javascript", ""],             // answers to the third question
-    ]
-*/
-// TODO: Flexible solution for both multiple- and single-choice-questions and different booleans
-const createFakeRegistration = (answers: string[][], useInGroupCreation: boolean): Registration => {
-  return {
-    questionAnswers: answers.map((choices, index) => ({
-      answerChoices: choices.map((choice, choiceIndex) => answerChoiceTemplate(choice, choiceIndex)),
-      question: { questionType: "multipleChoice", useInGroupCreation },
-      questionId: index.toString(),
-    })),
-  } as Registration;
-};
-
+// Check util/jestUtils.ts for more specific information
 describe("evaluateByMultipleChoice", () => {
   it("returns 1 for identical answers with two registrations", () => {
-    const registrations = [
-      createFakeRegistration([["firstChoice", "secondChoice"]], true),
-      createFakeRegistration([["firstChoice", "secondChoice"]], true),
-    ];
+    const registrations = [createFakeRegistration(genericAnswerSet[0]), createFakeRegistration(genericAnswerSet[0])];
+    const regs2 = [createFakeRegistration(genericAnswerSet[2]), createFakeRegistration(genericAnswerSet[2])];
 
     expect(evaluateGroupByMultipleChoice(registrations)).toEqual(1);
+    expect(evaluateGroupByMultipleChoice(regs2)).toEqual(1);
   });
 
   it("returns 0.5 when half of answers are the same with two registrations", () => {
-    const registrations = [
-      createFakeRegistration([["firstChoice", "thirdChoice"]], true),
-      createFakeRegistration([["firstChoice", "secondChoice"]], true),
-    ];
+    const registrations = [createFakeRegistration(genericAnswerSet[0]), createFakeRegistration(genericAnswerSet[1])];
 
     expect(evaluateGroupByMultipleChoice(registrations)).toEqual(0.5);
   });
 
   it("returns 0 when no answers are the same with two registrations", () => {
-    const registrations = [
-      createFakeRegistration([["firstChoice", "thirdChoice"]], true),
-      createFakeRegistration([["secondChoice", "fourthChoice"]], true),
-    ];
+    const registrations = [createFakeRegistration(genericAnswerSet[0]), createFakeRegistration(genericAnswerSet[2])];
+    const registrations2 = [createFakeRegistration(genericAnswerSet[3]), createFakeRegistration(genericAnswerSet[4])];
 
     expect(evaluateGroupByMultipleChoice(registrations)).toEqual(0);
+    expect(evaluateGroupByMultipleChoice(registrations2)).toEqual(0);
   });
 
   it("returns 1 for identical answers with three registrations", () => {
     const registrations = [
-      createFakeRegistration([["firstChoice", "secondChoice"]], true),
-      createFakeRegistration([["firstChoice", "secondChoice"]], true),
-      createFakeRegistration([["firstChoice", "secondChoice"]], true),
+      createFakeRegistration(genericAnswerSet[1]),
+      createFakeRegistration(genericAnswerSet[1]),
+      createFakeRegistration(genericAnswerSet[1]),
+    ];
+
+    const registrations2 = [
+      createFakeRegistration(genericAnswerSet[4]),
+      createFakeRegistration(genericAnswerSet[4]),
+      createFakeRegistration(genericAnswerSet[4]),
     ];
 
     expect(evaluateGroupByMultipleChoice(registrations)).toEqual(1);
+    expect(evaluateGroupByMultipleChoice(registrations2)).toEqual(1);
   });
 
   it("returns 1 for identical answers with three registrations and two questions", () => {
     const registrations = [
-      createFakeRegistration([
-          ["firstChoice", "secondChoice"],
-          ["firstChoice", "secondChoice"],
-      ], true),
-      createFakeRegistration([
-          ["firstChoice", "secondChoice"],
-          ["firstChoice", "secondChoice"],
-      ], true),
-      createFakeRegistration([
-          ["firstChoice", "secondChoice"],
-          ["firstChoice", "secondChoice"],
-      ], true),
+      createFakeRegistration(genericAnswerSet[5]),
+      createFakeRegistration(genericAnswerSet[5]),
+      createFakeRegistration(genericAnswerSet[5]),
     ];
 
     expect(evaluateGroupByMultipleChoice(registrations)).toEqual(1);
   });
 
-  it("returns 0.5 when one questions answers are identical and ones are not the same", () => {
+  it("returns 0.666... when 2/3 are the same selected options", () => {
     const registrations = [
-      createFakeRegistration([
-          ["firstChoice", "secondChoice"],
-          ["firstChoice", "secondChoice"],
-      ], true),
-      createFakeRegistration([
-          ["firstChoice", "secondChoice"],
-          ["thirdChoice", "fourthChoice"],
-      ], true),
-      createFakeRegistration([
-          ["firstChoice", "secondChoice"],
-          ["fifthChoice", "sixthChoice"],
-      ], true),
+      createFakeRegistration(genericAnswerSet[5]),
+      createFakeRegistration(genericAnswerSet[8]),
+      createFakeRegistration(genericAnswerSet[9]),
     ];
 
-    expect(evaluateGroupByMultipleChoice(registrations)).toEqual(0.5);
+    expect(evaluateGroupByMultipleChoice(registrations)).toEqual(2 / 3);
   });
 
   it("returns 0 when the group has only one person", () => {
-    const registrations = [
-      createFakeRegistration([
-          ["firstChoice", "secondChoice"],
-          ["firstChoice", "secondChoice"],
-      ], true),
-    ];
+    const registrations = [createFakeRegistration(genericAnswerSet[2])];
+    const registrations2 = [createFakeRegistration(genericAnswerSet[4])];
+
+    expect(evaluateGroupByMultipleChoice(registrations)).toEqual(0);
+    expect(evaluateGroupByMultipleChoice(registrations2)).toEqual(0);
+  });
+
+  it("returns 0 when use-boolean is false (for every question)", () => {
+    const registrations = [createFakeRegistration(genericAnswerSet[7]), createFakeRegistration(genericAnswerSet[7])];
 
     expect(evaluateGroupByMultipleChoice(registrations)).toEqual(0);
   });
 
-  it("returns 0 when useswitch is false (for every question)", () => {
-    const registrations = [
-      createFakeRegistration([["firstChoice", "secondChoice"]], false),
-      createFakeRegistration([["firstChoice", "secondChoice"]], false),
-    ];
+  it("returns 1 when use-boolean is false for second question for two regs with same selections", () => {
+    const registrations = [createFakeRegistration(genericAnswerSet[6]), createFakeRegistration(genericAnswerSet[6])];
 
-    expect(evaluateGroupByMultipleChoice(registrations)).toEqual(0);
+    expect(evaluateGroupByMultipleChoice(registrations)).toEqual(1);
   });
 });

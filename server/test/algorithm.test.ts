@@ -1,17 +1,6 @@
 import _ from "lodash";
 import { formGroups } from "../src/algorithm/algorithm";
-import { Registration } from "../src/entities/Registration";
-import { User } from "../src/entities/User";
-// import parseStudentNumber from "../src/utils/parseStudentNumber";
-
-const createEmptyRegistration = (): Registration => {
-  const reg = new Registration();
-  reg.workingTimes = [];
-  reg.questionAnswers = [];
-  reg.student = new User();
-  reg.student.id = "0";
-  return reg;
-};
+import { createEmptyRegistration } from "./util/jestUtils";
 
 describe("Algorithm", () => {
   it("with target group size of four, divides 12 people into groups of four evenly", () => {
