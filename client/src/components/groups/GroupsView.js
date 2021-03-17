@@ -21,7 +21,7 @@ import SuccessMessage from '../ui/SuccessMessage';
 
 export default ({ course, registrations, regByStudentId, groups, setGroups }) => {
   const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
-  const [generateGroupsForNonLockedGroups] = useMutation(GENERATE_GROUPS_FOR_NON_LOCKED_GROUPS);
+  const [generateGroupsForNonLockedGroups, { loading: generateLockedGroupsLoading }] = useMutation(GENERATE_GROUPS_FOR_NON_LOCKED_GROUPS);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
 
@@ -155,8 +155,6 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
 
   const generateNewGroupsForNonLockedGroups = async () => {
     const lockedGroups = lockedGroupsStore
-    console.log('lockedgroups', lockedGroups);
-    console.log('groups', groups)
     
     const groupsForAlgo = [];
     
@@ -165,8 +163,6 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
         groupsForAlgo.push(group);
       }
     })
-
-    console.log('foralgo', groupsForAlgo)
 
     const groupsWithUserIds = groupsForAlgo.map(group => {
       const userIds = group.students.map(student => student.id);
@@ -177,7 +173,6 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
         groupMessage: group.groupMessage,
       };
     });
-    console.log('withuserid', groupsWithUserIds)
     
     const minGroupS = minGroupSize || 1;
     const variables = { data: { courseId: course.id, minGroupSize: minGroupS, groups: groupsWithUserIds } };
@@ -193,13 +188,12 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
           groupName: `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${i + 1}`,
         };
       });
-
-      console.log('mapped', mappedGroups)
-
+      
       handleGroupsMessagesAndNames(sortGroups(mappedGroups, groupSorting));
       setGroupsUnsaved(true);
       setRegistrationsWithoutGroups(false);
-      setGroups(mappedGroups.concat(lockedGroups));
+      setGroups(lockedGroups.concat(mappedGroups));
+      setLockedGroupsStore([]);
     } catch (groupError) {
       console.log('error:', groupError);
     }
@@ -292,6 +286,10 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
   }
 
   if (generateGroupsLoading) {
+    return <Loader active content={intl.formatMessage({ id: 'groupsView.generatingGroups' })} />;
+  }
+
+  if (generateLockedGroupsLoading) {
     return <Loader active content={intl.formatMessage({ id: 'groupsView.generatingGroups' })} />;
   }
 

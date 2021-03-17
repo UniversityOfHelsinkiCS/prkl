@@ -241,11 +241,6 @@ export default ({
                   attached="top"
                 >
 
-                <div className="ui checkbox">
-                    <input type="checkbox" name="lockGroup" value={group.groupId}/>
-                    <label> <FormattedMessage id="groups.lockGroup" /> </label>
-                  </div>
-
                   <FormattedMessage id="groups.title" />
                   {tableIndex + 1}
                 </Label>*/}
