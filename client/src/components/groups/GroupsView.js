@@ -28,6 +28,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [user] = useStore('userStore');
   const [grouplessStudents, setGrouplessStudents] = useStore('grouplessStudentsStore');
+  const [lockedGroupsStore, setLockedGroupsStore] = useStore('lockedGroupsStore');
 
   const [oldGroups, setOldGroups] = useState([]);
   const [minGroupSize, setMinGroupSize] = useState(1);
@@ -153,23 +154,21 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
   };
 
   const generateNewGroupsForNonLockedGroups = async () => {
-    const groupIds = document.getElementsByName("lockGroup");
-    const newGroups = [];
-    const lockedGroups = [];
-    for (let i = 0; i < groupIds.length; i++) {
-      if (groupIds[i].checked === false) {
-        newGroups.push(groups.find(g => {
-          return g.groupId === groupIds[i].value;
-        }))       
-      } else {
-        lockedGroups.push(groups.find(g => {
-          return g.groupId === groupIds[i].value;
-        }))       
+    const lockedGroups = lockedGroupsStore
+    console.log('lockedgroups', lockedGroups);
+    console.log('groups', groups)
+    
+    const groupsForAlgo = [];
+    
+    groups.map(group => {
+      if (!lockedGroups.includes(group)) {
+        groupsForAlgo.push(group);
       }
-    }
-    console.log('new', newGroups)
-    console.log('locked', lockedGroups)
-    const groupsWithUserIds = newGroups.map(group => {
+    })
+
+    console.log('foralgo', groupsForAlgo)
+
+    const groupsWithUserIds = groupsForAlgo.map(group => {
       const userIds = group.students.map(student => student.id);
       return {
         userIds,
@@ -194,15 +193,17 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
           groupName: `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${i + 1}`,
         };
       });
-      const combinedGroups = mappedGroups.concat(lockedGroups)
+
+      console.log('mapped', mappedGroups)
+
       handleGroupsMessagesAndNames(sortGroups(mappedGroups, groupSorting));
       setGroupsUnsaved(true);
       setRegistrationsWithoutGroups(false);
-      setGroups(combinedGroups);
+      setGroups(mappedGroups.concat(lockedGroups));
     } catch (groupError) {
       console.log('error:', groupError);
     }
-    
+
   }
 
   const saveSampleGroups = async () => {
