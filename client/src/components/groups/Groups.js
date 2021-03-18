@@ -245,7 +245,16 @@ export default ({
                   {tableIndex + 1}
                 </Label>*/}
 
-                  <Checkbox value={group} onChange={() => checkBoxChange(group)} label={intl.formatMessage({ id: 'groups.lockGroup'})}/>
+                  <Checkbox
+                    onChange={() => checkBoxChange(group)}
+                    label={intl.formatMessage({ id: 'groups.lockGroup'})}
+                    data-cy="lockGroupsCheckBox"
+                  />
+                  &nbsp;
+                  <Popup
+                    content={intl.formatMessage({ id: 'groups.lockGroupInfo' })}
+                    trigger={<i className="question circle icon" />}
+                  />
                   <Header style={{ marginBottom: 5 }} as="h5">
                     <FormattedMessage id="groups.message" />
                   </Header>

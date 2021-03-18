@@ -400,6 +400,52 @@ describe('Group creation', () => {
         .parents('[data-cy="group-container"]');
     })
 
+    it('Can lock groups and create new groups from the others', () => {
+      const course9 = courses[9];
+      let user1 = '';
+      let user2 = '';
+
+      cy.visit(`/course/${course9.id}`);
+      cy.get('[data-cy="manage-groups-button"]').click();
+
+      cy.get('[data-cy="target-group-size"]').within(() => {
+        cy.get('input').clear();
+        cy.get('input').type(`2`);
+      });
+
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.wait(250);
+        
+      cy.get('[data-cy="lockGroupsCheckBox"]').first().click()
+
+      cy.get('[data-cy="draggable-row"]').siblings().first().find('td').first().invoke('text').then((text) => {
+        user1 = text
+      })
+
+      cy.get('[data-cy="draggable-row"]').siblings().first().next().find('td').first().invoke('text').then((text) => {
+        user2 = text
+      })
+
+      cy.get('[data-cy="target-group-size"]').within(() => {
+        cy.get('input').clear();
+        cy.get('input').type(`1`);
+      });
+
+      cy.get('[data-cy="lockedGroups-create-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.wait(250);
+
+      cy.get('[data-cy="draggable-row"]').siblings().first().find('td').first().invoke('text').then((text) => {
+        expect(user1).to.eq(text)
+      })
+
+      cy.get('[data-cy="draggable-row"]').siblings().first().next().find('td').first().invoke('text').then((text) => {
+        expect(user2).to.eq(text)
+      })
+    })
+
+    
 
     // No need to test publish feature here, it's done in student tests.
   });

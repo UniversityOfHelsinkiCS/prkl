@@ -352,7 +352,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
             <ConfirmationButton
                 onConfirm={generateNewGroupsForNonLockedGroups}
                 modalMessage={intl.formatMessage({ id: 'groupsView.confirmGeneratingNewGroups' })}
-                buttonDataCy="asdf"
+                buttonDataCy="lockedGroups-create-submit"
                 color="pink"
               >
                 <FormattedMessage id="groupsView.createGroupsForNonLockedGroups" />
