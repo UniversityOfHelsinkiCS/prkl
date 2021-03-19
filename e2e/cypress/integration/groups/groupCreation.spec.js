@@ -348,7 +348,7 @@ describe('Group creation', () => {
 
       cy.get('[data-cy="max-group-size"]').within(() => {
         cy.get('input').clear();
-        cy.get('input').type(`10`);
+        cy.get('input').type('10');
       });
 
       // click find group
@@ -384,7 +384,7 @@ describe('Group creation', () => {
 
       cy.get('[data-cy="max-group-size"]').within(() => {
         cy.get('input').clear();
-        cy.get('input').type(`10`);
+        cy.get('input').type('10');
       });
 
       cy.get('[data-cy="find-group-for-all-button"]').click();
@@ -398,8 +398,84 @@ describe('Group creation', () => {
 
       cy.contains(user2.firstname)
         .parents('[data-cy="group-container"]');
-    })
+    });
 
+    it('Can lock groups and create new groups from the others', () => {
+      const course9 = courses[9];
+      let user1 = '';
+      let user2 = '';
+
+      cy.visit(`/course/${course9.id}`);
+      cy.get('[data-cy="manage-groups-button"]').click();
+
+      cy.get('[data-cy="target-group-size"]').within(() => {
+        cy.get('input').clear();
+        cy.get('input').type('2');
+      });
+
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.wait(250);
+
+      cy.get('[data-cy="lockGroupsCheckBox"]').first().click();
+
+      cy.get('[data-cy="draggable-row"]').siblings().first().find('td').first().invoke('text').then((text) => {
+        user1 = text;
+      });
+
+      cy.get('[data-cy="draggable-row"]').siblings().first().next().find('td').first().invoke('text').then((text) => {
+        user2 = text;
+      });
+
+      cy.get('[data-cy="target-group-size"]').within(() => {
+        cy.get('input').clear();
+        cy.get('input').type('1');
+      });
+
+      cy.get('[data-cy="lockedGroups-create-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.wait(250);
+
+      cy.get('[data-cy="draggable-row"]').siblings().first().find('td').first().invoke('text').then((text) => {
+        expect(user1).to.eq(text);
+      });
+
+      cy.get('[data-cy="draggable-row"]').siblings().first().next().find('td').first().invoke('text').then((text) => {
+        expect(user2).to.eq(text);
+      });
+    });
+
+    it('Locked groups retain their names', () => {
+      const user = users[0];
+      const lockedGroup = 'lockedGroup';
+
+      cy.visit(`/course/${course.id}`);
+      cy.get('[data-cy="manage-groups-button"]').click();
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+      // name and lock a group
+      cy.contains(user.firstname).parents('[data-cy="group-container"]').within(() => {
+        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
+      });
+      cy.get('[data-cy="group-name-input"]').type(`{selectAll}${lockedGroup}`);
+      cy.get('[data-cy="save-groups-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.wait(300);
+      cy.contains(lockedGroup).parents('[data-cy="group-container"]').within(() => {
+        cy.get('[data-cy="lockGroupsCheckBox"]').click();
+      });
+
+      // generate new groups from non-locked
+      cy.get('[data-cy="lockedGroups-create-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+      // check locked group didn't change
+      cy.contains(lockedGroup).parents('[data-cy="group-container"]').within(() => {
+        cy.contains(user.firstname);
+        cy.get('tr').should('have.length', 2);
+      });
+    });
 
     // No need to test publish feature here, it's done in student tests.
   });

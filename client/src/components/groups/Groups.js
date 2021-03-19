@@ -23,6 +23,7 @@ export default ({
   const [privacyToggle] = useStore('toggleStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [groups, setGroups] = useStore('groupsStore');
+  const [lockedGroupsStore, setLockedGroupsStore] = useStore('lockedGroupsStore');
 
   const [showGroupTimes, setShowGroupTimes] = useState([]);
   const [groupTimesVisible, setGroupTimesVisible] = useState([]);
@@ -183,7 +184,18 @@ export default ({
       `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${tableIndex + 1}`,
     value: tableIndex,
   }));
-  
+
+  const checkBoxChange = ( group ) => {
+    const groups = lockedGroupsStore;
+    if (groups.includes(group)) {
+      const filtered = groups.filter(g => g.groupId !== group.groupId)
+      setLockedGroupsStore(filtered)
+    } else {
+      groups.push(group)
+      setLockedGroupsStore(groups)
+    }
+  }
+
   return (
     <div>
       {groups.length === 0 ? (
@@ -233,10 +245,16 @@ export default ({
                   {tableIndex + 1}
                 </Label>*/}
 
-                  <div className="ui checkbox">
-                    <input type="checkbox" name="lockGroup" value={group.groupId}/>
-                    <label> <FormattedMessage id="groups.lockGroup" /> </label>
-                  </div>
+                  <Checkbox
+                    onChange={() => checkBoxChange(group)}
+                    label={intl.formatMessage({ id: 'groups.lockGroup'})}
+                    data-cy="lockGroupsCheckBox"
+                  />
+                  &nbsp;
+                  <Popup
+                    content={intl.formatMessage({ id: 'groups.lockGroupInfo' })}
+                    trigger={<i className="question circle icon" />}
+                  />
                   <Header style={{ marginBottom: 5 }} as="h5">
                     <FormattedMessage id="groups.message" />
                   </Header>

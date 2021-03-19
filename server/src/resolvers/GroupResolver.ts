@@ -95,7 +95,7 @@ export class GroupResolver {
   @Mutation(() => [Group])
   async generateGroupsForNonLockedGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
     const { courseId, minGroupSize, groups } = data;
-    console.log(groups);
+    console.log('groups', groups);
 
     const registrations = await Registration.find({
       where: { courseId: courseId },
@@ -113,6 +113,7 @@ export class GroupResolver {
       const returnedRegs: Registration[] = [];
       groups.map(g => {
         g.userIds.map(id => {
+          console.log(id);
           registrations.map(r => {
             if (r.studentId === id) {
               returnedRegs.push(r);

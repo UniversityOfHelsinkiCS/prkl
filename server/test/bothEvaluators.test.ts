@@ -1,18 +1,7 @@
 import evaluateBoth from "../src/algorithm/evaluators/bothEvaluators";
 import { Registration } from "../src/entities/Registration";
 import { WorkingTimes } from "../src/entities/WorkingTimes";
-
-const createFakeRegistration = (answers: string[][]): Registration => {
-  return {
-    questionAnswers: answers.map((choices, index) => ({
-      answerChoices: choices.map(choice => ({
-        id: choice,
-      })),
-      question: { questionType: "multipleChoice" },
-      questionId: index.toString(),
-    })),
-  } as Registration;
-};
+import { createFakeRegistration, genericAnswerSet } from "./util/jestUtils";
 
 describe("Both evaluators combined", () => {
   it("Scores zero with empty attributes", () => {
@@ -23,11 +12,8 @@ describe("Both evaluators combined", () => {
     expect(evaluateBoth([reg, reg])).toEqual(0);
   });
 
-  it("Two people with exactly same answers and times scores 2?", () => {
-    const regs = [
-      createFakeRegistration([["firstChoice", "secondChoice"]]),
-      createFakeRegistration([["firstChoice", "secondChoice"]]),
-    ];
+  it("Two people with exactly same answers and times scores 2", () => {
+    const regs = [createFakeRegistration(genericAnswerSet[0]), createFakeRegistration(genericAnswerSet[0])];
 
     const times = [
       {

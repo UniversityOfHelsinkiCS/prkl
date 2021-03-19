@@ -21,6 +21,7 @@ import { initShibbolethPinger } from 'unfuck-spa-shibboleth-session';
 
 createStore('coursesStore', []);
 createStore('groupsStore', []);
+createStore('lockedGroupsStore', []);
 createStore('teacherStore', []);
 createStore('grouplessStudentsStore', []);
 createStore('userStore', {});

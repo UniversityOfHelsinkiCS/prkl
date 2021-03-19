@@ -190,6 +190,8 @@ export default {
     'groups.combinedHourDisplay': 'Combined',
     'groups.newMessage': 'Your group has a new message:',
     'groups.lockGroup': 'Lock Group',
+    'groups.lockGroupInfo': 
+      'Check this box to lock this group and generate new groups from all the other groups by setting Target Group Size and pressing "Generate new groups from non-locked groups" button above',
 
     'groupsView.noRegistrations': 'No registrations',
     'groupsView.matchingTimes': 'Matching times',
