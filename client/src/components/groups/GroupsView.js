@@ -164,6 +164,15 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
       }
     })
 
+    const groupless = {
+      groupId: "",
+      groupMessage: "",
+      groupName: "groupless",
+      students: grouplessStudents
+    }
+    
+    groupsForAlgo.push(groupless);
+
     const groupsWithUserIds = groupsForAlgo.map(group => {
       const userIds = group.students.map(student => student.id);
       return {
