@@ -69,7 +69,7 @@ export class GroupResolver {
 
   // Returns sample groups based on received data, does not save them
   @Authorized(STAFF)
-  @Query(() => [Group])
+  @Mutation(() => [Group])
   async createSampleGroups(@Arg("data") data: GenerateGroupsInput): Promise<Group[]> {
     if (data.registrationIds === undefined) {
       return Promise.resolve([])
