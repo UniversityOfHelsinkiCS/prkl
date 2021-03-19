@@ -119,7 +119,7 @@ export default () => {
 
   return (
     <div>
-      <Menu secondary>
+      <Menu secondary stackable>
         <Menu.Item>
           <Input
             onChange={handleSearchChange}
