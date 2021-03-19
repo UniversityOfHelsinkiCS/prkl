@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useLazyQuery, useMutation } from '@apollo/react-hooks';
 import { Form, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Prompt } from 'react-router-dom';
@@ -20,7 +20,7 @@ import ConfirmationButton from '../ui/ConfirmationButton';
 import SuccessMessage from '../ui/SuccessMessage';
 
 export default ({ course, registrations, regByStudentId, groups, setGroups }) => {
-  const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
+  const [generateGroups, { loading: generateGroupsLoading }] = useLazyQuery(GENERATE_GROUPS);
   const [generateGroupsForNonLockedGroups] = useMutation(GENERATE_GROUPS_FOR_NON_LOCKED_GROUPS);
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
@@ -28,6 +28,8 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [user] = useStore('userStore');
   const [grouplessStudents, setGrouplessStudents] = useStore('grouplessStudentsStore');
+
+  console.log(registrations)
 
   const [oldGroups, setOldGroups] = useState([]);
   const [minGroupSize, setMinGroupSize] = useState(1);
@@ -130,10 +132,10 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
 
   const handleSampleGroupCreation = async () => {
     const minGroupS = minGroupSize || 1;
-    const variables = { data: { courseId: course.id, minGroupSize: minGroupS } };
+    const variables = { data: { courseId: course.id, targetGroupSize: minGroupS, registrationIds: registrations.map(reg => reg.id)} };
     try {
       const res = await generateGroups({
-        variables,
+        variables
       });
       const mappedGroups = res.data.createSampleGroups.map((e, i) => {
         return {

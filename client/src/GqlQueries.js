@@ -270,7 +270,7 @@ export const COURSE_GROUPS = gql`
 `;
 
 export const GENERATE_GROUPS = gql`
-  mutation createSampleGroups($data: GroupListInput!) {
+  query createSampleGroups($data: GenerateGroupsInput!) {
     createSampleGroups(data: $data) {
       courseId
       students {
