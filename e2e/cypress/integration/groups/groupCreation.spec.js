@@ -477,7 +477,6 @@ describe('Group creation', () => {
       });
     });
 
-
     // No need to test publish feature here, it's done in student tests.
   });
 });
