@@ -186,13 +186,11 @@ export default ({
   }));
 
   const checkBoxChange = ( group ) => {
-    const groups = lockedGroupsStore;
-    if (groups.includes(group)) {
-      const filtered = groups.filter(g => g.groupId !== group.groupId)
+    if (lockedGroupsStore.includes(group)) {
+      const filtered = lockedGroupsStore.filter(g => g.groupId !== group.groupId)
       setLockedGroupsStore(filtered)
     } else {
-      groups.push(group)
-      setLockedGroupsStore(groups)
+      setLockedGroupsStore(lockedGroupsStore.concat(group))
     }
   }
 
