@@ -2,6 +2,7 @@ const { v4: uuidv4 } = require('uuid');
 
 // make timetable question!
 const defaultQuestions = [
+
   {
     content: "Choose one",
     id: "150e561d-cf97-4cb2-b910-7faa0984800e",
@@ -22,6 +23,7 @@ const defaultQuestions = [
       },
     ],
   },
+
   {
     content: "Choose multiple",
     id: "841201f7-8166-4a0e-a255-4015301af00d",
@@ -47,6 +49,36 @@ const defaultQuestions = [
       },
     ],
   },
+
+  {
+    content: "Merkitse aikatauluun sinulle sopivat työskentelyajat.",
+    id: "4cc2324a-3b5a-4201-9a04-6333521fcac9",
+    order: 2,
+    optional: false,
+    useInGroupCreation: true,
+    questionType: "times"
+  }
+  
 ];
 
-module.exports = defaultQuestions;
+function randomizedTimes(regId) {
+  let times = [];
+
+  for (let i = 5; i <= 11; i++) {
+    let randomStart = Math.floor(Math.random() * (9 - 5 + 1)) + 5;
+    let randomEnd = Math.floor(Math.random() * (20 - 10 + 1)) + 10;
+    times.push({
+      id: uuidv4(),
+      startTime: `1970-01-0${i}T0${randomStart}:00:00.000Z`,
+      endTime: `1970-01-0${i}T${randomEnd}:00:00.000Z`,
+      registrationId: regId,
+      questionId: "4cc2324a-3b5a-4201-9a04-6333521fcac9",
+      tentative: false
+    })
+  }
+
+  return times;
+};
+
+exports.defaultQuestions = defaultQuestions;
+exports.randomizedTimes = randomizedTimes;
