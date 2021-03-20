@@ -71,7 +71,7 @@ export class GroupResolver {
   @Authorized(STAFF)
   @Mutation(() => [Group])
   async createSampleGroups(@Arg("data") data: GenerateGroupsInput): Promise<Group[]> {
-    if (data.registrationIds === undefined) {
+    if (data.registrationIds === undefined || data.registrationIds === []) {
       return Promise.resolve([])
     }
     
