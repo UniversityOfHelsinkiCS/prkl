@@ -3,8 +3,12 @@ import { useStore } from 'react-hookstore';
 import CourseRegistrations from './CourseRegistrations';
 import roles from '../../util/userRoles';
 
-export default ({ course, registrations, refetchRegistrations, regByStudentId }) => {
+export default ({ courseReducer, course, regByStudentId }) => {
   const [user] = useStore('userStore');
+
+  const [{registrations}] = courseReducer
+
+  console.log(courseReducer)
 
   const hasAccess = () => {
     if (user.role === roles.ADMIN_ROLE) {
@@ -22,9 +26,8 @@ export default ({ course, registrations, refetchRegistrations, regByStudentId })
         {course.questions && registrations && hasAccess ? (
           <div>
             <CourseRegistrations
+              courseReducer={courseReducer}
               course={course}
-              registrations={registrations}
-              refetchRegistrations={refetchRegistrations}
               regByStudentId={regByStudentId}
             />
           </div>

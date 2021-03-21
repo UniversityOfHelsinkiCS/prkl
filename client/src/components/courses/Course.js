@@ -1,17 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import { useStore } from 'react-hookstore';
 import { useHistory, Route } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Button, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import roles from '../../util/userRoles';
-import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION, COURSE_GROUPS } from '../../GqlQueries';
+import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION, DELETE_REGISTRATION, COURSE_GROUPS } from '../../GqlQueries';
 import GroupsView from '../groups/GroupsView';
 import CourseForm from './CourseForm';
 import RegistrationList from '../registrations/RegistrationList';
 import Registration from '../registrations/Registration';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import CourseInfo from './CourseInfo';
+
+const useEffectWithOldDeps = (effect, deps) => {
+  const [oldDeps, setOldDeps] = useState(deps);
+
+  useEffect(() => {
+    console.log("EFFECT ", deps, oldDeps)
+    const cleanup = effect(oldDeps)
+    setOldDeps(deps);
+    return () => cleanup()
+  }, deps)
+}
 
 export default ({ id, match }) => {
   const [courses, setCourses] = useStore('coursesStore');
@@ -20,12 +31,59 @@ export default ({ id, match }) => {
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
 
   const [course, setCourse] = useState({});
-  const [registrations, setRegistrations] = useState([]);
   const [regByStudentId, setRegByStudentId] = useState([]);
   const [view, setView] = useState('info');
   const [editView, setEditView] = useState(false);
 
+  const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
+
+  const [courseState, courseDispatch] = useReducer(
+    (state, action) => {
+      console.log(state, action)
+      switch (action.type) {
+        case 'delete_registration':
+          return {
+            ...state,
+            registrations: state.registrations.filter(({student: {id}}) => id !== action.payload)
+          }
+        case 'set_registrations':
+          return {
+            ...state,
+            registrations: action.payload
+          }
+        default:
+          throw new Error("Invalid action: " + action.type)
+      }
+    },
+    {
+      registrations: []
+    }
+  )
+
+  const registrations = courseState.registrations;
+  const setRegistrations = regs => courseDispatch({type: "set_registrations", payload: regs}) 
+
   const [deleteCourse] = useMutation(DELETE_COURSE);
+
+  const [oldCourseState, setOldCourseState] = useState(courseState);
+
+  useEffect(() => {
+    (async () => {
+      if (oldCourseState.registrations.length > courseState.registrations.length) {
+        const deleted = oldCourseState.registrations.reduce(
+          (deleted, oldReg) => courseState.registrations.includes(oldReg) ? deleted : deleted.concat(oldReg),
+          []
+        )
+  
+        await Promise.all(deleted.map(deletedReg => deleteRegistration({variables: {courseId: course.id, studentId: deletedReg.student.id}})))
+
+        if (deleted.some(deletedReg => deletedReg.student.id == user.id)) {
+          history.push("/courses")
+        }
+      }
+    })()
+    return setOldCourseState(courseState)
+  }, [courseState.registrations])
 
   const history = useHistory();
   const intl = useIntl();
@@ -39,7 +97,7 @@ export default ({ id, match }) => {
     variables: { id }
   });
 
-  const { loading: regLoading, data: regData, refetch: refetchRegistrations } = useQuery(COURSE_REGISTRATION, {
+  const { loading: regLoading, data: regData } = useQuery(COURSE_REGISTRATION, {
     skip: course.teachers === undefined
       || (!course.teachers.some(t => t.id === user.id) && user.role !== roles.ADMIN_ROLE),
     variables: { courseId: id }
@@ -221,7 +279,6 @@ export default ({ id, match }) => {
                           regByStudentId={regByStudentId}
                           groups={groups}
                           setGroups={setGroups}
-                          refetchRegistrations={refetchRegistrations}
                         />
                         <br></br>
                         <Button onClick={handleGroupsView} color="blue" data-cy="back-to-info-from-groups-button">
@@ -233,10 +290,10 @@ export default ({ id, match }) => {
                           {match.params.subpage === 'registrations' ?
                             <div>
                               <RegistrationList
+                                courseReducer={[courseState, courseDispatch]}
                                 course={course}
                                 registrations={registrations}
                                 setRegistrations={setRegistrations}
-                                refetchRegistrations={refetchRegistrations}
                                 regByStudentId={regByStudentId}
                               />
                               <br></br>
@@ -257,7 +314,7 @@ export default ({ id, match }) => {
         {/* Views for everyone */}
         <div>
           {match.params.subpage === undefined || match.params.subpage === 'usergroup' ?
-            <Registration course={course} match={match} />
+            <Registration courseReducer={[courseState, courseDispatch]} course={course} match={match} />
             : null}
         </div>
       	&nbsp;

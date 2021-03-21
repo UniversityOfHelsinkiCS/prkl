@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useStore } from 'react-hookstore';
 import { useForm } from 'react-hook-form';
 import { Header, Icon, Button } from 'semantic-ui-react';
@@ -12,7 +12,7 @@ import ConfirmationButton from '../ui/ConfirmationButton';
 import timeChoices from '../../util/timeFormChoices';
 import UserGroup from '../users/UserGroup';
 
-export default ({ course, match }) => {
+export default ({ courseReducer, course, match }) => {
   const hookForm = useForm({ mode: 'onChange' });
   const { handleSubmit } = hookForm;
   const [createRegistration] = useMutation(REGISTER_TO_COURSE);
@@ -158,10 +158,10 @@ export default ({ course, match }) => {
       await deleteRegistration({
         variables
       });
-      const updatedUser = user;
-      const regs = updatedUser.registrations.filter(r => r.course.id !== courseId);
-      updatedUser.registrations = regs;
-      setUser(updatedUser);
+      setUser({
+        ...user,
+        registrations: user.registrations.filter(r => r.course.id !== courseId)
+      });
     } catch (deletionError) {
       console.log('error:', deletionError);
     }
