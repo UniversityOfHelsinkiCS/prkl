@@ -11,21 +11,8 @@ import { Course } from "../entities/Course";
 import { Algorithm } from "../algorithm/algorithm";
 import { GroupInput } from "../inputs/GroupInput";
 import { group } from "console";
+import { GenerateGroupsInput } from "../inputs/GenerateGroupsInput";
 
-const formNewGroups = async (algorithm: Algorithm, courseId: string, minGroupSize: number) => {
-  const registrations = await Registration.find({
-    where: { courseId: courseId },
-    relations: [
-      "student",
-      "questionAnswers",
-      "questionAnswers.question",
-      "questionAnswers.answerChoices",
-      "questionAnswers.question.questionChoices",
-      "workingTimes",
-    ],
-  });
-  return algorithm(minGroupSize, registrations);
-};
 @Resolver()
 export class GroupResolver {
   @Authorized(STAFF)
@@ -33,6 +20,10 @@ export class GroupResolver {
   async courseGroups(@Ctx() context, @Arg("courseId") courseId: string): Promise<Group[]> {
     const { user } = context;
     const course = await Course.findOne({ where: { id: courseId }, relations: ["teachers"] });
+
+    if (course === undefined) {
+      throw new Error("course not found with id " + courseId)
+    }
 
     if (user.role === ADMIN || course.teachers.find(t => t.id === user.id) !== undefined) {
       const groups = await Group.find({
@@ -79,13 +70,71 @@ export class GroupResolver {
   // Returns sample groups based on received data, does not save them
   @Authorized(STAFF)
   @Mutation(() => [Group])
-  async createSampleGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
-    const { courseId, minGroupSize } = data;
+  async createSampleGroups(@Arg("data") data: GenerateGroupsInput): Promise<Group[]> {
+    if (data.registrationIds === undefined || data.registrationIds === []) {
+      return Promise.resolve([])
+    }
+    
+    let registrations: Registration[] = []
+    if (data.registrationIds !== undefined) {
+      registrations = await Registration.findByIds(data.registrationIds, { relations: [
+        "student",
+        "questionAnswers",
+        "questionAnswers.question",
+        "questionAnswers.answerChoices",
+        "questionAnswers.question.questionChoices",
+        "workingTimes",
+      ],
+     })
+    }
 
-    const groups = data.groups && data.groups.length > 0 ? data.groups : await formNewGroups(formGroups, courseId, minGroupSize);
+    const newGroups = formGroups(data.targetGroupSize, registrations)
+    
+    return Promise.all(
+      newGroups.map(async g => {
+        const students = await User.findByIds(g.userIds);
+        return Group.create({ courseId: data.courseId, students });
+      })
+    );
+  }
+
+  @Authorized(STAFF)
+  @Mutation(() => [Group])
+  async generateGroupsForNonLockedGroups(@Arg("data") data: GroupListInput): Promise<Group[]> {
+    const { courseId, minGroupSize, groups } = data;
+
+    const registrations = await Registration.find({
+      where: { courseId: courseId },
+      relations: [
+        "student",
+        "questionAnswers",
+        "questionAnswers.question",
+        "questionAnswers.answerChoices",
+        "questionAnswers.question.questionChoices",
+        "workingTimes",
+      ],
+    });
+
+    const registrationsUsedForAlgorithm = () => {
+      const returnedRegs: Registration[] = [];
+      groups.map(g => {
+        g.userIds.map(id => {
+          registrations.map(r => {
+            if (r.studentId === id) {
+              returnedRegs.push(r);
+            }
+          })
+        })
+      })
+      return returnedRegs
+    }
+
+    const regsForAlgo = registrationsUsedForAlgorithm();
+
+    const newGroups = formGroups(minGroupSize, regsForAlgo);
 
     return Promise.all(
-      groups.map(async g => {
+      newGroups.map(async g => {
         const students = await User.findByIds(g.userIds);
         return Group.create({ courseId, students });
       }),

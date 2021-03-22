@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
-import { Table, Header, List, Button, Segment, Popup, Input, Label, Form } from 'semantic-ui-react';
+import { Table, Header, List, Button, Segment, Popup, Input, Label, Form, Checkbox } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import _ from 'lodash';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
@@ -23,6 +23,7 @@ export default ({
   const [privacyToggle] = useStore('toggleStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [groups, setGroups] = useStore('groupsStore');
+  const [lockedGroupsStore, setLockedGroupsStore] = useStore('lockedGroupsStore');
 
   const [showGroupTimes, setShowGroupTimes] = useState([]);
   const [groupTimesVisible, setGroupTimesVisible] = useState([]);
@@ -183,7 +184,16 @@ export default ({
       `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${tableIndex + 1}`,
     value: tableIndex,
   }));
-  
+
+  const checkBoxChange = ( group ) => {
+    if (lockedGroupsStore.includes(group)) {
+      const filtered = lockedGroupsStore.filter(g => g.groupId !== group.groupId)
+      setLockedGroupsStore(filtered)
+    } else {
+      setLockedGroupsStore(lockedGroupsStore.concat(group))
+    }
+  }
+
   return (
     <div>
       {groups.length === 0 ? (
@@ -220,6 +230,7 @@ export default ({
                       >
                         {groupNames[tableIndex] || ''}
                       </Label>
+                      
                     }
                   />
                 {/*<Label
@@ -231,6 +242,17 @@ export default ({
                   <FormattedMessage id="groups.title" />
                   {tableIndex + 1}
                 </Label>*/}
+
+                  <Checkbox
+                    onChange={() => checkBoxChange(group)}
+                    label={intl.formatMessage({ id: 'groups.lockGroup'})}
+                    data-cy="lockGroupsCheckBox"
+                  />
+                  &nbsp;
+                  <Popup
+                    content={intl.formatMessage({ id: 'groups.lockGroupInfo' })}
+                    trigger={<i className="question circle icon" />}
+                  />
                   <Header style={{ marginBottom: 5 }} as="h5">
                     <FormattedMessage id="groups.message" />
                   </Header>

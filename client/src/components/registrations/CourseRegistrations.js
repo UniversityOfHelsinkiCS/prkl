@@ -11,24 +11,10 @@ import ConfirmationButton from '../ui/ConfirmationButton';
 import HourDisplay from '../misc/HourDisplay';
 import { TIMES } from '../../util/questionTypes';
 
-const CourseRegistrations = ({ course, registrations, refetchRegistrations, regByStudentId }) => {
+const CourseRegistrations = ({ courseReducer: [{registrations}, courseDispatch], course, regByStudentId }) => {
   const intl = useIntl();
   const [privacyToggle] = useStore('toggleStore');
-  const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
   const courseId = course.id;
-
-  const handleRegistrationDeletion = async student => {
-    const studentId = student.id;
-    const variables = { studentId, courseId };
-    try {
-      await deleteRegistration({
-        variables,
-      });
-      refetchRegistrations();
-    } catch (deletionError) {
-      console.log('error:', deletionError);
-    }
-  };
 
   const popupTimesDisplay = student => (
     <HourDisplay
@@ -103,7 +89,7 @@ const CourseRegistrations = ({ course, registrations, refetchRegistrations, regB
                 {reg.questionAnswers.map(qa => questionSwitch(qa))}
                 <Table.Cell>
                   <ConfirmationButton
-                    onConfirm={() => handleRegistrationDeletion(reg.student)}
+                    onConfirm={() => {courseDispatch({type: "delete_registration", payload: reg.student.id})}}
                     modalMessage={`${intl.formatMessage({
                       id: 'courseRegistration.removeConfirmation',
                     })} (${reg.student.firstname} ${reg.student.lastname})`}

@@ -11,6 +11,7 @@ import {
   SAVE_GROUPS,
   COURSE_GROUPS,
   PUBLISH_COURSE_GROUPS,
+  GENERATE_GROUPS_FOR_NON_LOCKED_GROUPS,
 } from '../../GqlQueries';
 import Groups from './Groups';
 import GrouplessStudents from './GrouplessStudents';
@@ -20,12 +21,16 @@ import SuccessMessage from '../ui/SuccessMessage';
 
 export default ({ course, registrations, regByStudentId, groups, setGroups }) => {
   const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
+  const [generateGroupsForNonLockedGroups, { loading: generateLockedGroupsLoading }] = useMutation(
+    GENERATE_GROUPS_FOR_NON_LOCKED_GROUPS
+  );
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
 
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [user] = useStore('userStore');
   const [grouplessStudents, setGrouplessStudents] = useStore('grouplessStudentsStore');
+  const [lockedGroupsStore, setLockedGroupsStore] = useStore('lockedGroupsStore');
 
   const [oldGroups, setOldGroups] = useState([]);
   const [minGroupSize, setMinGroupSize] = useState(1);
@@ -116,7 +121,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
       sortedGroups.sort((a, b) => b.students.length - a.students.length);
     }
     return sortedGroups;
-  }
+  };
 
   const handleGroupsMessagesAndNames = groups => {
     setGroups(groups);
@@ -128,11 +133,11 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
 
   const handleSampleGroupCreation = async () => {
     const minGroupS = minGroupSize || 1;
-    const variables = { data: { courseId: course.id, minGroupSize: minGroupS } };
     try {
       const res = await generateGroups({
-        variables,
+        variables: { data: { courseId: course.id, targetGroupSize: minGroupS, registrationIds: registrations.map(reg => reg.id)} }
       });
+
       const mappedGroups = res.data.createSampleGroups.map((e, i) => {
         return {
           groupId: '',
@@ -145,6 +150,65 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
       setGroupsUnsaved(true);
       setRegistrationsWithoutGroups(false);
       setGroups(mappedGroups);
+    } catch (groupError) {
+      console.log('error:', groupError);
+    }
+  };
+
+  const generateNewGroupsForNonLockedGroups = async () => {
+    const lockedGroups = lockedGroupsStore;
+
+    const groupsForAlgo = [];
+
+    groups.map(group => {
+      if (!lockedGroups.includes(group)) {
+        groupsForAlgo.push(group);
+      }
+    });
+
+    const groupless = {
+      groupId: "",
+      groupMessage: "",
+      groupName: "groupless",
+      students: grouplessStudents
+    }
+    
+    groupsForAlgo.push(groupless);
+
+    const groupsWithUserIds = groupsForAlgo.map(group => {
+      const userIds = group.students.map(student => student.id);
+      return {
+        userIds,
+        id: group.groupId,
+        groupName: group.groupName,
+        groupMessage: group.groupMessage,
+      };
+    });
+
+    const minGroupS = minGroupSize || 1;
+    const variables = {
+      data: { courseId: course.id, minGroupSize: minGroupS, groups: groupsWithUserIds },
+    };
+    try {
+      const res = await generateGroupsForNonLockedGroups({
+        variables,
+      });
+      const mappedGroups = res.data.generateGroupsForNonLockedGroups.map((e, i) => {
+        return {
+          groupId: '',
+          students: e.students,
+          groupMessage: '',
+          groupName: `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${i + 1}`,
+        };
+      });
+
+      const resultGroups = sortGroups(lockedGroups.concat(mappedGroups), groupSorting);
+
+      handleGroupsMessagesAndNames(resultGroups);
+      setGroupsUnsaved(true);
+      setRegistrationsWithoutGroups(false);
+      setGroups(resultGroups);
+      setLockedGroupsStore([]);
     } catch (groupError) {
       console.log('error:', groupError);
     }
@@ -194,13 +258,14 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     setGroupsUnsaved(false);
     setRegistrationsWithoutGroups(true);
     //console.log("old", oldGroups);
-  }
+  };
 
   const handleSortGroups = value => {
     // Sorting currently does not preserve saved group names & messages correctly, so warn about reload
     if (
       groupsUnsaved &&
-      !window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' }))) {
+      !window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' }))
+    ) {
       return;
     }
     setGroupSorting(value);
@@ -236,6 +301,10 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
   }
 
   if (generateGroupsLoading) {
+    return <Loader active content={intl.formatMessage({ id: 'groupsView.generatingGroups' })} />;
+  }
+
+  if (generateLockedGroupsLoading) {
     return <Loader active content={intl.formatMessage({ id: 'groupsView.generatingGroups' })} />;
   }
 
@@ -295,6 +364,14 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
               <FormattedMessage id="groupsView.generateGroups" />
             </ConfirmationButton>
 
+            <ConfirmationButton
+              onConfirm={generateNewGroupsForNonLockedGroups}
+              modalMessage={intl.formatMessage({ id: 'groupsView.confirmGeneratingNewGroups' })}
+              buttonDataCy="lockedGroups-create-submit"
+              color="pink"
+            >
+              <FormattedMessage id="groupsView.createGroupsForNonLockedGroups" />
+            </ConfirmationButton>
             {groupsUnsaved && (
               <>
                 <ConfirmationButton

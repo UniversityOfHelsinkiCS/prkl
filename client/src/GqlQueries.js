@@ -270,8 +270,23 @@ export const COURSE_GROUPS = gql`
 `;
 
 export const GENERATE_GROUPS = gql`
-  mutation createSampleGroups($data: GroupListInput!) {
+  mutation createSampleGroups($data: GenerateGroupsInput!) {
     createSampleGroups(data: $data) {
+      courseId
+      students {
+        id
+        firstname
+        lastname
+        studentNo
+        email
+      }
+    }
+  }
+`;
+
+export const GENERATE_GROUPS_FOR_NON_LOCKED_GROUPS = gql`
+  mutation generateGroupsForNonLockedGroups($data: GroupListInput!) {
+    generateGroupsForNonLockedGroups(data: $data) {
       courseId
       students {
         id

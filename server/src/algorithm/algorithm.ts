@@ -74,7 +74,7 @@ const mutateGrouping = (grouping: Grouping) => {
 export const formGroups: Algorithm = (targetGroupSize: number, registrations: Registration[]): GroupInput[] => {
   let grouping: Group[] = createRandomGrouping(targetGroupSize, registrations);
   let score = scoreBoth(grouping);
-
+  
   for (let i = 0; i < registrations.length * 20; i++) {
     const newGrouping = mutateGrouping(grouping);
     const newScore = scoreBoth(newGrouping);

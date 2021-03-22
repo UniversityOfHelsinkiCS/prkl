@@ -60,6 +60,7 @@ export default ({
         return;
       }
 
+
       setGroups(mappedGroups);
 
       if (newGroupless.length > 0) {

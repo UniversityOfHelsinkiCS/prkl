@@ -189,6 +189,9 @@ export default {
       'Set maximum group size for groups, which will not be exceeded when searching new group for students. If all groups are larger than max limit, student(s) will not be added to any group',
     'groups.combinedHourDisplay': 'Combined',
     'groups.newMessage': 'Your group has a new message:',
+    'groups.lockGroup': 'Lock Group',
+    'groups.lockGroupInfo': 
+      'Check this box to lock this group and generate new groups from all the other groups by setting Target Group Size and pressing "Generate new groups from non-locked groups" button above',
 
     'groupsView.noRegistrations': 'No registrations',
     'groupsView.matchingTimes': 'Matching times',
@@ -221,6 +224,8 @@ export default {
     'groupsView.orderBySizeAsc': 'By size, ascending',
     'groupsView.orderBySizeDesc': 'By size, descending',
     'groupsView.generatingGroups': 'Generating groups',
+    'groupsView.createGroupsForNonLockedGroups': 'Generate new groups from non-locked groups',
+    'groupsView.confirmGeneratingNewGroups': 'Are you sure you want to generate new groups for non-locked groups?',
 
     'util.notAllowed': 'You do not have the required roles to access this content.',
   },
