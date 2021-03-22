@@ -477,6 +477,49 @@ describe('Group creation', () => {
       });
     });
 
+    it('Can generate groups of different sizes', () => {
+      const testCourse = courses[10];
+      cy.visit(`/course/${testCourse.id}`);
+      cy.get('[data-cy="manage-groups-button"]').click();
+
+      // group size 1
+      // change target group size and create groups
+      cy.get('[data-cy="target-group-size"]').type('{selectAll}$1');
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+      // check groupless is empty
+      cy.get('[data-cy="groupless-container"]').should('not.exist');
+
+      // cancel groups
+      cy.get('[data-cy="cancel-groups-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+
+      // group size 2
+      // change target group size and create groups
+      cy.get('[data-cy="target-group-size"]').type('{selectAll}$2');
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+      // check groupless is empty
+      cy.get('[data-cy="groupless-container"]').should('not.exist');
+
+      // cancel groups
+      cy.get('[data-cy="cancel-groups-button"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+
+      // group size equal to registration count
+      // change target group size and create groups
+      cy.get('[data-cy="target-group-size"]').type(`{selectAll}$${testCourse.registrations.length}`);
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+      // check groupless is empty
+      cy.get('[data-cy="groupless-container"]').should('not.exist');
+    });
+
     // No need to test publish feature here, it's done in student tests.
   });
 });
