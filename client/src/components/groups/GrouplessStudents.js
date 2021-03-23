@@ -5,7 +5,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
 import _ from 'lodash';
-import { FIND_GROUP_FOR_ONE_STUDENT, FIND_GROUP_FOR_MULTIPLE_STUDENTS } from '../../GqlQueries';
+import { FIND_GROUP_FOR_GROUPLESS_STUDENTS } from '../../GqlQueries';
 
 export default ({
   grouplessStudents,
@@ -13,8 +13,7 @@ export default ({
   setGrouplessStudents,
   setRegistrationsWithoutGroups,
 }) => {
-  const [findGroupForMultipleStudents] = useMutation(FIND_GROUP_FOR_MULTIPLE_STUDENTS);
-  const [findGroupForOne] = useMutation(FIND_GROUP_FOR_ONE_STUDENT);
+  const [findGroupForGrouplessStudents] = useMutation(FIND_GROUP_FOR_GROUPLESS_STUDENTS);
   const [groups, setGroups] = useStore('groupsStore');
   const [maxGroupSize, setMaxGroupSize] = useState(course.maxGroupSize);
   const [errorMessage, setErrorMessage] = useState('');
@@ -22,7 +21,6 @@ export default ({
   const intl = useIntl();
 
   const findGroup = async student => {
-    console.log(groups);
     const groupsWithUserIds = groups.map(group => {
       const userIds = group.students.map(s => s.id);
       return {
@@ -32,17 +30,23 @@ export default ({
         groupMessage: group.groupMessage,
       };
     });
+    const grouplessStudent = {
+      userIds: [student.id],
+      id: 'groupless',
+      groupName: 'groupless',
+      groupMessage: 'groupless'
+    }
     const variables = {
       data: { courseId: course.id, groups: groupsWithUserIds },
-      studentId: student.id,
       maxGroupSize,
+      groupless: { courseId: course.id, groups: grouplessStudent }
     };
     try {
-      const res = await findGroupForOne({
+      const res = await findGroupForGrouplessStudents({
         variables,
       });
 
-      const mappedGroups = res.data.findGroupForOne.map((e, i) => {
+      const mappedGroups = res.data.findGroupForGrouplessStudents.map((e, i) => {
         return {
           groupId: '',
           students: e.students,
@@ -59,7 +63,6 @@ export default ({
         alert(intl.formatMessage({ id: 'groupsView.noGroupFoundAlert' }));
         return;
       }
-
 
       setGroups(mappedGroups);
 
@@ -126,11 +129,11 @@ export default ({
     };
 
     try {
-      const res = await findGroupForMultipleStudents({
+      const res = await findGroupForGrouplessStudents({
         variables,
       });
 
-      const mappedGroups = res.data.findGroupForMultipleStudents.map((e, i) => {
+      const mappedGroups = res.data.findGroupForGrouplessStudents.map((e, i) => {
         return {
           groupId: '',
           students: e.students,

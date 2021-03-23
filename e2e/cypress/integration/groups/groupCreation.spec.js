@@ -348,7 +348,7 @@ describe('Group creation', () => {
 
       cy.get('[data-cy="max-group-size"]').within(() => {
         cy.get('input').clear();
-        cy.get('input').type('10');
+        cy.get('input').type('2');
       });
 
       // click find group
@@ -384,7 +384,7 @@ describe('Group creation', () => {
 
       cy.get('[data-cy="max-group-size"]').within(() => {
         cy.get('input').clear();
-        cy.get('input').type('10');
+        cy.get('input').type('2');
       });
 
       cy.get('[data-cy="find-group-for-all-button"]').click();

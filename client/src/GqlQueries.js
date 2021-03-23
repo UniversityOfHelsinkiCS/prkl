@@ -299,24 +299,9 @@ export const GENERATE_GROUPS_FOR_NON_LOCKED_GROUPS = gql`
   }
 `;
 
-export const FIND_GROUP_FOR_ONE_STUDENT = gql`
-  mutation findGroupForOne($data: GroupListInput!, $studentId: String!, $maxGroupSize: Float!) {
-    findGroupForOne(data: $data, studentId: $studentId, maxGroupSize: $maxGroupSize) {
-      courseId
-      students {
-        id
-        firstname
-        lastname
-        studentNo
-        email
-      }
-    }
-  }
-`;
-
-export const FIND_GROUP_FOR_MULTIPLE_STUDENTS = gql`
-  mutation findGroupForMultipleStudents($data: GroupListInput!, $maxGroupSize: Float!, $groupless: GroupListInput!) {
-    findGroupForMultipleStudents(data: $data, maxGroupSize: $maxGroupSize, groupless: $groupless) {
+export const FIND_GROUP_FOR_GROUPLESS_STUDENTS = gql`
+  mutation findGroupForGrouplessStudents($data: GroupListInput!, $maxGroupSize: Float!, $groupless: GroupListInput!) {
+    findGroupForGrouplessStudents(data: $data, maxGroupSize: $maxGroupSize, groupless: $groupless) {
       courseId
       students {
         id
