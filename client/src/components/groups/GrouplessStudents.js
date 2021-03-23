@@ -4,19 +4,20 @@ import { Table, Segment, Label, Popup, Form, Button } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
-import _ from 'lodash';
 import { FIND_GROUP_FOR_GROUPLESS_STUDENTS } from '../../GqlQueries';
+import HourDisplay from '../misc/HourDisplay';
+import { count } from '../../util/functions';
 
 export default ({
   grouplessStudents,
   course,
   setGrouplessStudents,
   setRegistrationsWithoutGroups,
+  regByStudentId,
 }) => {
   const [findGroupForGrouplessStudents] = useMutation(FIND_GROUP_FOR_GROUPLESS_STUDENTS);
   const [groups, setGroups] = useStore('groupsStore');
   const [maxGroupSize, setMaxGroupSize] = useState(course.maxGroupSize);
-  const [errorMessage, setErrorMessage] = useState('');
 
   const intl = useIntl();
 
@@ -34,12 +35,12 @@ export default ({
       userIds: [student.id],
       id: 'groupless',
       groupName: 'groupless',
-      groupMessage: 'groupless'
-    }
+      groupMessage: 'groupless',
+    };
     const variables = {
       data: { courseId: course.id, groups: groupsWithUserIds },
       maxGroupSize,
-      groupless: { courseId: course.id, groups: grouplessStudent }
+      groupless: { courseId: course.id, groups: grouplessStudent },
     };
     try {
       const res = await findGroupForGrouplessStudents({
@@ -125,7 +126,7 @@ export default ({
     const variables = {
       data: { courseId: course.id, groups: groupsWithUserIds },
       maxGroupSize,
-      groupless: { courseId: course.id, groups: grouplessStudentsWithUserIds }
+      groupless: { courseId: course.id, groups: grouplessStudentsWithUserIds },
     };
 
     try {
@@ -146,22 +147,25 @@ export default ({
 
       const studentIds = [];
 
-      mappedGroups.map(g => {
-        g.students.map(({ id }) => {
-          if (id)
-            studentIds.push(id)});
+      mappedGroups.forEach(g => {
+        g.students.forEach(({ id }) => {
+          if (id) {
+            studentIds.push(id);
+          }
+        });
       });
 
       const grouplessStudentIds = [];
 
-      grouplessStudents.map(({ id }) => {
-        if (id)
-          grouplessStudentIds.push(id)
-      })
+      grouplessStudents.forEach(({ id }) => {
+        if (id) {
+          grouplessStudentIds.push(id);
+        }
+      });
 
       let groupless = false;
 
-      grouplessStudentIds.map(id => {
+      grouplessStudentIds.forEach(id => {
         if (!studentIds.includes(id)) {
           groupless = true;
         }
@@ -174,6 +178,15 @@ export default ({
       console.log(e);
     }
   };
+
+  const popupTimesDisplay = student => (
+    <HourDisplay
+      groupId={student.id}
+      header={`${student.firstname} ${student.lastname}`}
+      students={1}
+      times={count([regByStudentId[student.studentNo]])}
+    />
+  );
 
   return (
     <div>
@@ -224,7 +237,11 @@ export default ({
             {grouplessStudents.map(student => {
               return (
                 <Table.Row key={student.id}>
-                  <Table.Cell>{`${student.firstname} ${student.lastname}`}</Table.Cell>
+                  <Popup
+                    content={() => popupTimesDisplay(student)}
+                    trigger={<Table.Cell>{`${student.firstname} ${student.lastname}`}</Table.Cell>}
+                    disabled={!course.questions.some(q => q.questionType === 'times')}
+                  />
 
                   <Table.Cell>{student.studentNo}</Table.Cell>
 
@@ -269,31 +286,6 @@ export default ({
                     />
                   </Table.Cell>
                   <Table.Cell />
-
-                  {/*<Popup
-                    data-cy="student-options-popup"
-                    content={
-                      <Form>
-                        <Form.Field>
-                          <Form.Select
-                            data-cy="switch-group-select"
-                            label={'Add student to a group'}
-                            //options={switchGroupOptions}
-                            defaultValue={"eka group tähän"}
-                            //onChange={(e, { value }) =>
-                              //handleSwitchingGroup(tableIndex, rowIndex, value)
-                            //}
-                          />
-                        </Form.Field>
-                      </Form>
-                    }
-                    on="click"
-                    trigger={
-                        <Button data-cy="switch-group-button">
-                          {'Add student to a group'}
-                        </Button>
-                    }/>*/}
-
                 </Table.Row>
               );
             })}
