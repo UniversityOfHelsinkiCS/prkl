@@ -2,7 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Form, Input, Message, Radio, Segment } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRemoveButtons, hookForm }) => {
+const QuestionForm = ({
+  qName,
+  questionIndex,
+  setQuestions,
+  questions,
+  hideAddRemoveButtons,
+  hookForm,
+}) => {
   const intl = useIntl();
 
   const defaultQuestion = {
@@ -23,17 +30,23 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
 
   const { setValue, trigger, errors, setError, clearErrors, register, unregister } = hookForm;
 
-  const missingChoicesErr = 'choice-' + qName;
+  const missingChoicesErr = `choice-${qName}`;
 
   useEffect(() => {
     register(
       { name: qName },
-      { required: intl.formatMessage({ id: 'questionForm.questionTitleValidationFailedMsg' }) }
+      {
+        required: intl.formatMessage({ id: 'questionForm.questionTitleMissingValidationMsg' }),
+        maxLength: {
+          value: 150,
+          message: intl.formatMessage({ id: 'questionForm.questionTitleTooLongValidationMsg' }),
+        },
+      }
     );
     if (questionType !== 'freeForm' && !options.length) {
       setError(missingChoicesErr, {
         message: intl.formatMessage({
-          id: 'questionForm.questionChoicesMissingValidationFailedMsg',
+          id: 'questionForm.questionChoicesMissingValidationMsg',
         }),
       });
     } else {
@@ -62,28 +75,34 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
     setQuestion(qstn);
     setValue(qName, qstn.content);
     if (init) {
-      setQuestions(questions.map(q => q.qKey !== question.qKey ? q : question));
+      setQuestions(questions.map(q => (q.qKey !== question.qKey ? q : question)));
       setInit(false);
     }
     const opts = questions[questionIndex]?.questionChoices
       ? questions[questionIndex].questionChoices.map(qc => {
           const oName = qc.id
             ? qc.id : qc.oName
-            ? qc.oName : 'question-' + qName + '-o-' + new Date().getTime().toString();
+            ? qc.oName : `question-${qName}-o-${new Date().getTime().toString()}`;
           if (!qc.oName)
             register(
               { name: oName },
               {
                 required: intl.formatMessage({
-                  id: 'questionForm.questionChoiceTitleValidationFaildMsg',
+                  id: 'questionForm.questionChoiceLabelMissingValidationMsg',
                 }),
+                maxLength: {
+                  value: 150,
+                  message: intl.formatMessage({
+                    id: 'questionForm.questionChoiceLabelTooLongValidationMsg',
+                  }),
+                },
               }
             );
           return {
             id: qc.id,
             content: qc.content,
             order: qc.order,
-            oName: oName,
+            oName,
           };
         })
       : options;
@@ -157,10 +176,20 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
   };
 
   const handleAddForm = () => {
-    const oName = 'question-' + qName + '-o-' + new Date().getTime().toString();
+    const oName = `question-${qName}-o-${new Date().getTime().toString()}`;
     register(
       { name: oName },
-      { required: intl.formatMessage({ id: 'questionForm.questionChoiceTitleValidationFaildMsg' }) }
+      {
+        required: intl.formatMessage({
+          id: 'questionForm.questionChoiceLabelMissingValidationMsg',
+        }),
+        maxLength: {
+          value: 150,
+          message: intl.formatMessage({
+            id: 'questionForm.questionChoiceLabelTooLongValidationMsg',
+          }),
+        },
+      }
     );
     setOptions([...options, { oName, order: options.length + 1, content: '' }]);
   };
@@ -188,22 +217,18 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
         return i !== questionIndex;
       })
       .map((q, i) => {
-        return i < questionIndex ? q : { ...q, order: q.order-1 }
+        return i < questionIndex ? q : { ...q, order: q.order - 1 };
       });
     setQuestions(newQuestions);
   };
 
   return (
     <Segment style={{ padding: 15, margin: 10 }}>
-      {!hideAddRemoveButtons &&
-        <Form.Button
-          onClick={removeQuestion}
-          floated="right"
-          data-cy="question-remove-button"
-        >
+      {!hideAddRemoveButtons && (
+        <Form.Button onClick={removeQuestion} floated="right" data-cy="question-remove-button">
           X
         </Form.Button>
-      }
+      )}
       <Form.Field
         name={qName}
         onChange={async (e, { name, value }) => {
@@ -222,7 +247,7 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
         })}
         data-cy="question-title"
       />
-      {!hideAddRemoveButtons &&
+      {!hideAddRemoveButtons && (
         <Form.Group inline>
           <label>
             <FormattedMessage id="questionForm.questionTypeLabel" />
@@ -258,25 +283,35 @@ const QuestionForm = ({ qName, questionIndex, setQuestions, questions, hideAddRe
             data-cy="question-type-freeform"
           />
         </Form.Group>
-      }
+      )}
 
       {question.questionType !== 'freeForm' ? (
         <>
-          {!hideAddRemoveButtons &&
+          {!hideAddRemoveButtons && (
             <Form.Group>
-              <Form.Button type="button" onClick={handleAddForm} color="green" data-cy="add-question-choice-button">
+              <Form.Button
+                type="button"
+                onClick={handleAddForm}
+                color="green"
+                data-cy="add-question-choice-button"
+              >
                 <FormattedMessage id="questionForm.addQuestion" />
               </Form.Button>
 
-              <Form.Button type="button" onClick={handleRemoveForm} color="red" data-cy="remove-question-choice-button">
+              <Form.Button
+                type="button"
+                onClick={handleRemoveForm}
+                color="red"
+                data-cy="remove-question-choice-button"
+              >
                 <FormattedMessage id="questionForm.removeQuestion" />
               </Form.Button>
             </Form.Group>
-          }
+          )}
 
-          {errors[missingChoicesErr] &&
+          {errors[missingChoicesErr] && (
             <Message negative header={errors[missingChoicesErr]?.message} />
-          }
+          )}
           <Form.Group style={{ flexWrap: 'wrap' }}>
             {options.map((q, index) => (
               <Form.Field
