@@ -86,9 +86,11 @@ export default {
     'questionForm.multipleSelectOne': 'Multiple select',
     'questionForm.optionTitle': 'Choice {number}',
     'questionForm.questionTypeLabel': 'Question type',
-    'questionForm.questionTitleValidationFailedMsg': 'Question title required',
-    'questionForm.questionChoicesMissingValidationFailedMsg': 'At least one answer option required',
-    'questionForm.questionChoiceTitleValidationFaildMsg': 'Choice label required',
+    'questionForm.questionTitleMissingValidationMsg': 'Question title required',
+    'questionForm.questionTitleTooLongValidationMsg': 'Question title is too long',
+    'questionForm.questionChoicesMissingValidationMsg': 'At least one answer option required',
+    'questionForm.questionChoiceLabelMissingValidationMsg': 'Choice label required',
+    'questionForm.questionChoiceLabelTooLongValidationMsg': 'Choice label is too long',
     'questionForm.optional': 'Optional question',
     'questionForm.useInGroupCreation': 'Use in group creation',
 
@@ -190,7 +192,7 @@ export default {
     'groups.combinedHourDisplay': 'Combined',
     'groups.newMessage': 'Your group has a new message:',
     'groups.lockGroup': 'Lock Group',
-    'groups.lockGroupInfo': 
+    'groups.lockGroupInfo':
       'Check this box to lock this group and generate new groups from all the other groups by setting Target Group Size and pressing "Generate new groups from non-locked groups" button above',
 
     'groupsView.noRegistrations': 'No registrations',
@@ -225,7 +227,8 @@ export default {
     'groupsView.orderBySizeDesc': 'By size, descending',
     'groupsView.generatingGroups': 'Generating groups',
     'groupsView.createGroupsForNonLockedGroups': 'Generate new groups from non-locked groups',
-    'groupsView.confirmGeneratingNewGroups': 'Are you sure you want to generate new groups for non-locked groups?',
+    'groupsView.confirmGeneratingNewGroups':
+      'Are you sure you want to generate new groups for non-locked groups?',
 
     'util.notAllowed': 'You do not have the required roles to access this content.',
   },

@@ -78,10 +78,12 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     const studentIds = [];
     const groupless = [];
 
-    groups.map(g => {
-      g.students.map(({ id }) => {
-        if (id)
-          studentIds.push(id)});
+    groups.forEach(g => {
+      g.students.forEach(({ id }) => {
+        if (id) {
+          studentIds.push(id);
+        }
+      });
     });
 
     registrations.forEach(r => {
@@ -95,7 +97,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     }
 
     setGrouplessStudents(groupless);
-  }, [registrationsWithoutGroups, groups])
+  }, [registrationsWithoutGroups, groups]);
 
   if (error !== undefined) {
     console.log('error:', error);
@@ -135,7 +137,13 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     const minGroupS = minGroupSize || 1;
     try {
       const res = await generateGroups({
-        variables: { data: { courseId: course.id, targetGroupSize: minGroupS, registrationIds: registrations.map(reg => reg.id)} }
+        variables: {
+          data: {
+            courseId: course.id,
+            targetGroupSize: minGroupS,
+            registrationIds: registrations.map(reg => reg.id),
+          },
+        },
       });
 
       const mappedGroups = res.data.createSampleGroups.map((e, i) => {
@@ -160,19 +168,19 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
 
     const groupsForAlgo = [];
 
-    groups.map(group => {
+    groups.forEach(group => {
       if (!lockedGroups.includes(group)) {
         groupsForAlgo.push(group);
       }
     });
 
     const groupless = {
-      groupId: "",
-      groupMessage: "",
-      groupName: "groupless",
-      students: grouplessStudents
-    }
-    
+      groupId: '',
+      groupMessage: '',
+      groupName: 'groupless',
+      students: grouplessStudents,
+    };
+
     groupsForAlgo.push(groupless);
 
     const groupsWithUserIds = groupsForAlgo.map(group => {
@@ -257,7 +265,6 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     setGroups(oldGroups);
     setGroupsUnsaved(false);
     setRegistrationsWithoutGroups(true);
-    //console.log("old", oldGroups);
   };
 
   const handleSortGroups = value => {
@@ -429,6 +436,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
               setGrouplessStudents={setGrouplessStudents}
               setRegistrationsWithoutGroups={setRegistrationsWithoutGroups}
               course={course}
+              regByStudentId={regByStudentId}
             />
           )}
 
