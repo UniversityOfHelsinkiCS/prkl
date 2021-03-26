@@ -184,9 +184,9 @@ export default {
     'groups.messageInfo': 'Use this to send a message to members of this group...',
     'groups.students': 'Students in this group:',
     'groups.findGroupForOne': 'Find group for student',
-    'groups.maxSize': 'Max Group Size',
-    'groups.maxSizeInfo':
-      'Set maximum group size for groups, which will not be exceeded when searching new group for students. If all groups are larger than max limit, student(s) will not be added to any group',
+    'groups.targetGroupSize': 'Target Group Size',
+    'groups.targetGroupSizeInfo':
+      'Set target group size for groups, algorithm searches a group with +/- 1 of the target group size. If there are no groups matching the target group size, student(s) will not be added to any group',
     'groups.combinedHourDisplay': 'Combined',
     'groups.newMessage': 'Your group has a new message:',
     'groups.lockGroup': 'Lock Group',
@@ -214,8 +214,8 @@ export default {
     'groupsView.defaultGroupNamePrefix': 'Group',
     'groupsView.groupListingOrder': 'Groups listing order',
     'groupsView.showGrouplessStudents': 'Toggle groupless students',
-    'groupsView.noGroupFoundAlert': 'No group found for student, check max group size',
-    'groupsView.grouplessStudentAlert': 'At least one student still remains groupless',
+    'groupsView.noGroupFoundAlert': 'No group found for student, check target group size',
+    'groupsView.grouplessStudentAlert': 'At least one student still remains groupless, check target group size',
     'groupsView.grouplessHeader': 'Groupless students',
     'groupsView.findGroup': 'Find group',
     'groupsView.findGroupForAll': 'Find group for all groupless students',

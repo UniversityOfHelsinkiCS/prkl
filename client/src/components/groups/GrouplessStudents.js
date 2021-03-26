@@ -198,10 +198,10 @@ export default ({
               </Table.HeaderCell>
 
               <Table.HeaderCell>
-                <FormattedMessage id="groups.maxSize" />
+                <FormattedMessage id="groups.targetGroupSize" />
                 &nbsp;
                 <Popup
-                  content={intl.formatMessage({ id: 'groups.maxSizeInfo' })}
+                  content={intl.formatMessage({ id: 'groups.targetGroupSizeInfo' })}
                   trigger={<i className="question circle icon" />}
                 />
                 <Form.Input
