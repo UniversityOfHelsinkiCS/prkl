@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import { useQuery } from '@apollo/react-hooks';
 import { GROUP_TIMES } from '../../GqlQueries';
+
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import { timeParse } from '../../util/functions';
 import UserCourseList from './UserCourseList';
@@ -10,6 +11,7 @@ import UserCourseList from './UserCourseList';
 export default () => {
   const [user] = useStore('userStore');
   const [privacyToggle] = useStore('toggleStore');
+  // eslint-disable-next-line no-unused-vars
   const [groupTimes, setGroupTimes] = useState(undefined);
 
   const { loading, error, data } = useQuery(GROUP_TIMES, {
@@ -18,12 +20,13 @@ export default () => {
   });
 
   useEffect(() => {
-    if (!loading && data !== undefined ) {
+    if (!loading && data !== undefined) {
       setGroupTimes(timeParse(data.groupTimes));
     }
   }, [data, loading]);
 
   if (error !== undefined) {
+    // eslint-disable-next-line no-console
     console.log('error:', error);
     return (
       <div>
@@ -33,12 +36,8 @@ export default () => {
   }
 
   const usersCourses = () => {
-    const courses = user.registrations.map(reg => reg.course);
-
-    return (
-      courses
-    )};
-
+    return user.registrations.map(reg => reg.course);
+  };
 
   return (
     <div>
@@ -51,7 +50,6 @@ export default () => {
           values={{ fullname: `${user.firstname} ${user.lastname}` }}
         />
       </div>
-
       <div>
         <FormattedMessage
           id="studentInfo.studentNo"

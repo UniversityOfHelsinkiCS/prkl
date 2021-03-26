@@ -1,19 +1,27 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
-import { Table, Popup, Icon, Button } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useMutation } from 'react-apollo';
+import { Table, Popup, Icon, Button } from 'semantic-ui-react';
+
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
-import { DELETE_REGISTRATION } from '../../GqlQueries';
 import questionSwitch, { count } from '../../util/functions';
 import ConfirmationButton from '../ui/ConfirmationButton';
-import HourDisplay from '../misc/HourDisplay';
 import { TIMES } from '../../util/questionTypes';
+import HourDisplay from '../misc/HourDisplay';
 
-const CourseRegistrations = ({ courseReducer: [{registrations}, courseDispatch], course, regByStudentId }) => {
+// import { useMutation } from 'react-apollo';
+// import { DELETE_REGISTRATION } from '../../GqlQueries';
+
+const CourseRegistrations = ({
+  courseReducer: [{ registrations }, courseDispatch],
+  course,
+  regByStudentId,
+}) => {
   const intl = useIntl();
   const [privacyToggle] = useStore('toggleStore');
+
+  // eslint-disable-next-line no-unused-vars
   const courseId = course.id;
 
   const popupTimesDisplay = student => (
@@ -55,12 +63,10 @@ const CourseRegistrations = ({ courseReducer: [{registrations}, courseDispatch],
 
               {course.questions.map(question =>
                 question.questionType !== TIMES ? (
-                  <Table.HeaderCell key={question.id}>
-                    {question.content}
-                  </Table.HeaderCell>
+                  <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
                 ) : null
               )}
-              <Table.HeaderCell></Table.HeaderCell>
+              <Table.HeaderCell />
             </Table.Row>
           </Table.Header>
 
@@ -89,7 +95,9 @@ const CourseRegistrations = ({ courseReducer: [{registrations}, courseDispatch],
                 {reg.questionAnswers.map(qa => questionSwitch(qa))}
                 <Table.Cell>
                   <ConfirmationButton
-                    onConfirm={() => {courseDispatch({type: "delete_registration", payload: reg.student.id})}}
+                    onConfirm={() => {
+                      courseDispatch({ type: 'delete_registration', payload: reg.student.id });
+                    }}
                     modalMessage={`${intl.formatMessage({
                       id: 'courseRegistration.removeConfirmation',
                     })} (${reg.student.firstname} ${reg.student.lastname})`}

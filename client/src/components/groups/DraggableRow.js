@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'semantic-ui-react/';
+import { Table } from 'semantic-ui-react';
 
 const DraggableRow = ({ index, action, children, tableIndex }) => {
   const onDragStart = ev => {

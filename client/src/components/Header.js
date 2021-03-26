@@ -20,7 +20,10 @@ export default () => {
 
   // Logout feature. Calling Shibboleth headers from backend and redirecting there.
   const handleLogout = () => {
-    if (groupsUnsaved && !window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' }))) {
+    if (
+      groupsUnsaved &&
+      !window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' }))
+    ) {
       return;
     }
     const url =

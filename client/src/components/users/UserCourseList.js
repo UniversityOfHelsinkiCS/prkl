@@ -3,7 +3,9 @@ import { Card } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 
+// eslint-disable-next-line no-unused-vars
 export default ({ courses, user }) => {
+  // eslint-disable-next-line no-unused-vars
   const intl = useIntl();
 
   return (
