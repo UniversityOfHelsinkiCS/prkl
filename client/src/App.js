@@ -68,7 +68,7 @@ export default () => {
           ) : (
             <div className="mainContent">
               <Loader />
-              <Route path="/user" render={() => <StudentInfo />} />
+              <Route path="/user" render={() => <StudentInfo /*aa*/ />} />
               <PrivateRoute
                 path="/addcourse"
                 requiredRole={roles.STAFF_ROLE}
