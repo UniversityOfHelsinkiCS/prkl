@@ -1,4 +1,4 @@
-# algorithm (developed spring 2021)
+# Algorithm (developed spring 2021)
 
 ### Evaluators
 Algorithm uses two different evaluators, evaluate by multiple/single choice questions and evaluate by common working hours.
