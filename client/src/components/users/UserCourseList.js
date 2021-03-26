@@ -1,28 +1,42 @@
 import React from 'react';
-import { Card } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 
-// eslint-disable-next-line no-unused-vars
-export default ({ courses, user }) => {
-  // eslint-disable-next-line no-unused-vars
-  const intl = useIntl();
+import { withStyles, makeStyles, createMuiTheme  } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
+import { useUserCourseListStyles } from '../../styles'
+
+export default ({ courses }) => {
+  const intl = useIntl();
+  const classes = useUserCourseListStyles();
+  console.log(classes)
   return (
-    <Card.Group itemsPerRow={1}>
-      <div className="coursesList">
-        {courses.map(course => (
-          <Card
-            data-cy={course.code}
-            key={course.id}
-            raised
-            color="blue"
-            as={Link}
-            to={`/course/${course.id}`}
-            header={`${course.code} - ${course.title}`}
-          />
-        ))}
-      </div>
-    </Card.Group>
+    <TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="customized table">
+        <TableHead className={classes.head}>
+          <TableRow>
+            <TableCell className={classes.head}>Course Name</TableCell>
+            <TableCell className={classes.head} align="center">Course Code</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {courses.map((course) => (
+            <TableRow className={classes.row} component={Link} to={`/course/${course.id}`} key={course.code}>
+              <TableCell component="th" scope="row">
+                {course.title}
+              </TableCell>
+              <TableCell align="center">{course.code}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
