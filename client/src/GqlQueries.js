@@ -300,7 +300,11 @@ export const GENERATE_GROUPS_FOR_NON_LOCKED_GROUPS = gql`
 `;
 
 export const FIND_GROUP_FOR_GROUPLESS_STUDENTS = gql`
-  mutation findGroupForGrouplessStudents($data: GroupListInput!, $maxGroupSize: Float!, $groupless: GroupListInput!) {
+  mutation findGroupForGrouplessStudents(
+    $data: GroupListInput!
+    $maxGroupSize: Float!
+    $groupless: GroupListInput!
+  ) {
     findGroupForGrouplessStudents(data: $data, maxGroupSize: $maxGroupSize, groupless: $groupless) {
       courseId
       students {
@@ -318,17 +322,6 @@ export const SAVE_GROUPS = gql`
   mutation saveGeneratedGroups($data: GroupListInput!) {
     saveGeneratedGroups(data: $data) {
       courseId
-    }
-  }
-`;
-
-export const EDIT_MIN_MAX_COURSE = gql`
-  mutation editMinMaxCourse($id: String!, $min: Float!, $max: Float!) {
-    editMinMaxCourse(id: $id, min: $min, max: $max) {
-      id
-      title
-      maxGroupSize
-      minGroupSize
     }
   }
 `;

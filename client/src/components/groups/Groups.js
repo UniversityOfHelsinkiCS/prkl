@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState, useEffect } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import {
   Table,
@@ -13,12 +14,12 @@ import {
   Form,
   Checkbox,
 } from 'semantic-ui-react';
-import { FormattedMessage, useIntl } from 'react-intl';
+
 import _ from 'lodash';
-import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import DraggableRow from './DraggableRow';
-import questionSwitch, { count } from '../../util/functions';
 import HourDisplay from '../misc/HourDisplay';
+import questionSwitch, { count } from '../../util/functions';
+import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 
 export default ({
   course,

@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Dropdown } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';
+
 import CourseTag from './CourseTag';
 
 export default ({ courses, user }) => {
@@ -22,7 +23,14 @@ export default ({ courses, user }) => {
           >
             <Card.Content>
               <Card.Header>
-                <a onClick={e => {e.stopPropagation()}} href={`https://courses.helsinki.fi/fi/${course.code}`}>{course.code}</a> - {course.title}
+                <a
+                  onClick={e => {
+                    e.stopPropagation();
+                  }}
+                  href={`https://courses.helsinki.fi/fi/${course.code}`}
+                >
+                  {course.code}
+                </a> - {course.title}
               </Card.Header>
 
               <Card.Description>
@@ -42,7 +50,11 @@ export default ({ courses, user }) => {
                           e.stopPropagation();
                         }}
                       >
-                        <a href={`mailto:${t.email}`}>{t.firstname} {t.lastname} <span style={{color: '#f2f2f2'}}>{' | '}</span> {t.email}</a>
+                        <a href={`mailto:${t.email}`}>
+                          {t.firstname} {t.lastname}
+                          <span style={{ color: '#f2f2f2' }}>{' | '}</span>
+                          {t.email}
+                        </a>
                       </Dropdown.Item>
                     ))}
                   </Dropdown.Menu>
