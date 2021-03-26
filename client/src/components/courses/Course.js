@@ -1,67 +1,80 @@
 import React, { useState, useEffect, useReducer } from 'react';
-import { useStore } from 'react-hookstore';
-import { useHistory, Route } from 'react-router-dom';
-import { useQuery, useMutation } from '@apollo/react-hooks';
-import { Button, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import roles from '../../util/userRoles';
-import { COURSE_BY_ID, DELETE_COURSE, COURSE_REGISTRATION, DELETE_REGISTRATION, COURSE_GROUPS } from '../../GqlQueries';
+import { useHistory } from 'react-router-dom';
+import { useStore } from 'react-hookstore';
+import { Button, Loader } from 'semantic-ui-react';
+import { useQuery, useMutation } from '@apollo/react-hooks';
+import {
+  COURSE_BY_ID,
+  DELETE_COURSE,
+  COURSE_REGISTRATION,
+  DELETE_REGISTRATION,
+} from '../../GqlQueries';
+
+import RegistrationList from '../registrations/RegistrationList';
+import ConfirmationButton from '../ui/ConfirmationButton';
+import Registration from '../registrations/Registration';
 import GroupsView from '../groups/GroupsView';
 import CourseForm from './CourseForm';
-import RegistrationList from '../registrations/RegistrationList';
-import Registration from '../registrations/Registration';
-import ConfirmationButton from '../ui/ConfirmationButton';
 import CourseInfo from './CourseInfo';
+import roles from '../../util/userRoles';
 
+/*
 const useEffectWithOldDeps = (effect, deps) => {
   const [oldDeps, setOldDeps] = useState(deps);
 
   useEffect(() => {
-    console.log("EFFECT ", deps, oldDeps)
-    const cleanup = effect(oldDeps)
+    // eslint-disable-next-line no-console
+    console.log('EFFECT ', deps, oldDeps);
+    const cleanup = effect(oldDeps);
     setOldDeps(deps);
-    return () => cleanup()
-  }, deps)
-}
+    return () => cleanup();
+  }, deps); // eslint-disable-line
+};
+ */
 
 export default ({ id, match }) => {
-  const [courses, setCourses] = useStore('coursesStore');
-  const [user] = useStore('userStore');
-  const [groups, setGroups] = useStore('groupsStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
-
-  const [course, setCourse] = useState({});
   const [regByStudentId, setRegByStudentId] = useState([]);
-  const [view, setView] = useState('info');
+  const [courses, setCourses] = useStore('coursesStore');
+  const [groups, setGroups] = useStore('groupsStore');
   const [editView, setEditView] = useState(false);
+  const [course, setCourse] = useState({});
+  const [user] = useStore('userStore');
+  const [view] = useState('info');
+  const history = useHistory();
+  const intl = useIntl();
 
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
 
   const [courseState, courseDispatch] = useReducer(
     (state, action) => {
-      console.log(state, action)
+      // eslint-disable-next-line no-console
+      console.log(state, action);
       switch (action.type) {
         case 'delete_registration':
           return {
             ...state,
-            registrations: state.registrations.filter(({student: {id}}) => id !== action.payload)
-          }
+            registrations: state.registrations.filter(
+              ({ student: { id } }) => id !== action.payload
+            ),
+          };
         case 'set_registrations':
           return {
             ...state,
-            registrations: action.payload
-          }
+            registrations: action.payload,
+          };
         default:
-          throw new Error("Invalid action: " + action.type)
+          throw new Error(`Invalid action: ${action.type}`);
       }
     },
     {
-      registrations: []
+      registrations: [],
     }
-  )
+  );
 
-  const registrations = courseState.registrations;
-  const setRegistrations = regs => courseDispatch({type: "set_registrations", payload: regs}) 
+  const { registrations } = courseState;
+  const setRegistrations = regs => courseDispatch({ type: 'set_registrations', payload: regs });
 
   const [deleteCourse] = useMutation(DELETE_COURSE);
 
@@ -71,39 +84,44 @@ export default ({ id, match }) => {
     (async () => {
       if (oldCourseState.registrations.length > courseState.registrations.length) {
         const deleted = oldCourseState.registrations.reduce(
-          (deleted, oldReg) => courseState.registrations.includes(oldReg) ? deleted : deleted.concat(oldReg),
+          (deleted, oldReg) =>
+            courseState.registrations.includes(oldReg) ? deleted : deleted.concat(oldReg),
           []
-        )
-  
-        await Promise.all(deleted.map(deletedReg => deleteRegistration({variables: {courseId: course.id, studentId: deletedReg.student.id}})))
+        );
 
-        if (deleted.some(deletedReg => deletedReg.student.id == user.id)) {
-          history.push("/courses")
+        await Promise.all(
+          deleted.map(deletedReg =>
+            deleteRegistration({
+              variables: { courseId: course.id, studentId: deletedReg.student.id },
+            })
+          )
+        );
+
+        if (deleted.some(deletedReg => deletedReg.student.id === user.id)) {
+          history.push('/courses');
         }
       }
-    })()
-    return setOldCourseState(courseState)
-  }, [courseState.registrations])
+    })();
+    return setOldCourseState(courseState);
+  }, [courseState.registrations]); // eslint-disable-line
 
-  const history = useHistory();
-  const intl = useIntl();
-
-  // course description
+  // Course description
   const paragraphs = course.description ? course.description.split('\n\n') : [];
 
   // GRAPHQL
 
   const { loading, error, data } = useQuery(COURSE_BY_ID, {
-    variables: { id }
+    variables: { id },
   });
 
   const { loading: regLoading, data: regData } = useQuery(COURSE_REGISTRATION, {
-    skip: course.teachers === undefined
-      || (!course.teachers.some(t => t.id === user.id) && user.role !== roles.ADMIN_ROLE),
-    variables: { courseId: id }
+    skip:
+      course.teachers === undefined ||
+      (!course.teachers.some(t => t.id === user.id) && user.role !== roles.ADMIN_ROLE),
+    variables: { courseId: id },
   });
 
-  // USEEFFECT
+  // useEFFECT
 
   useEffect(() => {
     if (!loading && data !== undefined) {
@@ -132,6 +150,7 @@ export default ({ id, match }) => {
   }, [data, loading, regData, regLoading]);
 
   if (error !== undefined) {
+    // eslint-disable-next-line no-console
     console.log('error:', error);
     return (
       <div>Error loading course. Course might have been removed or it is not published yet.</div>
@@ -164,6 +183,7 @@ export default ({ id, match }) => {
       });
       setCourses(trimmedCourses);
     } catch (deletionError) {
+      // eslint-disable-next-line no-console
       console.log('error:', deletionError);
     }
     history.push('/courses');
@@ -173,8 +193,11 @@ export default ({ id, match }) => {
     if (match.params.subpage !== 'edit') {
       history.push(`/course/${course.id}/edit`);
     } else if (match.params.subpage === 'groups') {
-      if (groupsUnsaved
-        && window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' }))) {
+      if (
+        groupsUnsaved &&
+        // eslint-disable-next-line no-alert
+        window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' }))
+      ) {
         setGroupsUnsaved(false);
         history.push(`/course/${course.id}/edit`);
       } else if (!groupsUnsaved) {
@@ -188,12 +211,14 @@ export default ({ id, match }) => {
   const handleGroupsView = () => {
     if (match.params.subpage !== 'groups') {
       history.push(`/course/${course.id}/groups`);
-    } else {
-      if (!groupsUnsaved || (groupsUnsaved
-        && window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' })))) {
-        setGroupsUnsaved(false);
-        history.push(`/course/${course.id}`);
-      }
+    } else if (
+      !groupsUnsaved ||
+      (groupsUnsaved &&
+        // eslint-disable-next-line no-alert
+        window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' })))
+    ) {
+      setGroupsUnsaved(false);
+      history.push(`/course/${course.id}`);
     }
   };
 
@@ -208,27 +233,33 @@ export default ({ id, match }) => {
   // function to check if logged in user is teacher of this course or admin
   const userHasAccess = () => {
     const inTeachers = data.course.teachers.some(t => t.id === user.id);
-    if (user.role === roles.ADMIN_ROLE || inTeachers) {
-      return true;
-    } else {
-      return false;
-    }
+    return user.role === roles.ADMIN_ROLE || inTeachers;
   };
 
   return (
     <div>
       {/* Course info, hide in edit and questions views */}
-      <h2><a href={`https://courses.helsinki.fi/fi/${course.code}`}>{course.code}</a>{` - ${course.title}`}</h2>
-      { match.params.subpage !== 'edit' && view !== 'questions' && <div>
-        <CourseInfo id={course.id} deadline={course.deadline} teachers={course.teachers} paragraphs={paragraphs} />
-				 &nbsp;
-      </div>}
+      <h2>
+        <a href={`https://courses.helsinki.fi/fi/${course.code}`}>{course.code}</a>
+        {` - ${course.title}`}
+      </h2>
+      {match.params.subpage !== 'edit' && view !== 'questions' && (
+        <div>
+          <CourseInfo
+            id={course.id}
+            deadline={course.deadline}
+            teachers={course.teachers}
+            paragraphs={paragraphs}
+          />
+        </div>
+      )}
 
       {/* Staff and admin control buttons */}
       <div>
         {userHasAccess() ? (
           <div>
-            { (!course.published || user.role === roles.ADMIN_ROLE) && match.params.subpage === 'edit' ? (
+            {(!course.published || user.role === roles.ADMIN_ROLE) &&
+            match.params.subpage === 'edit' ? (
               <CourseForm
                 course={course}
                 user={user}
@@ -236,89 +267,105 @@ export default ({ id, match }) => {
                 editView={editView}
               />
             ) : (
-                <div>
-                  <div style={{ maxWidth: '800px' }}>
-                    <Button.Group widths='4'>
-
-                      {/* Only admin can edit or delete after publish */}
-                      {(!course.published || user.role === roles.ADMIN_ROLE) ? (
-                        <>
-                          <Button onClick={handleEditCourse} color="blue" data-cy="edit-course-button">
-                            <FormattedMessage id="course.switchEditView" />
-                          </Button>
-                          <ConfirmationButton
-                            onConfirm={handleDeletion}
-                            modalMessage={intl.formatMessage({ id: "course.confirmDelete" })}
-                            buttonDataCy="delete-course-button"
-                            color="red"
-                            floated="right"
-                          >
-                            <FormattedMessage id="course.delete" />
-                          </ConfirmationButton>
-                        </>
-                      ) : null}
-
-                      {/* Group management and enroll list available regardless of publish status */}
-                      <Button onClick={handleGroupsView} color="green" data-cy="manage-groups-button">
-                        <FormattedMessage id="course.switchGroupsView" />
-                      </Button>
-                      <Button onClick={handleRegistrationsView} color="orange" data-cy="show-registrations-button">
-                        <FormattedMessage id="course.switchRegistrationsView" />
-                      </Button>
-                      
-                    </Button.Group>
-                  </div>
-
-                  {/* Views for staff */}
-                  <div>
-                    {match.params.subpage === 'groups' ? (
-                      <div>
-                        <GroupsView
-                          course={course}
-                          registrations={registrations}
-                          regByStudentId={regByStudentId}
-                          groups={groups}
-                          setGroups={setGroups}
-                        />
-                        <br></br>
-                        <Button onClick={handleGroupsView} color="blue" data-cy="back-to-info-from-groups-button">
-                          <FormattedMessage id="course.switchInfoView" />
+              <div>
+                <div style={{ maxWidth: '800px' }}>
+                  <Button.Group widths="4">
+                    {/* Only admin can edit or delete after publish */}
+                    {!course.published || user.role === roles.ADMIN_ROLE ? (
+                      <>
+                        <Button
+                          onClick={handleEditCourse}
+                          color="blue"
+                          data-cy="edit-course-button"
+                        >
+                          <FormattedMessage id="course.switchEditView" />
                         </Button>
-                      </div>
-                    ) : (
-                        <div>
-                          {match.params.subpage === 'registrations' ?
-                            <div>
-                              <RegistrationList
-                                courseReducer={[courseState, courseDispatch]}
-                                course={course}
-                                registrations={registrations}
-                                setRegistrations={setRegistrations}
-                                regByStudentId={regByStudentId}
-                              />
-                              <br></br>
-                              <Button onClick={handleRegistrationsView} color="blue" data-cy="back-to-info-from-groups-button">
-                                <FormattedMessage id="course.switchInfoView" />
-                              </Button>
-                            </div>
-                            : null}
-                        </div>
-                      )}
-							&nbsp;
-            	</div>
+                        <ConfirmationButton
+                          onConfirm={handleDeletion}
+                          modalMessage={intl.formatMessage({ id: 'course.confirmDelete' })}
+                          buttonDataCy="delete-course-button"
+                          color="red"
+                          floated="right"
+                        >
+                          <FormattedMessage id="course.delete" />
+                        </ConfirmationButton>
+                      </>
+                    ) : null}
+
+                    {/* Group management and enroll list available regardless of publish status */}
+                    <Button onClick={handleGroupsView} color="green" data-cy="manage-groups-button">
+                      <FormattedMessage id="course.switchGroupsView" />
+                    </Button>
+                    <Button
+                      onClick={handleRegistrationsView}
+                      color="orange"
+                      data-cy="show-registrations-button"
+                    >
+                      <FormattedMessage id="course.switchRegistrationsView" />
+                    </Button>
+                  </Button.Group>
                 </div>
-              )}
+
+                {/* Views for staff */}
+                <div>
+                  {match.params.subpage === 'groups' ? (
+                    <div>
+                      <GroupsView
+                        course={course}
+                        registrations={registrations}
+                        regByStudentId={regByStudentId}
+                        groups={groups}
+                        setGroups={setGroups}
+                      />
+                      <br />
+                      <Button
+                        onClick={handleGroupsView}
+                        color="blue"
+                        data-cy="back-to-info-from-groups-button"
+                      >
+                        <FormattedMessage id="course.switchInfoView" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div>
+                      {match.params.subpage === 'registrations' ? (
+                        <div>
+                          <RegistrationList
+                            courseReducer={[courseState, courseDispatch]}
+                            course={course}
+                            registrations={registrations}
+                            setRegistrations={setRegistrations}
+                            regByStudentId={regByStudentId}
+                          />
+                          <br />
+                          <Button
+                            onClick={handleRegistrationsView}
+                            color="blue"
+                            data-cy="back-to-info-from-groups-button"
+                          >
+                            <FormattedMessage id="course.switchInfoView" />
+                          </Button>
+                        </div>
+                      ) : null}
+                    </div>
+                  )}
+                  &nbsp;
+                </div>
+              </div>
+            )}
           </div>
         ) : null}
-
         {/* Views for everyone */}
         <div>
-          {match.params.subpage === undefined || match.params.subpage === 'usergroup' ?
-            <Registration courseReducer={[courseState, courseDispatch]} course={course} match={match} />
-            : null}
+          {match.params.subpage === undefined || match.params.subpage === 'usergroup' ? (
+            <Registration
+              courseReducer={[courseState, courseDispatch]}
+              course={course}
+              match={match}
+            />
+          ) : null}
         </div>
-      	&nbsp;
-
+        &nbsp;
         {/*
 				<div>
 					{ view === 'userGroup' ? (
@@ -328,7 +375,6 @@ export default ({ id, match }) => {
 					) : null}
 				</div>
 			  */}
-
       </div>
     </div>
   );

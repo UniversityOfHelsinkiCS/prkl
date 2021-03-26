@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Table, Icon, Message } from 'semantic-ui-react';
 import { useIntl } from 'react-intl';
+
 import timeChoices from '../../util/timeFormChoices';
 
 const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
@@ -25,7 +26,7 @@ const TimeForm = ({ onChange, description }) => {
 
   useEffect(() => {
     onChange(makeEmptySheet());
-  }, []);
+  }, []); // eslint-disable-line
 
   const switchChoiceIcon = choice => {
     switch (choice) {
@@ -82,7 +83,7 @@ const TimeForm = ({ onChange, description }) => {
       onChange(newTable);
       return newTable;
     });
-  }, []);
+  }, []); // eslint-disable-line
 
   return (
     <div>

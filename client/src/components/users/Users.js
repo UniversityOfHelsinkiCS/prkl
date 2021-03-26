@@ -1,30 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/react-hooks';
-import { useStore } from 'react-hookstore';
 import { Header, Loader, Card, Input, Divider, Button } from 'semantic-ui-react';
+import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useMutation } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-dom';
-import { ALL_USERS, EDIT_USER_ROLE } from '../../GqlQueries';
-import roles from '../../util/userRoles';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
+import { ALL_USERS, EDIT_USER_ROLE } from '../../GqlQueries';
+
+import roles from '../../util/userRoles';
 
 export default () => {
   const [user] = useStore('userStore');
   const [privacyToggle] = useStore('toggleStore');
   const [allUsers, setAllUsers] = useState(null);
-	const [mocking, setMocking] = useStore('mocking');
+  // eslint-disable-next-line no-unused-vars
+  const [mocking, setMocking] = useStore('mocking');
   const [search, setSearch] = useState('');
   const [editUserRole] = useMutation(EDIT_USER_ROLE);
-	const intl = useIntl();
+  const intl = useIntl();
   const history = useHistory();
-  
-  const { loading, error, data } = useQuery(
-    ALL_USERS,
-    {
-      skip: user.role !== roles.ADMIN_ROLE,
-    }
-  );
+
+  const { loading, error, data } = useQuery(ALL_USERS, {
+    skip: user.role !== roles.ADMIN_ROLE,
+  });
 
   useEffect(() => {
     if (!loading && data?.users !== undefined) {
@@ -32,8 +30,8 @@ export default () => {
         ? data.users.map(u => ({ ...u, email: dummyEmail, studentNo: dummyStudentNumber }))
         : data.users;
       setAllUsers(usersToSet);
-    } 
-  }, [loading, data, privacyToggle])
+    }
+  }, [loading, data, privacyToggle]);
 
   const handleSearchChange = event => {
     setSearch(event.target.value);
@@ -46,17 +44,19 @@ export default () => {
         variables,
       });
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.log('error editing role:', e);
     }
   };
 
-	const handleLogInAs = (setMocking, id) => {
-		setMocking(prev => ({ ...prev, mockedUser: id }));
-		history.push('/courses');
-		window.location.reload();
-	}
+  const handleLogInAs = (setMocking, id) => {
+    setMocking(prev => ({ ...prev, mockedUser: id }));
+    history.push('/courses');
+    window.location.reload();
+  };
 
   if (error !== undefined) {
+    // eslint-disable-next-line no-console
     console.log('error:', error);
     return (
       <div>
@@ -116,14 +116,14 @@ export default () => {
                         >
                           {intl.formatMessage({ id: 'users.student' })}
                         </Button>
-												<Button
-													onClick={() => handleLogInAs(setMocking, u.shibbolethUid)}
-													color="orange"
-													data-cy={`log-in-as-${u.shibbolethUid}`}
-												>
-													Log in as this user
-												</Button>	
-											</div>
+                        <Button
+                          onClick={() => handleLogInAs(setMocking, u.shibbolethUid)}
+                          color="orange"
+                          data-cy={`log-in-as-${u.shibbolethUid}`}
+                        >
+                          Log in as this user
+                        </Button>
+                      </div>
                     )}
                   </Card.Content>
                 </Card.Content>

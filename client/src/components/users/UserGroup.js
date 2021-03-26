@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Header, Container } from 'semantic-ui-react';
 import { useQuery } from '@apollo/react-hooks';
-import { GROUP_TIMES } from '../../GqlQueries';
+import { Header, Container } from 'semantic-ui-react';
+
 import { timeParse } from '../../util/functions';
+import { GROUP_TIMES } from '../../GqlQueries';
 import UserGroupItem from './UserGroupItem';
 
 export default ({ user, course }) => {
@@ -25,6 +26,7 @@ export default ({ user, course }) => {
   }, [data, loading, user, course]);
 
   if (error !== undefined) {
+    // eslint-disable-next-line no-console
     console.log('error:', error);
     return (
       <div>
@@ -34,40 +36,36 @@ export default ({ user, course }) => {
   }
 
   const courseHasGroups = () => {
-    if (!group[0] || !groupTimes) {
-      return false;
-    }
-    return true;
+    return !(!group[0] || !groupTimes);
   };
 
   const userIsRegistered = () => {
     const found = user.registrations?.find(r => r.course.id === course.id);
 
-    if (found === undefined) {
-      return false;
-    }
-    return true;
+    return found !== undefined;
   };
 
   return (
     <div>
+      {/* eslint-disable-next-line no-nested-ternary */}
       {userIsRegistered() ? (
         courseHasGroups() ? (
           <div>
-            {group[0].groupMessage && group[0].groupMessage !== '' && 
-            <Container fluid textAlign='justified'>
-              <Header as="h4">
-                <FormattedMessage id="groups.newMessage" />
-              </Header>
-              <p>{group[0].groupMessage}</p>
-            </Container>}
+            {group[0].groupMessage && group[0].groupMessage !== '' && (
+              <Container fluid textAlign="justified">
+                <Header as="h4">
+                  <FormattedMessage id="groups.newMessage" />
+                </Header>
+                <p>{group[0].groupMessage}</p>
+              </Container>
+            )}
             <Header as="h4">
               <FormattedMessage id="groups.published" />
             </Header>
             <UserGroupItem group={group[0]} groupTimes={groupTimes} />
           </div>
-        ) : null)
-      : null}
+        ) : null
+      ) : null}
     </div>
   );
 };

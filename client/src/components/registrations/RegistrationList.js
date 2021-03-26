@@ -6,9 +6,10 @@ import roles from '../../util/userRoles';
 export default ({ courseReducer, course, regByStudentId }) => {
   const [user] = useStore('userStore');
 
-  const [{registrations}] = courseReducer
+  const [{ registrations }] = courseReducer;
 
-  console.log(courseReducer)
+  // eslint-disable-next-line no-console
+  console.log(courseReducer);
 
   const hasAccess = () => {
     if (user.role === roles.ADMIN_ROLE) {
