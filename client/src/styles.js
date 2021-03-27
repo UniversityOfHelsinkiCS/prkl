@@ -1,7 +1,7 @@
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 
 const useUserInfoStyles = makeStyles({
-  
+  // empty for now...
 });
 
 const useUserCourseListStyles = makeStyles((theme) => ({

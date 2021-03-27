@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import UserCourseList from './UserCourseList';
 
 import { useUserInfoStyles } from '../../styles'
-import { Card, CardContent, Container, Typography } from '@material-ui/core';
+import { Container, Typography } from '@material-ui/core';
 
 export default () => {
   const [user] = useStore('userStore');
@@ -23,17 +23,17 @@ export default () => {
   return (
     <Container>
 
-      <Card className={classes.root}>
-        <CardContent>
+          <Typography variant="h4">
 
-          <Typography variant="h5" component="h2">
             <FormattedMessage
               id="studentInfo.fullname"
               values={{ fullname: `${user.firstname} ${user.lastname}` }}
             />
+
           </Typography>
 
-          <Typography className={classes.pos} color="textSecondary">
+          <Typography variant="h5" color="textSecondary" gutterBottom>
+
             <FormattedMessage
               id="studentInfo.studentNo"
               values={{ studentNo: privacyToggle ? dummyStudentNumber : user.studentNo }}
@@ -43,10 +43,8 @@ export default () => {
               values={{ email: privacyToggle ? dummyEmail : user.email }}
               className
             />
-          </Typography>
 
-        </CardContent>
-      </Card>
+          </Typography>
 
       &nbsp;
       {user.registrations ? (
@@ -59,7 +57,6 @@ export default () => {
         </div>
       ) : null}
 
-      &nbsp;
       {/*user.ownCourses ? (
         <div>
           <Typography variant="h5" gutterBottom>
