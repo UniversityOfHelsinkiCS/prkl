@@ -1,9 +1,7 @@
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 
-const useStyles = makeStyles({
-  userinfo: {
-    something: ' '
-  },
+const useUserInfoStyles = makeStyles({
+  
 });
 
 const useUserCourseListStyles = makeStyles((theme) => ({
@@ -22,4 +20,7 @@ const useUserCourseListStyles = makeStyles((theme) => ({
   },
 }));
 
-export { useStyles, useUserCourseListStyles };
+export { 
+  useUserInfoStyles, 
+  useUserCourseListStyles 
+};

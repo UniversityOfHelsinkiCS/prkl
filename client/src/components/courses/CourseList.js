@@ -7,6 +7,7 @@ import CourseTag from './CourseTag';
 
 export default ({ courses, user }) => {
   const intl = useIntl();
+  const divider = <span style={{ color: '#f2f2f2' }}>{' | '}</span>
 
   return (
     <Card.Group itemsPerRow={1}>
@@ -35,7 +36,7 @@ export default ({ courses, user }) => {
 
               <Card.Description>
                 {intl.formatMessage({ id: 'courses.deadline' })} {intl.formatDate(course.deadline)}
-                <span style={{ color: '#f2f2f2' }}>{' | '}</span>
+                {divider}
                 <Dropdown
                   text={intl.formatMessage({ id: 'courses.teachers' })}
                   onClick={e => {
@@ -52,7 +53,7 @@ export default ({ courses, user }) => {
                       >
                         <a href={`mailto:${t.email}`}>
                           {t.firstname} {t.lastname}
-                          <span style={{ color: '#f2f2f2' }}>{' | '}</span>
+                          {divider}
                           {t.email}
                         </a>
                       </Dropdown.Item>
