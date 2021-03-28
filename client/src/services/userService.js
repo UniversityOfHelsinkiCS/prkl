@@ -6,10 +6,11 @@ export default (useQuery, useEffect, setUser) => {
   useEffect(() => {
     if (!userLoading) {
       if (userError !== undefined) {
+        // eslint-disable-next-line no-console
         console.log('error:', userError);
       } else {
         setUser(userData.currentUser);
       }
     }
-  }, [userLoading, setUser, userError]);
+  }, [userLoading, setUser, userError]); // eslint-disable-line
 };

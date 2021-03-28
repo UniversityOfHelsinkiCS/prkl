@@ -1,78 +1,72 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
-import { useQuery } from '@apollo/react-hooks';
-import { GROUP_TIMES } from '../../GqlQueries';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
-import { timeParse } from '../../util/functions';
 import UserCourseList from './UserCourseList';
+
+import { useUserInfoStyles } from '../../styles'
+import { Container, Typography } from '@material-ui/core';
 
 export default () => {
   const [user] = useStore('userStore');
   const [privacyToggle] = useStore('toggleStore');
-  const [groupTimes, setGroupTimes] = useState(undefined);
 
-  const { loading, error, data } = useQuery(GROUP_TIMES, {
-    skip: user.id === undefined,
-    variables: { studentId: user.id },
-  });
-
-  useEffect(() => {
-    if (!loading && data !== undefined ) {
-      setGroupTimes(timeParse(data.groupTimes));
-    }
-  }, [data, loading]);
-
-  if (error !== undefined) {
-    console.log('error:', error);
-    return (
-      <div>
-        <FormattedMessage id="groups.loadingError" />
-      </div>
-    );
-  }
+  const classes = useUserInfoStyles();
+  const divider = <span style={{ color: '#f2f2f2' }}>{' | '}</span>
 
   const usersCourses = () => {
     const courses = user.registrations.map(reg => reg.course);
-
     return (
       courses
     )};
 
-
   return (
-    <div>
-      <h3>
-        <FormattedMessage id="studentInfo.header" />
-      </h3>
-      <div>
-        <FormattedMessage
-          id="studentInfo.fullname"
-          values={{ fullname: `${user.firstname} ${user.lastname}` }}
-        />
-      </div>
+    <Container>
 
-      <div>
-        <FormattedMessage
-          id="studentInfo.studentNo"
-          values={{ studentNo: privacyToggle ? dummyStudentNumber : user.studentNo }}
-        />
-      </div>
-      <div>
-        <FormattedMessage
-          id="studentInfo.email"
-          values={{ email: privacyToggle ? dummyEmail : user.email }}
-        />
-      </div>
+          <Typography variant="h4">
+
+            <FormattedMessage
+              id="studentInfo.fullname"
+              values={{ fullname: `${user.firstname} ${user.lastname}` }}
+            />
+
+          </Typography>
+
+          <Typography variant="h5" color="textSecondary" gutterBottom>
+
+            <FormattedMessage
+              id="studentInfo.studentNo"
+              values={{ studentNo: privacyToggle ? dummyStudentNumber : user.studentNo }}
+            />{divider}
+            <FormattedMessage
+              id="studentInfo.email"
+              values={{ email: privacyToggle ? dummyEmail : user.email }}
+              className
+            />
+
+          </Typography>
+
       &nbsp;
       {user.registrations ? (
         <div>
-          <h3>
+          <Typography variant="h5" gutterBottom>
             <FormattedMessage id="studentInfo.course" />
-          </h3>
+          </Typography>
+
           <UserCourseList courses={usersCourses()} user={user} />
         </div>
       ) : null}
-    </div>
+
+      {/*user.ownCourses ? (
+        <div>
+          <Typography variant="h5" gutterBottom>
+            <FormattedMessage id="studentInfo.ownCourses" />
+          </Typography>
+
+          <UserCourseList courses={usersOwnCourses()} user={user} />
+        </div>
+      ) : null*/}
+
+    </Container>
   );
 };

@@ -1,10 +1,11 @@
 import React from 'react';
-import { Segment, Grid, Form } from 'semantic-ui-react';
 import { useIntl } from 'react-intl';
 import { Controller } from 'react-hook-form';
-import TimeForm from '../misc/TimeForm';
-import ValidatedInput from '../ui/ValidatedInput';
+import { Segment, Grid, Form } from 'semantic-ui-react';
+
 import { FREEFORM, SINGLE_CHOICE, MULTI_CHOICE, TIMES } from '../../util/questionTypes';
+import ValidatedInput from '../ui/ValidatedInput';
+import TimeForm from '../misc/TimeForm';
 
 const Question = ({ question, hookForm }) => {
   const intl = useIntl();

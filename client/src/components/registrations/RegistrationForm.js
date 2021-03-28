@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Header } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Form, Header } from 'semantic-ui-react';
+
 import Question from '../questions/Question';
-import ConfirmationButton from '../ui/ConfirmationButton';
 import ValidationError from '../ui/ValidationError';
+import ConfirmationButton from '../ui/ConfirmationButton';
 
 export default ({ questions, formControl, onSubmit }) => {
   const [checkboxValue, setCheckboxValue] = useState('accepted');

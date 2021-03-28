@@ -17,11 +17,14 @@ export default ({id, deadline, teachers, paragraphs }) => {
         <Card.Content>
           <Card.Meta>
             <FormattedMessage id="courseInfo.teachers" />
-		    <div>
-			  {teachers ? (
-				teachers.map(t =>
-					<p key={t.id}>{t.firstname} {t.lastname} - ({t.email})</p>)
-			  ) : null}
+            <div>
+              {teachers
+                ? teachers.map(t => (
+                    <p key={t.id}>
+                      {t.firstname} {t.lastname} - ({t.email})
+                    </p>
+                  ))
+                : null}
             </div>
           </Card.Meta>
         </Card.Content>

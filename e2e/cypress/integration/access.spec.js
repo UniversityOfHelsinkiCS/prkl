@@ -74,9 +74,9 @@ describe('User access and content', () => {
     // personal info
     cy.get('[data-cy="menu-item-info"]').click();
     cy.url().should('include', '/user');
-    cy.contains(`Name: ${users[0].firstname} ${users[0].lastname}`);
-    cy.contains(`Student number: ${users[0].studentNo}`);
-    cy.contains(`Email: ${users[0].email}`);
+    cy.contains(`${users[0].firstname} ${users[0].lastname}`);
+    cy.contains(`${users[0].studentNo}`);
+    cy.contains(`${users[0].email}`);
     cy.contains(courses[3].title);
     cy.contains(courses[1].title).should('not.exist');
   });

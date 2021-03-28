@@ -52,7 +52,7 @@ const QuestionForm = ({
     } else {
       clearErrors(missingChoicesErr);
     }
-  }, [options, question]);
+  }, [options, question]); // eslint-disable-line
 
   useEffect(() => {
     const qstn = questions[questionIndex]
@@ -110,7 +110,7 @@ const QuestionForm = ({
     opts.forEach(o => {
       setValue(o.oName, o.content);
     });
-  }, [questions]);
+  }, [questions]); // eslint-disable-line
 
   const updateQuestions = questionObject => {
     const newQuestions = [...questions];
@@ -133,7 +133,7 @@ const QuestionForm = ({
     if (questionOptionality || questionType === 'freeForm') {
       handleUseInGroupCreationChange(false);
     }
-  }, [questionOptionality, questionType]);
+  }, [questionOptionality, questionType]); // eslint-disable-line
 
   const handleOptionalityChange = () => {
     const questionObject = {

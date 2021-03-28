@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Input, Divider, Menu, Select } from 'semantic-ui-react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
+
 import CourseListStaffControls from './CourseListStaffControls';
 import CourseList from './CourseList';
 
@@ -51,12 +52,14 @@ export default () => {
     const publishFilter = course => course.published === true;
 
     const deadlineFilter = course =>
-      showPastCourses ? true : (
-        new Date(course.deadline) > new Date() || (user.registrations ? user.registrations.find(r => r.course.id === course.id) : false)
-      );
+      showPastCourses
+        ? true
+        : new Date(course.deadline) > new Date() ||
+          (user.registrations ? user.registrations.find(r => r.course.id === course.id) : false);
 
     // Check teacher of the course
-    const teacherFilter = course => (showMyCourses ? course.teachers.find(t => t.id === user.id) : true);
+    const teacherFilter = course =>
+      showMyCourses ? course.teachers.find(t => t.id === user.id) : true;
 
     const searchFilter = course =>
       course.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -67,7 +70,7 @@ export default () => {
     const sortByDeadline = (a, b) => (new Date(a.deadline) < new Date(b.deadline) ? -1 : 1);
 
     // Filter with role check.
-    let filteredCourses = courses;
+    let filteredCourses;
     if (user.role === 1) {
       filteredCourses = courses
         .filter(publishFilter)

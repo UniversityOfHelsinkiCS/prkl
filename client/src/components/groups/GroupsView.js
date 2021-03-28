@@ -1,10 +1,10 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState, useEffect } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { useStore } from 'react-hookstore';
+import { Prompt } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Form, Loader } from 'semantic-ui-react';
-import { FormattedMessage, useIntl } from 'react-intl';
-import { Prompt } from 'react-router-dom';
 import _ from 'lodash';
 import {
   GENERATE_GROUPS,
@@ -13,11 +13,13 @@ import {
   PUBLISH_COURSE_GROUPS,
   GENERATE_GROUPS_FOR_NON_LOCKED_GROUPS,
 } from '../../GqlQueries';
-import Groups from './Groups';
-import GrouplessStudents from './GrouplessStudents';
-import userRoles from '../../util/userRoles';
+
 import ConfirmationButton from '../ui/ConfirmationButton';
+import GrouplessStudents from './GrouplessStudents';
 import SuccessMessage from '../ui/SuccessMessage';
+import Groups from './Groups';
+
+import userRoles from '../../util/userRoles';
 
 export default ({ course, registrations, regByStudentId, groups, setGroups }) => {
   const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
@@ -27,19 +29,19 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
 
-  const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
-  const [user] = useStore('userStore');
   const [grouplessStudents, setGrouplessStudents] = useStore('grouplessStudentsStore');
   const [lockedGroupsStore, setLockedGroupsStore] = useStore('lockedGroupsStore');
+  const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
+  const [user] = useStore('userStore');
 
-  const [oldGroups, setOldGroups] = useState([]);
-  const [minGroupSize, setMinGroupSize] = useState(1);
+  const [registrationsWithoutGroups, setRegistrationsWithoutGroups] = useState(true);
   const [savedSuccessMsgVisible, setSavedSuccessMsgVisible] = useState(false);
+  const [groupSorting, setGroupSorting] = useState('nameAscending');
   const [groupsPublished, setGroupsPublished] = useState(false);
   const [groupMessages, setGroupMessages] = useState(['']);
+  const [minGroupSize, setMinGroupSize] = useState(1);
   const [groupNames, setGroupNames] = useState(['']);
-  const [groupSorting, setGroupSorting] = useState('nameAscending');
-  const [registrationsWithoutGroups, setRegistrationsWithoutGroups] = useState(true);
+  const [oldGroups, setOldGroups] = useState([]);
 
   const intl = useIntl();
 
@@ -52,11 +54,36 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     if (course.id !== undefined) {
       refetch();
     }
-  }, []);
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     setGroupsPublished(course.groupsPublished);
   }, [course]);
+
+  const handleGroupsMessagesAndNames = groups => {
+    setGroups(groups);
+    const groupNames = groups.map(g => g.groupName);
+    const groupMsgs = groups.map(g => g.groupMessage);
+    setGroupNames(groupNames);
+    setGroupMessages(groupMsgs);
+  };
+
+  const sortGroups = (groups, sorting) => {
+    const sortedGroups = _.cloneDeep(groups);
+    if (sorting === 'nameAscending' || sorting === 'nameDescending') {
+      sortedGroups.sort((a, b) => {
+        const x = a.groupName.toLowerCase();
+        const y = b.groupName.toLowerCase();
+        const comp = x.localeCompare(y, undefined, { numeric: true, sensitivity: 'base' });
+        return sorting === 'nameAscending' ? comp : -comp;
+      });
+    } else if (sorting === 'sizeAscending') {
+      sortedGroups.sort((a, b) => a.students.length - b.students.length);
+    } else if (sorting === 'sizeDescending') {
+      sortedGroups.sort((a, b) => b.students.length - a.students.length);
+    }
+    return sortedGroups;
+  };
 
   useEffect(() => {
     if (!loading && data !== undefined) {
@@ -72,7 +99,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
       setOldGroups(fetchedGroups);
       setGroupsUnsaved(false);
     }
-  }, [data, loading]);
+  }, [data, loading]); // eslint-disable-line
 
   useEffect(() => {
     const studentIds = [];
@@ -97,9 +124,10 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     }
 
     setGrouplessStudents(groupless);
-  }, [registrationsWithoutGroups, groups]);
+  }, [registrationsWithoutGroups, groups]); // eslint-disable-line
 
   if (error !== undefined) {
+    // eslint-disable-next-line no-console
     console.log('error:', error);
     return (
       <div>
@@ -107,31 +135,6 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
       </div>
     );
   }
-
-  const sortGroups = (groups, sorting) => {
-    const sortedGroups = _.cloneDeep(groups);
-    if (sorting === 'nameAscending' || sorting === 'nameDescending') {
-      sortedGroups.sort((a, b) => {
-        const x = a.groupName.toLowerCase();
-        const y = b.groupName.toLowerCase();
-        const comp = x.localeCompare(y, undefined, { numeric: true, sensitivity: 'base' });
-        return sorting === 'nameAscending' ? comp : -comp;
-      });
-    } else if (sorting === 'sizeAscending') {
-      sortedGroups.sort((a, b) => a.students.length - b.students.length);
-    } else if (sorting === 'sizeDescending') {
-      sortedGroups.sort((a, b) => b.students.length - a.students.length);
-    }
-    return sortedGroups;
-  };
-
-  const handleGroupsMessagesAndNames = groups => {
-    setGroups(groups);
-    const groupNames = groups.map(g => g.groupName);
-    const groupMsgs = groups.map(g => g.groupMessage);
-    setGroupNames(groupNames);
-    setGroupMessages(groupMsgs);
-  };
 
   const handleSampleGroupCreation = async () => {
     const minGroupS = minGroupSize || 1;
@@ -159,6 +162,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
       setRegistrationsWithoutGroups(false);
       setGroups(mappedGroups);
     } catch (groupError) {
+      // eslint-disable-next-line no-console
       console.log('error:', groupError);
     }
   };
@@ -218,6 +222,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
       setGroups(resultGroups);
       setLockedGroupsStore([]);
     } catch (groupError) {
+      // eslint-disable-next-line no-console
       console.log('error:', groupError);
     }
   };
@@ -240,11 +245,12 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
       await saveGeneratedGroups({ variables });
       setGroupsUnsaved(false);
       setSavedSuccessMsgVisible(true);
-      refetch();
+      await refetch();
       setTimeout(() => {
         setSavedSuccessMsgVisible(false);
       }, 3000);
     } catch (groupError) {
+      // eslint-disable-next-line no-console
       console.log('error:', groupError);
     }
   };
@@ -255,8 +261,9 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     try {
       await publishCourseGroups({ variables });
       setGroupsPublished(true);
-    } catch (error) {
-      console.log(error);
+    } catch (publishError) {
+      // eslint-disable-next-line no-console
+      console.log(publishError);
     }
   };
 
@@ -271,6 +278,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     // Sorting currently does not preserve saved group names & messages correctly, so warn about reload
     if (
       groupsUnsaved &&
+      // eslint-disable-next-line no-alert
       !window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' }))
     ) {
       return;

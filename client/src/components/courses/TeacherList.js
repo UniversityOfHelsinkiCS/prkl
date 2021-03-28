@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { Dropdown } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
 import { useIntl } from 'react-intl';
+
 import roles from '../../util/userRoles';
 import { FACULTY_USERS } from '../../GqlQueries';
 
@@ -24,7 +25,7 @@ export default ({ courseTeachers, setCourseTeachers }) => {
       const newTeachers = facultyData?.facultyUsers;
       setTeachers(newTeachers);
     }
-  }, [facultyData, facultyError, facultyLoading]);
+  }, [facultyData, facultyError, facultyLoading]); // eslint-disable-line
 
   // this will be current user when creating a new course
   const preSelected = courseTeachers.map(u => u.id);

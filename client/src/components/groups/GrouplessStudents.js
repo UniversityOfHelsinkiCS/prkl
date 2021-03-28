@@ -1,10 +1,12 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState } from 'react';
-import { Table, Segment, Label, Popup, Form, Button } from 'semantic-ui-react';
-import { FormattedMessage, useIntl } from 'react-intl';
-import { useMutation } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
+import { useMutation } from '@apollo/react-hooks';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { Table, Segment, Label, Popup, Form, Button } from 'semantic-ui-react';
+
 import { FIND_GROUP_FOR_GROUPLESS_STUDENTS } from '../../GqlQueries';
+
 import HourDisplay from '../misc/HourDisplay';
 import { count } from '../../util/functions';
 
@@ -61,6 +63,7 @@ export default ({
       const groupFound = mappedGroups.some(group => group.students.find(s => s.id === student.id));
 
       if (!groupFound) {
+        // eslint-disable-next-line no-alert
         alert(intl.formatMessage({ id: 'groupsView.noGroupFoundAlert' }));
         return;
       }
@@ -74,6 +77,7 @@ export default ({
       }
       setGrouplessStudents(newGroupless);
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.log(e);
     }
   };
@@ -172,9 +176,11 @@ export default ({
       });
 
       if (groupless) {
+        // eslint-disable-next-line no-alert
         alert(intl.formatMessage({ id: 'groupsView.grouplessStudentAlert' }));
       }
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.log(e);
     }
   };
@@ -211,10 +217,10 @@ export default ({
               </Table.HeaderCell>
 
               <Table.HeaderCell>
-                <FormattedMessage id="groups.maxSize" />
+                <FormattedMessage id="groups.targetGroupSize" />
                 &nbsp;
                 <Popup
-                  content={intl.formatMessage({ id: 'groups.maxSizeInfo' })}
+                  content={intl.formatMessage({ id: 'groups.targetGroupSizeInfo' })}
                   trigger={<i className="question circle icon" />}
                 />
                 <Form.Input
