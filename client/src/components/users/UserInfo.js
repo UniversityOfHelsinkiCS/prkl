@@ -3,22 +3,23 @@ import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import UserCourseList from './UserCourseList';
+import roles from '../../util/userRoles';
 
-import { useUserInfoStyles } from '../../styles'
 import { Container, Typography } from '@material-ui/core';
 
-export default () => {
-  const [user] = useStore('userStore');
+export default ({courses, user}) => {
   const [privacyToggle] = useStore('toggleStore');
 
-  const classes = useUserInfoStyles();
-  const divider = <span style={{ color: '#f2f2f2' }}>{' | '}</span>
+  const coursesTeachedOn = courses.filter(c => c.teachers.some(t => t.id === user.id));
 
   const usersCourses = () => {
-    const courses = user.registrations.map(reg => reg.course);
-    return (
-      courses
-    )};
+    const coursesIds = user.registrations.map(reg => reg.course.id);
+    const usersCourses = courses.filter(c => coursesIds.includes(c.id));
+
+    return (usersCourses);
+  };
+
+  const divider = <span style={{ color: '#f2f2f2' }}>{' | '}</span>
 
   return (
     <Container>
@@ -48,24 +49,34 @@ export default () => {
 
       &nbsp;
       {user.registrations ? (
-        <div>
+        <>
           <Typography variant="h5" gutterBottom>
-            <FormattedMessage id="studentInfo.course" />
+            <FormattedMessage id="studentInfo.userCourses" />
           </Typography>
 
           <UserCourseList courses={usersCourses()} user={user} />
-        </div>
+        </>
       ) : null}
 
-      {/*user.ownCourses ? (
-        <div>
+      &nbsp;
+      {user.role === roles.ADMIN_ROLE || user.role === roles.STAFF_ROLE ? (
+        <>
           <Typography variant="h5" gutterBottom>
             <FormattedMessage id="studentInfo.ownCourses" />
-          </Typography>
+          </Typography> 
 
-          <UserCourseList courses={usersOwnCourses()} user={user} />
-        </div>
-      ) : null*/}
+          {coursesTeachedOn.length > 0 ? (
+            <UserCourseList courses={coursesTeachedOn} user={user} />
+          ) : 
+            <>
+              <Typography variant="h7" color="textSecondary" gutterBottom>
+                <FormattedMessage id="studentInfo.noOwnCourses" />
+              </Typography>
+            </>
+          }
+          
+        </>
+      ) : null}
 
     </Container>
   );

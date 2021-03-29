@@ -124,7 +124,9 @@ export default {
     'studentInfo.fullname': '{fullname}',
     'studentInfo.studentNo': '{studentNo}',
     'studentInfo.email': '{email}',
-    'studentInfo.course': 'Enrolled courses - click the course to check your groups',
+    'studentInfo.userCourses': 'Enrolled courses - click the course to check your groups',
+    'studentInfo.ownCourses': 'Courses you teach on - for staff and admin',
+    'studentInfo.noOwnCourses': 'No courses!',
     'studentInfo.group': 'Groups assigned to',
     'studentInfo.noGroups': 'Not assigned to a group yet.',
 

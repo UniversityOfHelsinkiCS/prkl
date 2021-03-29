@@ -9,7 +9,7 @@ import { ALL_COURSES } from './GqlQueries';
 
 import CourseForm from './components/courses/CourseForm';
 import PrivateRoute from './components/ui/PrivateRoute';
-import StudentInfo from './components/users/UserInfo';
+import UserInfo from './components/users/UserInfo';
 import KeepAlive from './components/misc/KeepAlive';
 import Courses from './components/courses/Courses';
 import Course from './components/courses/Course';
@@ -67,7 +67,7 @@ export default () => {
           ) : (
             <div className="mainContent">
               <Loader />
-              <Route path="/user" render={() => <StudentInfo /*aa*/ />} />
+              <Route path="/user" render={() => <UserInfo courses={courses} user={user} />} />
               <PrivateRoute
                 path="/addcourse"
                 requiredRole={roles.STAFF_ROLE}
