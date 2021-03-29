@@ -1,13 +1,25 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState, useEffect } from 'react';
-import { useStore } from 'react-hookstore';
-import { Table, Header, List, Button, Segment, Popup, Input, Label, Form, Checkbox } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useStore } from 'react-hookstore';
+import {
+  Table,
+  Header,
+  List,
+  Button,
+  Segment,
+  Popup,
+  Input,
+  Label,
+  Form,
+  Checkbox,
+} from 'semantic-ui-react';
+
 import _ from 'lodash';
-import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import DraggableRow from './DraggableRow';
-import questionSwitch, { count } from '../../util/functions';
 import HourDisplay from '../misc/HourDisplay';
+import questionSwitch, { count } from '../../util/functions';
+import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 
 export default ({
   course,
@@ -185,14 +197,14 @@ export default ({
     value: tableIndex,
   }));
 
-  const checkBoxChange = ( group ) => {
+  const checkBoxChange = group => {
     if (lockedGroupsStore.includes(group)) {
-      const filtered = lockedGroupsStore.filter(g => g.groupId !== group.groupId)
-      setLockedGroupsStore(filtered)
+      const filtered = lockedGroupsStore.filter(g => g.groupId !== group.groupId);
+      setLockedGroupsStore(filtered);
     } else {
-      setLockedGroupsStore(lockedGroupsStore.concat(group))
+      setLockedGroupsStore(lockedGroupsStore.concat(group));
     }
-  }
+  };
 
   return (
     <div>
@@ -230,22 +242,11 @@ export default ({
                       >
                         {groupNames[tableIndex] || ''}
                       </Label>
-                      
                     }
                   />
-                {/*<Label
-                  color="grey"
-                  size="large"
-                  attached="top"
-                >
-
-                  <FormattedMessage id="groups.title" />
-                  {tableIndex + 1}
-                </Label>*/}
-
                   <Checkbox
                     onChange={() => checkBoxChange(group)}
-                    label={intl.formatMessage({ id: 'groups.lockGroup'})}
+                    label={intl.formatMessage({ id: 'groups.lockGroup' })}
                     data-cy="lockGroupsCheckBox"
                   />
                   &nbsp;
@@ -268,13 +269,9 @@ export default ({
                   <Header as="h5">
                     <FormattedMessage id="groups.students" />
                   </Header>
-                  <Table 
-                    data-cy="generated-groups" 
-                    fixed
-                  >
+                  <Table data-cy="generated-groups" fixed>
                     <Table.Header>
                       <DraggableRow action={swapElements} index={0} tableIndex={tableIndex}>
-
                         <Table.HeaderCell>
                           <FormattedMessage id="groups.name" />
                         </Table.HeaderCell>
@@ -324,9 +321,7 @@ export default ({
                             {privacyToggle ? dummyStudentNumber : student.studentNo}
                           </Table.Cell>
 
-                          <Table.Cell>
-                            {privacyToggle ? dummyEmail : student.email}
-                          </Table.Cell>
+                          <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
 
                           {regByStudentId[student.studentNo]?.questionAnswers.map(qa =>
                             questionSwitch(qa)
@@ -366,7 +361,6 @@ export default ({
                               }
                             />
                           </Table.Cell>
-
                         </DraggableRow>
                       ))}
                     </Table.Body>

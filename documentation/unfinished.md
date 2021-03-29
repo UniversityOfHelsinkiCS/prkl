@@ -8,9 +8,6 @@ If the same or similar course is held as one before, the teacher could select a 
 * **The ability to ‘weight’ different questions or answer choices.**  
 Some questions are more relevant than others for creating groups. The ability to score the importance of specific questions or answer choices within questions. This would preferably be implemented when creating the groups, so the algorithm could be run multiple times with different parameters to create better groupings.
 
-* **The ability to lock specific groups and let algorithm create new groups for remaining students.**
-Teacher could confirm some groups to be ready and use algorithm to create solid groups for rest of students.
-
 * **The ability to find best group for specific student.**
 There might be some students, who have only few suitable times. Algorithm could find the most suitable groups for those kind of students.
 

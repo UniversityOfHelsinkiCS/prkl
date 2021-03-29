@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
-import ReactDOM from 'react-dom';
-import axios from 'axios';
-import './index.css';
-import ApolloClient from 'apollo-boost';
+import { createStore, useStore } from 'react-hookstore';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { IntlProvider } from 'react-intl';
-import { createStore, useStore } from 'react-hookstore';
+import ApolloClient from 'apollo-boost';
+import ReactDOM from 'react-dom';
+import axios from 'axios';
+
 import App from './App';
 import messages from './localisation/messages';
+import './index.css';
 
 createStore('mocking', {
   mockedBy: null,
@@ -26,7 +27,7 @@ const MockingEnabledClient = () => {
       );
       setMocking(mock); // If mockedBy === mockedUser => mockaus ei päällä.
     })();
-  }, []);
+  }, []); // eslint-disable-line
 
   const mockingHeader = mocking.mockedUser;
 

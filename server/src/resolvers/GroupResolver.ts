@@ -143,64 +143,7 @@ export class GroupResolver {
 
   @Authorized(STAFF)
   @Mutation(() => [Group])
-  async findGroupForOne(
-      @Arg("data") data: GroupListInput,
-      @Arg("studentId") studentId: string,
-      @Arg("maxGroupSize") maxGroupSize: number
-    ): Promise<Group[]> {
-    const { courseId, groups } = data;
-
-    const registrationArray: Registration[] = [];
-
-    const registrations = await Registration.find({
-      where: { courseId: courseId },
-      relations: [
-        "student",
-        "questionAnswers",
-        "questionAnswers.question",
-        "questionAnswers.answerChoices",
-        "questionAnswers.question.questionChoices",
-        "workingTimes",
-      ],
-    });
-
-    const groupsToGroupingType = (groups: GroupInput[], registrations: Registration[]): Grouping => {
-      const grouping: Grouping = [];
-
-      for (const group of groups) {
-        const regArray: regArray = [];
-        for (const userId of group.userIds) {
-          for (const registration of registrations) {
-            if (registration.studentId === userId) {
-              regArray.push(registration);
-            }
-          }
-        }     
-        grouping.push(regArray); 
-      }   
-      return grouping;
-    };
-
-    registrations.map(registration => {
-      if (registration.student.id === studentId) {
-        registrationArray.push(registration);
-      }
-    })
-
-    const grouping = groupsToGroupingType(groups, registrations);
-
-    const newGroups = findGroupForGrouplessStudents(registrationArray, grouping, maxGroupSize);
-    return Promise.all(
-      newGroups.map(async g => {
-        const students = await User.findByIds(g.userIds);
-        return Group.create({ courseId, students });
-      }),
-    );
-  }
-
-  @Authorized(STAFF)
-  @Mutation(() => [Group])
-  async findGroupForMultipleStudents(
+  async findGroupForGrouplessStudents(
       @Arg("data") data: GroupListInput,
       @Arg("groupless") groupless: GroupListInput,
       @Arg("maxGroupSize") maxGroupSize: number

@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import { Form, Icon, Popup, Message } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from '@apollo/react-hooks';
+import { useHistory } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
 import { useForm } from 'react-hook-form';
 import _ from 'lodash';
+
 import { CREATE_COURSE, UPDATE_COURSE } from '../../GqlQueries';
+
+import ConfirmationButton from '../ui/ConfirmationButton';
 import QuestionForm from '../questions/QuestionForm';
 import TeacherList from './TeacherList';
-import ConfirmationButton from '../ui/ConfirmationButton';
 import roles from '../../util/userRoles';
 
 // Renders form for both course addition and course edition
@@ -53,6 +55,15 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
     });
   }
 
+  const getFormattedDate = setYesterday => {
+    const date = new Date();
+    if (setYesterday) date.setDate(date.getDate() - 1);
+    const dd = String(date.getDate()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
   const today = new Date();
   const dd = String(today.getDate()).padStart(2, '0');
   const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -74,44 +85,68 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
     if (calendarToggle) {
       register(
         { name: 'nameCalendarDesc' },
-        { required: intl.formatMessage({ id: 'courseForm.calendarDescValidationFailMsg' }) }
+        {
+          required: intl.formatMessage({ id: 'courseForm.calendarDescMissingValidationMsg' }),
+          maxLength: {
+            value: 250,
+            message: intl.formatMessage({ id: 'courseForm.calendarDescTooLongValidationMsg' }),
+          },
+        }
       );
       setValue('nameCalendarDesc', calendarDescription);
     } else {
       unregister('nameCalendarDesc');
     }
-  }, [calendarToggle]);
+  }, [calendarToggle]); // eslint-disable-line
 
   useEffect(() => {
     register(
       { name: 'nameTitle' },
-      { required: intl.formatMessage({ id: 'courseForm.titleValidationFailMsg' }) }
+      {
+        required: intl.formatMessage({ id: 'courseForm.titleMissingValidationMsg' }),
+        maxLength: {
+          value: 150,
+          message: intl.formatMessage({ id: 'courseForm.titleTooLongValidationMsg' }),
+        },
+      }
     );
     register(
       { name: 'nameCode' },
-      { required: intl.formatMessage({ id: 'courseForm.courseCodeValidationFailMsg' }) }
+      {
+        required: intl.formatMessage({ id: 'courseForm.courseCodeMissingValidationMsg' }),
+        maxLength: {
+          value: 20,
+          message: intl.formatMessage({ id: 'courseForm.courseCodeTooLongValidationMsg' }),
+        },
+      }
     );
     register(
       { name: 'nameDeadline' },
       {
-        required: intl.formatMessage({ id: 'courseForm.deadlineValidationFailMsg' }),
+        required: intl.formatMessage({ id: 'courseForm.deadlineMissingValidationMsg' }),
         min: editView
           ? {
               value:
                 user === undefined || user.role === roles.ADMIN_ROLE ? null : getFormattedDate(),
-              message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationFailMsg' }),
+              message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationMsg' }),
             }
           : {
               value: todayParsed,
-              message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationFailMsg' }),
+              message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationMsg' }),
             },
       }
     );
     register(
       { name: 'nameDescription' },
-      { required: intl.formatMessage({ id: 'courseForm.descriptionValidationFailMsg' }) }
+      {
+        required: intl.formatMessage({ id: 'courseForm.descriptionMissingValidationMsg' }),
+        maxLength: {
+          value: 2500,
+          message: intl.formatMessage({ id: 'courseForm.descriptionTooLongValidationMsg' }),
+        },
+      }
     );
-  }, []);
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     if (editView) {
@@ -137,7 +172,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
           };
         });
       setQuestions(qstns);
-      const dateString = course.deadline.substring(0, 10)
+      const dateString = course.deadline.substring(0, 10);
       setDeadline(dateString);
       setValue('nameDeadline', dateString);
       setPublishToggle(course.published);
@@ -149,16 +184,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
         setCalendarId(calendar.id);
       }
     }
-  }, []);
-
-  const getFormattedDate = setYesterday => {
-    const date = new Date();
-    if (setYesterday) date.setDate(date.getDate() - 1);
-    const dd = String(date.getDate()).padStart(2, '0');
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const yyyy = date.getFullYear();
-    return `${yyyy}-${mm}-${dd}`;
-  };
+  }, []); // eslint-disable-line
 
   const closeRegistration = e => {
     e.preventDefault();
@@ -178,6 +204,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
 
     const teacherRemoveType = courseTeachers.map(t => {
       const newT = { ...t };
+      // eslint-disable-next-line no-underscore-dangle
       delete newT.__typename;
       return newT;
     });
@@ -219,6 +246,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
         course = result.data.createCourse;
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.log('error:', error);
     }
     history.push(`/course/${course.id}`);

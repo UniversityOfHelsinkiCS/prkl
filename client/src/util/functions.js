@@ -1,5 +1,5 @@
-import React from "react";
-import {Table} from "semantic-ui-react";
+import React from 'react';
+import { Table } from 'semantic-ui-react';
 
 /**
  * A parser that intakes a student's answer to a question, and outputs a jsx table row -element containing the parsed answer.
@@ -8,24 +8,24 @@ import {Table} from "semantic-ui-react";
  * @param{QuestionAnswer} - an answer associated with a given registration
  */
 const mapshit = qa => {
-    const formattedMultipleAnswers = ['|'];
-    let currentAnswer = 0;
+  const formattedMultipleAnswers = ['|'];
+  let currentAnswer = 0;
 
-    if (qa.answerChoices.length !== 0) {
-      for (let index = 1; index <= qa.question.questionChoices.length; index += 1) {
-        if (
-          currentAnswer >= qa.answerChoices.length ||
-          index < qa.answerChoices[currentAnswer].order
-        ) {
-          formattedMultipleAnswers.push('|');
-        } else {
-          formattedMultipleAnswers.push(` ${qa.answerChoices[currentAnswer].content} |`);
-          currentAnswer += 1;
-        }
+  if (qa.answerChoices.length !== 0) {
+    for (let index = 1; index <= qa.question.questionChoices.length; index += 1) {
+      if (
+        currentAnswer >= qa.answerChoices.length ||
+        index < qa.answerChoices[currentAnswer].order
+      ) {
+        formattedMultipleAnswers.push('|');
+      } else {
+        formattedMultipleAnswers.push(` ${qa.answerChoices[currentAnswer].content} |`);
+        currentAnswer += 1;
       }
     }
+  }
 
-    return formattedMultipleAnswers;
+  return formattedMultipleAnswers;
 };
 
 const hours = 14;
@@ -67,16 +67,19 @@ export const timeParse = props => {
   return groupTimesMap;
 };
 
-
 export default qa => {
-    switch (qa.question.questionType) {
-      case 'multipleChoice':
-        return <Table.Cell key={qa.id}>{mapshit(qa)}</Table.Cell>;
-      case 'singleChoice':
-        return <Table.Cell key={qa.id}>{(qa.answerChoices[0] !== undefined) ? qa.answerChoices[0].content : ''}</Table.Cell>;
-      case 'freeForm':
-        return <Table.Cell key={qa.id}>{(qa.content !== undefined) ? qa.content : ''}</Table.Cell>;
-      default:
-        return null;
-    }
+  switch (qa.question.questionType) {
+    case 'multipleChoice':
+      return <Table.Cell key={qa.id}>{mapshit(qa)}</Table.Cell>;
+    case 'singleChoice':
+      return (
+        <Table.Cell key={qa.id}>
+          {qa.answerChoices[0] !== undefined ? qa.answerChoices[0].content : ''}
+        </Table.Cell>
+      );
+    case 'freeForm':
+      return <Table.Cell key={qa.id}>{qa.content !== undefined ? qa.content : ''}</Table.Cell>;
+    default:
+      return null;
+  }
 };

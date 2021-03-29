@@ -12,11 +12,11 @@ const HourDisplay = ({ header, times, students, groupId }) => {
   // get the transpose of times
   const timesTranspose = times[0].map((col, i) => times.map(row => row[i]));
 
-  const hsl_col_code = (timeSlot) => {
+  const hsl_col_code = timeSlot => {
     const ratio = timeSlot / students;
     let code = 0; // red
 
-    if (ratio === 1){
+    if (ratio === 1) {
       code = 120; // green
     } else if (ratio > 0.5) {
       code = 60; // yellow
@@ -25,7 +25,7 @@ const HourDisplay = ({ header, times, students, groupId }) => {
     }
 
     // Return a CSS HSL string
-    return `hsl(${code}, 100%, 70%)`
+    return `hsl(${code}, 100%, 70%)`;
   };
 
   return (

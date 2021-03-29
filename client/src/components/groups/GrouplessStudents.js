@@ -1,28 +1,29 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState } from 'react';
-import { Table, Segment, Label, Popup, Form, Button } from 'semantic-ui-react';
-import { FormattedMessage, useIntl } from 'react-intl';
-import { useMutation } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
-import _ from 'lodash';
-import { FIND_GROUP_FOR_ONE_STUDENT, FIND_GROUP_FOR_MULTIPLE_STUDENTS } from '../../GqlQueries';
+import { useMutation } from '@apollo/react-hooks';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { Table, Segment, Label, Popup, Form, Button } from 'semantic-ui-react';
+
+import { FIND_GROUP_FOR_GROUPLESS_STUDENTS } from '../../GqlQueries';
+
+import HourDisplay from '../misc/HourDisplay';
+import { count } from '../../util/functions';
 
 export default ({
   grouplessStudents,
   course,
   setGrouplessStudents,
   setRegistrationsWithoutGroups,
+  regByStudentId,
 }) => {
-  const [findGroupForMultipleStudents] = useMutation(FIND_GROUP_FOR_MULTIPLE_STUDENTS);
-  const [findGroupForOne] = useMutation(FIND_GROUP_FOR_ONE_STUDENT);
+  const [findGroupForGrouplessStudents] = useMutation(FIND_GROUP_FOR_GROUPLESS_STUDENTS);
   const [groups, setGroups] = useStore('groupsStore');
   const [maxGroupSize, setMaxGroupSize] = useState(course.maxGroupSize);
-  const [errorMessage, setErrorMessage] = useState('');
 
   const intl = useIntl();
 
   const findGroup = async student => {
-    console.log(groups);
     const groupsWithUserIds = groups.map(group => {
       const userIds = group.students.map(s => s.id);
       return {
@@ -32,17 +33,23 @@ export default ({
         groupMessage: group.groupMessage,
       };
     });
+    const grouplessStudent = {
+      userIds: [student.id],
+      id: 'groupless',
+      groupName: 'groupless',
+      groupMessage: 'groupless',
+    };
     const variables = {
       data: { courseId: course.id, groups: groupsWithUserIds },
-      studentId: student.id,
       maxGroupSize,
+      groupless: { courseId: course.id, groups: grouplessStudent },
     };
     try {
-      const res = await findGroupForOne({
+      const res = await findGroupForGrouplessStudents({
         variables,
       });
 
-      const mappedGroups = res.data.findGroupForOne.map((e, i) => {
+      const mappedGroups = res.data.findGroupForGrouplessStudents.map((e, i) => {
         return {
           groupId: '',
           students: e.students,
@@ -56,10 +63,10 @@ export default ({
       const groupFound = mappedGroups.some(group => group.students.find(s => s.id === student.id));
 
       if (!groupFound) {
+        // eslint-disable-next-line no-alert
         alert(intl.formatMessage({ id: 'groupsView.noGroupFoundAlert' }));
         return;
       }
-
 
       setGroups(mappedGroups);
 
@@ -70,6 +77,7 @@ export default ({
       }
       setGrouplessStudents(newGroupless);
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.log(e);
     }
   };
@@ -122,15 +130,15 @@ export default ({
     const variables = {
       data: { courseId: course.id, groups: groupsWithUserIds },
       maxGroupSize,
-      groupless: { courseId: course.id, groups: grouplessStudentsWithUserIds }
+      groupless: { courseId: course.id, groups: grouplessStudentsWithUserIds },
     };
 
     try {
-      const res = await findGroupForMultipleStudents({
+      const res = await findGroupForGrouplessStudents({
         variables,
       });
 
-      const mappedGroups = res.data.findGroupForMultipleStudents.map((e, i) => {
+      const mappedGroups = res.data.findGroupForGrouplessStudents.map((e, i) => {
         return {
           groupId: '',
           students: e.students,
@@ -143,34 +151,48 @@ export default ({
 
       const studentIds = [];
 
-      mappedGroups.map(g => {
-        g.students.map(({ id }) => {
-          if (id)
-            studentIds.push(id)});
+      mappedGroups.forEach(g => {
+        g.students.forEach(({ id }) => {
+          if (id) {
+            studentIds.push(id);
+          }
+        });
       });
 
       const grouplessStudentIds = [];
 
-      grouplessStudents.map(({ id }) => {
-        if (id)
-          grouplessStudentIds.push(id)
-      })
+      grouplessStudents.forEach(({ id }) => {
+        if (id) {
+          grouplessStudentIds.push(id);
+        }
+      });
 
       let groupless = false;
 
-      grouplessStudentIds.map(id => {
+      grouplessStudentIds.forEach(id => {
         if (!studentIds.includes(id)) {
           groupless = true;
         }
       });
 
       if (groupless) {
+        // eslint-disable-next-line no-alert
         alert(intl.formatMessage({ id: 'groupsView.grouplessStudentAlert' }));
       }
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.log(e);
     }
   };
+
+  const popupTimesDisplay = student => (
+    <HourDisplay
+      groupId={student.id}
+      header={`${student.firstname} ${student.lastname}`}
+      students={1}
+      times={count([regByStudentId[student.studentNo]])}
+    />
+  );
 
   return (
     <div>
@@ -195,10 +217,10 @@ export default ({
               </Table.HeaderCell>
 
               <Table.HeaderCell>
-                <FormattedMessage id="groups.maxSize" />
+                <FormattedMessage id="groups.targetGroupSize" />
                 &nbsp;
                 <Popup
-                  content={intl.formatMessage({ id: 'groups.maxSizeInfo' })}
+                  content={intl.formatMessage({ id: 'groups.targetGroupSizeInfo' })}
                   trigger={<i className="question circle icon" />}
                 />
                 <Form.Input
@@ -221,7 +243,11 @@ export default ({
             {grouplessStudents.map(student => {
               return (
                 <Table.Row key={student.id}>
-                  <Table.Cell>{`${student.firstname} ${student.lastname}`}</Table.Cell>
+                  <Popup
+                    content={() => popupTimesDisplay(student)}
+                    trigger={<Table.Cell>{`${student.firstname} ${student.lastname}`}</Table.Cell>}
+                    disabled={!course.questions.some(q => q.questionType === 'times')}
+                  />
 
                   <Table.Cell>{student.studentNo}</Table.Cell>
 
@@ -266,31 +292,6 @@ export default ({
                     />
                   </Table.Cell>
                   <Table.Cell />
-
-                  {/*<Popup
-                    data-cy="student-options-popup"
-                    content={
-                      <Form>
-                        <Form.Field>
-                          <Form.Select
-                            data-cy="switch-group-select"
-                            label={'Add student to a group'}
-                            //options={switchGroupOptions}
-                            defaultValue={"eka group tähän"}
-                            //onChange={(e, { value }) =>
-                              //handleSwitchingGroup(tableIndex, rowIndex, value)
-                            //}
-                          />
-                        </Form.Field>
-                      </Form>
-                    }
-                    on="click"
-                    trigger={
-                        <Button data-cy="switch-group-button">
-                          {'Add student to a group'}
-                        </Button>
-                    }/>*/}
-
                 </Table.Row>
               );
             })}

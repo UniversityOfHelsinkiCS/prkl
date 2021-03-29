@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Table, Header, Button } from 'semantic-ui-react';
+import { useStore } from 'react-hookstore';
 import { FormattedMessage } from 'react-intl';
+import { Table, Header, Button } from 'semantic-ui-react';
+
 import { dummyEmail } from '../../util/privacyDefaults';
 import HourDisplay from '../misc/HourDisplay';
-import { useStore } from 'react-hookstore';
 
 export default ({ group, groupTimes }) => {
   const [privacyToggle] = useStore('toggleStore');
@@ -11,21 +12,21 @@ export default ({ group, groupTimes }) => {
 
   const handleShowTime = () => {
     setShowTime(!showTime);
-  }
+  };
 
   return (
     <div key={group.id}>
       <Table>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell colSpan="3" style={{ backgroundColor: "lightgrey" }}>
+            <Table.HeaderCell colSpan="3" style={{ backgroundColor: 'lightgrey' }}>
               <Header as="h3" data-cy="user-group-view-group-name">
                 {group.groupName}
-                {groupTimes[group.id] ?
+                {groupTimes[group.id] ? (
                   <Button floated="right" onClick={handleShowTime}>
                     <FormattedMessage id="groups.showTimes" />
                   </Button>
-                : null}
+                ) : null}
               </Header>
             </Table.HeaderCell>
           </Table.Row>
@@ -52,13 +53,14 @@ export default ({ group, groupTimes }) => {
         </Table.Body>
       </Table>
 
-      {showTime ?
+      {showTime ? (
         <HourDisplay
           times={groupTimes[group.id]}
           students={group.students.length}
           groupId={group.id}
-        /> : null}
+        />
+      ) : null}
       <p />
     </div>
-  )
-}
+  );
+};
