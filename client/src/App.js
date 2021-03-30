@@ -20,6 +20,7 @@ import DevBar from './components/DevBar';
 import Header from './components/Header';
 import roles from './util/userRoles';
 import './App.css';
+import Notification from './components/ui/Notification';
 
 createStore('grouplessStudentsStore', []);
 createStore('groupsUnsavedStore', false);
@@ -29,6 +30,7 @@ createStore('coursesStore', []);
 createStore('teacherStore', []);
 createStore('groupsStore', []);
 createStore('userStore', {});
+createStore('notificationStore', {});
 
 export default () => {
   const [user, setUser] = useStore('userStore');
@@ -60,6 +62,7 @@ export default () => {
       {process.env.REACT_APP_CUSTOM_NODE_ENV !== 'production' ? <DevBar /> : null}
       {mocking.mockedBy ? <MockBar /> : null}
       <div className="App">
+        <Notification />
         <Router basename={process.env.PUBLIC_URL}>
           <Header />
           {courseLoading && user ? (

@@ -19,6 +19,7 @@ export default ({ courseReducer, course, match }) => {
   const [createRegistration] = useMutation(REGISTER_TO_COURSE);
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
   const [user, setUser] = useStore('userStore');
+  const [notification, setNotification] = useStore('notificationStore');
   const courseId = course.id;
   const studentId = user.id;
 
@@ -145,7 +146,11 @@ export default ({ courseReducer, course, match }) => {
       };
       updatedUser.registrations = updatedUser.registrations.concat(newReg);
       setUser(updatedUser);
-      // TODO: add timeout success alert
+      setNotification({
+        type: 'success',
+        message: intl.formatMessage({ id: 'forms.registrationSuccess' }),
+        visible: true,
+      });
     } catch (err) {
       // TODO: Handle errors.
       // eslint-disable-next-line no-console

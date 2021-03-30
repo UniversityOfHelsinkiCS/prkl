@@ -5,6 +5,7 @@ import { useStore } from 'react-hookstore';
 import { Prompt } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Form, Loader } from 'semantic-ui-react';
+import { Alert } from '@material-ui/lab';
 import _ from 'lodash';
 import {
   GENERATE_GROUPS,
@@ -16,7 +17,6 @@ import {
 
 import ConfirmationButton from '../ui/ConfirmationButton';
 import GrouplessStudents from './GrouplessStudents';
-import SuccessMessage from '../ui/SuccessMessage';
 import Groups from './Groups';
 
 import userRoles from '../../util/userRoles';
@@ -33,9 +33,9 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
   const [lockedGroupsStore, setLockedGroupsStore] = useStore('lockedGroupsStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [user] = useStore('userStore');
+  const [notification, setNotification] = useStore('notificationStore');
 
   const [registrationsWithoutGroups, setRegistrationsWithoutGroups] = useState(true);
-  const [savedSuccessMsgVisible, setSavedSuccessMsgVisible] = useState(false);
   const [groupSorting, setGroupSorting] = useState('nameAscending');
   const [groupsPublished, setGroupsPublished] = useState(false);
   const [groupMessages, setGroupMessages] = useState(['']);
@@ -244,11 +244,12 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
       const variables = { data: { courseId: course.id, groups: userIdGroups } };
       await saveGeneratedGroups({ variables });
       setGroupsUnsaved(false);
-      setSavedSuccessMsgVisible(true);
       await refetch();
-      setTimeout(() => {
-        setSavedSuccessMsgVisible(false);
-      }, 3000);
+      setNotification({
+        type: 'success',
+        message: intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' }),
+        visible: true,
+      });
     } catch (groupError) {
       // eslint-disable-next-line no-console
       console.log('error:', groupError);
@@ -421,21 +422,15 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
           <p />
 
           {groupsPublished && (
-            <SuccessMessage iconVar="info">
+            <Alert severity="info">
               {intl.formatMessage({ id: 'groupsView.publishedGroupsInfo' })}
-            </SuccessMessage>
+            </Alert>
           )}
 
           {groupsUnsaved && (
-            <SuccessMessage iconVar="info">
+            <Alert severity="warning">
               {intl.formatMessage({ id: 'groupsView.unsavedGroupsInfo' })}
-            </SuccessMessage>
-          )}
-
-          {savedSuccessMsgVisible && (
-            <SuccessMessage>
-              {intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' })}
-            </SuccessMessage>
+            </Alert>
           )}
 
           {registrationsWithoutGroups && (

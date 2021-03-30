@@ -137,7 +137,7 @@ export default {
     'forms.errorAnswerAll': 'Please answer all questions!',
     'forms.submitRegistration': 'Register On The Course',
     'forms.confirmRegistration': 'Confirm Registration',
-    'forms.registrationSuccess': 'Great success! Your registration was received.',
+    'forms.registrationSuccess': 'Registration successful',
     'forms.toc':
       'Assembler may disclose my name and e-mail address to students in my group (required).',
     'forms.requiredQuestions': 'Required questions are marked with',
@@ -223,7 +223,8 @@ export default {
     'groupsView.groupListingOrder': 'Groups listing order',
     'groupsView.showGrouplessStudents': 'Toggle groupless students',
     'groupsView.noGroupFoundAlert': 'No group found for student, check target group size',
-    'groupsView.grouplessStudentAlert': 'At least one student still remains groupless, check target group size',
+    'groupsView.grouplessStudentAlert':
+      'At least one student still remains groupless, check target group size',
     'groupsView.grouplessHeader': 'Groupless students',
     'groupsView.findGroup': 'Find group',
     'groupsView.findGroupForAll': 'Find group for all groupless students',
