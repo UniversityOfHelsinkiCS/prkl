@@ -19,6 +19,7 @@ export default ({
 }) => {
   const [findGroupForGrouplessStudents] = useMutation(FIND_GROUP_FOR_GROUPLESS_STUDENTS);
   const [groups, setGroups] = useStore('groupsStore');
+  const [notification, setNotification] = useStore('notificationStore');
   const [maxGroupSize, setMaxGroupSize] = useState(course.maxGroupSize);
 
   const intl = useIntl();
@@ -63,8 +64,11 @@ export default ({
       const groupFound = mappedGroups.some(group => group.students.find(s => s.id === student.id));
 
       if (!groupFound) {
-        // eslint-disable-next-line no-alert
-        alert(intl.formatMessage({ id: 'groupsView.noGroupFoundAlert' }));
+        setNotification({
+          type: 'error',
+          message: intl.formatMessage({ id: 'groupsView.noGroupFoundAlert' }),
+          visible: true,
+        });
         return;
       }
 
@@ -176,8 +180,11 @@ export default ({
       });
 
       if (groupless) {
-        // eslint-disable-next-line no-alert
-        alert(intl.formatMessage({ id: 'groupsView.grouplessStudentAlert' }));
+        setNotification({
+          type: 'error',
+          message: intl.formatMessage({ id: 'groupsView.grouplessStudentAlert' }),
+          visible: true,
+        });
       }
     } catch (e) {
       // eslint-disable-next-line no-console

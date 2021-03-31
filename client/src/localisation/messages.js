@@ -134,13 +134,15 @@ export default {
     'studentInfo.group': 'Groups assigned to',
     'studentInfo.noGroups': 'Not assigned to a group yet.',
 
-    'forms.errorAnswerAll': 'Please answer all questions!',
-    'forms.submitRegistration': 'Register On The Course',
-    'forms.confirmRegistration': 'Confirm Registration',
-    'forms.registrationSuccess': 'Registration successful',
-    'forms.toc':
+    'registrationForm.errorAnswerAll': 'Please answer all questions!',
+    'registrationForm.submitRegistration': 'Register On The Course',
+    'registrationForm.confirmRegistration': 'Confirm Registration',
+    'registrationForm.toc':
       'Assembler may disclose my name and e-mail address to students in my group (required).',
-    'forms.requiredQuestions': 'Required questions are marked with',
+    'registrationForm.requiredQuestions': 'Required questions are marked with',
+
+    'registration.registrationSuccess': 'Registration successful',
+    'registration.registrationCanceled': 'Registration canceled',
 
     'timeForm.hours': 'Hour',
     'timeForm.monday': 'Mon',
@@ -217,6 +219,7 @@ export default {
     'groupsView.cancelGroups': 'Cancel',
     'groupsView.publishGroupsBtn': 'Publish groups',
     'groupsView.publishGroupsConfirm': 'Are you sure you want to publish groups?',
+    'groupsView.publishGroupsSuccessMsg': 'Groups published',
     'groupsView.publishedGroupsInfo':
       'Groups have been published, future changes are visible immediately to students.',
     'groupsView.defaultGroupNamePrefix': 'Group',

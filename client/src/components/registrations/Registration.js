@@ -148,7 +148,7 @@ export default ({ courseReducer, course, match }) => {
       setUser(updatedUser);
       setNotification({
         type: 'success',
-        message: intl.formatMessage({ id: 'forms.registrationSuccess' }),
+        message: intl.formatMessage({ id: 'registration.registrationSuccess' }),
         visible: true,
       });
     } catch (err) {
@@ -166,6 +166,11 @@ export default ({ courseReducer, course, match }) => {
       setUser({
         ...user,
         registrations: user.registrations.filter(r => r.course.id !== courseId),
+      });
+      setNotification({
+        type: 'success',
+        message: intl.formatMessage({ id: 'registration.registrationCanceled' }),
+        visible: true,
       });
     } catch (deletionError) {
       // eslint-disable-next-line no-console

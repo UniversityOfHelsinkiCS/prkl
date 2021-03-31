@@ -258,6 +258,11 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     try {
       await publishCourseGroups({ variables });
       setGroupsPublished(true);
+      setNotification({
+        type: 'success',
+        message: intl.formatMessage({ id: 'groupsView.publishGroupsSuccessMsg' }),
+        visible: true,
+      });
     } catch (publishError) {
       // eslint-disable-next-line no-console
       console.log(publishError);
