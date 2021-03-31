@@ -23,7 +23,9 @@ const Notification = () => {
       autoHideDuration={5000}
       onClose={handleClose}
     >
-      <Alert severity={notification.type}>{notification.message}</Alert>
+      <Alert severity={notification.type} variant="filled">
+        {notification.message}
+      </Alert>
     </Snackbar>
   );
 };
