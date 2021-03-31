@@ -50,7 +50,7 @@ export default ({ id, match }) => {
   const [courseState, courseDispatch] = useReducer(
     (state, action) => {
       // eslint-disable-next-line no-console
-      console.log(state, action);
+      //console.log(state, action);
       switch (action.type) {
         case 'delete_registration':
           return {
