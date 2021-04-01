@@ -12,6 +12,7 @@ import RegistrationForm from './RegistrationForm';
 import timeChoices from '../../util/timeFormChoices';
 import UserGroup from '../users/UserGroup';
 import { AppContext } from '../../App';
+import { useStore } from 'react-hookstore';
 
 export default ({ courseReducer, course, match }) => {
   const hookForm = useForm({ mode: 'onChange' });
@@ -19,6 +20,7 @@ export default ({ courseReducer, course, match }) => {
   const [createRegistration] = useMutation(REGISTER_TO_COURSE);
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
   const { user } = useContext(AppContext);
+  const [notification, setNotification] = useStore('notificationStore');
   const courseId = course.id;
   const studentId = user.id;
 
@@ -146,8 +148,13 @@ export default ({ courseReducer, course, match }) => {
         __typename: response.data.createRegistration.__typename,
       };
       updatedUser.registrations = updatedUser.registrations.concat(newReg);
-      //setUser(updatedUser);
+
       // TODO: add timeout success alert
+      setNotification({
+        type: 'success',
+        message: intl.formatMessage({ id: 'registration.registrationSuccess' }),
+        visible: true,
+      });
     } catch (err) {
       // TODO: Handle errors.
       // eslint-disable-next-line no-console
@@ -160,10 +167,12 @@ export default ({ courseReducer, course, match }) => {
       await deleteRegistration({
         variables,
       });
-      //setUser({
-      //  ...user,
-      //  registrations: user.registrations.filter(r => r.course.id !== courseId),
-      //});
+
+      setNotification({
+        type: 'success',
+        message: intl.formatMessage({ id: 'registration.registrationCanceled' }),
+        visible: true,
+      });
     } catch (deletionError) {
       // eslint-disable-next-line no-console
       console.log('error:', deletionError);

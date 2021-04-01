@@ -9,7 +9,7 @@ import { ALL_COURSES, CURRENT_USER } from './GqlQueries';
 
 import CourseForm from './components/courses/CourseForm';
 import PrivateRoute from './components/ui/PrivateRoute';
-import StudentInfo from './components/users/UserInfo';
+import UserInfo from './components/users/UserInfo';
 import KeepAlive from './components/misc/KeepAlive';
 import Courses from './components/courses/Courses';
 import Course from './components/courses/Course';
@@ -19,6 +19,7 @@ import DevBar from './components/DevBar';
 import Header from './components/Header';
 import roles from './util/userRoles';
 import './App.css';
+import Notification from './components/ui/Notification';
 
 createStore('grouplessStudentsStore', []);
 createStore('groupsUnsavedStore', false);
@@ -27,6 +28,7 @@ createStore('toggleStore', false);
 createStore('coursesStore', []);
 createStore('teacherStore', []);
 createStore('groupsStore', []);
+createStore('notificationStore', {});
 
 export const AppContext = createContext();
 
@@ -64,6 +66,7 @@ export default () => {
       {process.env.REACT_APP_CUSTOM_NODE_ENV !== 'production' ? <DevBar /> : null}
       {mocking.mockedBy ? <MockBar /> : null}
       <div className="App">
+        <Notification />
         <Router basename={process.env.PUBLIC_URL}>
           <Header />
           {courseLoading && user ? (
@@ -71,7 +74,7 @@ export default () => {
           ) : (
             <div className="mainContent">
               <Loader />
-              <Route path="/user" render={() => <StudentInfo /*aa*/ />} />
+              <Route path="/user" render={() => <UserInfo courses={courses} />} />
               <PrivateRoute
                 path="/addcourse"
                 requiredRole={roles.STAFF_ROLE}

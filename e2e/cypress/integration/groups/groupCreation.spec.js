@@ -432,7 +432,7 @@ describe('Group creation', () => {
         cy.get('input').type('1');
       });
 
-      cy.get('[data-cy="lockedGroups-create-submit"]').click();
+      cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.wait(250);
 
@@ -467,7 +467,7 @@ describe('Group creation', () => {
       });
 
       // generate new groups from non-locked
-      cy.get('[data-cy="lockedGroups-create-submit"]').click();
+      cy.get('[data-cy="create-groups-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       // check locked group didn't change

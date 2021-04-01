@@ -87,7 +87,13 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
     if (calendarToggle) {
       register(
         { name: 'nameCalendarDesc' },
-        { required: intl.formatMessage({ id: 'courseForm.calendarDescValidationFailMsg' }) }
+        {
+          required: intl.formatMessage({ id: 'courseForm.calendarDescMissingValidationMsg' }),
+          maxLength: {
+            value: 250,
+            message: intl.formatMessage({ id: 'courseForm.calendarDescTooLongValidationMsg' }),
+          },
+        }
       );
       setValue('nameCalendarDesc', calendarDescription);
     } else {
@@ -98,31 +104,49 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   useEffect(() => {
     register(
       { name: 'nameTitle' },
-      { required: intl.formatMessage({ id: 'courseForm.titleValidationFailMsg' }) }
+      {
+        required: intl.formatMessage({ id: 'courseForm.titleMissingValidationMsg' }),
+        maxLength: {
+          value: 150,
+          message: intl.formatMessage({ id: 'courseForm.titleTooLongValidationMsg' }),
+        },
+      }
     );
     register(
       { name: 'nameCode' },
-      { required: intl.formatMessage({ id: 'courseForm.courseCodeValidationFailMsg' }) }
+      {
+        required: intl.formatMessage({ id: 'courseForm.courseCodeMissingValidationMsg' }),
+        maxLength: {
+          value: 20,
+          message: intl.formatMessage({ id: 'courseForm.courseCodeTooLongValidationMsg' }),
+        },
+      }
     );
     register(
       { name: 'nameDeadline' },
       {
-        required: intl.formatMessage({ id: 'courseForm.deadlineValidationFailMsg' }),
+        required: intl.formatMessage({ id: 'courseForm.deadlineMissingValidationMsg' }),
         min: editView
           ? {
               value:
                 user === undefined || user.role === roles.ADMIN_ROLE ? null : getFormattedDate(),
-              message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationFailMsg' }),
+              message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationMsg' }),
             }
           : {
               value: todayParsed,
-              message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationFailMsg' }),
+              message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationMsg' }),
             },
       }
     );
     register(
       { name: 'nameDescription' },
-      { required: intl.formatMessage({ id: 'courseForm.descriptionValidationFailMsg' }) }
+      {
+        required: intl.formatMessage({ id: 'courseForm.descriptionMissingValidationMsg' }),
+        maxLength: {
+          value: 2500,
+          message: intl.formatMessage({ id: 'courseForm.descriptionTooLongValidationMsg' }),
+        },
+      }
     );
   }, []); // eslint-disable-line
 

@@ -22,7 +22,7 @@ export default ({ questions, formControl, onSubmit }) => {
       </Header>
       {questions.some(q => q.questionType !== 'times') && (
         <div>
-          <FormattedMessage id="forms.requiredQuestions" />
+          <FormattedMessage id="registrationForm.requiredQuestions" />
           <span style={{ color: 'red' }}> *</span>
         </div>
       )}
@@ -32,7 +32,7 @@ export default ({ questions, formControl, onSubmit }) => {
         ))}
 
       <Form.Checkbox
-        label={intl.formatMessage({ id: 'forms.toc' })}
+        label={intl.formatMessage({ id: 'registrationForm.toc' })}
         name="toc"
         onChange={(e, { name, value }) => {
           setCheckboxValue(checkboxValue === 'accepted' ? undefined : 'accepted');
@@ -45,17 +45,17 @@ export default ({ questions, formControl, onSubmit }) => {
       />
 
       <ValidationError errors={formControl.errors}>
-        <FormattedMessage id="forms.errorAnswerAll" />
+        <FormattedMessage id="registrationForm.errorAnswerAll" />
       </ValidationError>
 
       <ConfirmationButton
         onConfirm={onSubmit}
-        modalMessage={intl.formatMessage({ id: 'forms.confirmRegistration' })}
+        modalMessage={intl.formatMessage({ id: 'registrationForm.confirmRegistration' })}
         buttonDataCy="register-on-course-button"
         color="green"
         formControl={formControl}
       >
-        <FormattedMessage id="forms.submitRegistration" />
+        <FormattedMessage id="registrationForm.submitRegistration" />
       </ConfirmationButton>
     </Form>
   );
