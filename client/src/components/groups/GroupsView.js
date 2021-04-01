@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import { Prompt } from 'react-router-dom';
@@ -11,7 +11,7 @@ import {
   SAVE_GROUPS,
   COURSE_GROUPS,
   PUBLISH_COURSE_GROUPS,
-  GENERATE_GROUPS_FOR_NON_LOCKED_GROUPS,
+  GENERATE_GROUPS_FOR_NON_LOCKED_GROUPS
 } from '../../GqlQueries';
 
 import ConfirmationButton from '../ui/ConfirmationButton';
@@ -20,6 +20,7 @@ import SuccessMessage from '../ui/SuccessMessage';
 import Groups from './Groups';
 
 import userRoles from '../../util/userRoles';
+import { AppContext } from '../../App';
 
 export default ({ course, registrations, regByStudentId, groups, setGroups }) => {
   const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
@@ -29,10 +30,11 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
 
+  const { user } = useContext(AppContext);
+
   const [grouplessStudents, setGrouplessStudents] = useStore('grouplessStudentsStore');
   const [lockedGroupsStore, setLockedGroupsStore] = useStore('lockedGroupsStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
-  const [user] = useStore('userStore');
 
   const [registrationsWithoutGroups, setRegistrationsWithoutGroups] = useState(true);
   const [savedSuccessMsgVisible, setSavedSuccessMsgVisible] = useState(false);
@@ -311,16 +313,12 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     },
   ];
 
+  if (generateLockedGroupsLoading || generateGroupsLoading) {
+    return <Loader active content={intl.formatMessage({ id: 'groupsView.generatingGroups' })} />;
+  }
+  
   if (loading || !groups) {
     return <Loader active />;
-  }
-
-  if (generateGroupsLoading) {
-    return <Loader active content={intl.formatMessage({ id: 'groupsView.generatingGroups' })} />;
-  }
-
-  if (generateLockedGroupsLoading) {
-    return <Loader active content={intl.formatMessage({ id: 'groupsView.generatingGroups' })} />;
   }
 
   return (

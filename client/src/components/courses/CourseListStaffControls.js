@@ -1,10 +1,12 @@
-import React from 'react';
-import { useStore } from 'react-hookstore';
-import { Checkbox } from 'semantic-ui-react';
+import React, { useContext } from 'react';
+import { Checkbox, Loader } from 'semantic-ui-react';
+import { AppContext } from '../../App';
 import roles from '../../util/userRoles';
 
 export default ({ controls }) => {
-  const [user] = useStore('userStore');
+
+  const { user } = useContext(AppContext);
+
   const access = user.role >= roles.STAFF_ROLE;
 
   const createCheckbox = (text, onChange, checked) => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
@@ -8,7 +8,7 @@ import {
   COURSE_BY_ID,
   DELETE_COURSE,
   COURSE_REGISTRATION,
-  DELETE_REGISTRATION,
+  DELETE_REGISTRATION
 } from '../../GqlQueries';
 
 import RegistrationList from '../registrations/RegistrationList';
@@ -18,6 +18,7 @@ import GroupsView from '../groups/GroupsView';
 import CourseForm from './CourseForm';
 import CourseInfo from './CourseInfo';
 import roles from '../../util/userRoles';
+import { AppContext } from '../../App';
 
 /*
 const useEffectWithOldDeps = (effect, deps) => {
@@ -40,10 +41,10 @@ export default ({ id, match }) => {
   const [groups, setGroups] = useStore('groupsStore');
   const [editView, setEditView] = useState(false);
   const [course, setCourse] = useState({});
-  const [user] = useStore('userStore');
   const [view] = useState('info');
   const history = useHistory();
   const intl = useIntl();
+  const { user } = useContext(AppContext);
 
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
 
@@ -157,12 +158,7 @@ export default ({ id, match }) => {
     );
   }
 
-  if (loading || !course.id) {
-    return <Loader active />;
-  }
-
-  if (regLoading || !registrations) {
-    // Waiting data for GrouplessStudents.js
+  if (loading || !course.id || regLoading || !registrations) {
     return <Loader active />;
   }
 
@@ -235,6 +231,7 @@ export default ({ id, match }) => {
     const inTeachers = data.course.teachers.some(t => t.id === user.id);
     return user.role === roles.ADMIN_ROLE || inTeachers;
   };
+
 
   return (
     <div>

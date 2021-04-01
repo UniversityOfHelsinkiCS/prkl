@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { Menu, Button } from 'semantic-ui-react';
+import React, { useContext, useState } from 'react';
+import { Menu, Button, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
 import axios from 'axios';
 import roles from '../util/userRoles';
+import { AppContext } from '../App';
 
 export default () => {
   const [activeItem, setActiveItem] = useState(null);
-  const [user] = useStore('userStore');
+  const { user } = useContext(AppContext);
   const [privacyToggle, setPrivacyToggle] = useStore('toggleStore');
   const [groupsUnsaved] = useStore('groupsUnsavedStore');
 

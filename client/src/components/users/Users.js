@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Header, Loader, Card, Input, Divider, Button } from 'semantic-ui-react';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { useStore } from 'react-hookstore';
@@ -8,9 +8,9 @@ import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import { ALL_USERS, EDIT_USER_ROLE } from '../../GqlQueries';
 
 import roles from '../../util/userRoles';
+import { AppContext } from '../../App';
 
 export default () => {
-  const [user] = useStore('userStore');
   const [privacyToggle] = useStore('toggleStore');
   const [allUsers, setAllUsers] = useState(null);
   // eslint-disable-next-line no-unused-vars
@@ -19,6 +19,7 @@ export default () => {
   const [editUserRole] = useMutation(EDIT_USER_ROLE);
   const intl = useIntl();
   const history = useHistory();
+  const { user } = useContext(AppContext);
 
   const { loading, error, data } = useQuery(ALL_USERS, {
     skip: user.role !== roles.ADMIN_ROLE,

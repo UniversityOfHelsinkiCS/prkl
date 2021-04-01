@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
@@ -6,10 +6,11 @@ import UserCourseList from './UserCourseList';
 
 import { useUserInfoStyles } from '../../styles'
 import { Container, Typography } from '@material-ui/core';
+import { AppContext } from '../../App';
 
 export default () => {
-  const [user] = useStore('userStore');
   const [privacyToggle] = useStore('toggleStore');
+  const { user } = useContext(AppContext);
 
   const classes = useUserInfoStyles();
   const divider = <span style={{ color: '#f2f2f2' }}>{' | '}</span>
@@ -19,6 +20,8 @@ export default () => {
     return (
       courses
     )};
+
+  
 
   return (
     <Container>

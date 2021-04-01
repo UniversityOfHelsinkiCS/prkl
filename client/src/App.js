@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { createContext, useEffect } from 'react';
 import { initShibbolethPinger } from 'unfuck-spa-shibboleth-session';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createStore, useStore } from 'react-hookstore';
 import { useQuery } from '@apollo/react-hooks';
 import { Loader } from 'semantic-ui-react';
 
-import { ALL_COURSES } from './GqlQueries';
+import { ALL_COURSES, CURRENT_USER } from './GqlQueries';
 
 import CourseForm from './components/courses/CourseForm';
 import PrivateRoute from './components/ui/PrivateRoute';
@@ -13,7 +13,6 @@ import StudentInfo from './components/users/UserInfo';
 import KeepAlive from './components/misc/KeepAlive';
 import Courses from './components/courses/Courses';
 import Course from './components/courses/Course';
-import userService from './services/userService';
 import Users from './components/users/Users';
 import MockBar from './components/MockBar';
 import DevBar from './components/DevBar';
@@ -28,17 +27,16 @@ createStore('toggleStore', false);
 createStore('coursesStore', []);
 createStore('teacherStore', []);
 createStore('groupsStore', []);
-createStore('userStore', {});
+
+export const AppContext = createContext();
 
 export default () => {
-  const [user, setUser] = useStore('userStore');
   // eslint-disable-next-line no-unused-vars
   const [courses, setCourses] = useStore('coursesStore');
   const [mocking] = useStore('mocking');
 
+  const { loading: userLoading, error: userError, data: userData } = useQuery(CURRENT_USER);
   const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
-
-  userService(useQuery, useEffect, setUser);
 
   useEffect(() => {
     initShibbolethPinger();
@@ -55,8 +53,14 @@ export default () => {
     }
   }, [courseData, courseError, courseLoading, setCourses]);
 
+  if (userLoading || !userData) {
+    return <Loader active/>
+  }
+
+  const user = userData.currentUser;
+
   return (
-    <>
+    <AppContext.Provider value={{user}}>
       {process.env.REACT_APP_CUSTOM_NODE_ENV !== 'production' ? <DevBar /> : null}
       {mocking.mockedBy ? <MockBar /> : null}
       <div className="App">
@@ -89,6 +93,6 @@ export default () => {
         </Router>
         <KeepAlive />
       </div>
-    </>
+    </AppContext.Provider>
   );
 };
