@@ -21,7 +21,8 @@ export default ({
   const [groups, setGroups] = useStore('groupsStore');
   const [notification, setNotification] = useStore('notificationStore');
   const [maxGroupSize, setMaxGroupSize] = useState(course.maxGroupSize);
-
+  const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
+  
   const intl = useIntl();
 
   const findGroup = async student => {
@@ -73,7 +74,7 @@ export default ({
       }
 
       setGroups(mappedGroups);
-
+      setGroupsUnsaved(true);
       if (newGroupless.length > 0) {
         setRegistrationsWithoutGroups(true);
       } else {
@@ -131,6 +132,16 @@ export default ({
       };
     });
 
+    let studentsInGroups = 0;
+
+    groups.forEach(g => {
+      g.students.forEach(({ id }) => {
+        if (id) {
+          studentsInGroups++;
+        }
+      });
+    });
+
     const variables = {
       data: { courseId: course.id, groups: groupsWithUserIds },
       maxGroupSize,
@@ -163,6 +174,8 @@ export default ({
         });
       });
 
+      console.log('id:s length', studentIds.length, ' count: ', studentsInGroups)
+
       const grouplessStudentIds = [];
 
       grouplessStudents.forEach(({ id }) => {
@@ -179,6 +192,10 @@ export default ({
         }
       });
 
+      if (studentIds.length !== studentsInGroups) {
+        setGroupsUnsaved(true);
+      }
+      
       if (groupless) {
         setNotification({
           type: 'error',
