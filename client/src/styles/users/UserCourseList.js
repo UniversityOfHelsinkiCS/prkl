@@ -1,8 +1,4 @@
-import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-
-const useUserInfoStyles = makeStyles({
-  // empty for now...
-});
+import { makeStyles } from '@material-ui/core/styles';
 
 const useUserCourseListStyles = makeStyles((theme) => ({
   table: {
@@ -21,6 +17,5 @@ const useUserCourseListStyles = makeStyles((theme) => ({
 }));
 
 export { 
-  useUserInfoStyles, 
-  useUserCourseListStyles 
+  useUserCourseListStyles,
 };
