@@ -6,6 +6,7 @@ import { Header, Container } from 'semantic-ui-react';
 import { timeParse } from '../../util/functions';
 import { GROUP_TIMES } from '../../GqlQueries';
 import UserGroupItem from './UserGroupItem';
+import MuiUserGroupItem from './UserGroupItem'
 
 export default ({ user, course }) => {
   const [groupTimes, setGroupTimes] = useState(undefined);
@@ -62,7 +63,7 @@ export default ({ user, course }) => {
             <Header as="h4">
               <FormattedMessage id="groups.published" />
             </Header>
-            <UserGroupItem group={group[0]} groupTimes={groupTimes} />
+            <MuiUserGroupItem group={group[0]} groupTimes={groupTimes} />
           </div>
         ) : null
       ) : null}

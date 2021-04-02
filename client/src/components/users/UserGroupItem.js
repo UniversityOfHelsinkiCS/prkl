@@ -1,58 +1,61 @@
 import React, { useState } from 'react';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage } from 'react-intl';
-import { Table, Header, Button } from 'semantic-ui-react';
 
 import { dummyEmail } from '../../util/privacyDefaults';
 import HourDisplay from '../misc/HourDisplay';
+import { useUserGroupItemStyles } from '../../styles/users/UserGroupItem'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@material-ui/core';
 
 export default ({ group, groupTimes }) => {
   const [privacyToggle] = useStore('toggleStore');
   const [showTime, setShowTime] = useState(false);
+
+  const classes = useUserGroupItemStyles();
 
   const handleShowTime = () => {
     setShowTime(!showTime);
   };
 
   return (
-    <div key={group.id}>
-      <Table>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell colSpan="3" style={{ backgroundColor: 'lightgrey' }}>
-              <Header as="h3" data-cy="user-group-view-group-name">
-                {group.groupName}
-                {groupTimes[group.id] ? (
-                  <Button floated="right" onClick={handleShowTime}>
+    <TableContainer key={group.id} component={Paper}>
+      <Table className={classes.table} aria-label="customized table">
+        <TableHead data-cy="user-group-view-group-name" className={classes.head}>
+          <TableRow>
+            <TableCell className={classes.head}>{group.groupName}</TableCell>
+            <TableCell className={classes.head}></TableCell>
+            <TableCell className={classes.head} align="right">
+              {groupTimes[group.id] ? (
+                  <Button variant="outlined" className={classes.button} onClick={handleShowTime}>
                     <FormattedMessage id="groups.showTimes" />
                   </Button>
                 ) : null}
-              </Header>
-            </Table.HeaderCell>
-          </Table.Row>
-          <Table.Row>
-            <Table.HeaderCell>
-              <FormattedMessage id="courseRegistration.firstName" />
-            </Table.HeaderCell>
-            <Table.HeaderCell>
-              <FormattedMessage id="courseRegistration.lastName" />
-            </Table.HeaderCell>
-            <Table.HeaderCell>
-              <FormattedMessage id="courseRegistration.email" />
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableHead className={classes.subHeading}>
+          <TableRow>
+            <TableCell className={classes.subHeading}>First name</TableCell>
+            <TableCell className={classes.subHeading} align="center">Last Name</TableCell>
+            <TableCell className={classes.subHeading} align="center">Email</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {group.students.map(student => (
-            <Table.Row key={student.id}>
-              <Table.Cell>{student.firstname}</Table.Cell>
-              <Table.Cell>{student.lastname}</Table.Cell>
-              <Table.Cell>{privacyToggle ? dummyEmail : student.email}</Table.Cell>
-            </Table.Row>
+            <TableRow className={classes.row} key={student.id}>
+              <TableCell component="tr" scope="row">
+                {student.lastname}
+              </TableCell>
+              <TableCell align="center">
+                {student.firstname}
+              </TableCell>
+              <TableCell align="center">
+                {privacyToggle ? dummyEmail : student.email}
+              </TableCell>
+            </TableRow>
           ))}
-        </Table.Body>
+        </TableBody>  
       </Table>
-
       {showTime ? (
         <HourDisplay
           times={groupTimes[group.id]}
@@ -60,7 +63,7 @@ export default ({ group, groupTimes }) => {
           groupId={group.id}
         />
       ) : null}
-      <p />
-    </div>
+
+    </TableContainer>
   );
 };
