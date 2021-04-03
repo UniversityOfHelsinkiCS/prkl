@@ -1,6 +1,6 @@
 import Chip from '@material-ui/core/Chip';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { green, blue, pink, red } from '@material-ui/core/colors';
+import { green, blue, pink, orange, red } from '@material-ui/core/colors';
 
 const useCourseTagStyles = makeStyles((theme) => ({
   root: {
@@ -23,13 +23,13 @@ const BlueChip = withStyles({
 
 const GreenChip = withStyles({
   root: {
-    backgroundColor: green[500],
+    backgroundColor: green[500]
   }
 })(Chip);
 
-const PinkChip = withStyles({
+const OrangeChip = withStyles({
   root: {
-    backgroundColor: pink[200]
+    backgroundColor: orange[500]
   }
 })(Chip);
 
@@ -43,6 +43,6 @@ export {
   useCourseTagStyles,
   BlueChip,
   GreenChip,
-  PinkChip,
+  OrangeChip,
   RedChip
 }

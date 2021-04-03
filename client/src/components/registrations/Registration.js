@@ -14,6 +14,8 @@ import UserGroup from '../users/UserGroup';
 import { AppContext } from '../../App';
 import { useStore } from 'react-hookstore';
 
+import { red } from '@material-ui/core/colors';
+
 export default ({ courseReducer, course, match }) => {
   const hookForm = useForm({ mode: 'onChange' });
   const { handleSubmit } = hookForm;
@@ -204,9 +206,9 @@ export default ({ courseReducer, course, match }) => {
               {new Date(course.deadline) > new Date() ? (
                 <ConfirmationButton
                   onConfirm={handleRegistrationDeletion}
+                  color={red[500]}
                   modalMessage={intl.formatMessage({ id: 'courseRegistration.cancelConfirmation' })}
                   buttonDataCy="cancel-registration-button"
-                  color="red"
                 >
                   <FormattedMessage id="courseRegistration.cancel" />
                 </ConfirmationButton>

@@ -10,6 +10,8 @@ import ConfirmationButton from '../ui/ConfirmationButton';
 import { TIMES } from '../../util/questionTypes';
 import HourDisplay from '../misc/HourDisplay';
 
+import { red } from '@material-ui/core/colors';
+
 // import { useMutation } from 'react-apollo';
 // import { DELETE_REGISTRATION } from '../../GqlQueries';
 
@@ -102,7 +104,7 @@ const CourseRegistrations = ({
                       id: 'courseRegistration.removeConfirmation',
                     })} (${reg.student.firstname} ${reg.student.lastname})`}
                     buttonDataCy="remove-registration-button"
-                    color="red"
+                    color={red[500]}
                   >
                     <FormattedMessage id="courseRegistration.remove" />
                   </ConfirmationButton>
