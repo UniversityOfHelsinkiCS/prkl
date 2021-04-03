@@ -201,7 +201,7 @@ export default {
     'groups.newMessage': 'Your group has a new message:',
     'groups.lockGroup': 'Lock Group',
     'groups.lockGroupInfo':
-      'Locks outs the group from being used in group generation.',
+      'Locks out the group from being used in group generation.',
 
     'groupsView.noRegistrations': 'No registrations',
     'groupsView.matchingTimes': 'Matching times',
