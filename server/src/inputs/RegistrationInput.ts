@@ -7,9 +7,9 @@ export class RegistrationInput {
   @Field()
   courseId: string;
 
-  @Field(type => [AnswerInput], { nullable: true })
+  @Field(() => [AnswerInput], { nullable: true })
   questionAnswers: AnswerInput[];
 
-  @Field(type => [WorkingTimesInput], { nullable: true })
+  @Field(() => [WorkingTimesInput], { nullable: true })
   workingTimes: WorkingTimesInput[];
 }

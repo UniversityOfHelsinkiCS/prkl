@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { createStore, useStore } from 'react-hookstore';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { IntlProvider } from 'react-intl';
-import ApolloClient from 'apollo-boost';
+import ApolloClient, { InMemoryCache } from 'apollo-boost';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
@@ -31,6 +31,7 @@ const MockingEnabledClient = () => {
 
   const mockingHeader = mocking.mockedUser;
 
+  const cache = new InMemoryCache()
   const apolloClient = new ApolloClient({
     uri:
       process.env.REACT_APP_CUSTOM_NODE_ENV === 'development'
@@ -39,6 +40,7 @@ const MockingEnabledClient = () => {
     headers: {
       'x-admin-logged-in-as': mockingHeader,
     },
+    cache
   });
 
   if (!mocking.mockedUser) {

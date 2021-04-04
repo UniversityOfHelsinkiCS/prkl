@@ -1,10 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Route } from 'react-router-dom';
-import { useStore } from 'react-hookstore';
-import { Message, Icon } from 'semantic-ui-react';
+import { Message, Icon, Loader } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
+import { AppContext } from '../../App';
 
 const NotAllowed = () => (
   <Message icon negative>
@@ -24,7 +24,8 @@ const NotAllowed = () => (
  * @component
  */
 const PrivateRoute = ({ requiredRole, render, ...rest }) => {
-  const [user] = useStore('userStore');
+
+  const { user } = useContext(AppContext);
 
   return (
     <Route

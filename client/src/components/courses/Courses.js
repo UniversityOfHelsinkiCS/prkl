@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { Input, Divider, Menu, Select } from 'semantic-ui-react';
+import React, { useContext, useState } from 'react';
+import { Input, Divider, Menu, Select, Loader } from 'semantic-ui-react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 
 import CourseListStaffControls from './CourseListStaffControls';
 import CourseList from './CourseList';
+import { AppContext } from '../../App';
 
 export default () => {
   const intl = useIntl();
-  const [user] = useStore('userStore');
   const [courses] = useStore('coursesStore');
   const [search, setSearch] = useState('');
   const [order, setOrder] = useState(localStorage.getItem('assembler.courseOrder') || 'name');
@@ -18,6 +18,7 @@ export default () => {
   const [showMyCourses, setShowMyCourses] = useState(
     localStorage.getItem('assembler.showMyCourses') === 'true'
   );
+  const { user } = useContext(AppContext);
 
   const handleSearchChange = event => {
     setSearch(event.target.value);
@@ -119,6 +120,8 @@ export default () => {
       checked: showMyCourses,
     },
   ];
+
+  
 
   return (
     <div>

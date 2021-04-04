@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity, JoinColumn } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
-import { Registration } from "./Registration";
+
 import { Question } from "./Question";
+import { Registration } from "./Registration";
 
 @ObjectType()
 @Entity({ name: "workingTimes" })
@@ -30,18 +31,18 @@ export class WorkingTimes extends BaseEntity {
   @Column({ nullable: false, default: false })
   tentative: boolean;
 
-  @Field(type => Registration)
+  @Field(() => Registration)
   @ManyToOne(
-    type => Registration,
+    () => Registration,
     registration => registration.workingTimes,
-    { onDelete: "CASCADE"}
+    { onDelete: "CASCADE" },
   )
   @JoinColumn({ name: "registrationId" })
   registration: Registration;
 
-  @Field(type => Question)
+  @Field(() => Question)
   @ManyToOne(
-    type => Question,
+    () => Question,
     question => question.workingTimes,
   )
   @JoinColumn({ name: "questionId" })

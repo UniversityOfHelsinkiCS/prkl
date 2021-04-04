@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Icon, Popup, Message } from 'semantic-ui-react';
+import React, { useState, useEffect, useContext } from 'react';
+import { Form, Icon, Popup, Message, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
 import { useForm } from 'react-hook-form';
@@ -9,15 +9,17 @@ import _ from 'lodash';
 
 import { CREATE_COURSE, UPDATE_COURSE } from '../../GqlQueries';
 
+import { blue, red } from '@material-ui/core/colors';
+
 import ConfirmationButton from '../ui/ConfirmationButton';
 import QuestionForm from '../questions/QuestionForm';
 import TeacherList from './TeacherList';
 import roles from '../../util/userRoles';
+import { AppContext } from '../../App';
 
 // Renders form for both course addition and course edition
-const CourseForm = ({ course, user, onCancelEdit, editView }) => {
+const CourseForm = ({ course, onCancelEdit, editView }) => {
   const [courses, setCourses] = useStore('coursesStore');
-  const [currentUser] = useStore('userStore');
 
   const [courseTitle, setCourseTitle] = useState('');
   const [courseDescription, setCourseDescription] = useState('');
@@ -28,13 +30,15 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
   const [publishToggle, setPublishToggle] = useState(false);
   const [calendarToggle, setCalendarToggle] = useState(false);
 
+  const { user } = useContext(AppContext);
+
   const history = useHistory();
   const intl = useIntl();
 
   const [updateCourse] = useMutation(UPDATE_COURSE);
   const [createCourse] = useMutation(CREATE_COURSE);
 
-  const { id, firstname, lastname, studentNo, email, role } = currentUser;
+  const { id, firstname, lastname, studentNo, email, role } = user;
   const userFields = { id, firstname, lastname, studentNo, email, role };
   const currentTeachers = editView ? course.teachers : [userFields];
   const [courseTeachers, setCourseTeachers] = useState(currentTeachers);
@@ -185,6 +189,8 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
       }
     }
   }, []); // eslint-disable-line
+
+  
 
   const closeRegistration = e => {
     e.preventDefault();
@@ -442,7 +448,7 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
           </Message>
         ) : null}
 
-        {currentUser.role === roles.ADMIN_ROLE &&
+        {role === roles.ADMIN_ROLE &&
           new Date(deadline).getTime() <= new Date().getTime() && (
             <p style={{ color: '#b00' }}>
               {intl.formatMessage({ id: 'editView.pastDeadlineWarning' })}
@@ -451,23 +457,25 @@ const CourseForm = ({ course, user, onCancelEdit, editView }) => {
 
         <ConfirmationButton
           onConfirm={handleSubmit}
+          color={blue[500]}
           modalMessage={promptText}
           buttonDataCy="create-course-submit"
           formControl={hookForm}
         >
           <FormattedMessage id="courseForm.confirmButton" />
-        </ConfirmationButton>
+        </ConfirmationButton>&nbsp;
 
         {editView ? (
           <ConfirmationButton
             onConfirm={onCancelEdit}
             modalMessage={intl.formatMessage({ id: 'editView.confirmCancelEdits' })}
             buttonDataCy="create-course-cancel"
-            color="red"
+            color={red[500]}
           >
             <FormattedMessage id="editView.cancelEditsButton" />
           </ConfirmationButton>
         ) : null}
+
       </Form>
     </div>
   );

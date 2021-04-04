@@ -1,10 +1,12 @@
-import React from 'react';
-import { Menu, Button } from 'semantic-ui-react';
+import React, { useContext } from 'react';
+import { Menu, Button, Loader } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
+import { AppContext } from '../App';
+
 
 export default () => {
   const [mocking, setMocking] = useStore('mocking');
-  const [user] = useStore('userStore');
+  const { user } = useContext(AppContext);
 
   const stopMocking = async (setMocking, mockedBy) => {
     setMocking(prev => ({ ...prev, mockedUser: mockedBy }));

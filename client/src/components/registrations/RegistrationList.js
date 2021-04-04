@@ -1,12 +1,13 @@
-import React from 'react';
-import { useStore } from 'react-hookstore';
+import React, { useContext } from 'react';
 import CourseRegistrations from './CourseRegistrations';
 import roles from '../../util/userRoles';
+import { AppContext } from '../../App';
 
 export default ({ courseReducer, course, regByStudentId }) => {
-  const [user] = useStore('userStore');
 
   const [{ registrations }] = courseReducer;
+
+  const { user } = useContext(AppContext);
 
   // eslint-disable-next-line no-console
   console.log(courseReducer);

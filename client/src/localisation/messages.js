@@ -128,17 +128,21 @@ export default {
     'studentInfo.fullname': '{fullname}',
     'studentInfo.studentNo': '{studentNo}',
     'studentInfo.email': '{email}',
-    'studentInfo.course': 'Enrolled courses - click the course to check your groups',
+    'studentInfo.userCourses': 'Enrolled courses - click the course to check your groups',
+    'studentInfo.ownCourses': 'Courses you teach on - for staff and admin',
+    'studentInfo.noOwnCourses': 'No courses!',
     'studentInfo.group': 'Groups assigned to',
     'studentInfo.noGroups': 'Not assigned to a group yet.',
 
-    'forms.errorAnswerAll': 'Please answer all questions!',
-    'forms.submitRegistration': 'Register On The Course',
-    'forms.confirmRegistration': 'Confirm Registration',
-    'forms.registrationSuccess': 'Great success! Your registration was received.',
-    'forms.toc':
+    'registrationForm.errorAnswerAll': 'Please answer all questions!',
+    'registrationForm.submitRegistration': 'Register On The Course',
+    'registrationForm.confirmRegistration': 'Confirm Registration',
+    'registrationForm.toc':
       'Assembler may disclose my name and e-mail address to students in my group (required).',
-    'forms.requiredQuestions': 'Required questions are marked with',
+    'registrationForm.requiredQuestions': 'Required questions are marked with',
+
+    'registration.registrationSuccess': 'Registration successful',
+    'registration.registrationCanceled': 'Registration canceled',
 
     'timeForm.hours': 'Hour',
     'timeForm.monday': 'Mon',
@@ -163,7 +167,7 @@ export default {
     'courseRegistration.times': 'Times',
     'courseRegistration.cancel': 'Cancel registration',
     'courseRegistration.remove': 'Remove from course',
-    'courseRegistration.cancelConfirmation': 'Confirm registration cancelation?',
+    'courseRegistration.cancelConfirmation': 'Confirm registration cancellation?',
     'courseRegistration.removeConfirmation': 'Remove student from this course?',
 
     'groups.title': 'Group',
@@ -192,12 +196,12 @@ export default {
     'groups.findGroupForOne': 'Find group for student',
     'groups.targetGroupSize': 'Target Group Size',
     'groups.targetGroupSizeInfo':
-      'Set target group size for groups, algorithm searches a group with +/- 1 of the target group size. If there are no groups matching the target group size, student(s) will not be added to any group',
+      'Sets the target group size for groups. The algorithm searches for a group with +/- 1 of the target group size. If there are no groups matching the target group size, the student(s) will not be added to any group.',
     'groups.combinedHourDisplay': 'Combined',
     'groups.newMessage': 'Your group has a new message:',
     'groups.lockGroup': 'Lock Group',
     'groups.lockGroupInfo':
-      'Check this box to lock this group and generate new groups from all the other groups by setting Target Group Size and pressing "Generate new groups from non-locked groups" button above',
+      'Locks out the group from being used in group generation.',
 
     'groupsView.noRegistrations': 'No registrations',
     'groupsView.matchingTimes': 'Matching times',
@@ -215,13 +219,15 @@ export default {
     'groupsView.cancelGroups': 'Cancel',
     'groupsView.publishGroupsBtn': 'Publish groups',
     'groupsView.publishGroupsConfirm': 'Are you sure you want to publish groups?',
+    'groupsView.publishGroupsSuccessMsg': 'Groups published',
     'groupsView.publishedGroupsInfo':
       'Groups have been published, future changes are visible immediately to students.',
     'groupsView.defaultGroupNamePrefix': 'Group',
     'groupsView.groupListingOrder': 'Groups listing order',
     'groupsView.showGrouplessStudents': 'Toggle groupless students',
     'groupsView.noGroupFoundAlert': 'No group found for student, check target group size',
-    'groupsView.grouplessStudentAlert': 'At least one student still remains groupless, check target group size',
+    'groupsView.grouplessStudentAlert':
+      'At least one student still remains groupless, check target group size',
     'groupsView.grouplessHeader': 'Groupless students',
     'groupsView.findGroup': 'Find group',
     'groupsView.findGroupForAll': 'Find group for all groupless students',

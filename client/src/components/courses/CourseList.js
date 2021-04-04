@@ -2,7 +2,6 @@ import React from 'react';
 import { Card, Dropdown } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';
-
 import CourseTag from './CourseTag';
 
 export default ({ courses, user }) => {

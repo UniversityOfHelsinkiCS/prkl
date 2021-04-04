@@ -1,9 +1,8 @@
-import React from 'react';
-import { useStore } from 'react-hookstore';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Button, Header, Icon } from 'semantic-ui-react';
-import { useMutation } from 'react-apollo';
+import { Button, Header, Icon, Loader } from 'semantic-ui-react';
+import { useMutation, useQuery } from 'react-apollo';
 import { useHistory } from 'react-router-dom';
 
 import { FREEFORM, MULTI_CHOICE, SINGLE_CHOICE, TIMES } from '../../util/questionTypes';
@@ -12,19 +11,26 @@ import ConfirmationButton from '../ui/ConfirmationButton';
 import RegistrationForm from './RegistrationForm';
 import timeChoices from '../../util/timeFormChoices';
 import UserGroup from '../users/UserGroup';
+import { AppContext } from '../../App';
+import { useStore } from 'react-hookstore';
+
+import { red } from '@material-ui/core/colors';
 
 export default ({ courseReducer, course, match }) => {
   const hookForm = useForm({ mode: 'onChange' });
   const { handleSubmit } = hookForm;
   const [createRegistration] = useMutation(REGISTER_TO_COURSE);
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
-  const [user, setUser] = useStore('userStore');
+  const { user } = useContext(AppContext);
+  const [notification, setNotification] = useStore('notificationStore');
   const courseId = course.id;
   const studentId = user.id;
 
   const variables = { studentId, courseId };
   const intl = useIntl();
   const history = useHistory();
+
+  
 
   const parseDay = (day, dayIndex, key) => {
     let prev = [1, timeChoices.no];
@@ -144,8 +150,13 @@ export default ({ courseReducer, course, match }) => {
         __typename: response.data.createRegistration.__typename,
       };
       updatedUser.registrations = updatedUser.registrations.concat(newReg);
-      setUser(updatedUser);
+
       // TODO: add timeout success alert
+      setNotification({
+        type: 'success',
+        message: intl.formatMessage({ id: 'registration.registrationSuccess' }),
+        visible: true,
+      });
     } catch (err) {
       // TODO: Handle errors.
       // eslint-disable-next-line no-console
@@ -158,9 +169,11 @@ export default ({ courseReducer, course, match }) => {
       await deleteRegistration({
         variables,
       });
-      setUser({
-        ...user,
-        registrations: user.registrations.filter(r => r.course.id !== courseId),
+
+      setNotification({
+        type: 'success',
+        message: intl.formatMessage({ id: 'registration.registrationCanceled' }),
+        visible: true,
       });
     } catch (deletionError) {
       // eslint-disable-next-line no-console
@@ -193,9 +206,9 @@ export default ({ courseReducer, course, match }) => {
               {new Date(course.deadline) > new Date() ? (
                 <ConfirmationButton
                   onConfirm={handleRegistrationDeletion}
+                  color={red[500]}
                   modalMessage={intl.formatMessage({ id: 'courseRegistration.cancelConfirmation' })}
                   buttonDataCy="cancel-registration-button"
-                  color="red"
                 >
                   <FormattedMessage id="courseRegistration.cancel" />
                 </ConfirmationButton>

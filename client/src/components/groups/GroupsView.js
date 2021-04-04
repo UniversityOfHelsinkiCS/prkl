@@ -1,41 +1,42 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import { Prompt } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Form, Loader } from 'semantic-ui-react';
+import { Alert } from '@material-ui/lab';
 import _ from 'lodash';
 import {
   GENERATE_GROUPS,
   SAVE_GROUPS,
   COURSE_GROUPS,
   PUBLISH_COURSE_GROUPS,
-  GENERATE_GROUPS_FOR_NON_LOCKED_GROUPS,
 } from '../../GqlQueries';
+
+import { green, blue, red, orange } from '@material-ui/core/colors';
 
 import ConfirmationButton from '../ui/ConfirmationButton';
 import GrouplessStudents from './GrouplessStudents';
-import SuccessMessage from '../ui/SuccessMessage';
 import Groups from './Groups';
 
 import userRoles from '../../util/userRoles';
+import { AppContext } from '../../App';
 
 export default ({ course, registrations, regByStudentId, groups, setGroups }) => {
   const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
-  const [generateGroupsForNonLockedGroups, { loading: generateLockedGroupsLoading }] = useMutation(
-    GENERATE_GROUPS_FOR_NON_LOCKED_GROUPS
-  );
+
   const [saveGeneratedGroups] = useMutation(SAVE_GROUPS);
   const [publishCourseGroups] = useMutation(PUBLISH_COURSE_GROUPS);
+
+  const { user } = useContext(AppContext);
 
   const [grouplessStudents, setGrouplessStudents] = useStore('grouplessStudentsStore');
   const [lockedGroupsStore, setLockedGroupsStore] = useStore('lockedGroupsStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
-  const [user] = useStore('userStore');
+  const [notification, setNotification] = useStore('notificationStore');
 
   const [registrationsWithoutGroups, setRegistrationsWithoutGroups] = useState(true);
-  const [savedSuccessMsgVisible, setSavedSuccessMsgVisible] = useState(false);
   const [groupSorting, setGroupSorting] = useState('nameAscending');
   const [groupsPublished, setGroupsPublished] = useState(false);
   const [groupMessages, setGroupMessages] = useState(['']);
@@ -136,6 +137,14 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     );
   }
 
+  const handleGroupCreation = () => {
+    if (lockedGroupsStore.length === 0) {
+      handleSampleGroupCreation();
+    } else {
+      generateNewGroupsForNonLockedGroups();
+    }
+  }
+
   const handleSampleGroupCreation = async () => {
     const minGroupS = minGroupSize || 1;
     try {
@@ -170,42 +179,33 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
   const generateNewGroupsForNonLockedGroups = async () => {
     const lockedGroups = lockedGroupsStore;
 
-    const groupsForAlgo = [];
+    const registrationIds = [];
+    const lockedRegistrationIds = [];
 
-    groups.forEach(group => {
-      if (!lockedGroups.includes(group)) {
-        groupsForAlgo.push(group);
+    lockedGroups.map(group => {
+      group.students.map(student => lockedRegistrationIds.push(student.id));
+    });
+
+    registrations.map(registration => {
+      console.log(registration);
+      if (!lockedRegistrationIds.includes(registration.student.id)) {
+        registrationIds.push(registration.id);
       }
-    });
-
-    const groupless = {
-      groupId: '',
-      groupMessage: '',
-      groupName: 'groupless',
-      students: grouplessStudents,
-    };
-
-    groupsForAlgo.push(groupless);
-
-    const groupsWithUserIds = groupsForAlgo.map(group => {
-      const userIds = group.students.map(student => student.id);
-      return {
-        userIds,
-        id: group.groupId,
-        groupName: group.groupName,
-        groupMessage: group.groupMessage,
-      };
-    });
+    })
 
     const minGroupS = minGroupSize || 1;
-    const variables = {
-      data: { courseId: course.id, minGroupSize: minGroupS, groups: groupsWithUserIds },
-    };
+
     try {
-      const res = await generateGroupsForNonLockedGroups({
-        variables,
+      const res = await generateGroups({
+        variables: {
+          data: {
+            courseId: course.id,
+            targetGroupSize: minGroupS,
+            registrationIds: registrationIds
+          },
+        },
       });
-      const mappedGroups = res.data.generateGroupsForNonLockedGroups.map((e, i) => {
+      const mappedGroups = res.data.createSampleGroups.map((e, i) => {
         return {
           groupId: '',
           students: e.students,
@@ -244,11 +244,12 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
       const variables = { data: { courseId: course.id, groups: userIdGroups } };
       await saveGeneratedGroups({ variables });
       setGroupsUnsaved(false);
-      setSavedSuccessMsgVisible(true);
       await refetch();
-      setTimeout(() => {
-        setSavedSuccessMsgVisible(false);
-      }, 3000);
+      setNotification({
+        type: 'success',
+        message: intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' }),
+        visible: true,
+      });
     } catch (groupError) {
       // eslint-disable-next-line no-console
       console.log('error:', groupError);
@@ -261,6 +262,11 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     try {
       await publishCourseGroups({ variables });
       setGroupsPublished(true);
+      setNotification({
+        type: 'success',
+        message: intl.formatMessage({ id: 'groupsView.publishGroupsSuccessMsg' }),
+        visible: true,
+      });
     } catch (publishError) {
       // eslint-disable-next-line no-console
       console.log(publishError);
@@ -311,15 +317,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     },
   ];
 
-  if (loading || !groups) {
-    return <Loader active />;
-  }
-
   if (generateGroupsLoading) {
-    return <Loader active content={intl.formatMessage({ id: 'groupsView.generatingGroups' })} />;
-  }
-
-  if (generateLockedGroupsLoading) {
     return <Loader active content={intl.formatMessage({ id: 'groupsView.generatingGroups' })} />;
   }
 
@@ -371,26 +369,30 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
               </Form.Field>
             </Form.Group>
             <ConfirmationButton
-              onConfirm={handleSampleGroupCreation}
+              onConfirm={handleGroupCreation}
+              color={orange[500]}
               modalMessage={intl.formatMessage({ id: 'groupsView.confirmGroupGeneration' })}
               buttonDataCy="create-groups-submit"
-              color="orange"
             >
               <FormattedMessage id="groupsView.generateGroups" />
             </ConfirmationButton>
+            
+            {!groupsPublished && (
+              <ConfirmationButton
+                onConfirm={publishGroups}
+                color={green[500]}
+                modalMessage={intl.formatMessage({ id: 'groupsView.publishGroupsConfirm' })}
+                buttonDataCy="publish-groups-button"
+              >
+                <FormattedMessage id="groupsView.publishGroupsBtn" />
+              </ConfirmationButton>
+            )}
 
-            <ConfirmationButton
-              onConfirm={generateNewGroupsForNonLockedGroups}
-              modalMessage={intl.formatMessage({ id: 'groupsView.confirmGeneratingNewGroups' })}
-              buttonDataCy="lockedGroups-create-submit"
-              color="pink"
-            >
-              <FormattedMessage id="groupsView.createGroupsForNonLockedGroups" />
-            </ConfirmationButton>
             {groupsUnsaved && (
               <>
                 <ConfirmationButton
                   onConfirm={saveSampleGroups}
+                  color={blue[500]}
                   modalMessage={intl.formatMessage({ id: 'groupsView.confirmGroupsSave' })}
                   buttonDataCy="save-groups-button"
                 >
@@ -398,7 +400,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
                 </ConfirmationButton>
                 <ConfirmationButton
                   onConfirm={cancelGroups}
-                  color="red"
+                  color={red[500]}
                   modalMessage={intl.formatMessage({ id: 'groupsView.confirmCancelGroups' })}
                   buttonDataCy="cancel-groups-button"
                 >
@@ -406,36 +408,19 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
                 </ConfirmationButton>
               </>
             )}
-
-            {!groupsPublished && (
-              <ConfirmationButton
-                onConfirm={publishGroups}
-                modalMessage={intl.formatMessage({ id: 'groupsView.publishGroupsConfirm' })}
-                buttonDataCy="publish-groups-button"
-                color="green"
-              >
-                <FormattedMessage id="groupsView.publishGroupsBtn" />
-              </ConfirmationButton>
-            )}
           </Form>
           <p />
 
           {groupsPublished && (
-            <SuccessMessage iconVar="info">
+            <Alert severity="info">
               {intl.formatMessage({ id: 'groupsView.publishedGroupsInfo' })}
-            </SuccessMessage>
+            </Alert>
           )}
 
           {groupsUnsaved && (
-            <SuccessMessage iconVar="info">
+            <Alert severity="warning">
               {intl.formatMessage({ id: 'groupsView.unsavedGroupsInfo' })}
-            </SuccessMessage>
-          )}
-
-          {savedSuccessMsgVisible && (
-            <SuccessMessage>
-              {intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' })}
-            </SuccessMessage>
+            </Alert>
           )}
 
           {registrationsWithoutGroups && (

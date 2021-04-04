@@ -1,15 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import { Dropdown } from 'semantic-ui-react';
+import { Dropdown, Loader } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
 import { useIntl } from 'react-intl';
 
 import roles from '../../util/userRoles';
 import { FACULTY_USERS } from '../../GqlQueries';
+import { AppContext } from '../../App';
 
 export default ({ courseTeachers, setCourseTeachers }) => {
   const [teachers, setTeachers] = useStore('teacherStore');
-  const [user] = useStore('userStore');
+  const { user } = useContext(AppContext);
 
   const intl = useIntl();
 
