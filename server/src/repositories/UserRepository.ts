@@ -1,7 +1,7 @@
-import { UserInput } from "./../inputs/UserInput";
-import { plainToClass } from "class-transformer";
-import { User } from "./../entities/User";
 import { EntityRepository, Repository } from "typeorm";
+import { plainToClass } from "class-transformer";
+import { UserInput } from "../inputs/UserInput";
+import { User } from "../entities/User";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {

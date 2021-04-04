@@ -1,4 +1,4 @@
-import { Resolver, Query, Arg, Ctx, Authorized, Mutation } from "type-graphql";
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { User } from "../entities/User";
 import { ADMIN, STAFF } from "../utils/userRoles";
 
@@ -12,27 +12,29 @@ export class UserResolver {
     });
 
     // Should we also hide unpublished groups from staff members?
-    if ( user.role < STAFF ) {
-      const filteredGroups = user.groups.filter(g => g.course.groupsPublished);
-      user.groups = filteredGroups;
-    };
+    if (user.role < STAFF) {
+      user.groups = user.groups.filter(g => g.course.groupsPublished);
+    }
 
-    if ( user.role < ADMIN ){
+    if (user.role < ADMIN) {
       user.groups.map(g => {
-        g.students.map(s => {s.studentNo = null, s.shibbolethUid = null})
-      })
-    };
+        g.students.map(s => {
+          (s.studentNo = null), (s.shibbolethUid = null);
+        });
+      });
+    }
 
     // Resolve migration issue where each course had groupPublished field set to null, which effed up everything
     user.groups.forEach(g => {
       if (g.groupMessage === null) {
-        g.groupMessage = '';
+        g.groupMessage = "";
       }
+
       if (g.groupName === null) {
-        g.groupName = '';
+        g.groupName = "";
       }
     });
-    
+
     return user;
   }
 
@@ -44,13 +46,16 @@ export class UserResolver {
 
   @Authorized(STAFF)
   @Query(() => [User])
-  async facultyUsers(@Ctx() context): Promise<User[]>{
-    const {user} = context;
-    const users = await User.find({ where: [{role:2},{role:3}] });
+  async facultyUsers(@Ctx() context): Promise<User[]> {
+    const { user } = context;
+    const users = await User.find({ where: [{ role: 2 }, { role: 3 }] });
 
-    if ( user.role < ADMIN ){
-      users.map(u => {u.studentNo = null, u.shibbolethUid = null});
+    if (user.role < ADMIN) {
+      users.map(u => {
+        (u.studentNo = null), (u.shibbolethUid = null);
+      });
     }
+
     return users;
   }
 
@@ -58,11 +63,14 @@ export class UserResolver {
   @Mutation(() => User)
   async editUserRole(@Arg("id") id: string, @Arg("role") role: number): Promise<User> {
     const user = await User.findOne({ where: { id } });
+
     if (!user) {
       throw new Error("User not found");
     }
+
     user.role = role;
     await user.save();
+
     return user;
   }
 }

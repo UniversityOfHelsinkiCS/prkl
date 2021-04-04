@@ -5,8 +5,8 @@ import { Evaluator, Group } from "../algorithm";
 export const combinationsOfTwo = (arr: any[]): [any, any][] => {
     const combinations = []
 
-    for (var i = 0; i < arr.length; i++) {
-        for (var j = i + 1; j < arr.length; j++) {
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = i + 1; j < arr.length; j++) {
             combinations.push([arr[i], arr[j]])
         }
     }
@@ -39,11 +39,9 @@ const evaluateGroupByMultipleChoice: Evaluator = (group: Group) => {
 
     const uniquePairs = combinationsOfTwo(group)
     const scores = uniquePairs.map(multipleScorePair)
-    const score = average(scores)
-    return score
+    return average(scores)
 }
 
 const average = (arr: number[]) => arr.reduce((sum, elem) => sum + elem) / arr.length
-
 
 export default evaluateGroupByMultipleChoice
