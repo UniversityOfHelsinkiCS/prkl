@@ -4,11 +4,11 @@ import { Registration } from "../entities/Registration";
 @InputType()
 export class GenerateGroupsInput {
   @Field()
-  courseId: string
+  courseId: string;
 
-  @Field(type => Int)
-  targetGroupSize: number
+  @Field(() => Int)
+  targetGroupSize: number;
 
-  @Field(type => [String])
-  registrationIds: Registration["id"][]
+  @Field(() => [String])
+  registrationIds: Registration["id"][];
 }

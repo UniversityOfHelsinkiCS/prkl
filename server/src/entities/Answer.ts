@@ -9,6 +9,7 @@ import {
   JoinTable,
 } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
+
 import { Question } from "./Question";
 import { Registration } from "./Registration";
 import { QuestionChoice } from "./QuestionChoice";
@@ -32,26 +33,26 @@ export class Answer extends BaseEntity {
   @Column({ nullable: false })
   registrationId: string;
 
-  @Field(type => Question)
+  @Field(() => Question)
   @ManyToOne(
-    type => Question,
+    () => Question,
     question => question.answers,
   )
   @JoinColumn({ name: "questionId" })
   question: Question;
 
-  @Field(type => Registration)
+  @Field(() => Registration)
   @ManyToOne(
-    type => Registration,
+    () => Registration,
     registration => registration.questionAnswers,
-    { onDelete: "CASCADE"}
+    { onDelete: "CASCADE" },
   )
   @JoinColumn({ name: "registrationId" })
   registration: Registration;
 
-  @Field(type => [QuestionChoice])
+  @Field(() => [QuestionChoice])
   @ManyToMany(
-    type => QuestionChoice,
+    () => QuestionChoice,
     questionChoice => questionChoice.answers,
     { cascade: ["update"] },
   )

@@ -13,7 +13,7 @@ export class QuestionsInput {
   @Field()
   questionType: string;
 
-  //rangeMin and rangeMax need to have a value if the questionChoices are ordered
+  // rangeMin and rangeMax need to have a value if the questionChoices are ordered
   @Field({ nullable: true })
   rangeMin: number;
 
@@ -29,9 +29,9 @@ export class QuestionsInput {
   @Field()
   useInGroupCreation: boolean;
 
-  @Field(type => [QuestionChoiceInput], { nullable: true })
+  @Field(() => [QuestionChoiceInput], { nullable: true })
   questionChoices: QuestionChoiceInput[];
 
-  @Field(type => [AnswerInput], { nullable: true })
+  @Field(() => [AnswerInput], { nullable: true })
   answers: AnswerInput[];
 }

@@ -1,9 +1,9 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Registration } from "../entities/Registration";
-import { RegistrationInput } from "../inputs/RegistrationInput";
-import { ADMIN, STAFF } from "../utils/userRoles";
 import { Course } from "../entities/Course";
 import { User } from "../entities/User";
+import { RegistrationInput } from "../inputs/RegistrationInput";
+import { ADMIN, STAFF } from "../utils/userRoles";
 
 @Resolver()
 export class RegistrationResolver {
@@ -60,10 +60,15 @@ export class RegistrationResolver {
       auth = true;
     } else if (user.role === ADMIN) {
       auth = true;
-    };
+    }
+
     if (!auth) throw new Error("You are not authorized to cancel his registration or deadline has passed.");
 
-    const registration = await Registration.findOne({ where: { studentId, courseId }, relations: ["student", "student.groups", "course"] });
+    const registration = await Registration.findOne({
+      where: { studentId, courseId },
+      relations: ["student", "student.groups", "course"],
+    });
+
     if (!registration) throw new Error("Registration not found!");
 
     // If the user has been assigned to a group on this course, unassign them

@@ -1,7 +1,6 @@
-import _ from "lodash";
+import { combinationsOfTwo } from './evaluateByMultipleChoice';
 import { Registration } from "../../entities/Registration";
 import { Evaluator, Group } from "../algorithm";
-import { combinationsOfTwo } from './evaluateByMultipleChoice';
 
 export type workingTimeObject = {
     startDay: number,
@@ -15,8 +14,7 @@ export type workingTimeList = workingTimeObject[];
 const evaluateByWorkingHours: Evaluator = (group: Group): number => {
     const uniquePairs = combinationsOfTwo(group);
     const scores = uniquePairs.map(hoursScorePair)
-    const score = scores.reduce((sum, val) => sum + val, 0)
-    return score
+    return scores.reduce((sum, val) => sum + val, 0)
 }
 
 export const hoursScorePair = (pair: [Registration, Registration]): number => {
@@ -64,7 +62,7 @@ export const hoursScorePair = (pair: [Registration, Registration]): number => {
             })
         }
     }
-    
+
     if (Math.min(pairOneTotalHours.length, pairTwoTotalHours.length) !==0) {
         result = result / Math.min(pairOneTotalHours.length, pairTwoTotalHours.length);
     } else {

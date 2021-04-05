@@ -1,6 +1,6 @@
 [User|(pk) id: UUID; shibbolethUid: string; firstname: string; lastname: string; studentNo: string; email: string; role: integer]
 [Course|(pk) id: UUID; title: string; code: string; description: string; deadline: Date; maxGroupSize: integer; minGroupSize: integer;  createdAt: Date; updatedAt: Date; deleted: boolean; published: boolean; groupsPublished: boolean]
-[Question|(pk) id: UUID; (fk) courseId: Course; content: string; questionType: string; rangeMin: integer; rangeMax: integer; order: integer;]
+[Question|(pk) id: UUID; (fk) courseId: Course; content: string; questionType: string; rangeMin: integer; rangeMax: integer; order: integer; optional: boolean; useInGroupCreation: boolean;]
 [QuestionChoice|(pk) id: UUID; (fk) questionId: Question; content: string; order: integer;]
 [Answer|(pk) id: UUID; (fk) questionId: Question; (fk) registrationId: Registration; content: string;]
 [AnswerChoice|(fk) questionChoiceId: QuestionChoice; (fk) answerId: Answer;]

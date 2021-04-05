@@ -1,5 +1,6 @@
 /** User role enumerations. */
 import { User } from "../entities/User";
+
 export const USER = 1;
 export const STAFF = 2;
 export const ADMIN = 3;

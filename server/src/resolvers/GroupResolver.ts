@@ -1,17 +1,14 @@
-import { Resolver, Query, Mutation, Arg, Authorized, Ctx } from "type-graphql";
+import { findGroupForGrouplessStudents, formGroups, Group as regArray, Grouping } from "../algorithm/algorithm";
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { getRepository } from "typeorm";
-import { Group } from "../entities/Group";
 import { User } from "../entities/User";
-import { Registration } from "../entities/Registration";
-import { GroupListInput } from "../inputs/GroupListInput";
-import { STAFF, ADMIN } from "../utils/userRoles";
-import { formGroups, findGroupForGrouplessStudents, Grouping, Group as regArray } from "../algorithm/algorithm";
-//import { formGroups } from "../algorithm/index"; old algorithm
+import { Group } from "../entities/Group";
 import { Course } from "../entities/Course";
-import { Algorithm } from "../algorithm/algorithm";
+import { Registration } from "../entities/Registration";
 import { GroupInput } from "../inputs/GroupInput";
-import { group } from "console";
+import { GroupListInput } from "../inputs/GroupListInput";
 import { GenerateGroupsInput } from "../inputs/GenerateGroupsInput";
+import { ADMIN, STAFF } from "../utils/userRoles";
 
 @Resolver()
 export class GroupResolver {
@@ -22,7 +19,7 @@ export class GroupResolver {
     const course = await Course.findOne({ where: { id: courseId }, relations: ["teachers"] });
 
     if (course === undefined) {
-      throw new Error("course not found with id " + courseId)
+      throw new Error("course not found with id " + courseId);
     }
 
     if (user.role === ADMIN || course.teachers.find(t => t.id === user.id) !== undefined) {
@@ -30,16 +27,19 @@ export class GroupResolver {
         where: { courseId: courseId },
         relations: ["students"],
       });
+
       groups.forEach(g => {
         if (g.groupMessage === null) {
-          g.groupMessage = '';
+          g.groupMessage = "";
         }
         if (g.groupName === null) {
-          g.groupName = '';
+          g.groupName = "";
         }
-      })
+      });
+
       return groups;
     }
+
     throw new Error("Not your course.");
   }
 
@@ -48,7 +48,7 @@ export class GroupResolver {
   async groupTimes(@Arg("studentId") studentId: string): Promise<Group[]> {
     return getRepository(Group)
       .createQueryBuilder("group")
-      .select(['group', 'student.id', 'student.firstname', 'registration', 'times'])
+      .select(["group", "student.id", "student.firstname", "registration", "times"])
       .innerJoin("group.students", "student")
       .innerJoin("student.registrations", "registration")
       .innerJoin("registration.workingTimes", "times")
@@ -71,41 +71,41 @@ export class GroupResolver {
   @Authorized(STAFF)
   @Mutation(() => [Group])
   async createSampleGroups(@Arg("data") data: GenerateGroupsInput): Promise<Group[]> {
-    if (data.registrationIds === undefined || data.registrationIds === []) {
-      return Promise.resolve([])
-    }
-    
-    let registrations: Registration[] = []
-    if (data.registrationIds !== undefined) {
-      registrations = await Registration.findByIds(data.registrationIds, { relations: [
-        "student",
-        "questionAnswers",
-        "questionAnswers.question",
-        "questionAnswers.answerChoices",
-        "questionAnswers.question.questionChoices",
-        "workingTimes",
-      ],
-     })
+    if (data.registrationIds === undefined || data.registrationIds === []) {
+      return Promise.resolve([]);
     }
 
-    const newGroups = formGroups(data.targetGroupSize, registrations)
-    
+    let registrations: Registration[] = [];
+    if (data.registrationIds !== undefined) {
+      registrations = await Registration.findByIds(data.registrationIds, {
+        relations: [
+          "student",
+          "questionAnswers",
+          "questionAnswers.question",
+          "questionAnswers.answerChoices",
+          "questionAnswers.question.questionChoices",
+          "workingTimes",
+        ],
+      });
+    }
+
+    const newGroups = formGroups(data.targetGroupSize, registrations);
+
     return Promise.all(
       newGroups.map(async g => {
         const students = await User.findByIds(g.userIds);
         return Group.create({ courseId: data.courseId, students });
-      })
+      }),
     );
   }
 
   @Authorized(STAFF)
   @Mutation(() => [Group])
   async findGroupForGrouplessStudents(
-      @Arg("data") data: GroupListInput,
-      @Arg("groupless") groupless: GroupListInput,
-      @Arg("maxGroupSize") maxGroupSize: number
-    ): Promise<Group[]> {
-
+    @Arg("data") data: GroupListInput,
+    @Arg("groupless") groupless: GroupListInput,
+    @Arg("maxGroupSize") maxGroupSize: number,
+  ): Promise<Group[]> {
     const { courseId, groups } = data;
     const { groups: grouplessStudents } = groupless;
 
@@ -126,25 +126,33 @@ export class GroupResolver {
 
       for (const group of groups) {
         const regArray: regArray = [];
+
         for (const userId of group.userIds) {
           for (const registration of registrations) {
             if (registration.studentId === userId) {
               regArray.push(registration);
             }
           }
-        }     
-        grouping.push(regArray); 
-      }   
+        }
+
+        grouping.push(regArray);
+      }
+
       return grouping;
     };
 
-    const grouplessToRegistrationArray = (grouplessStudents: GroupInput[], registrations: Registration[]): Registration[] => {
+    const grouplessToRegistrationArray = (
+      grouplessStudents: GroupInput[],
+      registrations: Registration[],
+    ): Registration[] => {
       const grouplessArray: Registration[] = [];
+
       grouplessStudents[0].userIds.map(id => {
-        grouplessArray.push(registrations.find(registration => registration.studentId === id))       
-      })      
+        grouplessArray.push(registrations.find(registration => registration.studentId === id));
+      });
+
       return grouplessArray;
-    }
+    };
 
     const grouping = groupsToGroupingType(groups, registrations);
     const grouplessStudentsAsRegistrationArray = grouplessToRegistrationArray(grouplessStudents, registrations);
@@ -166,18 +174,17 @@ export class GroupResolver {
 
     const newGroups = groups.filter(g => !groupsInDb.some(gid => gid.id === g.id));
 
-    groupsInDb.forEach(async g => {
+    for (const g of groupsInDb) {
       if (!groups.map(dg => dg.id).some(id => id === g.id)) {
-        g.remove();
+        await g.remove();
       } else {
         const updatedGroup = groups.find(gr => gr.id === g.id);
         g.groupName = updatedGroup.groupName;
         g.groupMessage = updatedGroup.groupMessage;
-        const newStudents = await User.findByIds(updatedGroup.userIds);
-        g.students = newStudents;
-        g.save();
+        g.students = await User.findByIds(updatedGroup.userIds);
+        await g.save();
       }
-    });
+    }
 
     return Promise.all(
       newGroups.map(async g => {
@@ -185,7 +192,7 @@ export class GroupResolver {
         const groupMessage = g.groupMessage;
         const groupName = g.groupName;
         return Group.create({ groupName, courseId, students, groupMessage }).save();
-      })
+      }),
     );
   }
 }

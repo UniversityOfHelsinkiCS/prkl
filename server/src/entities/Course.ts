@@ -12,8 +12,8 @@ import {
 import { ObjectType, Field, ID } from "type-graphql";
 
 import { User } from "./User";
-import { Question } from "./Question";
 import { Group } from "./Group";
+import { Question } from "./Question";
 import { Registration } from "./Registration";
 
 @ObjectType()
@@ -65,34 +65,34 @@ export class Course extends BaseEntity {
   @UpdateDateColumn({ type: "timestamptz", nullable: true })
   updatedAt: Date;
 
-  @Field(type => [User])
+  @Field(() => [User])
   @ManyToMany(
-    type => User,
+    () => User,
     user => user.coursesTeached,
     { cascade: ["remove", "insert", "update"], onDelete: "CASCADE" },
   )
   @JoinTable({ name: "courseTeachers" })
   teachers: User[];
 
-  @Field(type => [Question])
+  @Field(() => [Question])
   @OneToMany(
-    type => Question,
+    () => Question,
     question => question.course,
     { cascade: ["remove", "insert", "update"], onDelete: "CASCADE" },
   )
   questions: Question[];
 
-  @Field(type => [Group])
+  @Field(() => [Group])
   @OneToMany(
-    type => Group,
+    () => Group,
     group => group.course,
     { cascade: ["remove", "insert", "update"], onDelete: "CASCADE" },
   )
   groups: Group[];
 
-  @Field(type => [Registration])
+  @Field(() => [Registration])
   @OneToMany(
-    type => Registration,
+    () => Registration,
     registration => registration.course,
     { cascade: ["remove", "insert", "update"], onDelete: "CASCADE" },
   )

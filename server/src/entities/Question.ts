@@ -1,9 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, BaseEntity, Unique } from "typeorm";
+import { ObjectType, Field, ID } from "type-graphql";
+
 import { Course } from "./Course";
 import { Answer } from "./Answer";
-import { ObjectType, Field, ID } from "type-graphql";
-import { QuestionChoice } from "./QuestionChoice";
 import { WorkingTimes } from "./WorkingTimes";
+import { QuestionChoice } from "./QuestionChoice";
 
 @ObjectType()
 @Entity()
@@ -41,33 +42,33 @@ export class Question extends BaseEntity {
   @Column({ default: true })
   useInGroupCreation: boolean;
 
-  @Field(type => Course)
+  @Field(() => Course)
   @ManyToOne(
-    type => Course,
+    () => Course,
     course => course.questions,
     { onDelete: "CASCADE" },
   )
   course: Course;
 
-  @Field(type => [QuestionChoice])
+  @Field(() => [QuestionChoice])
   @OneToMany(
-    type => QuestionChoice,
+    () => QuestionChoice,
     questionChoice => questionChoice.question,
     { cascade: true },
   )
   questionChoices: QuestionChoice[];
 
-  @Field(type => [Answer])
+  @Field(() => [Answer])
   @OneToMany(
-    type => Answer,
+    () => Answer,
     answer => answer.question,
     { cascade: true, onDelete: "CASCADE" },
   )
   answers: Answer[];
 
-  @Field(type => [WorkingTimes])
+  @Field(() => [WorkingTimes])
   @OneToMany(
-    type => WorkingTimes,
+    () => WorkingTimes,
     workingTimes => workingTimes.timeQuestion,
     { cascade: true, onDelete: "CASCADE" },
   )

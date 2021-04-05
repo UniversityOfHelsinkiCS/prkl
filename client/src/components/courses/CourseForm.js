@@ -9,6 +9,8 @@ import _ from 'lodash';
 
 import { CREATE_COURSE, UPDATE_COURSE } from '../../GqlQueries';
 
+import { blue, red } from '@material-ui/core/colors';
+
 import ConfirmationButton from '../ui/ConfirmationButton';
 import QuestionForm from '../questions/QuestionForm';
 import TeacherList from './TeacherList';
@@ -455,23 +457,25 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
 
         <ConfirmationButton
           onConfirm={handleSubmit}
+          color={blue[500]}
           modalMessage={promptText}
           buttonDataCy="create-course-submit"
           formControl={hookForm}
         >
           <FormattedMessage id="courseForm.confirmButton" />
-        </ConfirmationButton>
+        </ConfirmationButton>&nbsp;
 
         {editView ? (
           <ConfirmationButton
             onConfirm={onCancelEdit}
             modalMessage={intl.formatMessage({ id: 'editView.confirmCancelEdits' })}
             buttonDataCy="create-course-cancel"
-            color="red"
+            color={red[500]}
           >
             <FormattedMessage id="editView.cancelEditsButton" />
           </ConfirmationButton>
         ) : null}
+
       </Form>
     </div>
   );

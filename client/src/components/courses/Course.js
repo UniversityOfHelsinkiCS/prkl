@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, createContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
-import { Button, Loader } from 'semantic-ui-react';
+import { Loader } from 'semantic-ui-react';
 import { useQuery, useMutation } from '@apollo/client';
 import {
   COURSE_BY_ID,
@@ -10,6 +10,9 @@ import {
   COURSE_REGISTRATION,
   DELETE_REGISTRATION
 } from '../../GqlQueries';
+
+import { GreenButton, BlueButton, OrangeButton } from '../../styles/ui/Button'
+import { red } from '@material-ui/core/colors';
 
 import RegistrationList from '../registrations/RegistrationList';
 import ConfirmationButton from '../ui/ConfirmationButton';
@@ -215,41 +218,32 @@ export default ({ id, match }) => {
               ) : (
                 <div>
                   <div style={{ maxWidth: '800px' }}>
-                    <Button.Group widths="4">
                       {/* Only admin can edit or delete after publish */}
                       {!course.published || user.role === roles.ADMIN_ROLE ? (
                         <>
-                          <Button
+                          <BlueButton
                             onClick={handleEditCourse}
-                            color="blue"
                             data-cy="edit-course-button"
                           >
                             <FormattedMessage id="course.switchEditView" />
-                          </Button>
+                          </BlueButton>
                           <ConfirmationButton
                             onConfirm={handleDeletion}
+                            color={red[500]}
                             modalMessage={intl.formatMessage({ id: 'course.confirmDelete' })}
                             buttonDataCy="delete-course-button"
-                            color="red"
-                            floated="right"
                           >
                             <FormattedMessage id="course.delete" />
                           </ConfirmationButton>
                         </>
                       ) : null}
-
                       {/* Group management and enroll list available regardless of publish status */}
-                      <Button onClick={handleGroupsView} color="green" data-cy="manage-groups-button">
-                        <FormattedMessage id="course.switchGroupsView" />
-                      </Button>
-                      <Button
-                        onClick={handleRegistrationsView}
-                        color="orange"
-                        data-cy="show-registrations-button"
-                      >
+                      <OrangeButton onClick={handleRegistrationsView} data-cy="show-registrations-button">
                         <FormattedMessage id="course.switchRegistrationsView" />
-                      </Button>
-                    </Button.Group>
+                      </OrangeButton>
+                      <GreenButton onClick={handleGroupsView} data-cy="manage-groups-button">
+                        <FormattedMessage id="course.switchGroupsView" />
+                      </GreenButton>
                   </div>
 
                   {/* Views for staff */}
@@ -264,31 +258,33 @@ export default ({ id, match }) => {
                           setGroups={setGroups}
                         />
                         <br />
-                        <Button
+                        <BlueButton
                           onClick={handleGroupsView}
                           color="blue"
                           data-cy="back-to-info-from-groups-button"
                         >
                           <FormattedMessage id="course.switchInfoView" />
-                        </Button>
+                        </BlueButton>
                       </div>
                     ) : (
                       <div>
                         {match.params.subpage === 'registrations' ? (
                           <div>
                             <RegistrationList
+                              courseReducer={[courseState, courseDispatch]}
                               course={course}
                               registrations={registrations}
+                              setRegistrations={setRegistrations}
                               regByStudentId={regByStudentId}
                             />
                             <br />
-                            <Button
+                            <BlueButton
                               onClick={handleRegistrationsView}
                               color="blue"
                               data-cy="back-to-info-from-groups-button"
                             >
                               <FormattedMessage id="course.switchInfoView" />
-                            </Button>
+                            </BlueButton>
                           </div>
                         ) : null}
                       </div>
@@ -303,6 +299,7 @@ export default ({ id, match }) => {
           <div>
             {match.params.subpage === undefined || match.params.subpage === 'usergroup' ? (
               <Registration
+                courseReducer={[courseState, courseDispatch]}
                 course={course}
                 match={match}
               />

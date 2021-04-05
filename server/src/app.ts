@@ -1,21 +1,21 @@
-import bodyParser from "body-parser";
 import express from "express";
-import graphqlHttp from "express-graphql";
 import promiseRouter from "express-promise-router";
-import morgan from "morgan";
-import path from "path";
-import { buildSchema } from "type-graphql";
-import "reflect-metadata";
 import { createConnection } from "typeorm";
+import { buildSchema } from "type-graphql";
+import authorization, { authChecker } from "./middleware/authorization";
 import cors from "cors";
 import headersMiddleware from "unfuck-utf8-headers-middleware";
+import logInAs, { MockedByRequest } from "./middleware/logInAs";
+import graphqlHttp from "express-graphql";
+import bodyParser from "body-parser";
+import morgan from "morgan";
+import seeding from "./testUtils/seeding";
+import path from "path";
+import "reflect-metadata";
 import { CourseResolver } from "./resolvers/CourseResolver";
 import { UserResolver } from "./resolvers/UserResolver";
 import { GroupResolver } from "./resolvers/GroupResolver";
 import { RegistrationResolver } from "./resolvers/RegistrationResolver";
-import authorization, { authChecker } from "./middleware/authorization";
-import seeding from "./testUtils/seeding";
-import logInAs, { MockedByRequest } from "./middleware/logInAs";
 
 export const app = express();
 const router = promiseRouter();
@@ -66,10 +66,10 @@ const main = async (): Promise<void> => {
   });
 
   app.get("/mocking", (req: MockedByRequest, res) => {
-		res.send({ 
+    res.send({
       mockedBy: req.mockedBy,
-      mockedUser: req.user ? req.user.shibbolethUid : req.mockedBy
-		})
+      mockedUser: req.user ? req.user.shibbolethUid : req.mockedBy,
+    });
   });
 
   // Register routes for development and testing utilities.

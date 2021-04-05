@@ -10,7 +10,7 @@ import {
   Column,
   Unique,
 } from "typeorm";
-import {ObjectType, Field, ID, Int} from "type-graphql";
+import { ObjectType, Field, ID } from "type-graphql";
 
 import { User } from "./User";
 import { Course } from "./Course";
@@ -39,33 +39,33 @@ export class Registration extends BaseEntity {
   @Column({ nullable: true })
   studentId: string;
 
-  @Field(type => Course)
+  @Field(() => Course)
   @ManyToOne(
-    type => Course,
+    () => Course,
     course => course.registrations,
   )
   @JoinColumn({ name: "courseId" })
   course: Course;
 
-  @Field(type => User)
+  @Field(() => User)
   @ManyToOne(
-    type => User,
+    () => User,
     user => user.registrations,
   )
   @JoinColumn({ name: "studentId" })
   student: User;
 
-  @Field(type => [Answer])
+  @Field(() => [Answer])
   @OneToMany(
-    type => Answer,
+    () => Answer,
     answer => answer.registration,
     { cascade: ["remove", "insert", "update"] },
   )
   questionAnswers: Answer[];
 
-  @Field(type => [WorkingTimes])
+  @Field(() => [WorkingTimes])
   @OneToMany(
-    type => WorkingTimes,
+    () => WorkingTimes,
     workingTimes => workingTimes.registration,
     { cascade: ["remove", "insert", "update"] },
   )

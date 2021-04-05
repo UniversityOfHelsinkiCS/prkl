@@ -1,7 +1,7 @@
-import { InputType, Field } from "type-graphql";
-import { QuestionsInput } from "./QuestionsInput";
 import { IsOptional, IsDate } from "class-validator";
+import { InputType, Field } from "type-graphql";
 import { UserInput } from "./UserInput";
+import { QuestionsInput } from "./QuestionsInput";
 
 @InputType()
 export class CourseInput {
@@ -28,9 +28,9 @@ export class CourseInput {
   @Field()
   published: boolean;
 
-  @Field(type => [QuestionsInput])
+  @Field(() => [QuestionsInput])
   questions: QuestionsInput[];
 
-  @Field(type => [UserInput])
+  @Field(() => [UserInput])
   teachers: UserInput[];
 }

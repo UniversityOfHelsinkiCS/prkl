@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity, ManyToMany, Unique } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
+
 import { Question } from "./Question";
 import { Answer } from "./Answer";
 
@@ -19,16 +20,16 @@ export class QuestionChoice extends BaseEntity {
   @Column()
   order: number;
 
-  @Field(type => Question)
+  @Field(() => Question)
   @ManyToOne(
-    type => Question,
+    () => Question,
     question => question.questionChoices,
   )
   question: Question;
 
-  @Field(type => [Answer])
+  @Field(() => [Answer])
   @ManyToMany(
-    type => Answer,
+    () => Answer,
     answer => answer.answerChoices,
   )
   answers: Answer[];

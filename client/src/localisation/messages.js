@@ -167,7 +167,7 @@ export default {
     'courseRegistration.times': 'Times',
     'courseRegistration.cancel': 'Cancel registration',
     'courseRegistration.remove': 'Remove from course',
-    'courseRegistration.cancelConfirmation': 'Confirm registration cancelation?',
+    'courseRegistration.cancelConfirmation': 'Confirm registration cancellation?',
     'courseRegistration.removeConfirmation': 'Remove student from this course?',
 
     'groups.title': 'Group',
@@ -196,12 +196,12 @@ export default {
     'groups.findGroupForOne': 'Find group for student',
     'groups.targetGroupSize': 'Target Group Size',
     'groups.targetGroupSizeInfo':
-      'Set target group size for groups, algorithm searches a group with +/- 1 of the target group size. If there are no groups matching the target group size, student(s) will not be added to any group',
+      'Sets the target group size for groups. The algorithm searches for a group with +/- 1 of the target group size. If there are no groups matching the target group size, the student(s) will not be added to any group.',
     'groups.combinedHourDisplay': 'Combined',
     'groups.newMessage': 'Your group has a new message:',
     'groups.lockGroup': 'Lock Group',
     'groups.lockGroupInfo':
-      'Check this box to lock this group and generate new groups from all the other groups by setting Target Group Size and pressing "Generate new groups" button above',
+      'Locks out the group from being used in group generation.',
 
     'groupsView.noRegistrations': 'No registrations',
     'groupsView.matchingTimes': 'Matching times',

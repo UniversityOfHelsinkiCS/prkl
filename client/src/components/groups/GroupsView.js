@@ -14,6 +14,8 @@ import {
   PUBLISH_COURSE_GROUPS,
 } from '../../GqlQueries';
 
+import { green, blue, red, orange } from '@material-ui/core/colors';
+
 import ConfirmationButton from '../ui/ConfirmationButton';
 import GrouplessStudents from './GrouplessStudents';
 import Groups from './Groups';
@@ -368,17 +370,29 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
             </Form.Group>
             <ConfirmationButton
               onConfirm={handleGroupCreation}
+              color={orange[500]}
               modalMessage={intl.formatMessage({ id: 'groupsView.confirmGroupGeneration' })}
               buttonDataCy="create-groups-submit"
-              color="orange"
             >
               <FormattedMessage id="groupsView.generateGroups" />
             </ConfirmationButton>
             
+            {!groupsPublished && (
+              <ConfirmationButton
+                onConfirm={publishGroups}
+                color={green[500]}
+                modalMessage={intl.formatMessage({ id: 'groupsView.publishGroupsConfirm' })}
+                buttonDataCy="publish-groups-button"
+              >
+                <FormattedMessage id="groupsView.publishGroupsBtn" />
+              </ConfirmationButton>
+            )}
+
             {groupsUnsaved && (
               <>
                 <ConfirmationButton
                   onConfirm={saveSampleGroups}
+                  color={blue[500]}
                   modalMessage={intl.formatMessage({ id: 'groupsView.confirmGroupsSave' })}
                   buttonDataCy="save-groups-button"
                 >
@@ -386,24 +400,13 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
                 </ConfirmationButton>
                 <ConfirmationButton
                   onConfirm={cancelGroups}
-                  color="red"
+                  color={red[500]}
                   modalMessage={intl.formatMessage({ id: 'groupsView.confirmCancelGroups' })}
                   buttonDataCy="cancel-groups-button"
                 >
                   <FormattedMessage id="groupsView.cancelGroups" />
                 </ConfirmationButton>
               </>
-            )}
-
-            {!groupsPublished && (
-              <ConfirmationButton
-                onConfirm={publishGroups}
-                modalMessage={intl.formatMessage({ id: 'groupsView.publishGroupsConfirm' })}
-                buttonDataCy="publish-groups-button"
-                color="green"
-              >
-                <FormattedMessage id="groupsView.publishGroupsBtn" />
-              </ConfirmationButton>
             )}
           </Form>
           <p />

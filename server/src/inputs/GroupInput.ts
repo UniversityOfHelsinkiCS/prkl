@@ -3,7 +3,7 @@ import { IsOptional } from "class-validator";
 
 @InputType()
 export class GroupInput {
-  @Field(type => [String])
+  @Field(() => [String])
   userIds: string[];
 
   @Field({ nullable: true })

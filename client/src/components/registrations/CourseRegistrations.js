@@ -13,6 +13,12 @@ import { useMutation } from '@apollo/client';
 import { DELETE_REGISTRATION } from '../../GqlQueries';
 import { CourseContext } from '../courses/Course';
 
+<<<<<<< HEAD
+=======
+import { red } from '@material-ui/core/colors';
+
+// import { useMutation } from 'react-apollo';
+>>>>>>> 6505420274442e081b96631ecd3d20e603d72703
 // import { DELETE_REGISTRATION } from '../../GqlQueries';
 
 const CourseRegistrations = ({
@@ -103,7 +109,7 @@ const CourseRegistrations = ({
                       id: 'courseRegistration.removeConfirmation',
                     })} (${reg.student.firstname} ${reg.student.lastname})`}
                     buttonDataCy="remove-registration-button"
-                    color="red"
+                    color={red[500]}
                   >
                     <FormattedMessage id="courseRegistration.remove" />
                   </ConfirmationButton>
