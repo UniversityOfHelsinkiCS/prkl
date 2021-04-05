@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Button, Header, Icon, Loader } from 'semantic-ui-react';
-import { useMutation, useQuery } from 'react-apollo';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 
 import { FREEFORM, MULTI_CHOICE, SINGLE_CHOICE, TIMES } from '../../util/questionTypes';
@@ -13,13 +13,37 @@ import timeChoices from '../../util/timeFormChoices';
 import UserGroup from '../users/UserGroup';
 import { AppContext } from '../../App';
 import { useStore } from 'react-hookstore';
+import { CourseContext } from '../courses/Course';
 
-export default ({ courseReducer, course, match }) => {
+export default ({ course, match }) => {
   const hookForm = useForm({ mode: 'onChange' });
   const { handleSubmit } = hookForm;
-  const [createRegistration] = useMutation(REGISTER_TO_COURSE);
-  const [deleteRegistration] = useMutation(DELETE_REGISTRATION);
+
+  const [createRegistration] = useMutation(REGISTER_TO_COURSE, {
+    update(cache, {data: {createRegistration: reg}}) {
+      cache.modify({
+        id: cache.identify(user),
+        fields: {
+          registrations(existingRegistrationRefs) {
+            const newRegistrationRef = cache.writeFragment({
+              data: reg,
+              fragment: gql`
+                fragment NewRegistration on Registration {
+                  id
+                }
+              `
+            })
+            return existingRegistrationRefs.concat(newRegistrationRef)
+          }
+        }
+      })
+    }
+  });
+
+  const {deleteRegistration} = useContext(CourseContext);
+
   const { user } = useContext(AppContext);
+
   const [notification, setNotification] = useStore('notificationStore');
   const courseId = course.id;
   const studentId = user.id;
@@ -135,20 +159,6 @@ export default ({ courseReducer, course, match }) => {
       // TODO: Add spinner before next line and disable the submit button on click.
       const response = await createRegistration({ variables: { data: answer } });
 
-      const updatedUser = user;
-      const newReg = {
-        course: {
-          id: course.id,
-          title: course.title,
-          code: course.code,
-          deleted: course.deleted,
-          __typename: course.__typename,
-        },
-        id: response.data.createRegistration.id,
-        __typename: response.data.createRegistration.__typename,
-      };
-      updatedUser.registrations = updatedUser.registrations.concat(newReg);
-
       // TODO: add timeout success alert
       setNotification({
         type: 'success',
@@ -165,7 +175,7 @@ export default ({ courseReducer, course, match }) => {
   const handleRegistrationDeletion = async () => {
     try {
       await deleteRegistration({
-        variables,
+        variables
       });
 
       setNotification({

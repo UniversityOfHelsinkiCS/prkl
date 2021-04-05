@@ -2,7 +2,7 @@ import React, { createContext, useEffect } from 'react';
 import { initShibbolethPinger } from 'unfuck-spa-shibboleth-session';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createStore, useStore } from 'react-hookstore';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import { Loader } from 'semantic-ui-react';
 
 import { ALL_COURSES, CURRENT_USER } from './GqlQueries';
