@@ -271,7 +271,6 @@ export default ({ id, match }) => {
                         {match.params.subpage === 'registrations' ? (
                           <div>
                             <RegistrationList
-                              courseReducer={[courseState, courseDispatch]}
                               course={course}
                               registrations={registrations}
                               setRegistrations={setRegistrations}
@@ -299,7 +298,6 @@ export default ({ id, match }) => {
           <div>
             {match.params.subpage === undefined || match.params.subpage === 'usergroup' ? (
               <Registration
-                courseReducer={[courseState, courseDispatch]}
                 course={course}
                 match={match}
               />

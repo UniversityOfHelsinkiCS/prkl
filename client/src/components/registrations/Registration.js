@@ -15,13 +15,9 @@ import { AppContext } from '../../App';
 import { useStore } from 'react-hookstore';
 import { CourseContext } from '../courses/Course';
 
-<<<<<<< HEAD
-export default ({ course, match }) => {
-=======
 import { red } from '@material-ui/core/colors';
 
-export default ({ courseReducer, course, match }) => {
->>>>>>> 6505420274442e081b96631ecd3d20e603d72703
+export default ({ course, match }) => {
   const hookForm = useForm({ mode: 'onChange' });
   const { handleSubmit } = hookForm;
 
