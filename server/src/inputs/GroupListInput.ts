@@ -9,6 +9,6 @@ export class GroupListInput {
   @Field({ nullable: true })
   minGroupSize: number;
 
-  @Field(type => [GroupInput], { nullable: true })
+  @Field(() => [GroupInput], { nullable: true })
   groups: GroupInput[];
 }

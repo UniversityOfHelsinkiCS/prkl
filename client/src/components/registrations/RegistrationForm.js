@@ -6,6 +6,8 @@ import Question from '../questions/Question';
 import ValidationError from '../ui/ValidationError';
 import ConfirmationButton from '../ui/ConfirmationButton';
 
+import { green } from '@material-ui/core/colors';
+
 export default ({ questions, formControl, onSubmit }) => {
   const [checkboxValue, setCheckboxValue] = useState('accepted');
   const { setValue, trigger, errors, register } = formControl;
@@ -50,9 +52,9 @@ export default ({ questions, formControl, onSubmit }) => {
 
       <ConfirmationButton
         onConfirm={onSubmit}
+        color={green[500]}
         modalMessage={intl.formatMessage({ id: 'registrationForm.confirmRegistration' })}
         buttonDataCy="register-on-course-button"
-        color="green"
         formControl={formControl}
       >
         <FormattedMessage id="registrationForm.submitRegistration" />

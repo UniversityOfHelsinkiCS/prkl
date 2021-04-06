@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState } from 'react';
 import { useStore } from 'react-hookstore';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Table, Segment, Label, Popup, Form, Button } from 'semantic-ui-react';
 

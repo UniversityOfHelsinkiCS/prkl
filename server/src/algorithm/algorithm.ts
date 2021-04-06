@@ -1,19 +1,12 @@
+import * as _ from "lodash";
+import { workingTimeList } from "./evaluators/evaluateByWorkingHours";
 import { Registration } from "../entities/Registration";
 import { GroupInput } from "../inputs/GroupInput";
-import * as _ from "lodash";
-
-// import evaluateGroupByMultipleChoice from "./evaluators/evaluateByMultipleChoice";
-// import evaluateGroupByWorkingHours from "./evaluators/evaluateByWorkingHours";
 import evaluateBoth from "./evaluators/bothEvaluators";
 
-import { workingTimeObject, workingTimeList } from "./evaluators/evaluateByWorkingHours";
-
 export type Algorithm = (targetGroupSize: number, registrations: Registration[]) => GroupInput[];
-
 export type Evaluator = (group: Group) => number;
-
 export type Group = Registration[];
-
 export type Grouping = Group[];
 
 export type GroupTimes = {
@@ -30,8 +23,6 @@ export type GrouplessStudent = {
 export type grouplessStudentsWorkingTimes = workingTimeList[];
 
 const sum = (arr: number[]) => arr.reduce((sum, val) => sum + val, 0);
-
-//const ITERATIONS = 10000;
 
 const scoreBoth = (grouping: Grouping) => {
   return sum(grouping.map(evaluateBoth));
@@ -74,7 +65,7 @@ const mutateGrouping = (grouping: Grouping) => {
 export const formGroups: Algorithm = (targetGroupSize: number, registrations: Registration[]): GroupInput[] => {
   let grouping: Group[] = createRandomGrouping(targetGroupSize, registrations);
   let score = scoreBoth(grouping);
-  
+
   for (let i = 0; i < registrations.length * 20; i++) {
     const newGrouping = mutateGrouping(grouping);
     const newScore = scoreBoth(newGrouping);
@@ -88,7 +79,11 @@ export const formGroups: Algorithm = (targetGroupSize: number, registrations: Re
   return grouping.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput));
 };
 
-export const findGroupForGrouplessStudents = (grouplessStudents: Registration[], grouping: Grouping, targetGroupSize: number): GroupInput[] => {
+export const findGroupForGrouplessStudents = (
+  grouplessStudents: Registration[],
+  grouping: Grouping,
+  targetGroupSize: number,
+): GroupInput[] => {
   grouplessStudents.map(student => {
     let topScore = -1;
     let groupIndex = -1;
@@ -100,12 +95,12 @@ export const findGroupForGrouplessStudents = (grouplessStudents: Registration[],
       if (score > topScore && (groupClone.length <= targetGroupSize +1 && groupClone.length >= targetGroupSize -1)) {
         groupIndex = index;
         topScore = score;
-      }    
-    })
+      }
+    });
 
     if (groupIndex != -1) {
       grouping[groupIndex].push(student);
-    } 
+    }
   });
 
   return grouping.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput));

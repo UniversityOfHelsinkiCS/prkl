@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React from 'react';
+import React, { useContext } from 'react';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Table, Popup, Icon, Button } from 'semantic-ui-react';
@@ -9,20 +9,24 @@ import questionSwitch, { count } from '../../util/functions';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import { TIMES } from '../../util/questionTypes';
 import HourDisplay from '../misc/HourDisplay';
+import { useMutation } from '@apollo/client';
+import { DELETE_REGISTRATION } from '../../GqlQueries';
+import { CourseContext } from '../courses/Course';
+
+import { red } from '@material-ui/core/colors';
 
 // import { useMutation } from 'react-apollo';
 // import { DELETE_REGISTRATION } from '../../GqlQueries';
 
 const CourseRegistrations = ({
-  courseReducer: [{ registrations }, courseDispatch],
   course,
+  registrations,
   regByStudentId,
 }) => {
   const intl = useIntl();
   const [privacyToggle] = useStore('toggleStore');
 
-  // eslint-disable-next-line no-unused-vars
-  const courseId = course.id;
+  const {deleteRegistration} = useContext(CourseContext);
 
   const popupTimesDisplay = student => (
     <HourDisplay
@@ -95,14 +99,14 @@ const CourseRegistrations = ({
                 {reg.questionAnswers.map(qa => questionSwitch(qa))}
                 <Table.Cell>
                   <ConfirmationButton
-                    onConfirm={() => {
-                      courseDispatch({ type: 'delete_registration', payload: reg.student.id });
-                    }}
+                    onConfirm={() => deleteRegistration({
+                      variables: { courseId: course.id, studentId: reg.student.id },
+                    })}
                     modalMessage={`${intl.formatMessage({
                       id: 'courseRegistration.removeConfirmation',
                     })} (${reg.student.firstname} ${reg.student.lastname})`}
                     buttonDataCy="remove-registration-button"
-                    color="red"
+                    color={red[500]}
                   >
                     <FormattedMessage id="courseRegistration.remove" />
                   </ConfirmationButton>

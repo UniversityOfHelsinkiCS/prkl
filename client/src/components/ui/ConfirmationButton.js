@@ -1,18 +1,22 @@
 import React from 'react';
-import { Button, Icon, Modal } from 'semantic-ui-react';
+
+import { Button, Dialog, DialogTitle, DialogActions } from '@material-ui/core';
+import { Close as CloseIcon, Done as DoneIcon }from '@material-ui/icons';
+import { useButtonStyles, RedButton, GreenButton } from '../../styles/ui/Button'
 
 const ConfirmationButton = ({
   onConfirm,
-  isDisabled,
   modalMessage = 'Confirm action?',
   children,
   confirmButtonText = 'Confirm',
   cancelButtonText = 'Cancel',
-  color = 'blue',
   buttonDataCy,
   formControl,
+  color
 }) => {
   const [open, setOpen] = React.useState(false);
+
+  const classes = useButtonStyles();
 
   const formIsValidated = async () => {
     const { trigger, errors } = formControl;
@@ -40,30 +44,36 @@ const ConfirmationButton = ({
   };
 
   return (
-    <Modal
-      onClose={() => setOpen(false)}
-      // nOpen={() => setOpen(true)}
-      open={open}
-      size="small"
-      trigger={
-        <Button disabled={isDisabled} data-cy={buttonDataCy} color={color} onClick={triggerClick}>
-          {children}
-        </Button>
-      }
-    >
-      <Modal.Header>
-        <Icon name="exclamation circle" /> {modalMessage}
-      </Modal.Header>
-      <Modal.Actions>
-        <Button basic color="red" onClick={cancel}>
-          <Icon name="remove" /> {cancelButtonText}
-        </Button>
-        <Button data-cy="confirmation-button-confirm" color="green" onClick={confirm}>
-          <Icon name="checkmark" /> {confirmButtonText}
-        </Button>
-      </Modal.Actions>
-    </Modal>
+    <>
+      <Button data-cy={buttonDataCy} onClick={triggerClick} style={{backgroundColor: color}}>
+        {children}
+      </Button>
+
+      <Dialog
+        onClose={() => setOpen(false)}
+        open={open}
+      >
+
+        <DialogTitle>
+          {modalMessage}
+        </DialogTitle>
+
+        <DialogActions>
+
+          <GreenButton data-cy="confirmation-button-confirm" onClick={confirm}>
+            <DoneIcon/> {confirmButtonText}
+          </GreenButton>
+
+          <RedButton onClick={cancel}>
+            <CloseIcon/> {cancelButtonText} 
+          </RedButton>
+
+        </DialogActions>
+        
+      </Dialog>
+    </>
   );
+
 };
 
 export default ConfirmationButton;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
-import { useCourseTagStyles, BlueChip, RedChip, PinkChip, GreenChip } from '../../styles/courses/CourseTag'
+import { useCourseTagStyles, BlueChip, RedChip, OrangeChip, GreenChip } from '../../styles/courses/CourseTag'
 
 export default ({ course, user }) => {
   const intl = useIntl();
@@ -16,7 +16,7 @@ export default ({ course, user }) => {
           <GreenChip className={classes.own} label={intl.formatMessage({ id: 'tag.own' })} data-cy="tag-own"/>
         ) : null}
         {course.published ? null : (
-          <PinkChip className={classes.unpublished} label={intl.formatMessage({ id: 'tag.unpublished' })} data-cy="tag-unpublished"/>
+          <OrangeChip className={classes.unpublished} label={intl.formatMessage({ id: 'tag.unpublished' })} data-cy="tag-unpublished"/>
         )}
         {new Date(course.deadline) < new Date() ? (
           <RedChip className={classes.deadline} label={intl.formatMessage({ id: 'tag.dl' })} data-cy="tag-dl"/>

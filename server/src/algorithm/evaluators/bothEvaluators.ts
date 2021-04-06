@@ -1,7 +1,6 @@
-import _ from "lodash";
 import { Group } from "../algorithm";
-import { combinationsOfTwo, multipleScorePair } from "./evaluateByMultipleChoice";
 import { hoursScorePair } from "./evaluateByWorkingHours";
+import { combinationsOfTwo, multipleScorePair } from "./evaluateByMultipleChoice";
 
 export const evaluateBoth = (group: Group): number => {
   const uniquePairs = combinationsOfTwo(group);

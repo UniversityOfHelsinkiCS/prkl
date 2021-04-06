@@ -1,8 +1,8 @@
 import { Response, Request, NextFunction } from "express";
 import { getCustomRepository } from "typeorm";
 import { AuthChecker } from "type-graphql";
-import { UserRepository } from "./../repositories/UserRepository";
-import { User } from "./../entities/User";
+import { User } from "../entities/User";
+import { UserRepository } from "../repositories/UserRepository";
 import parseStudentNumber from "../utils/parseStudentNumber";
 
 export type AuthenticatedRequest = Request & { user: User };
@@ -40,7 +40,7 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
       user = await repo.addUser({ role: 1, ...data });
     } catch (error) {
       // FIXME: This is a hack to make mocking work.
-      //user = await repo.findByShibbolethUid(String(uid));
+      // user = await repo.findByShibbolethUid(String(uid));
       console.log("Creating new user failed", error);
     }
   }
