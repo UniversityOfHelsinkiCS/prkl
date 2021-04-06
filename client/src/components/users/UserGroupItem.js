@@ -2,10 +2,19 @@ import React, { useState } from 'react';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage } from 'react-intl';
 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+} from '@material-ui/core';
 import { dummyEmail } from '../../util/privacyDefaults';
 import HourDisplay from '../misc/HourDisplay';
-import { useUserGroupItemStyles } from '../../styles/users/UserGroupItem'
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@material-ui/core';
+import { useUserGroupItemStyles } from '../../styles/users/UserGroupItem';
 
 export default ({ group, groupTimes }) => {
   const [privacyToggle] = useStore('toggleStore');
@@ -23,38 +32,38 @@ export default ({ group, groupTimes }) => {
         <TableHead data-cy="user-group-view-group-name" className={classes.head}>
           <TableRow>
             <TableCell className={classes.head}>{group.groupName}</TableCell>
-            <TableCell className={classes.head}></TableCell>
+            <TableCell className={classes.head} />
             <TableCell className={classes.head} align="right">
               {groupTimes[group.id] ? (
-                  <Button variant="outlined" className={classes.button} onClick={handleShowTime}>
-                    <FormattedMessage id="groups.showTimes" />
-                  </Button>
-                ) : null}
+                <Button variant="outlined" className={classes.button} onClick={handleShowTime}>
+                  <FormattedMessage id="groups.showTimes" />
+                </Button>
+              ) : null}
             </TableCell>
           </TableRow>
         </TableHead>
         <TableHead className={classes.subHeading}>
           <TableRow>
             <TableCell className={classes.subHeading}>First name</TableCell>
-            <TableCell className={classes.subHeading} align="center">Last Name</TableCell>
-            <TableCell className={classes.subHeading} align="center">Email</TableCell>
+            <TableCell className={classes.subHeading} align="center">
+              Last Name
+            </TableCell>
+            <TableCell className={classes.subHeading} align="center">
+              Email
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {group.students.map(student => (
             <TableRow className={classes.row} key={student.id}>
               <TableCell component="tr" scope="row">
-                {student.lastname}
-              </TableCell>
-              <TableCell align="center">
                 {student.firstname}
               </TableCell>
-              <TableCell align="center">
-                {privacyToggle ? dummyEmail : student.email}
-              </TableCell>
+              <TableCell align="center">{student.lastname}</TableCell>
+              <TableCell align="center">{privacyToggle ? dummyEmail : student.email}</TableCell>
             </TableRow>
           ))}
-        </TableBody>  
+        </TableBody>
       </Table>
       {showTime ? (
         <HourDisplay
@@ -63,7 +72,6 @@ export default ({ group, groupTimes }) => {
           groupId={group.id}
         />
       ) : null}
-
     </TableContainer>
   );
 };

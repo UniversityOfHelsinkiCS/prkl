@@ -374,7 +374,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
             >
               <FormattedMessage id="groupsView.generateGroups" />
             </ConfirmationButton>
-            
+
             {groupsUnsaved && (
               <>
                 <ConfirmationButton

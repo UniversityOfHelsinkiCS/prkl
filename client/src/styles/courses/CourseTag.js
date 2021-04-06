@@ -2,7 +2,7 @@ import Chip from '@material-ui/core/Chip';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { green, blue, pink, red } from '@material-ui/core/colors';
 
-const useCourseTagStyles = makeStyles((theme) => ({
+const useCourseTagStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -17,32 +17,26 @@ const useCourseTagStyles = makeStyles((theme) => ({
 
 const BlueChip = withStyles({
   root: {
-    backgroundColor: blue[500]
-  }
+    backgroundColor: blue[500],
+  },
 })(Chip);
 
 const GreenChip = withStyles({
   root: {
     backgroundColor: green[500],
-  }
+  },
 })(Chip);
 
 const PinkChip = withStyles({
   root: {
-    backgroundColor: pink[200]
-  }
+    backgroundColor: pink[200],
+  },
 })(Chip);
 
 const RedChip = withStyles({
   root: {
-    backgroundColor: red[500]
-  }
+    backgroundColor: red[500],
+  },
 })(Chip);
 
-export {
-  useCourseTagStyles,
-  BlueChip,
-  GreenChip,
-  PinkChip,
-  RedChip
-}
+export { useCourseTagStyles, BlueChip, GreenChip, PinkChip, RedChip };
