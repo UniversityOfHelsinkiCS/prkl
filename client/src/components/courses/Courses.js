@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react';
-import { Input, Divider, Menu, Select, Loader } from 'semantic-ui-react';
+import { Input, Divider, Menu, Select } from 'semantic-ui-react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 
 import CourseListStaffControls from './CourseListStaffControls';
+
 import CourseList from './CourseList';
-import MuiCourseList from './MuiCourseList';
 import { AppContext } from '../../App';
 
 export default () => {
@@ -142,7 +142,7 @@ export default () => {
         </Menu.Item>
       </Menu>
       <Divider />
-      <MuiCourseList courses={visibleCourses()} user={user} />
+      <CourseList courses={visibleCourses()} user={user} />
     </div>
   );
 };

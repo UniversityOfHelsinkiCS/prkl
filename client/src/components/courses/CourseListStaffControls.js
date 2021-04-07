@@ -1,30 +1,37 @@
 import React, { useContext } from 'react';
-import { Checkbox, Loader } from 'semantic-ui-react';
+import Switch from '@material-ui/core/Switch';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { makeStyles } from '@material-ui/core/styles';
+
 import { AppContext } from '../../App';
 import roles from '../../util/userRoles';
 
-export default ({ controls }) => {
+const useStyles = makeStyles({
+  title: {
+    display: 'flex',
+  },
+});
 
+export default ({ controls }) => {
+  const classes = useStyles();
   const { user } = useContext(AppContext);
 
   const access = user.role >= roles.STAFF_ROLE;
 
   const createCheckbox = (text, onChange, checked) => {
     return (
-      <Checkbox
-        style={{ marginRight: '1rem' }}
-        key={text}
-        toggle
-        label={text}
-        onChange={onChange}
-        checked={checked}
-        data-cy="checkbox-staff-controls"
-      />
+      <FormGroup className={classes.row}>
+        <FormControlLabel
+          label={text}
+          control={<Switch checked={checked} onChange={onChange} color="primary" />}
+        />
+      </FormGroup>
     );
   };
 
   const createCheckboxes = () =>
     controls.map(item => createCheckbox(item.text, item.onChange, item.checked));
 
-  return access ? <div>{createCheckboxes()}</div> : null;
+  return access ? createCheckboxes() : null;
 };
