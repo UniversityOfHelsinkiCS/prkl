@@ -52,14 +52,14 @@ export default ({code, title, id, deadline, teachers, paragraphs }) => {
                         {t.firstname} {t.lastname}&nbsp; {divider} &nbsp;<Link href={`mailto:${t.email}`}>{t.email}</Link>
                     </ListItem>
                   ))}
-                  </List>
+                </List>
               </Popover>
           </Typography>
 
           <Divider light />
-          &nbsp;
+          <br/>
 
-          <Typography variant="body2" p={2}>
+          <Typography variant="body1">
             {paragraphs.map(p => (
               <p key={p}>{p}</p>
             ))}

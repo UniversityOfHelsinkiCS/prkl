@@ -22,7 +22,6 @@ import CourseForm from './CourseForm';
 import CourseInfo from './CourseInfo';
 import roles from '../../util/userRoles';
 import { AppContext } from '../../App';
-import { Typography } from '@material-ui/core';
 
 export const CourseContext = createContext();
 
