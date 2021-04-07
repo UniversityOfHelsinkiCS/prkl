@@ -122,8 +122,6 @@ export default () => {
     },
   ];
 
-  
-
   return (
     <div>
       <Menu secondary stackable>
@@ -144,7 +142,7 @@ export default () => {
         </Menu.Item>
       </Menu>
       <Divider />
-      <CourseList courses={visibleCourses()} user={user} />
+      <MuiCourseList courses={visibleCourses()} user={user} />
     </div>
   );
 };
