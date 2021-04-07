@@ -23,8 +23,6 @@ export default ({courses}) => {
 
   const divider = <span style={{ color: '#f2f2f2' }}>{' | '}</span>
 
-  
-
   return (
     <Container>
 

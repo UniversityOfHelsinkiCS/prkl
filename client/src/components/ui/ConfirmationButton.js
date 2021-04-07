@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Button, Dialog, DialogTitle, DialogActions } from '@material-ui/core';
 import { Close as CloseIcon, Done as DoneIcon }from '@material-ui/icons';
-import { useButtonStyles, RedButton, GreenButton } from '../../styles/ui/Button'
+import { RedButton, GreenButton } from '../../styles/ui/Button'
 
 const ConfirmationButton = ({
   onConfirm,
@@ -15,8 +15,6 @@ const ConfirmationButton = ({
   color
 }) => {
   const [open, setOpen] = React.useState(false);
-
-  const classes = useButtonStyles();
 
   const formIsValidated = async () => {
     const { trigger, errors } = formControl;

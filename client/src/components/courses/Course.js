@@ -22,6 +22,7 @@ import CourseForm from './CourseForm';
 import CourseInfo from './CourseInfo';
 import roles from '../../util/userRoles';
 import { AppContext } from '../../App';
+import { Typography } from '@material-ui/core';
 
 /*
 const useEffectWithOldDeps = (effect, deps) => {
@@ -239,13 +240,11 @@ export default ({ id, match }) => {
   return (
     <div>
       {/* Course info, hide in edit and questions views */}
-      <h2>
-        <a href={`https://courses.helsinki.fi/fi/${course.code}`}>{course.code}</a>
-        {` - ${course.title}`}
-      </h2>
       {match.params.subpage !== 'edit' && view !== 'questions' && (
         <div>
           <CourseInfo
+            code={course.code}
+            title={course.title}
             id={course.id}
             deadline={course.deadline}
             teachers={course.teachers}
