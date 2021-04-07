@@ -9,6 +9,7 @@ import {
   JoinColumn,
 } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
+
 import { Course } from "./Course";
 import { User } from "./User";
 
@@ -31,17 +32,17 @@ export class Group extends BaseEntity {
   @Column({ nullable: true })
   groupMessage: string;
 
-  @Field(type => Course)
+  @Field(() => Course)
   @ManyToOne(
-    type => Course,
+    () => Course,
     course => course.groups,
   )
   @JoinColumn({ name: "courseId" })
   course: Course;
 
-  @Field(type => [User])
+  @Field(() => [User])
   @ManyToMany(
-    type => User,
+    () => User,
     user => user.groups,
   )
   @JoinTable({ name: "groupStudents" })

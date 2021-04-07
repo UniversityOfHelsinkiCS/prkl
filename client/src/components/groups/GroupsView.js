@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import { Prompt } from 'react-router-dom';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/client';
 import { Form, Loader } from 'semantic-ui-react';
 import { Alert } from '@material-ui/lab';
 import _ from 'lodash';

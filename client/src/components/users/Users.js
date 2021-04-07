@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Header, Loader, Card, Input, Divider, Button } from 'semantic-ui-react';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/client';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';

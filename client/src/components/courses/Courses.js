@@ -5,6 +5,7 @@ import { useStore } from 'react-hookstore';
 
 import CourseListStaffControls from './CourseListStaffControls';
 import CourseList from './CourseList';
+import MuiCourseList from './MuiCourseList';
 import { AppContext } from '../../App';
 
 export default () => {

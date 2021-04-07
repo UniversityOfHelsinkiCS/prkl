@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Form, Icon, Popup, Message, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
 import { useForm } from 'react-hook-form';

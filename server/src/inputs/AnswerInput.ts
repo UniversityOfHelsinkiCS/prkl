@@ -1,6 +1,6 @@
 import { InputType, Field } from "type-graphql";
-import { QuestionAnswerInput } from "./QuestionAnswerInput";
 import { WorkingTimesInput } from "./WorkingTimesInput";
+import { QuestionAnswerInput } from "./QuestionAnswerInput";
 
 @InputType()
 export class AnswerInput {
@@ -10,9 +10,9 @@ export class AnswerInput {
   @Field()
   questionId: string;
 
-  @Field(type => [QuestionAnswerInput], { nullable: true })
+  @Field(() => [QuestionAnswerInput], { nullable: true })
   answerChoices: QuestionAnswerInput[];
 
-  @Field(type => [WorkingTimesInput], { nullable: true })
+  @Field(() => [WorkingTimesInput], { nullable: true })
   workingTimes: WorkingTimesInput[];
 }

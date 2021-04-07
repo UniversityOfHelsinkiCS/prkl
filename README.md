@@ -27,6 +27,8 @@ Backlog can be found [here](https://github.com/UniversityOfHelsinkiCS/prkl/proje
 
 A descriptive graph of the frontend structure can be found [here](documentation/structureFrontend.svg)
 
+A similar graph for the backend structure can be found [here](documentation/structureBackend.svg)
+
 ## Usage
 
 Assembler uses `npm` to configure scripts, including `docker-compose` commands for development and testing. The commands outlined in this section should be run at project root unless preceded with a `cd` command and the directory where the related `package.json` is located.

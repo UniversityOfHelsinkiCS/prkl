@@ -1,18 +1,18 @@
 import { Response, NextFunction } from "express";
 import { getCustomRepository } from "typeorm";
 import { UserRepository } from "../repositories/UserRepository";
-import { isAdmin } from "../utils/userRoles";
 import { AuthenticatedRequest } from "./authorization";
+import { isAdmin } from "../utils/userRoles";
 
-export type MockedByRequest = AuthenticatedRequest & { mockedBy: String };
+export type MockedByRequest = AuthenticatedRequest & { mockedBy: string };
 
 /**
  * User mocking for admins.
  */
-const loggedInAs = {'3': '3'};
+const loggedInAs = { "3": "3" };
 
 export default async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
-	const { user } = req;
+  const { user } = req;
   const canMock = process.env.NODE_ENV !== "production" ? true : isAdmin(user);
 
   if (!canMock) {

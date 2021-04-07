@@ -1,8 +1,9 @@
 import { Entity, Column, OneToMany, ManyToMany, BaseEntity, PrimaryGeneratedColumn } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
+
+import { Group } from "./Group";
 import { Course } from "./Course";
 import { Registration } from "./Registration";
-import { Group } from "./Group";
 
 @ObjectType()
 @Entity()
@@ -36,24 +37,24 @@ export class User extends BaseEntity {
   @Column()
   email: string;
 
-  @Field(type => [Course])
+  @Field(() => [Course])
   @ManyToMany(
-    type => Course,
+    () => Course,
     course => course.teachers,
   )
   coursesTeached: Course[];
 
-  @Field(type => [Registration])
+  @Field(() => [Registration])
   @OneToMany(
-    type => Registration,
+    () => Registration,
     registration => registration.student,
     { cascade: true },
   )
   registrations: Registration[];
 
-  @Field(type => [Group])
+  @Field(() => [Group])
   @ManyToMany(
-    type => Group,
+    () => Group,
     group => group.students,
   )
   groups: Group[];
