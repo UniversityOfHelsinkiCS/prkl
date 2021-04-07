@@ -24,7 +24,7 @@ export default ({ controls }) => {
       <FormGroup className={classes.row}>
         <FormControlLabel
           label={text}
-          control={<Switch checked={checked} onChange={onChange} color="primary" />}
+          control={<Switch data-cy="checkbox-staff-controls" checked={checked} onChange={onChange} color="primary" />}
         />
       </FormGroup>
     );
