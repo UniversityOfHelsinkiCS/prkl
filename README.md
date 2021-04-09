@@ -13,7 +13,7 @@ Basic documentation is listed here. If you are member of development group in _O
 
 - [Algorithm](documentation/algorithm.md)
 - [Client](documentation/client.md)
-- [Database](documentation/database_diagram.png)
+- [Database](documentation/database_diagram.svg)
 - [Migrations](documentation/migrations.md)
 - [Server](documentation/server.md)
 - [Middlewares](documentation/middlewares.md)

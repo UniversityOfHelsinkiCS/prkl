@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'semantic-ui-react';
+import { TableRow } from '@material-ui/core';
 
 const DraggableRow = ({ index, action, children, tableIndex }) => {
   const onDragStart = ev => {
@@ -18,7 +18,7 @@ const DraggableRow = ({ index, action, children, tableIndex }) => {
   };
 
   return (
-    <Table.Row
+    <TableRow
       draggable
       className="draggable"
       onDragStart={e => onDragStart(e)}
@@ -27,7 +27,7 @@ const DraggableRow = ({ index, action, children, tableIndex }) => {
       data-cy="draggable-row"
     >
       {children}
-    </Table.Row>
+    </TableRow>
   );
 };
 
