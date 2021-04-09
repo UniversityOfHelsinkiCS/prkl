@@ -11,9 +11,9 @@ Assembler is a tool for automating division of students into project groups. It 
 
 Basic documentation is listed here. If you are member of development group in _Ohjelmistotuotantoprojekti_-course, you might be interested in more "beginner-friendly" explanation in [wiki](https://github.com/UniversityOfHelsinkiCS/prkl/wiki) (in Finnish).
 
-- [Algorithm](documentation/algorithm.md)
+- [Algorithm](documentation/algorithm/algorithm.md)
 - [Client](documentation/client.md)
-- [Database](documentation/database_diagram.svg)
+- [Database](documentation/structure/database_diagram.svg)
 - [Migrations](documentation/migrations.md)
 - [Server](documentation/server.md)
 - [Middlewares](documentation/middlewares.md)
@@ -25,13 +25,17 @@ Backlog can be found [here](https://github.com/UniversityOfHelsinkiCS/prkl/proje
 
 #### Structure
 
-A descriptive graph of the frontend structure can be found [here](documentation/structureFrontend.svg)
+A descriptive graph of the frontend structure can be found [here](documentation/structure/structureFrontend.svg)
 
-A similar graph for the backend structure can be found [here](documentation/structureBackend.svg)
+A similar graph for the backend structure can be found [here](documentation/structure/structureBackend.svg)
 
 ## Usage
 
 Assembler uses `npm` to configure scripts, including `docker-compose` commands for development and testing. The commands outlined in this section should be run at project root unless preceded with a `cd` command and the directory where the related `package.json` is located.
+
+### Setup
+
+A little `Getting started` -guide can be found [here](documentation/setup.md)
 
 ### Development
 
