@@ -1,37 +1,33 @@
+/* eslint-disable react/jsx-wrap-multilines */
 import React, { useState, useEffect, useContext } from 'react';
-import { Form, Icon, Popup, Message, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import _ from 'lodash';
 
-import { CREATE_COURSE, UPDATE_COURSE } from '../../GqlQueries';
-
+import { TextField, Button, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import { blue, red } from '@material-ui/core/colors';
+import { CREATE_COURSE, UPDATE_COURSE } from '../../GqlQueries';
 
 import ConfirmationButton from '../ui/ConfirmationButton';
 import QuestionForm from '../questions/QuestionForm';
 import TeacherList from './TeacherList';
 import roles from '../../util/userRoles';
+import { TIMES } from '../../util/questionTypes';
 import { AppContext } from '../../App';
+import InfoPopup from '../ui/InfoPopup';
+import { useCourseFormStyles } from '../../styles/courses/CourseForm';
 
-// Renders form for both course addition and course edition
+// Renders form for both adding and editing a course
 const CourseForm = ({ course, onCancelEdit, editView }) => {
+  const classes = useCourseFormStyles();
+
   const [courses, setCourses] = useStore('coursesStore');
 
-  const [courseTitle, setCourseTitle] = useState('');
-  const [courseDescription, setCourseDescription] = useState('');
-  const [courseCode, setCourseCode] = useState('');
-  const [questions, setQuestions] = useState([]);
-  const [deadline, setDeadline] = useState('');
-
-  const [publishToggle, setPublishToggle] = useState(false);
-  const [calendarToggle, setCalendarToggle] = useState(false);
-
   const { user } = useContext(AppContext);
-
   const history = useHistory();
   const intl = useIntl();
 
@@ -43,21 +39,50 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   const currentTeachers = editView ? course.teachers : [userFields];
   const [courseTeachers, setCourseTeachers] = useState(currentTeachers);
 
-  const [calendarId, setCalendarId] = useState('');
-  const [calendarDescription, setCalendarDescription] = useState(
-    `${intl.formatMessage({ id: 'courseForm.timeQuestionDefault' })}`
-  );
+  const [questions, setQuestions] = useState([]);
+  const [publishToggle, setPublishToggle] = useState(false);
+  const [calendarToggle, setCalendarToggle] = useState(false);
+  const [calendar, setCalendar] = useState(null);
 
-  let promptText;
+  const hookForm = useForm({ mode: 'onChange' });
+  const { setValue, getValues, errors, handleSubmit, control, reset } = hookForm;
+
+  let confirmPromptText;
   if (editView) {
-    promptText = intl.formatMessage({
+    confirmPromptText = intl.formatMessage({
       id: publishToggle ? 'editView.confirmPublishSubmit' : 'editView.confirmSubmit',
     });
   } else {
-    promptText = intl.formatMessage({
+    confirmPromptText = intl.formatMessage({
       id: publishToggle ? 'courseForm.confirmPublishSubmit' : 'courseForm.confirmSubmit',
     });
   }
+
+  const removeTypename = object => {
+    const newObject = { ...object };
+    // eslint-disable-next-line no-underscore-dangle
+    delete newObject.__typename;
+    return newObject;
+  };
+
+  useEffect(() => {
+    if (editView) {
+      const calendarQuestion = course.questions.find(q => q.questionType === TIMES);
+      if (calendarQuestion) {
+        setCalendarToggle(true);
+        setCalendar(calendarQuestion);
+        reset(calendarQuestion);
+      }
+      const qstns = course.questions
+        .filter(q => q.questionType !== TIMES)
+        .map(q => {
+          const newQ = removeTypename(q);
+          newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
+          return newQ;
+        });
+      setQuestions(qstns);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getFormattedDate = setYesterday => {
     const date = new Date();
@@ -68,154 +93,69 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
     return `${yyyy}-${mm}-${dd}`;
   };
 
-  const today = new Date();
-  const dd = String(today.getDate()).padStart(2, '0');
-  const mm = String(today.getMonth() + 1).padStart(2, '0');
-  const yyyy = today.getFullYear();
-  const todayParsed = `${yyyy}-${mm}-${dd}`;
-
-  const calendarQuestion = {
-    questionType: 'times',
-    content: 'times',
-    optional: false,
-    useInGroupCreation: true,
-    order: questions.length + 1,
-  };
-
-  const hookForm = useForm();
-  const { setValue, trigger, errors, register, unregister } = hookForm;
-
-  useEffect(() => {
-    if (calendarToggle) {
-      register(
-        { name: 'nameCalendarDesc' },
-        {
-          required: intl.formatMessage({ id: 'courseForm.calendarDescMissingValidationMsg' }),
-          maxLength: {
-            value: 250,
-            message: intl.formatMessage({ id: 'courseForm.calendarDescTooLongValidationMsg' }),
-          },
-        }
-      );
-      setValue('nameCalendarDesc', calendarDescription);
-    } else {
-      unregister('nameCalendarDesc');
-    }
-  }, [calendarToggle]); // eslint-disable-line
-
-  useEffect(() => {
-    register(
-      { name: 'nameTitle' },
-      {
-        required: intl.formatMessage({ id: 'courseForm.titleMissingValidationMsg' }),
-        maxLength: {
-          value: 150,
-          message: intl.formatMessage({ id: 'courseForm.titleTooLongValidationMsg' }),
-        },
-      }
-    );
-    register(
-      { name: 'nameCode' },
-      {
-        required: intl.formatMessage({ id: 'courseForm.courseCodeMissingValidationMsg' }),
-        maxLength: {
-          value: 20,
-          message: intl.formatMessage({ id: 'courseForm.courseCodeTooLongValidationMsg' }),
-        },
-      }
-    );
-    register(
-      { name: 'nameDeadline' },
-      {
-        required: intl.formatMessage({ id: 'courseForm.deadlineMissingValidationMsg' }),
-        min: editView
-          ? {
-              value:
-                user === undefined || user.role === roles.ADMIN_ROLE ? null : getFormattedDate(),
-              message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationMsg' }),
-            }
-          : {
-              value: todayParsed,
-              message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationMsg' }),
-            },
-      }
-    );
-    register(
-      { name: 'nameDescription' },
-      {
-        required: intl.formatMessage({ id: 'courseForm.descriptionMissingValidationMsg' }),
-        maxLength: {
-          value: 2500,
-          message: intl.formatMessage({ id: 'courseForm.descriptionTooLongValidationMsg' }),
-        },
-      }
-    );
-  }, []); // eslint-disable-line
-
-  useEffect(() => {
-    if (editView) {
-      setCourseTitle(course.title);
-      setValue('nameTitle', course.title);
-      setCourseDescription(course.description);
-      setValue('nameDescription', course.description);
-      setCourseCode(course.code);
-      setValue('nameCode', course.code);
-      const qstns = course.questions
-        .filter(q => q.questionType !== 'times')
-        .map(q => {
-          return {
-            id: q.id,
-            order: q.order,
-            content: q.content,
-            questionType: q.questionType,
-            optional: q.optional,
-            useInGroupCreation: q.useInGroupCreation,
-            questionChoices: q.questionChoices.map(qc => {
-              return { id: qc.id, content: qc.content, order: qc.order };
-            }),
-          };
-        });
-      setQuestions(qstns);
-      const dateString = course.deadline.substring(0, 10);
-      setDeadline(dateString);
-      setValue('nameDeadline', dateString);
-      setPublishToggle(course.published);
-      const calendar = course.questions.find(q => q.questionType === 'times');
-      setCalendarToggle(calendar);
-      if (calendar) {
-        setCalendarDescription(calendar.content);
-        setValue('nameCalendarDesc', calendar.content);
-        setCalendarId(calendar.id);
-      }
-    }
-  }, []); // eslint-disable-line
-
-  
-
   const closeRegistration = e => {
     e.preventDefault();
-    setDeadline(getFormattedDate(true));
+    setValue('deadline', getFormattedDate(true));
   };
 
-  const handleSubmit = async () => {
-    // TODO: Add logic for checking whether there is actually anything to update
-    if (editView && calendarToggle) {
-      calendarQuestion.id = calendarId;
-      calendarQuestion.content = calendarDescription;
-      calendarQuestion.order = questions.length;
-    }
-    if (!editView && calendarToggle) {
-      calendarQuestion.content = calendarDescription;
+  const handleAddQuestion = e => {
+    e.preventDefault();
+    setQuestions([...questions, { content: '', qKey: new Date().getTime().toString() }]);
+  };
+
+  const onSubmit = async formData => {
+    const calendarQuestion = {
+      questionType: TIMES,
+      content: formData.calendarDescription,
+      optional: false,
+      useInGroupCreation: true,
+      order: questions.length + 1,
+    };
+
+    if (editView && calendar) {
+      calendarQuestion.id = calendar.id;
+      calendarQuestion.order = calendar.order;
     }
 
-    const teacherRemoveType = courseTeachers.map(t => {
-      const newT = { ...t };
-      // eslint-disable-next-line no-underscore-dangle
-      delete newT.__typename;
-      return newT;
+    const teachersWithoutType = courseTeachers.map(t => removeTypename(t));
+
+    // update questions with form data
+    const updatedQuestions = questions.map((q, index) => {
+      const formQuestion = formData.questions[q.id || q.qKey];
+      const existingChoices = q.questionChoices
+        ? q.questionChoices.map(qc => {
+            const formChoice = formQuestion.options[qc.id];
+            delete formQuestion.options[qc.id];
+            return {
+              ...qc,
+              content: formChoice,
+            };
+          })
+        : [];
+
+      const newChoices = formQuestion.options
+        ? Object.keys(formQuestion.options).map((key, i) => {
+            return {
+              content: formQuestion.options[key],
+              order: existingChoices.length + i,
+            };
+          })
+        : [];
+
+      const choices = existingChoices.concat(newChoices);
+
+      return {
+        ...q,
+        content: formQuestion.content,
+        optional: formQuestion.optional,
+        useInGroupCreation: formQuestion.useInGroupCreation,
+        questionType: formQuestion.type,
+        questionChoices: choices,
+        order: q.order || index,
+      };
     });
 
-    const questionsWOKeys = questions.map(q => {
+    const questionsWOKeys = updatedQuestions.map(q => {
       const opts = q.questionChoices ? q.questionChoices.map(qc => _.omit(qc, 'oName')) : [];
       const newQ = _.omit(q, 'qKey');
       newQ.questionChoices = opts;
@@ -223,16 +163,17 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
     });
 
     const courseObject = {
-      title: courseTitle,
-      description: courseDescription,
-      code: courseCode,
+      title: formData.courseTitle,
+      description: formData.courseDescription,
+      code: formData.courseCode,
       minGroupSize: editView ? course.minGroupSize : 1,
       maxGroupSize: editView ? course.maxGroupSize : 1,
-      deadline: new Date(deadline).setHours(23, 59),
-      teachers: teacherRemoveType,
+      deadline: new Date(formData.deadline).setHours(23, 59),
+      teachers: teachersWithoutType,
       questions: calendarToggle ? questionsWOKeys.concat(calendarQuestion) : questionsWOKeys,
       published: publishToggle,
     };
+
     const variables = { id: editView ? course.id : undefined, data: { ...courseObject } };
     try {
       if (editView) {
@@ -244,27 +185,22 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
             return c.id !== course.id ? c : result.data.updateCourse;
           })
         );
+        history.push(`/course/${course.id}`);
       } else {
         const result = await createCourse({
           variables,
         });
         setCourses(courses.concat(result.data.createCourse));
-        course = result.data.createCourse;
+        history.push(`/course/${result.data.createCourse.id}`);
       }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log('error:', error);
     }
-    history.push(`/course/${course.id}`);
-  };
-
-  const handleAddForm = e => {
-    e.preventDefault();
-    setQuestions([...questions, { content: '', qKey: new Date().getTime().toString() }]);
   };
 
   return (
-    <div style={{ marginTop: '15px' }}>
+    <div className={classes.root}>
       {editView ? (
         <h4>
           <FormattedMessage id="editView.pageTitle" />
@@ -274,130 +210,206 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
           <FormattedMessage id="courseForm.pageTitle" />
         </h1>
       )}
-      <Form onSubmit={handleSubmit}>
-        <Form.Field>
-          <Form.Input
-            name="nameTitle"
-            fluid
-            label={intl.formatMessage({
-              id: 'courseForm.titleForm',
-            })}
-            value={courseTitle}
-            onChange={async (e, { name, value }) => {
-              setCourseTitle(e.target.value);
-              setValue(name, value);
-              await trigger(name);
-            }}
-            error={errors.nameTitle?.message}
-            data-cy="course-title-input"
-          />
-        </Form.Field>
+      <form>
+        {/* Course title input */}
+        <Controller
+          name="courseTitle"
+          control={control}
+          defaultValue={course?.title || ''}
+          rules={{
+            required: intl.formatMessage({ id: 'courseForm.titleMissingValidationMsg' }),
+            maxLength: {
+              value: 150,
+              message: intl.formatMessage({ id: 'courseForm.titleTooLongValidationMsg' }),
+            },
+          }}
+          render={props => (
+            <TextField
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              {...props}
+              fullWidth
+              variant="outlined"
+              label={intl.formatMessage({
+                id: 'courseForm.titleForm',
+              })}
+              error={errors.courseTitle !== undefined}
+              helperText={errors.courseTitle?.message}
+              data-cy="course-title-input"
+              className={classes.textField}
+            />
+          )}
+        />
 
-        <Form.Group>
-          <Form.Input
-            name="nameCode"
-            label={intl.formatMessage({
-              id: 'courseForm.courseCodeForm',
-            })}
-            value={courseCode}
-            onChange={async (e, { name, value }) => {
-              setCourseCode(e.target.value);
-              setValue(name, value);
-              await trigger(name);
+        <FormGroup row>
+          {/* Course code input */}
+          <Controller
+            name="courseCode"
+            control={control}
+            defaultValue={course?.code || ''}
+            rules={{
+              required: intl.formatMessage({ id: 'courseForm.courseCodeMissingValidationMsg' }),
+              maxLength: {
+                value: 20,
+                message: intl.formatMessage({ id: 'courseForm.courseCodeTooLongValidationMsg' }),
+              },
             }}
-            error={errors.nameCode?.message}
-            data-cy="course-code-input"
+            render={props => (
+              <TextField
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                {...props}
+                variant="outlined"
+                label={intl.formatMessage({
+                  id: 'courseForm.courseCodeForm',
+                })}
+                error={errors.courseCode !== undefined}
+                helperText={errors.courseCode?.message}
+                data-cy="course-code-input"
+                className={classes.textField}
+              />
+            )}
           />
-
-          <Form.Input
-            name="nameDeadline"
-            type="date"
-            min={editView && user.role === roles.ADMIN_ROLE ? null : getFormattedDate()}
-            label={intl.formatMessage({
-              id: 'courseForm.courseDeadlineForm',
-            })}
-            value={deadline}
-            onChange={async (e, { name, value }) => {
-              setDeadline(e.target.value);
-              setValue(name, value);
-              await trigger(name);
+          {/* Deadline input */}
+          <Controller
+            name="deadline"
+            control={control}
+            defaultValue={course?.deadline.substring(0, 10) || ''}
+            rules={{
+              required: intl.formatMessage({ id: 'courseForm.deadlineMissingValidationMsg' }),
+              min: editView
+                ? {
+                    value:
+                      user === undefined || user.role === roles.ADMIN_ROLE
+                        ? null
+                        : getFormattedDate(),
+                    message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationMsg' }),
+                  }
+                : {
+                    value: getFormattedDate(),
+                    message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationMsg' }),
+                  },
             }}
-            error={errors.nameDeadline?.message}
-            data-cy="course-deadline-input"
+            render={props => (
+              <TextField
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                {...props}
+                variant="outlined"
+                type="date"
+                label={intl.formatMessage({
+                  id: 'courseForm.courseDeadlineForm',
+                })}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                error={errors.deadline !== undefined}
+                helperText={errors.deadline?.message}
+                data-cy="course-deadline-input"
+                className={classes.textField}
+              />
+            )}
           />
-
+          {/* Close registration button */}
           {editView && user.role === roles.ADMIN_ROLE && (
-            <Form.Button
+            <Button
+              variant="contained"
               onClick={closeRegistration}
-              label={intl.formatMessage({ id: 'editView.closeRegistrationLabel' })}
               data-cy="course-deadline-control"
+              className={classes.closeRegButton}
             >
               {intl.formatMessage({ id: 'editView.closeRegistrationBtn' })}
-            </Form.Button>
+            </Button>
           )}
-        </Form.Group>
+        </FormGroup>
 
-        <Form.Field>
-          <Form.TextArea
-            name="nameDescription"
-            label={intl.formatMessage({
-              id: 'courseForm.courseDescriptionForm',
-            })}
-            value={courseDescription}
-            onChange={async (e, { name, value }) => {
-              setCourseDescription(e.target.value);
-              setValue(name, value);
-              await trigger(name);
-            }}
-            error={errors.nameDescription?.message}
-            data-cy="course-description-input"
-          />
-        </Form.Field>
-
-        <Form.Checkbox
-          disabled={editView && course.published}
-          label={intl.formatMessage({ id: 'courseForm.includeCalendar' })}
-          checked={!!calendarToggle}
-          onClick={() => setCalendarToggle(!calendarToggle)}
-        />
-
-        <Form.Input
-          name="nameCalendarDesc"
-          disabled={!calendarToggle}
-          label={intl.formatMessage({ id: 'courseForm.timeFormLabel' })}
-          value={calendarDescription}
-          onChange={async (e, { name, value }) => {
-            setCalendarDescription(e.target.value);
-            setValue(name, value);
-            await trigger(name);
+        {/* Course description input */}
+        <Controller
+          name="courseDescription"
+          control={control}
+          defaultValue={course?.description || ''}
+          rules={{
+            required: intl.formatMessage({ id: 'courseForm.descriptionMissingValidationMsg' }),
+            maxLength: {
+              value: 2500,
+              message: intl.formatMessage({ id: 'courseForm.descriptionTooLongValidationMsg' }),
+            },
           }}
-          error={errors.nameCalendarDesc?.message}
+          render={props => (
+            <TextField
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              {...props}
+              fullWidth
+              multiline
+              rowsMax={5}
+              variant="outlined"
+              label={intl.formatMessage({
+                id: 'courseForm.courseDescriptionForm',
+              })}
+              error={errors.courseDescription !== undefined}
+              helperText={errors.courseDescription?.message}
+              data-cy="course-description-input"
+              className={classes.textField}
+            />
+          )}
         />
 
+        {/* Calendar checkbox */}
+        <FormControlLabel
+          control={
+            <Checkbox
+              disabled={editView && course.published}
+              checked={calendarToggle}
+              onClick={() => setCalendarToggle(!calendarToggle)}
+            />
+          }
+          label={intl.formatMessage({ id: 'courseForm.includeCalendar' })}
+        />
+
+        {/* Calendar description input */}
+        <Controller
+          name="calendarDescription"
+          control={control}
+          defaultValue={
+            calendar?.content || intl.formatMessage({ id: 'courseForm.timeQuestionDefault' })
+          }
+          rules={{
+            required: intl.formatMessage({ id: 'courseForm.calendarDescMissingValidationMsg' }),
+            maxLength: {
+              value: 250,
+              message: intl.formatMessage({ id: 'courseForm.calendarDescTooLongValidationMsg' }),
+            },
+          }}
+          render={props => (
+            <TextField
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              {...props}
+              fullWidth
+              variant="outlined"
+              label={intl.formatMessage({ id: 'courseForm.timeFormLabel' })}
+              error={errors.calendarDescription !== undefined}
+              helperText={errors.calendarDescription?.message}
+              disabled={!calendarToggle}
+              className={classes.textField}
+            />
+          )}
+        />
         {editView && course.published ? (
-          <p style={{ color: '#b00' }}>
+          <Alert severity="info" className={classes.alert}>
             {intl.formatMessage({ id: 'editView.coursePublishedNotification' })}
-          </p>
+          </Alert>
         ) : (
-          <Form.Group>
-            <Form.Button
-              type="button"
-              onClick={handleAddForm}
-              color="green"
+          <FormGroup row>
+            <Button
+              variant="contained"
+              onClick={handleAddQuestion}
               data-cy="add-question-button"
+              className={classes.addButton}
             >
               <FormattedMessage id="courseForm.addQuestion" />
-            </Form.Button>
-
-            <Popup trigger={<Icon name="info circle" size="large" color="blue" />} wide="very">
-              <Popup.Content>
-                <FormattedMessage id="courseForm.infoBox" />
-              </Popup.Content>
-            </Popup>
-          </Form.Group>
+            </Button>
+            <InfoPopup message={intl.formatMessage({ id: 'courseForm.infoBox' })} />
+          </FormGroup>
         )}
 
-        <Form.Group style={{ flexWrap: 'wrap' }}>
+        <FormGroup row>
           {questions?.map((q, index) => (
             <QuestionForm
               key={q.qKey ? q.qKey : q.id}
@@ -409,74 +421,65 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
               hookForm={hookForm}
             />
           ))}
-        </Form.Group>
+        </FormGroup>
 
         <h3>
           <FormattedMessage id="courseForm.teacherInfo" />
         </h3>
-
         <div>
           <TeacherList courseTeachers={courseTeachers} setCourseTeachers={setCourseTeachers} />
         </div>
 
-        {courseTeachers.length === 0 ? (
-          <Message icon info>
-            <Icon name="info" />
-            <Message.Content>
-              <Message.Header>
-                <FormattedMessage id="course.noTeachers" />
-              </Message.Header>
-            </Message.Content>
-          </Message>
-        ) : null}
-
-        <Form.Checkbox
+        {courseTeachers.length === 0 && (
+          <Alert severity="info" className={classes.alert}>
+            <FormattedMessage id="course.noTeachers" />
+          </Alert>
+        )}
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={publishToggle}
+              onClick={() => setPublishToggle(!publishToggle)}
+              data-cy="publish-checkbox"
+            />
+          }
           label={intl.formatMessage({ id: 'courseForm.publishCourse' })}
-          checked={publishToggle}
-          onClick={() => setPublishToggle(!publishToggle)}
-          data-cy="publish-checkbox"
         />
-
-        {publishToggle ? (
-          <Message icon info>
-            <Icon name="info" />
-            <Message.Content>
-              <Message.Header>
-                <FormattedMessage id="courseForm.publishAlert" />
-              </Message.Header>
-            </Message.Content>
-          </Message>
-        ) : null}
+        {publishToggle && (
+          <Alert severity="warning" className={classes.alert}>
+            <FormattedMessage id="courseForm.publishAlert" />
+          </Alert>
+        )}
 
         {role === roles.ADMIN_ROLE &&
-          new Date(deadline).getTime() <= new Date().getTime() && (
-            <p style={{ color: '#b00' }}>
-              {intl.formatMessage({ id: 'editView.pastDeadlineWarning' })}
-            </p>
+          new Date(getValues('deadline')).getTime() <= new Date().getTime() && (
+            <Alert severity="warning" className={classes.alert}>
+              <FormattedMessage id="editView.pastDeadlineWarning" />
+            </Alert>
           )}
 
-        <ConfirmationButton
-          onConfirm={handleSubmit}
-          color={blue[500]}
-          modalMessage={promptText}
-          buttonDataCy="create-course-submit"
-          formControl={hookForm}
-        >
-          <FormattedMessage id="courseForm.confirmButton" />
-        </ConfirmationButton>&nbsp;
-
-        {editView ? (
+        <FormGroup row className={classes.buttonGroup}>
           <ConfirmationButton
-            onConfirm={onCancelEdit}
-            modalMessage={intl.formatMessage({ id: 'editView.confirmCancelEdits' })}
-            buttonDataCy="create-course-cancel"
-            color={red[500]}
+            onConfirm={handleSubmit(onSubmit)}
+            color={blue[500]}
+            modalMessage={confirmPromptText}
+            buttonDataCy="create-course-submit"
+            formControl={hookForm}
           >
-            <FormattedMessage id="editView.cancelEditsButton" />
-          </ConfirmationButton>
-        ) : null}
-
-      </Form>
+            <FormattedMessage id="courseForm.confirmButton" />
+          </ConfirmationButton>&nbsp;
+          {editView ? (
+            <ConfirmationButton
+              onConfirm={onCancelEdit}
+              modalMessage={intl.formatMessage({ id: 'editView.confirmCancelEdits' })}
+              buttonDataCy="create-course-cancel"
+              color={red[500]}
+            >
+              <FormattedMessage id="editView.cancelEditsButton" />
+            </ConfirmationButton>
+          ) : null}
+        </FormGroup>
+      </form>
     </div>
   );
 };
