@@ -25,7 +25,6 @@ createStore('grouplessStudentsStore', []);
 createStore('groupsUnsavedStore', false);
 createStore('lockedGroupsStore', []);
 createStore('toggleStore', false);
-createStore('coursesStore', []);
 createStore('teacherStore', []);
 createStore('groupsStore', []);
 createStore('notificationStore', {});
@@ -34,29 +33,16 @@ export const AppContext = createContext();
 
 export default () => {
   // eslint-disable-next-line no-unused-vars
-  const [courses, setCourses] = useStore('coursesStore');
   const [mocking] = useStore('mocking');
 
   const { loading: userLoading, error: userError, data: userData } = useQuery(CURRENT_USER);
-  const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
 
   useEffect(() => {
     initShibbolethPinger();
   }, []);
 
-  useEffect(() => {
-    if (!courseLoading) {
-      if (courseError !== undefined) {
-        // eslint-disable-next-line no-console
-        console.log('error:', courseError);
-      } else {
-        setCourses((courseData && courseData.courses) || []);
-      }
-    }
-  }, [courseData, courseError, courseLoading, setCourses]);
-
   if (userLoading || !userData) {
-    return <Loader active/>
+    return <Loader active data-cy="loader"/>
   }
 
   const user = userData.currentUser;
@@ -69,12 +55,9 @@ export default () => {
         <Notification />
         <Router basename={process.env.PUBLIC_URL}>
           <Header />
-          {courseLoading && user ? (
-            <Loader active data-cy="loader" />
-          ) : (
             <div className="mainContent">
               <Loader />
-              <Route path="/user" render={() => <UserInfo courses={courses} />} />
+              <Route path="/user" render={() => <UserInfo />} />
               <PrivateRoute
                 path="/addcourse"
                 requiredRole={roles.STAFF_ROLE}
@@ -92,7 +75,6 @@ export default () => {
               />
               <Route exact path={['/', '/courses']} component={Courses} />
             </div>
-          )}
         </Router>
         <KeepAlive />
       </div>

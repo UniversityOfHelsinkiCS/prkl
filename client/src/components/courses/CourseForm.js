@@ -19,7 +19,6 @@ import { AppContext } from '../../App';
 
 // Renders form for both course addition and course edition
 const CourseForm = ({ course, onCancelEdit, editView }) => {
-  const [courses, setCourses] = useStore('coursesStore');
 
   const [courseTitle, setCourseTitle] = useState('');
   const [courseDescription, setCourseDescription] = useState('');
@@ -239,16 +238,10 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
         const result = await updateCourse({
           variables,
         });
-        setCourses(
-          courses.map(c => {
-            return c.id !== course.id ? c : result.data.updateCourse;
-          })
-        );
       } else {
         const result = await createCourse({
           variables,
         });
-        setCourses(courses.concat(result.data.createCourse));
         course = result.data.createCourse;
       }
     } catch (error) {

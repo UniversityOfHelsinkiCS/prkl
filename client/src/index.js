@@ -30,7 +30,7 @@ const MockingEnabledClient = () => {
 
   const mockingHeader = mocking.mockedUser;
 
-  const cache = new InMemoryCache()
+  const cache = new InMemoryCache();
   const apolloClient = new ApolloClient({
     uri:
       process.env.REACT_APP_CUSTOM_NODE_ENV === 'development'

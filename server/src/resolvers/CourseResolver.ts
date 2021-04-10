@@ -209,8 +209,8 @@ export class CourseResolver {
   }
 
   @Authorized(STAFF)
-  @Mutation(() => Boolean)
-  async deleteCourse(@Ctx() context, @Arg("id") id: string): Promise<boolean> {
+  @Mutation(() => String)
+  async deleteCourse(@Ctx() context, @Arg("id") id: string): Promise<String> {
     const { user } = context;
     const course = await Course.findOne({ where: { id }, relations: ["teachers"] });
     if (!course) throw new Error("Course not found!");
@@ -221,7 +221,7 @@ export class CourseResolver {
     ) {
       course.deleted = true;
       await course.save();
-      return true;
+      return course.id;
     }
 
     throw new Error("No authorization to delete course.");
