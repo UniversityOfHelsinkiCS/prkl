@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react';
-import { Input, Divider, Menu, Select, Loader } from 'semantic-ui-react';
+import { Input, Divider, Menu, Select } from 'semantic-ui-react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 
 import CourseListStaffControls from './CourseListStaffControls';
+
 import CourseList from './CourseList';
-import MuiCourseList from './MuiCourseList';
 import { AppContext } from '../../App';
 import { ALL_COURSES } from '../../GqlQueries';
 import { useQuery } from '@apollo/client';
@@ -130,8 +130,6 @@ export default () => {
       checked: showMyCourses,
     },
   ];
-
-  
 
   return (
     <div>

@@ -29,13 +29,13 @@ describe('Adding a new course', () => {
   it('Correct person is preselected as teacher', () => {
     // when staff is creating course, staff is preselected and admin is not
     cy.switchToStaff();
-    cy.get('[data-cy="menu-item-add-course"]').click();
+    cy.get('[data-cy="menu-add-course"]').click();
     cy.get('[data-cy="teacher-dropdown"]').contains(users[1].firstname).children().should('have.class', 'delete icon');
     cy.get('[data-cy="teacher-dropdown"]').click().contains(users[2].firstname).children().should('not.exist');
 
     // and vice versa when admin is the creator
     cy.switchToAdmin();
-    cy.get('[data-cy="menu-item-add-course"]').click();
+    cy.get('[data-cy="menu-add-course"]').click();
     cy.get('[data-cy="teacher-dropdown"]').contains(users[2].firstname).children().should('have.class', 'delete icon');
     cy.get('[data-cy="teacher-dropdown"]').click().contains(users[1].firstname).children().should('not.exist');
   });
@@ -46,7 +46,7 @@ describe('Adding a new course', () => {
     });
 
     it('Can create a course with no questions', () => {
-      cy.get('[data-cy="menu-item-add-course"]').click();
+      cy.get('[data-cy="menu-add-course"]').click();
 
       cy.get('[data-cy="course-title-input"]').type('Course from Cypress');
       cy.get('[data-cy="course-code-input"]').type('CYP999');
@@ -64,7 +64,7 @@ describe('Adding a new course', () => {
     });
 
     it('If no teachers are chosen course is added and staff is teacher', () => {
-      cy.get('[data-cy="menu-item-add-course"]').click();
+      cy.get('[data-cy="menu-add-course"]').click();
       // fill info
       cy.get('[data-cy="course-title-input"]').type('Course without teachers');
       cy.get('[data-cy="course-code-input"]').type('CWT123');
@@ -87,7 +87,7 @@ describe('Adding a new course', () => {
     it('Correct teachers are added to the course', () => {
       // create course as admin
       cy.switchToAdmin();
-      cy.get('[data-cy="menu-item-add-course"]').click();
+      cy.get('[data-cy="menu-add-course"]').click();
       cy.get('[data-cy="course-title-input"]').type('Course with multiple teachers');
       cy.get('[data-cy="course-code-input"]').type('CWMT123');
       cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
@@ -122,7 +122,7 @@ describe('Adding a new course', () => {
     });
 
     it('Can make questions optional', () => {
-      cy.get('[data-cy="menu-item-add-course"]').click();
+      cy.get('[data-cy="menu-add-course"]').click();
 
       // input course details
       cy.get('[data-cy="course-title-input"]').type('OptionalQuestionsTest');
