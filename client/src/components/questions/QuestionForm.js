@@ -227,7 +227,9 @@ const QuestionForm = ({
           )}
 
           {errors[missingChoicesErr] && (
-            <Alert severity="error">{errors[missingChoicesErr]?.message}</Alert>
+            <Alert severity="error" className={classes.alert}>
+              {errors[missingChoicesErr]?.message}
+            </Alert>
           )}
 
           {/* Question choice input */}

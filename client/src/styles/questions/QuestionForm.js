@@ -35,6 +35,9 @@ const useQuestionFormStyles = makeStyles({
   checkboxGroup: {
     marginTop: 10,
   },
+  alert: {
+    marginTop: 10,
+  },
 });
 
 // eslint-disable-next-line import/prefer-default-export
