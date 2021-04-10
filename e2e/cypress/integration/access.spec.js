@@ -15,11 +15,11 @@ describe('User access and content', () => {
     cy.switchToStudent();
     // menu
     cy.wait(300);
-    cy.get('[data-cy="menu-item-courses"]').should('exist');
-    cy.get('[data-cy="menu-item-add-course"]').should('not.exist');
-    cy.get('[data-cy="menu-item-user-mgmt"]').should('not.exist');
-    cy.get('[data-cy="menu-item-info"]').should('exist');
-    cy.get('[data-cy="menu-item-privacy-toggle"]').should('not.exist');
+    cy.get('[data-cy="menu-courses"]').should('exist');
+    cy.get('[data-cy="menu-add-course"]').should('not.exist');
+    cy.get('[data-cy="menu-user-mgmt"]').should('not.exist');
+    cy.get('[data-cy="menu-info"]').should('exist');
+    cy.get('[data-cy="menu-privacy-toggle"]').should('not.exist');
     cy.get('[data-cy="mockbar"]').should('exist');
 
     // paths
@@ -35,15 +35,6 @@ describe('User access and content', () => {
     // course descriptions
     cy.get(`[data-cy="${courses[0].code}"]`).within(() => {
       cy.contains(courses[0].description);
-    });
-
-    // course teachers
-    cy.get(`[data-cy="${courses[0].code}"]`).within(() => {
-      cy.contains('Teachers').click();
-      cy.contains(courses[0].teachers[0].firstname);
-      cy.contains(courses[0].teachers[0].lastname);
-      cy.contains(courses[0].teachers[0].email);
-      cy.contains('Teachers').click();
     });
 
     // cannot see staff controls
@@ -72,7 +63,7 @@ describe('User access and content', () => {
     cy.get(`[href="https://courses.helsinki.fi/fi/${courses[1].code}"]`).should('exist');
 
     // personal info
-    cy.get('[data-cy="menu-item-info"]').click();
+    cy.get('[data-cy="menu-info"]').click();
     cy.url().should('include', '/user');
     cy.contains(`${users[0].firstname} ${users[0].lastname}`);
     cy.contains(`${users[0].studentNo}`);
@@ -84,11 +75,11 @@ describe('User access and content', () => {
   it('Staff', () => {
     cy.switchToStaff();
     // menu
-    cy.get('[data-cy="menu-item-courses"]').should('exist');
-    cy.get('[data-cy="menu-item-add-course"]').should('exist');
-    cy.get('[data-cy="menu-item-user-mgmt"]').should('not.exist');
-    cy.get('[data-cy="menu-item-info"]').should('exist');
-    cy.get('[data-cy="menu-item-privacy-toggle"]').should('not.exist');
+    cy.get('[data-cy="menu-courses"]').should('exist');
+    cy.get('[data-cy="menu-add-course"]').should('exist');
+    cy.get('[data-cy="menu-user-mgmt"]').should('not.exist');
+    cy.get('[data-cy="menu-info"]').should('exist');
+    cy.get('[data-cy="menu-privacy-toggle"]').should('not.exist');
     cy.get('[data-cy="mockbar"]').should('exist');
 
     // course listing
@@ -159,11 +150,11 @@ describe('User access and content', () => {
     cy.wait(500);
     cy.switchToAdmin();
     // menu
-    cy.get('[data-cy="menu-item-courses"]').should('exist');
-    cy.get('[data-cy="menu-item-add-course"]').should('exist');
-    cy.get('[data-cy="menu-item-user-mgmt"]').should('exist');
-    cy.get('[data-cy="menu-item-info"]').should('exist');
-    cy.get('[data-cy="menu-item-privacy-toggle"]').should('exist');
+    cy.get('[data-cy="menu-courses"]').should('exist');
+    cy.get('[data-cy="menu-add-course"]').should('exist');
+    cy.get('[data-cy="menu-user-mgmt"]').should('exist');
+    cy.get('[data-cy="menu-info"]').should('exist');
+    cy.get('[data-cy="menu-privacy-toggle"]').should('exist');
     cy.get('[data-cy="mockbar"]').should('not.exist');
 
     // course listing

@@ -9,8 +9,8 @@ export default {
     'header.personalInfo': 'Personal info',
     'header.toggle': 'Toggle privacy',
     'header.courses': 'Courses',
-    'header.addCourse': 'Add Course',
-    'header.userManagement': 'Manage Users',
+    'header.addCourse': 'Add course',
+    'header.userManagement': 'Manage users',
     'header.logout': 'Logout',
 
     'courseForm.pageTitle': 'Create course',

@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { blue } from '@material-ui/core/colors';
 
-const useUserCourseListStyles = makeStyles((theme) => ({
+const useUserCourseListStyles = makeStyles(theme => ({
   table: {
     minWidth: 700,
   },
@@ -12,11 +12,10 @@ const useUserCourseListStyles = makeStyles((theme) => ({
   row: {
     backgroundColor: theme.palette.action.hover,
     '&:hover': {
-        backgroundColor: blue[300],
+      backgroundColor: blue[300],
     },
   },
 }));
 
-export { 
-  useUserCourseListStyles,
-};
+// eslint-disable-next-line import/prefer-default-export
+export { useUserCourseListStyles };

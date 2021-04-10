@@ -17,7 +17,7 @@ describe('Admin', () => {
     cy.visit('/usermanagement');
     //privacy toggle
     cy.get('[data-cy="manage-user-1"]').contains(users[0].email);
-    cy.get('[data-cy="menu-item-privacy-toggle"]').click();
+    cy.get('[data-cy="menu-privacy-toggle"]').click();
     cy.get('[data-cy="manage-user-1"]').contains('dummy.mail@helsinki.fi');
     cy.get('[data-cy="manage-user-1"]').contains(users[0].email).should('not.exist');
     cy.get('[data-cy="staff-button-1"]').should('have.class', 'ui button');
