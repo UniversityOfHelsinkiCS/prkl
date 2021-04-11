@@ -20,12 +20,12 @@ describe('Admin', () => {
     cy.get('[data-cy="menu-privacy-toggle"]').click();
     cy.get('[data-cy="manage-user-1"]').contains('dummy.mail@helsinki.fi');
     cy.get('[data-cy="manage-user-1"]').contains(users[0].email).should('not.exist');
-    cy.get('[data-cy="staff-button-1"]').should('have.class', 'makeStyles-plainButtonMargin-15');
-    cy.get('[data-cy="student-button-1"]').should('have.class', 'makeStyles-activeRole-14');
+    cy.get('[data-cy="staff-button-1"]').should('not.have.class', 'makeStyles-activeRole-14');
+    cy.get('[data-cy="student-button-1"]').should('not.have.class', 'makeStyles-plainButtonMargin-15');
     // make student staff
     cy.get('[data-cy="staff-button-1"]').click();
-    cy.get('[data-cy="staff-button-1"]').should('have.class', 'makeStyles-activeRole-14');
-    cy.get('[data-cy="student-button-1"]').should('have.class', 'makeStyles-plainButtonMargin-15');
+    cy.get('[data-cy="staff-button-1"]').should('not.have.class', 'makeStyles-plainButtonMargin-15');
+    cy.get('[data-cy="student-button-1"]').should('not.have.class', 'makeStyles-activeRole-14');
     // check that role of student changed
     cy.switchToStudent();
     cy.visit('/courses');
