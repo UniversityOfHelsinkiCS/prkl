@@ -71,20 +71,6 @@ export default () => {
           </ButtonGroup>
         </Box>
 
-        {mocking.mockedUser !== mocking.mockedBy ? (
-        <Box data-cy="mockbar">
-          <Typography>Logged in as: {user.firstname} {user.lastname}</Typography>
-          
-          <ButtonGroup className={classes.mockingControls}>
-            <Button
-              onClick={() => stopMocking(setMocking, mocking.mockedBy)}
-              data-cy="stop-mocking-button"
-            >
-              Switch back to Admin
-            </Button>
-          </ButtonGroup>
-        </Box>) : null}
-
       </Toolbar>
     </AppBar>
   );

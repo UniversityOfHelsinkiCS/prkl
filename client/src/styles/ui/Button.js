@@ -9,32 +9,26 @@ const useButtonStyles = makeStyles({
 
 const BlueButton = withStyles({
   root: {
-    backgroundColor: blue[500]
-  }
+    backgroundColor: blue[500],
+  },
 })(Button);
 
 const GreenButton = withStyles({
   root: {
-    backgroundColor: green[500]
-  }
+    backgroundColor: green[500],
+  },
 })(Button);
 
 const OrangeButton = withStyles({
   root: {
-    backgroundColor: orange[500]
-  }
+    backgroundColor: orange[500],
+  },
 })(Button);
 
 const RedButton = withStyles({
   root: {
-    backgroundColor: red[500]
-  }
+    backgroundColor: red[500],
+  },
 })(Button);
 
-export {
-  useButtonStyles,
-  BlueButton,
-  GreenButton,
-  OrangeButton,
-  RedButton
-}
+export { useButtonStyles, BlueButton, GreenButton, OrangeButton, RedButton };
