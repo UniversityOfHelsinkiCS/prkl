@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Input, Divider, Menu, Select } from 'semantic-ui-react';
+import { Input, Divider, Menu, Select, Loader } from 'semantic-ui-react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 
