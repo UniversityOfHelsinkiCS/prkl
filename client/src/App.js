@@ -16,6 +16,7 @@ import Course from './components/courses/Course';
 import Users from './components/users/Users';
 import DevBar from './components/DevBar';
 import Header from './components/Header';
+import MockBar from './components/MockBar';
 import roles from './util/userRoles';
 import './App.css';
 import Notification from './components/ui/Notification';
@@ -63,6 +64,8 @@ export default () => {
   return (
     <AppContext.Provider value={{user}}>
       {process.env.REACT_APP_CUSTOM_NODE_ENV !== 'production' ? <DevBar /> : null}
+      {mocking.mockedBy ? <MockBar /> : null}
+      
       <div className="App">
         <Notification />
         <Router basename={process.env.PUBLIC_URL}>
