@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Input, Divider, Menu, Select } from 'semantic-ui-react';
+import { Input, Divider, Menu, Select, Loader } from 'semantic-ui-react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 
@@ -7,10 +7,11 @@ import CourseListStaffControls from './CourseListStaffControls';
 
 import CourseList from './CourseList';
 import { AppContext } from '../../App';
+import { ALL_COURSES } from '../../GqlQueries';
+import { useQuery } from '@apollo/client';
 
 export default () => {
   const intl = useIntl();
-  const [courses] = useStore('coursesStore');
   const [search, setSearch] = useState('');
   const [order, setOrder] = useState(localStorage.getItem('assembler.courseOrder') || 'name');
   const [showPastCourses, setShowPastCourses] = useState(
@@ -20,6 +21,14 @@ export default () => {
     localStorage.getItem('assembler.showMyCourses') === 'true'
   );
   const { user } = useContext(AppContext);
+
+  const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
+
+  if (courseLoading || courseError !== undefined) {
+    return <Loader active/>
+  }
+
+  const courses = courseData.courses;
 
   const handleSearchChange = event => {
     setSearch(event.target.value);

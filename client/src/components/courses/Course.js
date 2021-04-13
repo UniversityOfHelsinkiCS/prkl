@@ -28,7 +28,6 @@ export const CourseContext = createContext();
 export default ({ id, match }) => {
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [regByStudentId, setRegByStudentId] = useState([]);
-  const [courses, setCourses] = useStore('coursesStore');
   const [groups, setGroups] = useStore('groupsStore');
   const [editView, setEditView] = useState(false);
   const [course, setCourse] = useState({});
@@ -37,7 +36,20 @@ export default ({ id, match }) => {
   const intl = useIntl();
   const { user } = useContext(AppContext);
 
-  const [deleteCourse] = useMutation(DELETE_COURSE);
+  const [deleteCourse] = useMutation(DELETE_COURSE, {
+    update(cache, {data: {deleteCourse: courseId}}) {
+      const success = cache.evict({
+        id: cache.identify({
+          __typename: "Course",
+          courseId
+        })
+      });
+
+      if (!success) {
+        console.error(`Failed to delete course ${courseId} from cache.`)
+      }
+    }
+  });
 
   // Course description
   const paragraphs = course.description ? course.description.split('\n\n') : [];
@@ -119,16 +131,8 @@ export default ({ id, match }) => {
     const variables = { id };
     try {
       await deleteCourse({
-        variables,
+        variables
       });
-      const trimmedCourses = [];
-
-      courses.forEach(remainingCourse => {
-        if (remainingCourse.id !== id) {
-          trimmedCourses.push(remainingCourse);
-        }
-      });
-      setCourses(trimmedCourses);
     } catch (deletionError) {
       // eslint-disable-next-line no-console
       console.log('error:', deletionError);

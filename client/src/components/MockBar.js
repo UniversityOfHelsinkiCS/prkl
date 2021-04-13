@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
-import { Menu, Button, Loader } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
 import { AppContext } from '../App';
+import { AppBar, Button, ButtonGroup, Toolbar, Typography, Box } from '@material-ui/core';
 
+import { useMockBarStyles } from '../styles/ui/MockBar';
 
 export default () => {
   const [mocking, setMocking] = useStore('mocking');
@@ -13,33 +14,28 @@ export default () => {
     window.location.reload();
   };
 
+  
+  const classes = useMockBarStyles();
+
   return (
     <>
       {mocking.mockedUser !== mocking.mockedBy ? (
-        <Menu
-          data-cy="mockbar"
-          className="mainHeader"
-          size="massive"
-          stackable
-          borderless
-          attached
-          inverted
-        >
-          <Menu.Item>Hey admin, you are now logged in as user:</Menu.Item>
-          <Menu.Item>
-            {user.firstname} {user.lastname}
-          </Menu.Item>
-          <Menu.Item>
-            <Button
-              color="red"
-              onClick={() => stopMocking(setMocking, mocking.mockedBy)}
-              data-cy="stop-mocking-button"
-            >
-              Stop
-            </Button>
-          </Menu.Item>
-        </Menu>
-      ) : null}
+        <AppBar className={classes.appbar} position={"static"} data-cy="mockbar">
+          <Toolbar>
+
+              <Typography className={classes.typography}>Logged in as: {user.firstname} {user.lastname}</Typography>
+              
+              <ButtonGroup className={classes.mockingControls}>
+                <Button
+                  onClick={() => stopMocking(setMocking, mocking.mockedBy)}
+                  data-cy="stop-mocking-button"
+                >
+                  Switch back to Admin
+                </Button>
+              </ButtonGroup>
+
+          </Toolbar>
+        </AppBar>) : null}
     </>
   );
 };

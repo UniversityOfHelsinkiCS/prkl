@@ -2,19 +2,16 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Route } from 'react-router-dom';
-import { Message, Icon, Loader } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import { AppContext } from '../../App';
 
 const NotAllowed = () => (
-  <Message icon negative>
-    <Icon name="ban" />
-    <Message.Content>
-      <Message.Header>
-        <FormattedMessage id="util.notAllowed" />
-      </Message.Header>
-    </Message.Content>
-  </Message>
+  <Alert severity="warning">
+    <AlertTitle style={{ fontSize: 18 }}>
+      <FormattedMessage id="util.notAllowed" />
+    </AlertTitle>
+  </Alert>
 );
 
 // prettier-ignore
@@ -24,7 +21,6 @@ const NotAllowed = () => (
  * @component
  */
 const PrivateRoute = ({ requiredRole, render, ...rest }) => {
-
   const { user } = useContext(AppContext);
 
   return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { Card, CardContent, Typography, Link, Divider, Popover, List, ListItem } from '@material-ui/core';
+import { Card, CardContent, Typography, Link, Divider, Popover, List, ListItem, Box } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 export default ({code, title, id, deadline, teachers, paragraphs }) => {
@@ -32,7 +32,11 @@ export default ({code, title, id, deadline, teachers, paragraphs }) => {
 
           <Typography variant="h6" gutterBottom>
             {`${intl.formatMessage({ id: 'courses.deadline' })} ${intl.formatDate(deadline)}`}
-            {divider}<Link onClick={handleClick} style={{ color: 'inherit', textDecoration: 'inherit' }}>{'Teachers'}<ExpandMoreIcon fontSize="small"/></Link>
+            {divider}
+            <Link onClick={handleClick} style={{ color: 'inherit', textDecoration: 'inherit' /*does not work with mui makestyle!*/ }}>
+              {'Teachers'}<ExpandMoreIcon fontSize="small"/>
+            </Link>
+
               <Popover
                 open={open}
                 anchorEl={anchorEl}
@@ -54,6 +58,7 @@ export default ({code, title, id, deadline, teachers, paragraphs }) => {
                   ))}
                 </List>
               </Popover>
+
           </Typography>
 
           <Divider light />

@@ -1,16 +1,28 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Header, Loader, Card, Input, Divider, Button } from 'semantic-ui-react';
 import { useQuery, useMutation } from '@apollo/client';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
+import {
+  TextField,
+  CircularProgress,
+  Divider,
+  Paper,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+} from '@material-ui/core';
+import { useUsersStyle } from '../../styles/users/Users';
+import { OrangeButton } from '../../styles/ui/Button';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import { ALL_USERS, EDIT_USER_ROLE } from '../../GqlQueries';
-
 import roles from '../../util/userRoles';
+
 import { AppContext } from '../../App';
 
 export default () => {
+  const classes = useUsersStyle();
   const [privacyToggle] = useStore('toggleStore');
   const [allUsers, setAllUsers] = useState(null);
   // eslint-disable-next-line no-unused-vars
@@ -43,14 +55,14 @@ export default () => {
     try {
       editUserRole({
         variables,
-      });
+      }).then();
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log('error editing role:', e);
     }
   };
 
-  const handleLogInAs = (setMocking, id) => {
+  const handleLogInAs = id => {
     setMocking(prev => ({ ...prev, mockedUser: id }));
     history.push('/courses');
     window.location.reload();
@@ -67,22 +79,25 @@ export default () => {
   }
 
   if (loading || !allUsers) {
-    return <Loader active />;
+    return <CircularProgress />;
   }
 
   return (
     <div>
-      <Input
+      <TextField
+        id="outlined-search"
+        label={intl.formatMessage({ id: 'users.searchPlaceholder' })}
+        type="search"
+        variant="outlined"
         onChange={handleSearchChange}
-        placeholder={intl.formatMessage({ id: 'users.searchPlaceholder' })}
       />
-      <Divider />
+      <Divider className={classes.divider} />
       {allUsers.length === 0 ? (
         <div>
           <p />
-          <Header as="h3" block>
+          <Paper className={classes.emptyHeader} variant="outlined">
             <FormattedMessage id="users.empty" />
-          </Header>
+          </Paper>
         </div>
       ) : (
         <div>
@@ -94,40 +109,50 @@ export default () => {
                 u.studentNo?.includes(search.toLowerCase())
             )
             .map(u => (
-              <Card key={u.id} raised fluid data-cy={`manage-user-${u.shibbolethUid}`}>
-                <Card.Content>
-                  <Card.Header content={`${u.lastname} ${u.firstname}`} />
-                  <Card.Description content={`${u.email} - ${u.studentNo}`} />
-                  <Card.Content>
-                    {u.role === roles.ADMIN_ROLE ? (
-                      <FormattedMessage id="users.admin" />
-                    ) : (
-                      <div>
-                        <Button
-                          onClick={() => handleRoleButtonClick(u.id, roles.STAFF_ROLE)}
-                          primary={u.role === roles.STAFF_ROLE}
-                          data-cy={`staff-button-${u.shibbolethUid}`}
-                        >
-                          {intl.formatMessage({ id: 'users.staff' })}
-                        </Button>
-                        <Button
-                          onClick={() => handleRoleButtonClick(u.id, roles.STUDENT_ROLE)}
-                          primary={u.role === roles.STUDENT_ROLE}
-                          data-cy={`student-button-${u.shibbolethUid}`}
-                        >
-                          {intl.formatMessage({ id: 'users.student' })}
-                        </Button>
-                        <Button
-                          onClick={() => handleLogInAs(setMocking, u.shibbolethUid)}
-                          color="orange"
-                          data-cy={`log-in-as-${u.shibbolethUid}`}
-                        >
-                          Log in as this user
-                        </Button>
-                      </div>
-                    )}
-                  </Card.Content>
-                </Card.Content>
+              <Card
+                variant="outlined"
+                className={classes.cardRoot}
+                key={u.id}
+                data-cy={`manage-user-${u.shibbolethUid}`}
+              >
+                <CardContent>
+                  <Typography variant="h5">{`${u.lastname} ${u.firstname}`}</Typography>
+                  <Typography>{`${u.email} - ${u.studentNo}`}</Typography>
+                  {u.role === roles.ADMIN_ROLE ? (
+                    <FormattedMessage id="users.admin" />
+                  ) : (
+                    <div className={classes.buttonDiv}>
+                      <Button
+                        onClick={() => handleRoleButtonClick(u.id, roles.STAFF_ROLE)}
+                        className={
+                          u.role === roles.STAFF_ROLE
+                            ? classes.activeRole
+                            : classes.plainButtonMargin
+                        }
+                        data-cy={`staff-button-${u.shibbolethUid}`}
+                      >
+                        {intl.formatMessage({ id: 'users.staff' })}
+                      </Button>
+                      <Button
+                        onClick={() => handleRoleButtonClick(u.id, roles.STUDENT_ROLE)}
+                        className={
+                          u.role === roles.STUDENT_ROLE
+                            ? classes.activeRole
+                            : classes.plainButtonMargin
+                        }
+                        data-cy={`student-button-${u.shibbolethUid}`}
+                      >
+                        {intl.formatMessage({ id: 'users.student' })}
+                      </Button>
+                      <OrangeButton
+                        onClick={() => handleLogInAs(u.shibbolethUid)}
+                        data-cy={`log-in-as-${u.shibbolethUid}`}
+                      >
+                        Log in as this user
+                      </OrangeButton>
+                    </div>
+                  )}
+                </CardContent>
               </Card>
             ))}
         </div>
