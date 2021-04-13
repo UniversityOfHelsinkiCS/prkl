@@ -11,7 +11,7 @@ const useStyles = makeStyles({
   },
   paper: {
     padding: 20,
-    maxWidth: '50%',
+    maxWidth: 500,
   },
   info: {
     color: blue[700],
