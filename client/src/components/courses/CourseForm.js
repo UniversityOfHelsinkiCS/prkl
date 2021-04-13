@@ -3,13 +3,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
-import { useStore } from 'react-hookstore';
 import { useForm, Controller } from 'react-hook-form';
 import _ from 'lodash';
 
 import { TextField, Button, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { blue, red } from '@material-ui/core/colors';
+import InfoIcon from '@material-ui/icons/Info';
 import { CREATE_COURSE, UPDATE_COURSE } from '../../GqlQueries';
 
 import ConfirmationButton from '../ui/ConfirmationButton';
@@ -18,7 +18,7 @@ import TeacherList from './TeacherList';
 import roles from '../../util/userRoles';
 import { TIMES } from '../../util/questionTypes';
 import { AppContext } from '../../App';
-import InfoPopup from '../ui/InfoPopup';
+import Popup from '../ui/Popup';
 import { useCourseFormStyles } from '../../styles/courses/CourseForm';
 
 // Renders form for both adding and editing a course
@@ -397,7 +397,9 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
             >
               <FormattedMessage id="courseForm.addQuestion" />
             </Button>
-            <InfoPopup message={intl.formatMessage({ id: 'courseForm.infoBox' })} />
+            <Popup content={intl.formatMessage({ id: 'courseForm.infoBox' })}>
+              <InfoIcon className={classes.info} />
+            </Popup>
           </FormGroup>
         )}
 

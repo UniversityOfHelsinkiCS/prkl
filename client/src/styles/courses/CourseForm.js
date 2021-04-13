@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { green } from '@material-ui/core/colors';
+import { green, blue } from '@material-ui/core/colors';
 
 const useCourseFormStyles = makeStyles({
   addButton: {
@@ -18,6 +18,11 @@ const useCourseFormStyles = makeStyles({
   },
   buttonGroup: {
     marginTop: 10,
+  },
+  info: {
+    color: blue[700],
+    fontSize: 30,
+    margin: 5,
   },
 });
 
