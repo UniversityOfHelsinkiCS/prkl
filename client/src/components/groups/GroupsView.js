@@ -1,27 +1,26 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React, { useState, useEffect, useContext } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
-import { useStore } from 'react-hookstore';
-import { Prompt } from 'react-router-dom';
-import { useQuery, useMutation } from '@apollo/client';
-import { Form, Loader } from 'semantic-ui-react';
+import { useMutation, useQuery } from '@apollo/client';
+import { blue, green, orange, red } from '@material-ui/core/colors';
 import { Alert } from '@material-ui/lab';
 import _ from 'lodash';
+import React, { useContext, useEffect, useState } from 'react';
+import { useStore } from 'react-hookstore';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { Prompt } from 'react-router-dom';
+import { Form, Loader } from 'semantic-ui-react';
+import { AppContext } from '../../App';
 import {
-  GENERATE_GROUPS,
-  SAVE_GROUPS,
   COURSE_GROUPS,
+  GENERATE_GROUPS,
   PUBLISH_COURSE_GROUPS,
+  SAVE_GROUPS,
 } from '../../GqlQueries';
-
-import { green, blue, red, orange } from '@material-ui/core/colors';
-
+import userRoles from '../../util/userRoles';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import GrouplessStudents from './GrouplessStudents';
+import MuiGrouplessStudents from './MuiGrouplessStudents';
+import MuiGroups from './MuiGroups';
 import Groups from './Groups';
-
-import userRoles from '../../util/userRoles';
-import { AppContext } from '../../App';
 
 export default ({ course, registrations, regByStudentId, groups, setGroups }) => {
   const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
@@ -430,6 +429,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
               setRegistrationsWithoutGroups={setRegistrationsWithoutGroups}
               course={course}
               regByStudentId={regByStudentId}
+              minGroupSize={minGroupSize}
             />
           )}
 

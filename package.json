@@ -49,6 +49,7 @@
     "toska"
   ],
   "dependencies": {
+    "material-ui-popup-state": "^1.8.0",
     "react-hook-form": "^6.9.6"
   }
 }

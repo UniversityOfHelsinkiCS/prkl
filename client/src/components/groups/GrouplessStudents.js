@@ -22,7 +22,7 @@ export default ({
   const [notification, setNotification] = useStore('notificationStore');
   const [maxGroupSize, setMaxGroupSize] = useState(course.maxGroupSize);
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
-  
+
   const intl = useIntl();
 
   const findGroup = async student => {
@@ -137,7 +137,7 @@ export default ({
     groups.forEach(g => {
       g.students.forEach(({ id }) => {
         if (id) {
-          studentsInGroups++;
+          studentsInGroups += 1;
         }
       });
     });
@@ -195,7 +195,7 @@ export default ({
       if (studentIds.length !== studentsInGroups) {
         setGroupsUnsaved(true);
       }
-      
+
       if (groupless) {
         setNotification({
           type: 'error',
