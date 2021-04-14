@@ -258,7 +258,17 @@ export default ({
     />
   );
 
-  const handleSwitchingGroup = (fromTableIndex, fromRowIndex, toTableIndex) => {
+  const handleSwitchingGroup = (student, toTableIndex) => {
+      let fromTableIndex;
+      let fromRowIndex;
+      groups.map((g, groupIndex) => {
+        g.students.map((s, studentIndex) => {
+          if (s.id === student.id) {
+            fromTableIndex = groupIndex;
+            fromRowIndex = studentIndex;
+          }
+        })
+      })
     const toRowIndex = groups[toTableIndex].students.length;
     swapElements(fromRowIndex, toRowIndex, fromTableIndex, toTableIndex);
   };
@@ -295,6 +305,7 @@ export default ({
           {groups.map((group, tableIndex) => {
             return (
               <Box data-cy="group-container" border={1} borderRadius={5} style={{ marginTop: 10 }}>
+                <Button onClick={() => console.log(groups)}>asdf </Button>
                 <Container className={classes.container} component={Paper}>
                   <PopupState variant="popover">
                     {popupState => (
