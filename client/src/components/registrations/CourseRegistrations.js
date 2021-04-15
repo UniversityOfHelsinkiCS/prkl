@@ -2,106 +2,104 @@
 import React, { useContext } from 'react';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Table, Popup, Icon, Button } from 'semantic-ui-react';
+import _ from 'lodash';
 
+import {
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Paper,
+  Typography,
+} from '@material-ui/core';
+import { red } from '@material-ui/core/colors';
+import DateRangeIcon from '@material-ui/icons/DateRange';
+
+import { CourseContext } from '../courses/Course';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import questionSwitch, { count } from '../../util/functions';
-import ConfirmationButton from '../ui/ConfirmationButton';
 import { TIMES } from '../../util/questionTypes';
+import ConfirmationButton from '../ui/ConfirmationButton';
 import HourDisplay from '../misc/HourDisplay';
-import { useMutation } from '@apollo/client';
-import { DELETE_REGISTRATION } from '../../GqlQueries';
-import { CourseContext } from '../courses/Course';
+import Popup from '../ui/Popup';
 
-import { red } from '@material-ui/core/colors';
-
-// import { useMutation } from 'react-apollo';
-// import { DELETE_REGISTRATION } from '../../GqlQueries';
-
-const CourseRegistrations = ({
-  course,
-  registrations,
-  regByStudentId,
-}) => {
+const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
   const intl = useIntl();
   const [privacyToggle] = useStore('toggleStore');
 
-  const {deleteRegistration} = useContext(CourseContext);
-
-  const popupTimesDisplay = student => (
-    <HourDisplay
-      groupId={student.id}
-      header={`${student.firstname} ${student.lastname}`}
-      students={1}
-      times={count([regByStudentId[student.studentNo]])}
-    />
-  );
+  const { deleteRegistration } = useContext(CourseContext);
 
   return (
-    <>
-      <div>
-        <h3>
-          <FormattedMessage id="courseRegistration.title" /> {registrations.length}
-        </h3>
+    <div>
+      <Typography variant="h5">
+        <FormattedMessage id="courseRegistration.title" /> {registrations.length}
+      </Typography>
 
+      <TableContainer component={Paper}>
         <Table data-cy="registration-table">
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>
+          <TableHead>
+            <TableRow>
+              <TableCell>
                 <FormattedMessage id="courseRegistration.firstName" />
-              </Table.HeaderCell>
-              <Table.HeaderCell>
+              </TableCell>
+              <TableCell>
                 <FormattedMessage id="courseRegistration.lastName" />
-              </Table.HeaderCell>
-              <Table.HeaderCell>
+              </TableCell>
+              <TableCell>
                 <FormattedMessage id="courseRegistration.studentNumber" />
-              </Table.HeaderCell>
-              <Table.HeaderCell>
+              </TableCell>
+              <TableCell>
                 <FormattedMessage id="courseRegistration.email" />
-              </Table.HeaderCell>
-              {course.questions.some(q => q.questionType === TIMES) ? (
-                <Table.HeaderCell>
+              </TableCell>
+              {course.questions.some(q => q.questionType === TIMES) && (
+                <TableCell>
                   <FormattedMessage id="courseRegistration.times" />
-                </Table.HeaderCell>
-              ) : null}
-
-              {course.questions.map(question =>
-                question.questionType !== TIMES ? (
-                  <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
-                ) : null
+                </TableCell>
               )}
-              <Table.HeaderCell />
-            </Table.Row>
-          </Table.Header>
-
-          <Table.Body>
+              {course.questions.map(
+                question =>
+                  question.questionType !== TIMES && (
+                    <TableCell key={question.id}>{question.content}</TableCell>
+                  )
+              )}
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {registrations.map(reg => (
-              <Table.Row key={reg.id} data-cy="student-registration-row">
-                <Table.Cell>{reg.student.firstname}</Table.Cell>
-                <Table.Cell>{reg.student.lastname}</Table.Cell>
-                <Table.Cell>
-                  {privacyToggle ? dummyStudentNumber : reg.student.studentNo}
-                </Table.Cell>
-                <Table.Cell>{privacyToggle ? dummyEmail : reg.student.email}</Table.Cell>
-                {course.questions.some(q => q.questionType === TIMES) ? (
-                  <Popup
-                    content={() => popupTimesDisplay(reg.student)}
-                    trigger={
-                      <Table.Cell>
-                        <Button icon>
-                          <Icon name="calendar alternate outline" color="blue" size="large" />
-                        </Button>
-                      </Table.Cell>
-                    }
-                  />
-                ) : null}
+              <TableRow key={reg.id} data-cy="student-registration-row">
+                <TableCell>{reg.student.firstname}</TableCell>
+                <TableCell>{reg.student.lastname}</TableCell>
+                <TableCell>{privacyToggle ? dummyStudentNumber : reg.student.studentNo}</TableCell>
+                <TableCell>{privacyToggle ? dummyEmail : reg.student.email}</TableCell>
 
+                {course.questions.some(q => q.questionType === TIMES) && (
+                  <TableCell>
+                    <Popup
+                      content={
+                        !_.isEmpty(regByStudentId) && (
+                          <HourDisplay
+                            groupId={reg.student.id}
+                            header={`${reg.student.firstname} ${reg.student.lastname}`}
+                            students={1}
+                            times={count([regByStudentId[reg.student.studentNo]])}
+                          />
+                        )
+                      }
+                    >
+                      <DateRangeIcon color="primary" />
+                    </Popup>
+                  </TableCell>
+                )}
                 {reg.questionAnswers.map(qa => questionSwitch(qa))}
-                <Table.Cell>
+                <TableCell>
                   <ConfirmationButton
-                    onConfirm={() => deleteRegistration({
-                      variables: { courseId: course.id, studentId: reg.student.id },
-                    })}
+                    onConfirm={() =>
+                      deleteRegistration({
+                        variables: { courseId: course.id, studentId: reg.student.id },
+                      })
+                    }
                     modalMessage={`${intl.formatMessage({
                       id: 'courseRegistration.removeConfirmation',
                     })} (${reg.student.firstname} ${reg.student.lastname})`}
@@ -110,13 +108,13 @@ const CourseRegistrations = ({
                   >
                     <FormattedMessage id="courseRegistration.remove" />
                   </ConfirmationButton>
-                </Table.Cell>
-              </Table.Row>
+                </TableCell>
+              </TableRow>
             ))}
-          </Table.Body>
+          </TableBody>
         </Table>
-      </div>
-    </>
+      </TableContainer>
+    </div>
   );
 };
 

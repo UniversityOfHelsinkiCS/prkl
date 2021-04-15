@@ -1,9 +1,6 @@
 import React from 'react';
 import Popover from '@material-ui/core/Popover';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import InfoIcon from '@material-ui/icons/Info';
-import { blue } from '@material-ui/core/colors';
 
 const useStyles = makeStyles({
   popover: {
@@ -11,16 +8,11 @@ const useStyles = makeStyles({
   },
   paper: {
     padding: 20,
-    maxWidth: '50%',
-  },
-  info: {
-    color: blue[700],
-    fontSize: 30,
-    margin: 5,
+    maxWidth: 500,
   },
 });
 
-const InfoPopup = ({ message }) => {
+const Popup = ({ children, content }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -36,7 +28,9 @@ const InfoPopup = ({ message }) => {
 
   return (
     <div>
-      <InfoIcon onMouseEnter={handleOpen} onMouseLeave={handleClose} className={classes.info} />
+      <div onMouseEnter={handleOpen} onMouseLeave={handleClose}>
+        {children}
+      </div>
       <Popover
         anchorOrigin={{
           vertical: 'center',
@@ -55,10 +49,10 @@ const InfoPopup = ({ message }) => {
         onClose={handleClose}
         disableRestoreFocus
       >
-        <Typography>{message}</Typography>
+        {content}
       </Popover>
     </div>
   );
 };
 
-export default InfoPopup;
+export default Popup;
