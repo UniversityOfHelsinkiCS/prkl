@@ -131,7 +131,7 @@ describe('Group creation', () => {
 
       cy.contains(newGroupName).should('exist');
 
-      cy.get('[data-cy="back-to-info-from-groups-button"]').click();
+      cy.get('[data-cy="back-to-info-from-groups-button"]').click({ force: true });
 
       cy.get('[data-cy="show-registrations-button"]').click();
       cy.contains(users[0].firstname).parents('[data-cy="student-registration-row"]').within(() => {

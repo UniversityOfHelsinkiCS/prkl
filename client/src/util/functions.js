@@ -35,6 +35,11 @@ const first = 8;
 export const count = registrations => {
   const times = [...Array(7)].map(() => [...Array(hours)].map(() => 0));
   // console.log('times begin:', times)
+
+  if (registrations[0] === undefined ) {
+    return null;
+  }
+
   registrations.forEach(reg => {
     reg.workingTimes.forEach(time => {
       const start = new Date(time.startTime).getHours();

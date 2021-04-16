@@ -164,8 +164,6 @@ export default ({
         });
       });
 
-      console.log('id:s length', studentIds.length, ' count: ', studentsInGroups)
-
       const grouplessStudentIds = [];
 
       grouplessStudents.forEach(({ id }) => {
