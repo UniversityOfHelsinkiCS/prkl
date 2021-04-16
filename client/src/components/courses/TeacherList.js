@@ -1,8 +1,9 @@
 import React, { useContext, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
-import { Dropdown, Loader } from 'semantic-ui-react';
 import { useStore } from 'react-hookstore';
 import { useIntl } from 'react-intl';
+import { TextField } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 
 import roles from '../../util/userRoles';
 import { FACULTY_USERS } from '../../GqlQueries';
@@ -28,33 +29,30 @@ export default ({ courseTeachers, setCourseTeachers }) => {
     }
   }, [facultyData, facultyError, facultyLoading]); // eslint-disable-line
 
-  // this will be current user when creating a new course
-  const preSelected = courseTeachers.map(u => u.id);
-
-  const optionTeachers = teachers.map(u => ({
-    value: u.id,
-    text: `${u.firstname} ${u.lastname}`,
-  }));
-
   const handleTeacherToggle = (e, data) => {
-    // data.value is an array of id's
     const newTeachers = teachers.filter(t => {
-      return data.value.includes(t.id);
+      return data.find(value => value.id === t.id);
     });
     setCourseTeachers(newTeachers);
   };
 
   return (
     <div>
-      <Dropdown
-        placeholder={intl.formatMessage({ id: 'courseForm.teachers' })}
-        fluid
+      <Autocomplete
         multiple
-        search
-        selection
-        defaultValue={preSelected}
-        options={optionTeachers}
+        options={teachers}
+        getOptionLabel={option => `${option.firstname} ${option.lastname}`}
+        getOptionSelected={(option, value) => option.id === value.id}
+        value={courseTeachers}
         onChange={handleTeacherToggle}
+        renderInput={params => (
+          <TextField
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...params}
+            label={intl.formatMessage({ id: 'courseForm.teachers' })}
+          />
+        )}
+        disableCloseOnSelect
         data-cy="teacher-dropdown"
       />
     </div>
