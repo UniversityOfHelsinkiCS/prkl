@@ -48,6 +48,7 @@ const Popup = ({ children, content }) => {
         anchorEl={anchorEl}
         onClose={handleClose}
         disableRestoreFocus
+        disableScrollLock
       >
         {content}
       </Popover>
