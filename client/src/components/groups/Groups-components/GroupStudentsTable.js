@@ -35,7 +35,7 @@ const useClasses = makeStyles({
     fontSize: 14,
     borderRadius: 5,
   },
-  checkbox: {
+  buttons: {
     display: 'flex',
     paddingLeft: 10,
   },
@@ -115,7 +115,7 @@ export default ({ course, regByStudentId, group, tableIndex, setRegistrationsWit
 
                   {regByStudentId[student.studentNo]?.questionAnswers.map(qa => questionSwitch(qa))}
 
-                  <TableCell className={classes.checkbox}>
+                  <TableCell className={classes.buttons}>
                     <SwitchGroupButton setGroupsUnsaved={setGroupsUnsaved} student={student} />
                     <RemoveStudentButton
                       tableIndex={tableIndex}

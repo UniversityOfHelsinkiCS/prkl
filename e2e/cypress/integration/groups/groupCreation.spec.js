@@ -11,7 +11,7 @@ describe('Group creation', () => {
   describe('teacher', () => {
     const course = courses[3];
 
-    it('Can move a student to another group using dropdown uusi', () => {
+    it('Can move a student to another group using dropdown', () => {
       const groupToMoveFrom = 'GroupToMoveFrom';
       const groupToMoveTo = 'GroupToMoveTo';
 
@@ -22,55 +22,13 @@ describe('Group creation', () => {
 
       cy.contains(users[3].firstname).parents('[data-cy="draggable-row"]').within(() => {
         cy.get('[data-cy="switch-group-button"]').click()
-        cy.get('[data-cy="switch-group-button"]').parents('[data-cy="switch-div"]').within(() => {
-          cy.get('[data-cy="switch-group-select"]')
-        });
-        
       });
-    });
+      cy.get('[data-cy="switch-group-list"]').within(() => {
+        cy.contains("Group 2").click();
+      })
 
-    it('Can move a student to another group using dropdown', () => {
-      const groupToMoveFrom = 'GroupToMoveFrom';
-      const groupToMoveTo = 'GroupToMoveTo';
-
-      cy.visit(`/course/${course.id}`);
-      cy.get('[data-cy="manage-groups-button"]').click();
-      cy.get('[data-cy="create-groups-submit"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-
-      cy.contains(users[3].firstname).parents('[data-cy="group-container"]').within(() => {
-        cy.get('[data-cy="group-remove-button"]').should('not.exist');
-        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
-      });
-      cy.get('[data-cy="group-name-input"]').type(`{selectAll}${groupToMoveFrom}`);
-
-      cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(() => {
-        cy.get('[data-cy="group-remove-button"]').should('not.exist');
-        cy.contains(/^Group \d+$/).click(); // Regex pattern dependent on language, fix
-      });
-      cy.get('[data-cy="group-name-input"]').type(`{selectAll}${groupToMoveTo}`);
-
-      cy.get('[data-cy="save-groups-button"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.wait(1000);
-
-      cy.contains(groupToMoveFrom).parents('[data-cy="group-container"]').within(() => {
-        cy.get('[data-cy="switch-group-button"]').click();
-      });
-
-      cy.get('[data-cy="switch-group-select"]')
-        .click()
-        .contains(groupToMoveTo)
-        .click();
-
-      cy.contains(groupToMoveFrom).parents('[data-cy="group-container"]').within(() => {
-        cy.get('tr').should('have.length', 1);
-        cy.get('[data-cy="group-remove-button"]').should('exist');
-      });
-
-      cy.contains(groupToMoveTo).parents('[data-cy="group-container"]').within(() => {
-        cy.get('tr').should('have.length', 3);
-        cy.get('[data-cy="group-remove-button"]').should('not.exist');
+      cy.contains("Group 2").parents('[data-cy="group-container"]').within(() => {
+        cy.contains(users[3].firstname)
       });
     });
 

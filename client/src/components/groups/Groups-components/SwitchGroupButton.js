@@ -51,7 +51,7 @@ export default ({ setGroupsUnsaved, student }) => {
   return (
     <PopupState variant="popover">
       {popupState => (
-        <div data-cy="switch-div">
+        <div>
           <Tooltip title="Switch group">
             <IconButton
               data-cy="switch-group-button"
@@ -77,20 +77,23 @@ export default ({ setGroupsUnsaved, student }) => {
               horizontal: 'center',
             }}
           >
-            <Box p={2}>
-              <List data-cy="switch-group-select">
-                {groups.map((g, index) => {
-                  return (
-                    <ListItem
-                      button
-                      onClick={() => handleSwitchingGroup(student, index)}
-                    >
-                      {g.groupName}
-                    </ListItem>
-                  );
-                })}
-              </List>
-            </Box>
+            <div data-cy="switch-group-list">
+              <Box p={2}>
+                <List>
+                  {groups.map((g, index) => {
+                    return (
+                      <ListItem
+                        data-cy="switch-group-listItem"
+                        button
+                        onClick={() => handleSwitchingGroup(student, index)}
+                      >
+                        {g.groupName}
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              </Box>
+            </div>
           </Popover>
         </div>
       )}

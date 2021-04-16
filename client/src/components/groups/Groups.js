@@ -94,7 +94,6 @@ export default ({
                   tableIndex={tableIndex}
                   course={course}
                 />
-
                 <RemoveGroupButton
                   index={tableIndex}
                   setGroupNames={setGroupNames}
