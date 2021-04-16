@@ -30,14 +30,14 @@ describe('Adding a new course', () => {
     // when staff is creating course, staff is preselected and admin is not
     cy.switchToStaff();
     cy.get('[data-cy="menu-add-course"]').click();
-    cy.get('[data-cy="teacher-dropdown"]').contains(users[1].firstname).children().should('have.class', 'delete icon');
-    cy.get('[data-cy="teacher-dropdown"]').click().contains(users[2].firstname).children().should('not.exist');
+    cy.get('[data-cy="teacher-dropdown"]').contains(users[1].firstname);
+    cy.get('[data-cy="teacher-dropdown"]').should('not.contain', users[2].firstname);
 
     // and vice versa when admin is the creator
     cy.switchToAdmin();
     cy.get('[data-cy="menu-add-course"]').click();
-    cy.get('[data-cy="teacher-dropdown"]').contains(users[2].firstname).children().should('have.class', 'delete icon');
-    cy.get('[data-cy="teacher-dropdown"]').click().contains(users[1].firstname).children().should('not.exist');
+    cy.get('[data-cy="teacher-dropdown"]').contains(users[2].firstname);
+    cy.get('[data-cy="teacher-dropdown"]').should('not.contain', users[1].firstname);
   });
 
   describe('Staff adding a new course', () => {
@@ -70,8 +70,9 @@ describe('Adding a new course', () => {
       cy.get('[data-cy="course-code-input"]').type('CWT123');
       cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
       cy.get('[data-cy="course-description-input"]').type('Description for test course.');
+
       // delete pre selected teacher (staff)
-      cy.get('[data-cy="teacher-dropdown"]').contains(users[1].firstname).children().should('have.class', 'delete icon').click();
+      cy.get('[data-cy="teacher-dropdown"]').contains(users[1].firstname).siblings().click();
 
       cy.get('[data-cy="publish-checkbox"]').click();
       cy.get('[data-cy="create-course-submit"]').click();
@@ -92,10 +93,14 @@ describe('Adding a new course', () => {
       cy.get('[data-cy="course-code-input"]').type('CWMT123');
       cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
       cy.get('[data-cy="course-description-input"]').type('Description for test course.');
+
       // admin should be pre selected
-      cy.get('[data-cy="teacher-dropdown"]').contains(users[2].firstname).children().should('have.class', 'delete icon');
+      cy.get('[data-cy="teacher-dropdown"]').contains(users[2].firstname);
+
       // add staff as teacher
-      cy.get('[data-cy="teacher-dropdown"]').click().contains(users[1].firstname).click();
+      cy.get('[data-cy="teacher-dropdown"]').click();
+      cy.contains(users[1].firstname).click();
+      cy.get('[data-cy="teacher-dropdown"]').click();
 
       cy.get('[data-cy="create-course-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
