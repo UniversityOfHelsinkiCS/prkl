@@ -35,7 +35,6 @@ export default ({
   const [groups] = useStore('groupsStore');
   const [showGroupTimes, setShowGroupTimes] = useState([]);
   const [groupTimesVisible, setGroupTimesVisible] = useState([]);
-
   const classes = useClasses();
 
   useEffect(() => {

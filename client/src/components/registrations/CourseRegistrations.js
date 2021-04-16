@@ -28,8 +28,26 @@ import Popup from '../ui/Popup';
 const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
   const intl = useIntl();
   const [privacyToggle] = useStore('toggleStore');
+  const [notification, setNotification] = useStore('notificationStore');
 
   const { deleteRegistration } = useContext(CourseContext);
+
+  const handleRegistrationRemoval = async studentIdToRemove => {
+    try {
+      await deleteRegistration({
+        variables: { courseId: course.id, studentId: studentIdToRemove },
+      });
+
+      setNotification({
+        type: 'success',
+        message: intl.formatMessage({ id: 'courseRegistration.registrationRemoved' }),
+        visible: true,
+      });
+    } catch (deletionError) {
+      // eslint-disable-next-line no-console
+      console.log('Error while deleting enrolled registration: ', deletionError);
+    }
+  };
 
   return (
     <div>
@@ -96,11 +114,7 @@ const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
                 {reg.questionAnswers.map(qa => questionSwitch(qa))}
                 <TableCell>
                   <ConfirmationButton
-                    onConfirm={() =>
-                      deleteRegistration({
-                        variables: { courseId: course.id, studentId: reg.student.id },
-                      })
-                    }
+                    onConfirm={() => handleRegistrationRemoval(reg.student.id)}
                     modalMessage={`${intl.formatMessage({
                       id: 'courseRegistration.removeConfirmation',
                     })} (${reg.student.firstname} ${reg.student.lastname})`}

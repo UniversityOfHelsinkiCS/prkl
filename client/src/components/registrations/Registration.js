@@ -1,10 +1,12 @@
 import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Button, Header, Icon, Loader } from 'semantic-ui-react';
+import { Button, Header, Icon } from 'semantic-ui-react';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 
+import { useStore } from 'react-hookstore';
+import { red } from '@material-ui/core/colors';
 import { FREEFORM, MULTI_CHOICE, SINGLE_CHOICE, TIMES } from '../../util/questionTypes';
 import { DELETE_REGISTRATION, REGISTER_TO_COURSE } from '../../GqlQueries';
 import ConfirmationButton from '../ui/ConfirmationButton';
@@ -12,17 +14,15 @@ import RegistrationForm from './RegistrationForm';
 import timeChoices from '../../util/timeFormChoices';
 import UserGroup from '../users/UserGroup';
 import { AppContext } from '../../App';
-import { useStore } from 'react-hookstore';
 import { CourseContext } from '../courses/Course';
-
-import { red } from '@material-ui/core/colors';
 
 export default ({ course, match }) => {
   const hookForm = useForm({ mode: 'onChange' });
   const { handleSubmit } = hookForm;
+  const { user } = useContext(AppContext);
 
   const [createRegistration] = useMutation(REGISTER_TO_COURSE, {
-    update(cache, {data: {createRegistration: reg}}) {
+    update(cache, { data: { createRegistration: reg } }) {
       cache.modify({
         id: cache.identify(user),
         fields: {
@@ -33,19 +33,16 @@ export default ({ course, match }) => {
                 fragment NewRegistration on Registration {
                   id
                 }
-              `
-            })
-            return existingRegistrationRefs.concat(newRegistrationRef)
-          }
-        }
-      })
-    }
+              `,
+            });
+            return existingRegistrationRefs.concat(newRegistrationRef);
+          },
+        },
+      });
+    },
   });
 
-  const {deleteRegistration} = useContext(CourseContext);
-
-  const { user } = useContext(AppContext);
-
+  const { deleteRegistration } = useContext(CourseContext);
   const [notification, setNotification] = useStore('notificationStore');
   const courseId = course.id;
   const studentId = user.id;
@@ -53,8 +50,6 @@ export default ({ course, match }) => {
   const variables = { studentId, courseId };
   const intl = useIntl();
   const history = useHistory();
-
-  
 
   const parseDay = (day, dayIndex, key) => {
     let prev = [1, timeChoices.no];
@@ -177,7 +172,7 @@ export default ({ course, match }) => {
   const handleRegistrationDeletion = async () => {
     try {
       await deleteRegistration({
-        variables
+        variables,
       });
 
       setNotification({
@@ -187,7 +182,7 @@ export default ({ course, match }) => {
       });
     } catch (deletionError) {
       // eslint-disable-next-line no-console
-      console.log('error:', deletionError);
+      console.log('Error while deleting registration:', deletionError);
     }
     history.push('/courses');
   };

@@ -2,17 +2,20 @@ import React, { useState, useEffect, useContext, createContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
-import { Loader } from 'semantic-ui-react';
 import { useQuery, useMutation } from '@apollo/client';
+import { AppBar, CircularProgress, Tab } from '@material-ui/core';
+import { red } from '@material-ui/core/colors';
+import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import {
   COURSE_BY_ID,
   DELETE_COURSE,
   COURSE_REGISTRATION,
-  DELETE_REGISTRATION
+  DELETE_REGISTRATION,
 } from '../../GqlQueries';
 
-import { GreenButton, BlueButton, OrangeButton } from '../../styles/ui/Button'
-import { red } from '@material-ui/core/colors';
+import { BlueButton } from '../../styles/ui/Button';
+import { useLoaderStyle } from '../../styles/ui/Loader';
+import { useCourseStyle } from '../../styles/courses/Course';
 
 import RegistrationList from '../registrations/RegistrationList';
 import ConfirmationButton from '../ui/ConfirmationButton';
@@ -35,26 +38,31 @@ export default ({ id, match }) => {
   const history = useHistory();
   const intl = useIntl();
   const { user } = useContext(AppContext);
+  const loaderClass = useLoaderStyle();
+  const courseClass = useCourseStyle();
 
   const [deleteCourse] = useMutation(DELETE_COURSE, {
-    update(cache, {data: {deleteCourse: courseId}}) {
+    update(cache, { data: { deleteCourse: courseId } }) {
       const success = cache.evict({
         id: cache.identify({
-          __typename: "Course",
-          courseId
-        })
+          __typename: 'Course',
+          courseId,
+        }),
       });
 
       if (!success) {
-        console.error(`Failed to delete course ${courseId} from cache.`)
+        // eslint-disable-next-line no-console
+        console.error(`Failed to delete course ${courseId} from cache.`);
       }
-    }
+    },
   });
 
-  // Course description
+  // Description collection of the course
   const paragraphs = course.description ? course.description.split('\n\n') : [];
 
-  // GRAPHQL
+  // -----------
+  // | GRAPHQL |
+  // -----------
 
   const { loading, error, data } = useQuery(COURSE_BY_ID, {
     variables: { id },
@@ -68,21 +76,24 @@ export default ({ id, match }) => {
   });
 
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION, {
-    update(cache, {data: {deleteRegistration: id}}) {
+    update(cache, { data: { deleteRegistration: id } }) {
       const success = cache.evict({
         id: cache.identify({
-          __typename: "Registration",
-          id
-        })
+          __typename: 'Registration',
+          id,
+        }),
       });
 
       if (!success) {
-        console.error(`Failed to delete registration ${id} from cache.`)
+        // eslint-disable-next-line no-console
+        console.error(`Failed to delete registration ${id} from cache.`);
       }
-    }
+    },
   });
 
-  // useEFFECT
+  // -------------
+  // | useEFFECT |
+  // -------------
 
   useEffect(() => {
     if (!loading && data !== undefined) {
@@ -118,20 +129,25 @@ export default ({ id, match }) => {
   }
 
   if (loading || !course.id || regLoading) {
-    return <Loader active />;
+    return <CircularProgress className={loaderClass.root} />;
   }
 
+  // Registrations related to the course
   const registrations = regData ? regData.courseRegistrations : undefined;
 
-  console.log(registrations)
+  // ------------
+  // | HANDLERS |
+  // ------------
 
-  // HANDLERS
-
+  /**
+   * Handler for the 'Delete course' -button
+   * @returns {Promise<void>}
+   */
   const handleDeletion = async () => {
     const variables = { id };
     try {
       await deleteCourse({
-        variables
+        variables,
       });
     } catch (deletionError) {
       // eslint-disable-next-line no-console
@@ -140,6 +156,9 @@ export default ({ id, match }) => {
     history.push('/courses');
   };
 
+  /**
+   * Handler for the 'Edit course' -button
+   */
   const handleEditCourse = () => {
     if (match.params.subpage !== 'edit') {
       history.push(`/course/${course.id}/edit`);
@@ -159,6 +178,9 @@ export default ({ id, match }) => {
     }
   };
 
+  /**
+   * Handler for switching the subpage to the manage groups -view
+   */
   const handleGroupsView = () => {
     if (match.params.subpage !== 'groups') {
       history.push(`/course/${course.id}/groups`);
@@ -173,6 +195,9 @@ export default ({ id, match }) => {
     }
   };
 
+  /**
+   * Handler for switching the subpage to registrations view
+   */
   const handleRegistrationsView = () => {
     if (match.params.subpage !== 'registrations') {
       history.push(`/course/${course.id}/registrations`);
@@ -181,19 +206,72 @@ export default ({ id, match }) => {
     }
   };
 
-  // function to check if logged in user is teacher of this course or admin
+  /**
+   * Handler for switching the subpage back to root (no subpage) within the tabs
+   */
+  const handlePlainView = () => {
+    if (match.params.subpage === 'groups') {
+      handleGroupsView();
+    } else if (match.params.subpage === 'registrations') {
+      handleRegistrationsView();
+    }
+  };
+
+  /**
+   * Function to check if logged user is teacher or admin of this course
+   * @returns {boolean}
+   */
   const userHasAccess = () => {
     const inTeachers = data.course.teachers.some(t => t.id === user.id);
     return user.role === roles.ADMIN_ROLE || inTeachers;
   };
 
+  /**
+   * Checks if the subpage value is undefined for MUI-Tabs to function correctly
+   * @returns {string}
+   */
+  const checkSubpageValue = () => {
+    return match.params.subpage === undefined ? 'root' : match.params.subpage;
+  };
+
+  /**
+   * Returns the register view as a Registration-component. Used in two sections of Course.js.
+   * @returns {JSX.Element}
+   */
+  const renderRegistrationForm = () => {
+    return (
+      <div>
+        <Registration course={course} match={match} />
+      </div>
+    );
+  };
 
   return (
-    <CourseContext.Provider value={{deleteRegistration}}>
+    <CourseContext.Provider value={{ deleteRegistration }}>
       <div>
         {/* Course info, hide in edit and questions views */}
         {match.params.subpage !== 'edit' && view !== 'questions' && (
           <div>
+            {userHasAccess() ? (
+              <div style={{ maxWidth: '800px' }}>
+                {/* Only admin can edit or delete after publish */}
+                {!course.published || user.role === roles.ADMIN_ROLE ? (
+                  <>
+                    <BlueButton onClick={handleEditCourse} data-cy="edit-course-button">
+                      <FormattedMessage id="course.switchEditView" />
+                    </BlueButton>
+                    <ConfirmationButton
+                      onConfirm={handleDeletion}
+                      color={red[500]}
+                      modalMessage={intl.formatMessage({ id: 'course.confirmDelete' })}
+                      buttonDataCy="delete-course-button"
+                    >
+                      <FormattedMessage id="course.delete" />
+                    </ConfirmationButton>
+                  </>
+                ) : null}
+              </div>
+            ) : null}
             <CourseInfo
               code={course.code}
               title={course.title}
@@ -219,101 +297,79 @@ export default ({ id, match }) => {
                 />
               ) : (
                 <div>
-                  <div style={{ maxWidth: '800px' }}>
-                      {/* Only admin can edit or delete after publish */}
-                      {!course.published || user.role === roles.ADMIN_ROLE ? (
-                        <>
+                  {/* Group management and enroll list available regardless of publish status */}
+                  <div className={courseClass.root}>
+                    <TabContext value={checkSubpageValue()}>
+                      <AppBar position="static">
+                        <TabList>
+                          <Tab
+                            label={intl.formatMessage({ id: 'course.switchRegisterView' })}
+                            value="root"
+                            onClick={handlePlainView}
+                            data-cy="show-register-button"
+                          />
+                          <Tab
+                            label={intl.formatMessage({ id: 'course.switchGroupsView' })}
+                            value="groups"
+                            onClick={handleGroupsView}
+                            data-cy="manage-groups-button"
+                          />
+                          <Tab
+                            label={intl.formatMessage({ id: 'course.switchRegistrationsView' })}
+                            value="registrations"
+                            onClick={handleRegistrationsView}
+                            data-cy="show-registrations-button"
+                          />
+                        </TabList>
+                      </AppBar>
+                      {/* Register form / main view */}
+                      <TabPanel value="root">{renderRegistrationForm()}</TabPanel>
+                      {/* Views for staff */}
+                      <TabPanel value="groups">
+                        <div>
+                          <GroupsView
+                            course={course}
+                            registrations={registrations}
+                            regByStudentId={regByStudentId}
+                            groups={groups}
+                            setGroups={setGroups}
+                          />
+                          <br />
                           <BlueButton
-                            onClick={handleEditCourse}
-                            data-cy="edit-course-button"
+                            onClick={handleGroupsView}
+                            color="blue"
+                            data-cy="back-to-info-from-groups-button"
                           >
-                            <FormattedMessage id="course.switchEditView" />
+                            <FormattedMessage id="course.switchInfoView" />
                           </BlueButton>
-                          <ConfirmationButton
-                            onConfirm={handleDeletion}
-                            color={red[500]}
-                            modalMessage={intl.formatMessage({ id: 'course.confirmDelete' })}
-                            buttonDataCy="delete-course-button"
+                        </div>
+                      </TabPanel>
+                      <TabPanel value="registrations">
+                        <div>
+                          <RegistrationList
+                            course={course}
+                            registrations={registrations}
+                            regByStudentId={regByStudentId}
+                          />
+                          <br />
+                          <BlueButton
+                            onClick={handleRegistrationsView}
+                            color="blue"
+                            data-cy="back-to-info-from-groups-button"
                           >
-                            <FormattedMessage id="course.delete" />
-                          </ConfirmationButton>
-                        </>
-                      ) : null}
-                      {/* Group management and enroll list available regardless of publish status */}
-                      <OrangeButton onClick={handleRegistrationsView} data-cy="show-registrations-button">
-                        <FormattedMessage id="course.switchRegistrationsView" />
-                      </OrangeButton>
-                      <GreenButton onClick={handleGroupsView} data-cy="manage-groups-button">
-                        <FormattedMessage id="course.switchGroupsView" />
-                      </GreenButton>
-                  </div>
-
-                  {/* Views for staff */}
-                  <div>
-                    {match.params.subpage === 'groups' ? (
-                      <div>
-                        <GroupsView
-                          course={course}
-                          registrations={registrations}
-                          regByStudentId={regByStudentId}
-                          groups={groups}
-                          setGroups={setGroups}
-                        />
-                        <br />
-                        <BlueButton
-                          onClick={handleGroupsView}
-                          color="blue"
-                          data-cy="back-to-info-from-groups-button"
-                        >
-                          <FormattedMessage id="course.switchInfoView" />
-                        </BlueButton>
-                      </div>
-                    ) : (
-                      <div>
-                        {match.params.subpage === 'registrations' ? (
-                          <div>
-                            <RegistrationList
-                              course={course}
-                              registrations={registrations}
-                              regByStudentId={regByStudentId}
-                            />
-                            <br />
-                            <BlueButton
-                              onClick={handleRegistrationsView}
-                              color="blue"
-                              data-cy="back-to-info-from-groups-button"
-                            >
-                              <FormattedMessage id="course.switchInfoView" />
-                            </BlueButton>
-                          </div>
-                        ) : null}
-                      </div>
-                    )}
-                    &nbsp;
+                            <FormattedMessage id="course.switchInfoView" />
+                          </BlueButton>
+                        </div>
+                      </TabPanel>
+                    </TabContext>
                   </div>
                 </div>
               )}
             </div>
-          ) : null}
-          {/* Views for everyone */}
-          <div>
-            {match.params.subpage === undefined || match.params.subpage === 'usergroup' ? (
-              <Registration
-                course={course}
-                match={match}
-              />
-            ) : null}
-          </div>
-          &nbsp;
-          {/*
-          <div>
-            { view === 'userGroup' ? (
-              <div>
-                <UserGroup user={user} course={course} />
-              </div>
-            ) : null}
-          </div>
-          */}
+          ) : (
+            /* View for all */
+            renderRegistrationForm()
+          )}
         </div>
       </div>
     </CourseContext.Provider>
