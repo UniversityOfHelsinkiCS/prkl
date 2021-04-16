@@ -302,10 +302,10 @@ export const GENERATE_GROUPS = gql`
 export const FIND_GROUP_FOR_GROUPLESS_STUDENTS = gql`
   mutation findGroupForGrouplessStudents(
     $data: GroupListInput!
-    $maxGroupSize: Float!
+    $minGroupSize: Float!
     $groupless: GroupListInput!
   ) {
-    findGroupForGrouplessStudents(data: $data, maxGroupSize: $maxGroupSize, groupless: $groupless) {
+    findGroupForGrouplessStudents(data: $data, minGroupSize: $minGroupSize, groupless: $groupless) {
       courseId
       students {
         id

@@ -104,7 +104,7 @@ export class GroupResolver {
   async findGroupForGrouplessStudents(
     @Arg("data") data: GroupListInput,
     @Arg("groupless") groupless: GroupListInput,
-    @Arg("maxGroupSize") maxGroupSize: number,
+    @Arg("minGroupSize") minGroupSize: number,
   ): Promise<Group[]> {
     const { courseId, groups } = data;
     const { groups: grouplessStudents } = groupless;
@@ -157,7 +157,7 @@ export class GroupResolver {
     const grouping = groupsToGroupingType(groups, registrations);
     const grouplessStudentsAsRegistrationArray = grouplessToRegistrationArray(grouplessStudents, registrations);
 
-    const newGroups = findGroupForGrouplessStudents(grouplessStudentsAsRegistrationArray, grouping, maxGroupSize);
+    const newGroups = findGroupForGrouplessStudents(grouplessStudentsAsRegistrationArray, grouping, minGroupSize);
     return Promise.all(
       newGroups.map(async g => {
         const students = await User.findByIds(g.userIds);
