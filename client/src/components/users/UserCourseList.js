@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useIntl } from 'react-intl';
 
 import { useUserCourseListStyles } from '../../styles/users/UserCourseList'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@material-ui/core';

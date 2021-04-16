@@ -10,7 +10,6 @@ import { AppBar, Typography, Button, Grid, Toolbar } from '@material-ui/core';
 import { useHeaderStyles } from '../styles/ui/Header';
 
 export default () => {
-  const [activ, setActiv] = useState(null);
   const { user } = useContext(AppContext);
   const [privacyToggle, setPrivacyToggle] = useStore('toggleStore');
   const [groupsUnsaved] = useStore('groupsUnsavedStore');

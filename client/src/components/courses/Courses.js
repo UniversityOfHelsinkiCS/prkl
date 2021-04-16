@@ -1,7 +1,8 @@
 import React, { useContext, useState } from 'react';
-import { Input, Divider, Menu, Select, Loader } from 'semantic-ui-react';
+import { Input, Divider, Menu, Loader } from 'semantic-ui-react';
 import { useIntl, FormattedMessage } from 'react-intl';
-import { useStore } from 'react-hookstore';
+
+import { useCoursesStyles } from '../../styles/ui/Courses';
 
 import CourseListStaffControls from './CourseListStaffControls';
 
@@ -9,9 +10,11 @@ import CourseList from './CourseList';
 import { AppContext } from '../../App';
 import { ALL_COURSES } from '../../GqlQueries';
 import { useQuery } from '@apollo/client';
+import { AppBar, FormControl, InputBase, InputLabel, Toolbar, Select, MenuItem, Box, TextField } from '@material-ui/core';
 
 export default () => {
   const intl = useIntl();
+  const classes = useCoursesStyles();
   const [search, setSearch] = useState('');
   const [order, setOrder] = useState(localStorage.getItem('assembler.courseOrder') || 'name');
   const [showPastCourses, setShowPastCourses] = useState(
@@ -34,9 +37,10 @@ export default () => {
     setSearch(event.target.value);
   };
 
-  const changeOrder = (_, { value }) => {
-    localStorage.setItem('assembler.courseOrder', value);
-    setOrder(value);
+  const changeOrder = event => {
+    localStorage.setItem('assembler.courseOrder', event.target.value);
+    setOrder(event.target.value);
+    console.log(event.target.value);
   };
 
   const togglePastCourses = () => {
@@ -133,24 +137,38 @@ export default () => {
 
   return (
     <div>
-      <Menu secondary stackable>
-        <Menu.Item>
-          <Input
-            onChange={handleSearchChange}
+      <AppBar position={"static"} color={"transparent"} elevation={0}>
+        <Toolbar>
+
+          <TextField
             placeholder={intl.formatMessage({ id: 'courses.searchPlaceholder' })}
+            onChange={handleSearchChange}
+            className={classes.searchbar}
+            variant="outlined"
           />
-        </Menu.Item>
-        <Menu.Item>
-          <div style={{ marginRight: '1rem' }}>
-            <FormattedMessage id="courses.orderByLabel" />
-          </div>
-          <Select options={orderOptions} value={order} onChange={changeOrder} />
-        </Menu.Item>
-        <Menu.Item>
+
+          <FormControl className={classes.orderby}>
+            <InputLabel id="orderBy">Order by</InputLabel>
+            <Select
+              onChange={changeOrder}
+              name="value"
+              labelId="orderBy"
+              value={order}
+              style={{ width: "13em" }}
+            >
+              {orderOptions.map(o => (
+                <MenuItem value={o.value}>{o.text}</MenuItem> 
+              ))}
+            </Select>
+          </FormControl>
+
           <CourseListStaffControls controls={staffControls} />
-        </Menu.Item>
-      </Menu>
+
+        </Toolbar>
+      </AppBar>
+
       <Divider />
+
       <CourseList courses={visibleCourses()} user={user} />
     </div>
   );
