@@ -25,9 +25,9 @@ export default ({code, title, id, deadline, teachers, paragraphs }) => {
       <Card variant="outlined">
         <CardContent>
           
-          <Typography variant="h4">
-            {`${title} - `} 
+          <Typography variant="h4" gutterBottom>
             <Link href={`https://courses.helsinki.fi/fi/${code}`}>{code}</Link>
+            {` - ${title}`} 
           </Typography>
 
           <Typography variant="h6" gutterBottom>

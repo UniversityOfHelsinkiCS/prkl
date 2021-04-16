@@ -64,6 +64,7 @@ const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
                     <TableCell key={question.id}>{question.content}</TableCell>
                   )
               )}
+              <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>
