@@ -1,14 +1,63 @@
-/* eslint-disable react/jsx-wrap-multilines */
 import React, { useState } from 'react';
 import { useStore } from 'react-hookstore';
 import { useMutation } from '@apollo/client';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Table, Segment, Label, Popup, Form, Button } from 'semantic-ui-react';
-
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  makeStyles,
+  Button,
+  Popover,
+  Box,
+  List,
+  ListItem,
+} from '@material-ui/core';
+import { red, grey } from '@material-ui/core/colors';
+import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import { FIND_GROUP_FOR_GROUPLESS_STUDENTS } from '../../GqlQueries';
-
 import HourDisplay from '../misc/HourDisplay';
 import { count } from '../../util/functions';
+
+const useStyles = makeStyles({
+  box: {
+    border: 1,
+    padding: 10,
+    bordercolor: grey[200],
+  },
+  table: {
+    minWidth: 700,
+  },
+  label: {
+    fontSize: 16,
+    color: 'white',
+    backgroundColor: red[700],
+    padding: 8,
+    fontWeight: 'bold',
+  },
+  heading: {
+    backgroundColor: grey[100],
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  button: {
+    backgroundColor: grey[100],
+    marginBottom: 5,
+    position: 'relative',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-50%)',
+    width: '98%',
+    '&:hover': {
+      backgroundColor: grey[300],
+    },
+  },
+});
 
 export default ({
   grouplessStudents,
@@ -16,76 +65,17 @@ export default ({
   setGrouplessStudents,
   setRegistrationsWithoutGroups,
   regByStudentId,
+  minGroupSize,
 }) => {
   const [findGroupForGrouplessStudents] = useMutation(FIND_GROUP_FOR_GROUPLESS_STUDENTS);
   const [groups, setGroups] = useStore('groupsStore');
   const [notification, setNotification] = useStore('notificationStore');
-  const [maxGroupSize, setMaxGroupSize] = useState(course.maxGroupSize);
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
 
+  const [moveToGroup, setMoveToGroup] = useState('');
+
   const intl = useIntl();
-
-  const findGroup = async student => {
-    const groupsWithUserIds = groups.map(group => {
-      const userIds = group.students.map(s => s.id);
-      return {
-        userIds,
-        id: group.groupId,
-        groupName: group.groupName,
-        groupMessage: group.groupMessage,
-      };
-    });
-    const grouplessStudent = {
-      userIds: [student.id],
-      id: 'groupless',
-      groupName: 'groupless',
-      groupMessage: 'groupless',
-    };
-    const variables = {
-      data: { courseId: course.id, groups: groupsWithUserIds },
-      maxGroupSize,
-      groupless: { courseId: course.id, groups: grouplessStudent },
-    };
-    try {
-      const res = await findGroupForGrouplessStudents({
-        variables,
-      });
-
-      const mappedGroups = res.data.findGroupForGrouplessStudents.map((e, i) => {
-        return {
-          groupId: '',
-          students: e.students,
-          groupMessage: '',
-          groupName: `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${i + 1}`,
-        };
-      });
-
-      const newGroupless = grouplessStudents.filter(groupless => groupless !== student);
-
-      const groupFound = mappedGroups.some(group => group.students.find(s => s.id === student.id));
-
-      if (!groupFound) {
-        setNotification({
-          type: 'error',
-          message: intl.formatMessage({ id: 'groupsView.noGroupFoundAlert' }),
-          visible: true,
-        });
-        return;
-      }
-
-      setGroups(mappedGroups);
-      setGroupsUnsaved(true);
-      if (newGroupless.length > 0) {
-        setRegistrationsWithoutGroups(true);
-      } else {
-        setRegistrationsWithoutGroups(false);
-      }
-      setGrouplessStudents(newGroupless);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
-    }
-  };
+  const classes = useStyles();
 
   const handleSwitchingGroup = (student, toGroup) => {
     const newGroups = groups[toGroup];
@@ -144,7 +134,7 @@ export default ({
 
     const variables = {
       data: { courseId: course.id, groups: groupsWithUserIds },
-      maxGroupSize,
+      minGroupSize,
       groupless: { courseId: course.id, groups: grouplessStudentsWithUserIds },
     };
 
@@ -220,115 +210,93 @@ export default ({
 
   return (
     <div>
-      <Segment data-cy="groupless-container">
-        <Label color="red" size="large" attached="top" data-cy="group-name-label">
+      <TableContainer data-cy="groupless-container" component={Paper}>
+        <Typography data-cy="group-name-label" className={classes.label}>
           <FormattedMessage id="groupsView.grouplessHeader" />
-        </Label>
-
-        <Table>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>
-                <FormattedMessage id="groups.name" />
-              </Table.HeaderCell>
-
-              <Table.HeaderCell>
-                <FormattedMessage id="groups.studentNumber" />
-              </Table.HeaderCell>
-
-              <Table.HeaderCell>
-                <FormattedMessage id="groups.email" />
-              </Table.HeaderCell>
-
-              <Table.HeaderCell>
-                <FormattedMessage id="groups.targetGroupSize" />
-                &nbsp;
-                <Popup
-                  content={intl.formatMessage({ id: 'groups.targetGroupSizeInfo' })}
-                  trigger={<i className="question circle icon" />}
-                />
-                <Form.Input
-                  data-cy="max-group-size"
-                  required
-                  value={maxGroupSize}
-                  type="number"
-                  min="1"
-                  max="9999999"
-                  onChange={event => setMaxGroupSize(Number.parseInt(event.target.value, 10) || '')}
-                />
-              </Table.HeaderCell>
-
-              <Table.HeaderCell />
-              <Table.HeaderCell />
-            </Table.Row>
-          </Table.Header>
-
-          <Table.Body>
-            {grouplessStudents.map(student => {
-              return (
-                <Table.Row key={student.id}>
-                  <Popup
-                    content={() => popupTimesDisplay(student)}
-                    trigger={<Table.Cell>{`${student.firstname} ${student.lastname}`}</Table.Cell>}
-                    disabled={!course.questions.some(q => q.questionType === 'times')}
-                  />
-
-                  <Table.Cell>{student.studentNo}</Table.Cell>
-
-                  <Table.Cell>{student.email}</Table.Cell>
-
-                  <Table.Cell>
-                    <Popup
-                      content={intl.formatMessage({ id: 'groups.findGroupForOne' })}
-                      trigger={
-                        <Button
-                          content={intl.formatMessage({ id: 'groupsView.findGroup' })}
-                          color="green"
-                          data-cy="find-group-button"
-                          onClick={() => findGroup(student)}
-                        />
-                      }
-                    />
-                  </Table.Cell>
-
-                  <Table.Cell>
-                    <Popup
-                      data-cy="switch-group-popup"
-                      content={
-                        <Form>
-                          <Form.Field>
-                            <Form.Select
-                              data-cy="switch-group-select"
-                              label={intl.formatMessage({ id: 'groups.moveToGroupLabel' })}
-                              options={switchGroupOptions}
-                              defaultValue="..."
-                              onChange={(e, { value }) => handleSwitchingGroup(student, value)}
-                            />
-                          </Form.Field>
-                        </Form>
-                      }
-                      on="click"
-                      trigger={
-                        <Button data-cy="switch-group-button">
-                          <FormattedMessage id="groups.moveToGroupButton" />
-                        </Button>
-                      }
-                    />
-                  </Table.Cell>
-                  <Table.Cell />
-                </Table.Row>
-              );
-            })}
-          </Table.Body>
-        </Table>
-        <Button
-          fluid
-          data-cy="find-group-for-all-button"
-          content={intl.formatMessage({ id: 'groupsView.findGroupForAll' })}
-          onClick={() => findGroupForall()}
-        />
-      </Segment>
-      <br />
+        </Typography>
+        <Box className={classes.box}>
+          <Table className={classes.table}>
+            <TableHead className={classes.heading}>
+              <TableRow>
+                <TableCell className={classes.heading}>
+                  <FormattedMessage id="groups.name" />
+                </TableCell>
+                <TableCell className={classes.heading}>
+                  <FormattedMessage id="groups.studentNumber" />
+                </TableCell>
+                <TableCell className={classes.heading}>
+                  <FormattedMessage id="groups.email" />
+                </TableCell>
+                <TableCell />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {grouplessStudents.map(student => {
+                return (
+                  <TableRow key={student.id}>
+                    <TableCell component="th" scope="row">
+                      {`${student.firstname} ${student.lastname}`}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {student.studentNo}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {student.email}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      <PopupState variant="popover">
+                        {popupState => (
+                          <div>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              // eslint-disable-next-line react/jsx-props-no-spreading
+                              {...bindTrigger(popupState)}
+                            >
+                              {intl.formatMessage({ id: 'groups.moveToGroupButton' })}
+                            </Button>
+                            <Popover
+                              data-cy="switch-group-popup"
+                              // eslint-disable-next-line react/jsx-props-no-spreading
+                              {...bindPopover(popupState)}
+                              anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'center',
+                              }}
+                              transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center',
+                              }}
+                            >
+                              <Box p={2}>
+                                <List>
+                                  {groups.map((group, index) => {
+                                    return (
+                                      <ListItem
+                                        button
+                                        onClick={() => handleSwitchingGroup(student, index)}
+                                      >
+                                        {group.groupName}
+                                      </ListItem>
+                                    );
+                                  })}
+                                </List>
+                              </Box>
+                            </Popover>
+                          </div>
+                        )}
+                      </PopupState>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </Box>
+        <Button data-cy="find-group-for-all-button" className={classes.button} onClick={() => findGroupForall()}>
+          {intl.formatMessage({ id: 'groupsView.findGroupForAll' })}
+        </Button>
+      </TableContainer>
     </div>
   );
 };

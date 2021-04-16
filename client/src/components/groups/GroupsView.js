@@ -18,8 +18,6 @@ import {
 import userRoles from '../../util/userRoles';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import GrouplessStudents from './GrouplessStudents';
-import MuiGrouplessStudents from './MuiGrouplessStudents';
-import MuiGroups from './MuiGroups';
 import Groups from './Groups';
 
 export default ({ course, registrations, regByStudentId, groups, setGroups }) => {
@@ -375,7 +373,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
             >
               <FormattedMessage id="groupsView.generateGroups" />
             </ConfirmationButton>
-            
+
             {!groupsPublished && (
               <ConfirmationButton
                 onConfirm={publishGroups}
@@ -442,8 +440,6 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
             setGroupMessages={setGroupMessages}
             registrationsWithoutGroups={registrationsWithoutGroups}
             setRegistrationsWithoutGroups={setRegistrationsWithoutGroups}
-            grouplessStudents={grouplessStudents}
-            setGrouplessStudents={setGrouplessStudents}
           />
         </div>
       )}
