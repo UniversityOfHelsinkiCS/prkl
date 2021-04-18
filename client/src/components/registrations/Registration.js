@@ -5,7 +5,6 @@ import { gql, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 
 import { useStore } from 'react-hookstore';
-import { red } from '@material-ui/core/colors';
 import { FREEFORM, MULTI_CHOICE, SINGLE_CHOICE, TIMES } from '../../util/questionTypes';
 import { REGISTER_TO_COURSE } from '../../GqlQueries';
 import ConfirmationButton from '../ui/ConfirmationButton';
