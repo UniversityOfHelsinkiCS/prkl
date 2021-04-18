@@ -1,12 +1,11 @@
 import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Button, Header, Icon, Loader } from 'semantic-ui-react';
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 
 import { FREEFORM, MULTI_CHOICE, SINGLE_CHOICE, TIMES } from '../../util/questionTypes';
-import { DELETE_REGISTRATION, REGISTER_TO_COURSE } from '../../GqlQueries';
+import { REGISTER_TO_COURSE } from '../../GqlQueries';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import RegistrationForm from './RegistrationForm';
 import timeChoices from '../../util/timeFormChoices';
@@ -15,7 +14,11 @@ import { AppContext } from '../../App';
 import { useStore } from 'react-hookstore';
 import { CourseContext } from '../courses/Course';
 
+import { BlueButton } from '../../styles/ui/Button'
+
 import { red } from '@material-ui/core/colors';
+import { Typography } from '@material-ui/core';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 
 export default ({ course, match }) => {
   const hookForm = useForm({ mode: 'onChange' });
@@ -53,8 +56,6 @@ export default ({ course, match }) => {
   const variables = { studentId, courseId };
   const intl = useIntl();
   const history = useHistory();
-
-  
 
   const parseDay = (day, dayIndex, key) => {
     let prev = [1, timeChoices.no];
@@ -205,14 +206,10 @@ export default ({ course, match }) => {
           {userIsRegistered() ? (
             <div>
               <br />
-              <Header as="h2">
-                <div>
-                  <Icon name="thumbs up outline" data-cy="registered" />
-                  <Header.Content>
-                    <FormattedMessage id="course.userHasRegistered" />
-                  </Header.Content>
-                </div>
-              </Header>
+              <Typography variant="h4">
+                <ThumbUpIcon fontSize="large" />&nbsp;
+                <FormattedMessage id="course.userHasRegistered" />   
+              </Typography>
               {new Date(course.deadline) > new Date() ? (
                 <ConfirmationButton
                   onConfirm={handleRegistrationDeletion}
@@ -220,35 +217,32 @@ export default ({ course, match }) => {
                   modalMessage={intl.formatMessage({ id: 'courseRegistration.cancelConfirmation' })}
                   buttonDataCy="cancel-registration-button"
                 >
+                  <br />
                   <FormattedMessage id="courseRegistration.cancel" />
                 </ConfirmationButton>
               ) : (
-                <div>
-                  <Header as="h5">
-                    <Header.Content>
-                      <FormattedMessage id="course.contactTeacher" />
-                    </Header.Content>
-                  </Header>
-                </div>
+                  <Typography variant="h5">
+                   <FormattedMessage id="course.contactTeacher" /> 
+                  </Typography>
               )}
               <div>
                 {course.groupsPublished ? (
                   <div>
                     <br />
-                    <Button
+                    <BlueButton
                       onClick={handleUserGroupView}
                       color="blue"
                       data-cy="show-user-groups-button"
                     >
                       <FormattedMessage id="course.showUserGroup" />
-                    </Button>
+                    </BlueButton>
                   </div>
                 ) : (
                   <div>
                     <br />
-                    <Button disabled color="blue" data-cy="disabled-show-user-groups-button">
+                    <BlueButton disabled data-cy="disabled-show-user-groups-button">
                       <FormattedMessage id="course.disabledShowUserGroup" />
-                    </Button>
+                    </BlueButton>
                   </div>
                 )}
               </div>
@@ -269,9 +263,9 @@ export default ({ course, match }) => {
         <div>
           <UserGroup user={user} course={course} />
           <br />
-          <Button onClick={handleUserGroupView} color="blue" data-cy="back-to-info-button">
+          <BlueButton onClick={handleUserGroupView} data-cy="back-to-info-button">
             <FormattedMessage id="course.switchInfoView" />
-          </Button>
+          </BlueButton>
         </div>
       )}
     </div>
