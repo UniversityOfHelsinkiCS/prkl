@@ -140,7 +140,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     } else {
       generateNewGroupsForNonLockedGroups();
     }
-  }
+  };
 
   const handleSampleGroupCreation = async () => {
     const minGroupS = minGroupSize || 1;
@@ -188,7 +188,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
       if (!lockedRegistrationIds.includes(registration.student.id)) {
         registrationIds.push(registration.id);
       }
-    })
+    });
 
     const minGroupS = minGroupSize || 1;
 
@@ -198,7 +198,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
           data: {
             courseId: course.id,
             targetGroupSize: minGroupS,
-            registrationIds: registrationIds
+            registrationIds,
           },
         },
       });
@@ -318,6 +318,14 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     return <Loader active content={intl.formatMessage({ id: 'groupsView.generatingGroups' })} />;
   }
 
+  /**
+   * A simple function to check if groups are ok to be published
+   * @returns {boolean}
+   */
+  const checkGroupPublishability = () => {
+    return !groupsPublished && !groupsUnsaved && groups.length !== 0;
+  };
+
   return (
     <div>
       <Prompt
@@ -374,7 +382,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
               <FormattedMessage id="groupsView.generateGroups" />
             </ConfirmationButton>
 
-            {!groupsPublished && (
+            {checkGroupPublishability() && (
               <ConfirmationButton
                 onConfirm={publishGroups}
                 color={green[500]}

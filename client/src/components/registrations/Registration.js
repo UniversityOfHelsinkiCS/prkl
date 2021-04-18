@@ -3,8 +3,10 @@ import { useForm } from 'react-hook-form';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { gql, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
-
 import { useStore } from 'react-hookstore';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import { Typography } from '@material-ui/core';
+import { red } from '@material-ui/core/colors';
 import { FREEFORM, MULTI_CHOICE, SINGLE_CHOICE, TIMES } from '../../util/questionTypes';
 import { REGISTER_TO_COURSE } from '../../GqlQueries';
 import ConfirmationButton from '../ui/ConfirmationButton';
@@ -13,12 +15,7 @@ import timeChoices from '../../util/timeFormChoices';
 import UserGroup from '../users/UserGroup';
 import { AppContext } from '../../App';
 import { CourseContext } from '../courses/Course';
-
-import { BlueButton } from '../../styles/ui/Button'
-
-import { red } from '@material-ui/core/colors';
-import { Typography } from '@material-ui/core';
-import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import { BlueButton } from '../../styles/ui/Button';
 
 export default ({ course, match }) => {
   const hookForm = useForm({ mode: 'onChange' });
@@ -205,8 +202,9 @@ export default ({ course, match }) => {
             <div>
               <br />
               <Typography variant="h4">
-                <ThumbUpIcon fontSize="large" />&nbsp;
-                <FormattedMessage id="course.userHasRegistered" />   
+                <ThumbUpIcon fontSize="large" />
+                &nbsp;
+                <FormattedMessage id="course.userHasRegistered" />
               </Typography>
               {new Date(course.deadline) > new Date() ? (
                 <ConfirmationButton
@@ -219,9 +217,9 @@ export default ({ course, match }) => {
                   <FormattedMessage id="courseRegistration.cancel" />
                 </ConfirmationButton>
               ) : (
-                  <Typography variant="h5">
-                   <FormattedMessage id="course.contactTeacher" /> 
-                  </Typography>
+                <Typography variant="h5">
+                  <FormattedMessage id="course.contactTeacher" />
+                </Typography>
               )}
               <div>
                 {course.groupsPublished ? (
