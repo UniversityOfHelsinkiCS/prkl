@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 const courses = require('../fixtures/courses');
 const users = require('../fixtures/users');
 

@@ -8,18 +8,18 @@ import { Loader } from 'semantic-ui-react';
 import { ALL_COURSES, CURRENT_USER } from './GqlQueries';
 
 import CourseForm from './components/courses/CourseForm';
+import Notification from './components/ui/Notification';
 import PrivateRoute from './components/ui/PrivateRoute';
-import UserInfo from './components/users/UserInfo';
 import KeepAlive from './components/misc/KeepAlive';
+import UserInfo from './components/users/UserInfo';
 import Courses from './components/courses/Courses';
 import Course from './components/courses/Course';
 import Users from './components/users/Users';
+import MockBar from './components/MockBar';
 import DevBar from './components/DevBar';
 import Header from './components/Header';
-import MockBar from './components/MockBar';
 import roles from './util/userRoles';
 import './App.css';
-import Notification from './components/ui/Notification';
 
 createStore('grouplessStudentsStore', []);
 createStore('groupsUnsavedStore', false);
@@ -42,40 +42,40 @@ export default () => {
   }, []);
 
   if (userLoading || !userData) {
-    return <Loader active data-cy="loader"/>
+    return <Loader active data-cy="loader" />;
   }
 
   const user = userData.currentUser;
 
   return (
-    <AppContext.Provider value={{user}}>
+    <AppContext.Provider value={{ user }}>
       {process.env.REACT_APP_CUSTOM_NODE_ENV !== 'production' ? <DevBar /> : null}
       {mocking.mockedBy ? <MockBar /> : null}
-      
+
       <div className="App">
         <Notification />
         <Router basename={process.env.PUBLIC_URL}>
           <Header />
-            <div className="mainContent">
-              <Loader />
-              <Route path="/user" render={() => <UserInfo />} />
-              <PrivateRoute
-                path="/addcourse"
-                requiredRole={roles.STAFF_ROLE}
-                render={() => <CourseForm />}
-              />
-              <PrivateRoute
-                path="/usermanagement"
-                requiredRole={roles.ADMIN_ROLE}
-                render={() => <Users />}
-              />
-              <Route
-                exact
-                path="/course/:id/:subpage?"
-                render={({ match }) => <Course id={match.params.id} match={match} />}
-              />
-              <Route exact path={['/', '/courses']} component={Courses} />
-            </div>
+          <div className="mainContent">
+            <Loader />
+            <Route path="/user" render={() => <UserInfo />} />
+            <PrivateRoute
+              path="/addcourse"
+              requiredRole={roles.STAFF_ROLE}
+              render={() => <CourseForm />}
+            />
+            <PrivateRoute
+              path="/usermanagement"
+              requiredRole={roles.ADMIN_ROLE}
+              render={() => <Users />}
+            />
+            <Route
+              exact
+              path="/course/:id/:subpage?"
+              render={({ match }) => <Course id={match.params.id} match={match} />}
+            />
+            <Route exact path={['/', '/courses']} component={Courses} />
+          </div>
         </Router>
         <KeepAlive />
       </div>

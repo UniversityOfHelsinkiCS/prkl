@@ -1,6 +1,7 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
+const { v4: uuidv4 } = require('uuid');
 const courses = require('../../fixtures/courses');
 const users = require('../../fixtures/users');
-const { v4: uuidv4 } = require('uuid');
 
 describe('Group publishing', () => {
   beforeEach(() => {
@@ -9,16 +10,14 @@ describe('Group publishing', () => {
   });
 
   describe('student', () => {
-
     // Test 4 times with different groups sizes, generated groups are going to be random, of course
     for (let i = 0; i < 4; i++) {
       it(`Test ${i + 1}: Can see published groups on the course page of a course they have registered to, with the right group members and correct group-specific message`, () => {
-
         // const groupSize = Math.floor(Math.random() * (users.length - 2));
         const groupSize = i + 1;
-        let namesInGroup = [];
+        const namesInGroup = [];
+        const groupName = 'TESTGROUP';
         let groupMessage = '';
-        let groupName = 'TESTGROUP';
 
         cy.switchToStaff();
         cy.visit(`/course/${courses[3].id}`);
@@ -31,68 +30,67 @@ describe('Group publishing', () => {
         cy.get('[data-cy="confirmation-button-confirm"]').click();
         cy.wait(250);
 
-        cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(gc => {
+        cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(() => {
           cy.get('[data-cy="group-name-label"]').click();
         });
         cy.wait(20);
         cy.get('[data-cy="group-name-input"]').type(`{selectAll}${groupName}`);
 
         // Set messages for groups
-        cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(gc => {
+        cy.contains(users[0].firstname).parents('[data-cy="group-container"]').within(() => {
           cy.get('[data-cy="group-message-input"]').within(() => {
             const randomString = uuidv4();
-            cy.get('input').type(randomString);
+            cy.get('input').type(randomString, { force: true });
             groupMessage = randomString;
           });
         }).then(() => {
+          cy.get('[data-cy="save-groups-button"]').click({ force: true });
+          cy.get('[data-cy="confirmation-button-confirm"]').click({ force: true });
 
-          cy.get('[data-cy="save-groups-button"]').click();
-          cy.get('[data-cy="confirmation-button-confirm"]').click();
           cy.wait(250);
 
           // This is becoming a promise hell of sorts
           // Get student(s) in the same group as the student
-          cy.contains(users[0].firstname).parent().parent().children().each((el, i, l) => {
-            const nameInTd = el.children().eq(0).text();
-            namesInGroup.push(nameInTd);
-          }).then(() => {
+          cy.contains(users[0].firstname).parent().parent().parent()
+            .parent()
+            .children()
+            .each((el) => {
+              const nameInTd = el.children().eq(0).text();
+              namesInGroup.push(nameInTd);
+            })
+            .then(() => {
+              // Groups are saved but not published
+              cy.switchToStudent();
+              cy.visit(`/course/${courses[3].id}`);
+              cy.wait(500);
+              cy.get('[data-cy="disabled-show-user-groups-button"]').should('exist');
 
-            // Groups are saved but not published
-            cy.switchToStudent();
-            cy.visit(`/course/${courses[3].id}`);
-            cy.wait(500);
-            cy.get('[data-cy="disabled-show-user-groups-button"]').should('exist');
+              cy.switchToStaff();
+              cy.visit(`/course/${courses[3].id}`);
+              cy.get('[data-cy="manage-groups-button"]').click();
+              cy.get('[data-cy="publish-groups-button"]').click();
+              cy.get('[data-cy="confirmation-button-confirm"]').click();
 
-            cy.switchToStaff();
-            cy.visit(`/course/${courses[3].id}`);
-            cy.get('[data-cy="manage-groups-button"]').click();
-            cy.get('[data-cy="publish-groups-button"]').click();
-            cy.get('[data-cy="confirmation-button-confirm"]').click();
-
-            cy.switchToStudent();
-            cy.visit(`/course/${courses[3].id}`);
-            cy.get('[data-cy="show-user-groups-button"]').click();
-            cy.contains('Your group has a new message:');
-            cy.contains(groupMessage);
-            cy.get('[data-cy="user-group-view-group-name"]').contains(groupName);
-            cy.contains('Your group has been published:');
-            cy.get('table>tbody>tr').each(tr => {
-              const fullName = tr.children().eq(0).text() + ' ' + tr.children().eq(1).text();
-              expect(namesInGroup).to.include(fullName);
+              cy.switchToStudent();
+              cy.visit(`/course/${courses[3].id}`);
+              cy.get('[data-cy="show-user-groups-button"]').click();
+              cy.contains('Your group has a new message:');
+              cy.contains(groupMessage);
+              cy.get('[data-cy="user-group-view-group-name"]').contains(groupName);
+              cy.contains('Your group has been published:');
+              cy.get('table>tbody>tr').each((tr) => {
+                const fullName = `${tr.children().eq(0).text()} ${tr.children().eq(1).text()}`;
+                expect(namesInGroup).to.include(fullName);
+              });
+              cy.get('table>tbody>tr').should('have.length', namesInGroup.length);
+              cy.get('table').within(() => {
+                cy.contains(users[0].firstname);
+                cy.contains(users[0].lastname);
+                cy.contains(users[0].email);
+              });
             });
-            cy.get('table>tbody>tr').should('have.length', namesInGroup.length);
-            cy.get('table').within(() => {
-              cy.contains(users[0].firstname);
-              cy.contains(users[0].lastname);
-              cy.contains(users[0].email);
-            });
-          });
-
         });
-
       });
     }
-
   });
-
 });

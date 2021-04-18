@@ -43,8 +43,7 @@ const Dropdown = ({ teachers, course, placeHolder }) => {
   };
 
   const handleClick = t => {
-    const mailto = `mailto:${t.email}?subject=${course.title}`;
-    window.location.href = mailto;
+    window.location.href = `mailto:${t.email}?subject=${course.title}`;
   };
 
   return (

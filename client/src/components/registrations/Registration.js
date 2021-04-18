@@ -4,6 +4,8 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { gql, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 
+import { useStore } from 'react-hookstore';
+import { red } from '@material-ui/core/colors';
 import { FREEFORM, MULTI_CHOICE, SINGLE_CHOICE, TIMES } from '../../util/questionTypes';
 import { REGISTER_TO_COURSE } from '../../GqlQueries';
 import ConfirmationButton from '../ui/ConfirmationButton';
@@ -11,7 +13,6 @@ import RegistrationForm from './RegistrationForm';
 import timeChoices from '../../util/timeFormChoices';
 import UserGroup from '../users/UserGroup';
 import { AppContext } from '../../App';
-import { useStore } from 'react-hookstore';
 import { CourseContext } from '../courses/Course';
 
 import { BlueButton } from '../../styles/ui/Button'
@@ -23,9 +24,10 @@ import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 export default ({ course, match }) => {
   const hookForm = useForm({ mode: 'onChange' });
   const { handleSubmit } = hookForm;
+  const { user } = useContext(AppContext);
 
   const [createRegistration] = useMutation(REGISTER_TO_COURSE, {
-    update(cache, {data: {createRegistration: reg}}) {
+    update(cache, { data: { createRegistration: reg } }) {
       cache.modify({
         id: cache.identify(user),
         fields: {
@@ -36,19 +38,16 @@ export default ({ course, match }) => {
                 fragment NewRegistration on Registration {
                   id
                 }
-              `
-            })
-            return existingRegistrationRefs.concat(newRegistrationRef)
-          }
-        }
-      })
-    }
+              `,
+            });
+            return existingRegistrationRefs.concat(newRegistrationRef);
+          },
+        },
+      });
+    },
   });
 
-  const {deleteRegistration} = useContext(CourseContext);
-
-  const { user } = useContext(AppContext);
-
+  const { deleteRegistration } = useContext(CourseContext);
   const [notification, setNotification] = useStore('notificationStore');
   const courseId = course.id;
   const studentId = user.id;
@@ -178,7 +177,7 @@ export default ({ course, match }) => {
   const handleRegistrationDeletion = async () => {
     try {
       await deleteRegistration({
-        variables
+        variables,
       });
 
       setNotification({
@@ -188,7 +187,7 @@ export default ({ course, match }) => {
       });
     } catch (deletionError) {
       // eslint-disable-next-line no-console
-      console.log('error:', deletionError);
+      console.log('Error while deleting registration:', deletionError);
     }
     history.push('/courses');
   };

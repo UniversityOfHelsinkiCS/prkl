@@ -4,10 +4,7 @@ import roles from '../../util/userRoles';
 import { AppContext } from '../../App';
 
 export default ({ registrations, course, regByStudentId }) => {
-
   const { user } = useContext(AppContext);
-
-  // eslint-disable-next-line no-console
 
   const hasAccess = () => {
     if (user.role === roles.ADMIN_ROLE) {

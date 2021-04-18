@@ -4,7 +4,7 @@ export default {
 
     'home.welcome': 'Welcome!',
     'home.briefing':
-      'Please aquaint yourself with the available projects through the courses tab. Happy grouping!',
+      'Please acquaint yourself with the available projects through the courses tab. Happy grouping!',
 
     'header.personalInfo': 'Personal info',
     'header.toggle': 'Toggle privacy',
@@ -27,9 +27,9 @@ export default {
     'courseForm.publishCourse': 'Publish course',
     'courseForm.removeQuestion': 'Remove question',
     'courseForm.infoBox':
-      'Answer options in single choice questions are assumed to be on a continuum '
-      + '(ie. choices 1 and 2 are more similar than 1 and 3), give options in order. '
-      + 'In multiple choice questions the order does not matter.',
+      'Answer options in single choice questions are assumed to be on a continuum ' +
+      '(ie. choices 1 and 2 are more similar than 1 and 3), give options in order. ' +
+      'In multiple choice questions the order does not matter.',
     'courseForm.publishAlert': 'Note: Admin privileges are required to edit published courses!',
     'courseForm.confirmSubmit': 'Confirm course creation?',
     'courseForm.confirmPublishSubmit': 'Create and publish course?',
@@ -118,6 +118,7 @@ export default {
     'course.showUserGroup': 'Check your group here',
     'course.switchRegistrationsView': 'Show enrolled students',
     'course.switchEditView': 'Edit course',
+    'course.switchRegisterView': 'Register',
     'course.noTeachers': 'This course has no teachers. You will be set as a teacher',
     'course.joinToGroups': 'Join group here',
 
@@ -168,6 +169,7 @@ export default {
     'courseRegistration.remove': 'Remove from course',
     'courseRegistration.cancelConfirmation': 'Confirm registration cancellation?',
     'courseRegistration.removeConfirmation': 'Remove student from this course?',
+    'courseRegistration.registrationRemoved': 'Registration removed successfully',
 
     'groups.title': 'Group',
     'groups.empty': 'No groups generated',
