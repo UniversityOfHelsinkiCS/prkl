@@ -64,7 +64,7 @@ export default ({
         <div>
           {groups.map((group, tableIndex) => {
             return (
-              <Box data-cy="group-container" border={1} borderRadius={5} style={{ marginTop: 10 }}>
+              <Box key={`groups-container-index-${tableIndex.toString()}`} data-cy="group-container" border={1} borderRadius={5} style={{ marginTop: 10 }}>
                 <GroupNameLabel
                   groupNames={groupNames}
                   tableIndex={tableIndex}

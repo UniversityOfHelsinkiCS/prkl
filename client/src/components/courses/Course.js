@@ -140,7 +140,7 @@ export default ({ id, match }) => {
   // ------------
 
   /**
-   * Handler for the 'Delete course' -button
+   * Handler for the 'Delete course' -button.
    * @returns {Promise<void>}
    */
   const handleDeletion = async () => {
@@ -157,68 +157,69 @@ export default ({ id, match }) => {
   };
 
   /**
-   * Handler for the 'Edit course' -button
+   * Handles the exit from the manage groups -subpage. Makes sure that anything doesn't get discarded accidentally.
+   * Takes a subpage in string format as a parameter.
+   * @param subpage
    */
-  const handleEditCourse = () => {
-    if (match.params.subpage !== 'edit') {
-      history.push(`/course/${course.id}/edit`);
-    } else if (match.params.subpage === 'groups') {
-      if (
-        groupsUnsaved &&
-        // eslint-disable-next-line no-alert
-        window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' }))
-      ) {
-        setGroupsUnsaved(false);
-        history.push(`/course/${course.id}/edit`);
-      } else if (!groupsUnsaved) {
-        history.push(`/course/${course.id}/edit`);
-      }
-    } else {
-      history.push(`/course/${course.id}`);
-    }
-  };
-
-  /**
-   * Handler for switching the subpage to the manage groups -view
-   */
-  const handleGroupsView = () => {
-    if (match.params.subpage !== 'groups') {
-      history.push(`/course/${course.id}/groups`);
-    } else if (
+  const handleExitFromGroupsView = subpage => {
+    if (
       !groupsUnsaved ||
       (groupsUnsaved &&
         // eslint-disable-next-line no-alert
         window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' })))
     ) {
       setGroupsUnsaved(false);
+      history.push(`/course/${course.id}/${subpage}`);
+    }
+  };
+
+  /**
+   * Handler for the 'Edit course' -button.
+   */
+  const handleEditCourse = () => {
+    if (match.params.subpage !== 'edit') {
+      history.push(`/course/${course.id}/edit`);
+    } else if (match.params.subpage === 'groups') {
+      handleExitFromGroupsView('edit');
+    } else {
+      // Toggle functionality for the button. Used in CourseForm's cancel-button.
       history.push(`/course/${course.id}`);
     }
   };
 
   /**
-   * Handler for switching the subpage to registrations view
+   * Handler for switching the subpage to the manage groups -view.
+   */
+  const handleGroupsView = () => {
+    if (match.params.subpage !== 'groups') {
+      history.push(`/course/${course.id}/groups`);
+    }
+  };
+
+  /**
+   * Handler for switching the subpage to registrations view.
    */
   const handleRegistrationsView = () => {
     if (match.params.subpage !== 'registrations') {
       history.push(`/course/${course.id}/registrations`);
+    } else if (match.params.subpage === 'groups') {
+      handleExitFromGroupsView('registrations');
+    }
+  };
+
+  /**
+   * Handler for switching the subpage back to root (no subpage) within the tabs.
+   */
+  const handlePlainView = () => {
+    if (match.params.subpage === 'groups') {
+      handleExitFromGroupsView('');
     } else {
       history.push(`/course/${course.id}`);
     }
   };
 
   /**
-   * Handler for switching the subpage back to root (no subpage) within the tabs
-   */
-  const handlePlainView = () => {
-    if (match.params.subpage === 'groups') {
-      handleGroupsView();
-    } else if (match.params.subpage === 'registrations') {
-      handleRegistrationsView();
-    }
-  };
-
-  /**
-   * Function to check if logged user is teacher or admin of this course
+   * Function to check if logged user is teacher or admin of this course.
    * @returns {boolean}
    */
   const userHasAccess = () => {
@@ -227,11 +228,15 @@ export default ({ id, match }) => {
   };
 
   /**
-   * Checks if the subpage value is undefined for MUI-Tabs to function correctly
+   * Checks if the subpage value is undefined for MUI-Tabs to function correctly.
    * @returns {string}
    */
   const checkSubpageValue = () => {
-    return match.params.subpage === undefined ? 'root' : match.params.subpage;
+    if (match.params.subpage === undefined || match.params.subpage === 'usergroup') {
+      return 'root';
+    }
+
+    return match.params.subpage;
   };
 
   /**

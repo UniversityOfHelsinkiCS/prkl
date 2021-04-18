@@ -271,6 +271,7 @@ export default ({
                                   {groups.map((group, index) => {
                                     return (
                                       <ListItem
+                                        key={`groupless-students-list-item-${index.toString()}`}
                                         button
                                         onClick={() => handleSwitchingGroup(student, index)}
                                       >

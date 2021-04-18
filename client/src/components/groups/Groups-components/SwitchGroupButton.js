@@ -83,6 +83,7 @@ export default ({ setGroupsUnsaved, student }) => {
                   {groups.map((g, index) => {
                     return (
                       <ListItem
+                        key={`switch-group-listItem-${index.toString()}`}
                         data-cy="switch-group-listItem"
                         button
                         onClick={() => handleSwitchingGroup(student, index)}
