@@ -125,7 +125,7 @@ describe('Group creation', () => {
 
       cy.get('[data-cy="back-to-info-from-groups-button"]').click({ force: true });
 
-      cy.get('[data-cy="show-registrations-button"]').click();
+      cy.get('[data-cy="show-registrations-button"]').click({ force: true });
       cy.contains(users[0].firstname).parents('[data-cy="student-registration-row"]').within(() => {
         cy.get('[data-cy="remove-registration-button"]').click();
       });
@@ -162,7 +162,7 @@ describe('Group creation', () => {
 
       cy.get('[data-cy="back-to-info-from-groups-button"]').click({ force: true });
 
-      cy.get('[data-cy="show-registrations-button"]').click();
+      cy.get('[data-cy="show-registrations-button"]').click({ force: true });
       cy.contains(users[0].firstname).parents('[data-cy="student-registration-row"]').within(() => {
         cy.get('[data-cy="remove-registration-button"]').click();
       });
@@ -379,7 +379,7 @@ describe('Group creation', () => {
         });
     });
 
-    it.only('Locked groups retain their names', () => {
+    it('Locked groups retain their names', () => {
       const user = users[0];
       const lockedGroup = 'lockedGroup';
 
