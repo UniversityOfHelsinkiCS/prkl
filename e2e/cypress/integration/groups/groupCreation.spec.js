@@ -404,6 +404,8 @@ describe('Group creation', () => {
       cy.get('[data-cy="create-groups-submit"]').click({ force: true });
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
+      cy.wait(300);
+
       // check locked group didn't change
       cy.contains(lockedGroup).parents('[data-cy="group-container"]').within(() => {
         cy.contains(user.firstname);
