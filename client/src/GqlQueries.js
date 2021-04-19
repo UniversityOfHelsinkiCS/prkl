@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import { gql } from '@apollo/client';
 
 export const ALL_COURSES = gql`
   {
@@ -197,6 +197,21 @@ export const REGISTER_TO_COURSE = gql`
   mutation createRegistration($data: RegistrationInput!) {
     createRegistration(data: $data) {
       id
+      student {
+        id
+        firstname
+        lastname
+        studentNo
+        email
+      }
+      questionAnswers {
+        id
+      }
+      workingTimes {
+        id
+        startTime
+        endTime
+      }
     }
   }
 `;
@@ -287,10 +302,10 @@ export const GENERATE_GROUPS = gql`
 export const FIND_GROUP_FOR_GROUPLESS_STUDENTS = gql`
   mutation findGroupForGrouplessStudents(
     $data: GroupListInput!
-    $maxGroupSize: Float!
+    $minGroupSize: Float!
     $groupless: GroupListInput!
   ) {
-    findGroupForGrouplessStudents(data: $data, maxGroupSize: $maxGroupSize, groupless: $groupless) {
+    findGroupForGrouplessStudents(data: $data, minGroupSize: $minGroupSize, groupless: $groupless) {
       courseId
       students {
         id

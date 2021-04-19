@@ -1,6 +1,24 @@
+/* eslint-disable react/jsx-wrap-multilines */
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Message, Radio, Segment } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Controller } from 'react-hook-form';
+import {
+  FormGroup,
+  TextField,
+  Box,
+  Button,
+  RadioGroup,
+  Radio,
+  FormControl,
+  FormLabel,
+  FormControlLabel,
+  Checkbox,
+  IconButton,
+} from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
+import CloseIcon from '@material-ui/icons/Close';
+import { SINGLE_CHOICE, MULTI_CHOICE, FREEFORM } from '../../util/questionTypes';
+import { useQuestionFormStyles } from '../../styles/questions/QuestionForm';
 
 const QuestionForm = ({
   qName,
@@ -10,208 +28,61 @@ const QuestionForm = ({
   hideAddRemoveButtons,
   hookForm,
 }) => {
+  const classes = useQuestionFormStyles();
+
   const intl = useIntl();
 
-  const defaultQuestion = {
-    questionType: 'singleChoice',
-    content: '',
-    order: questionIndex,
-    optional: false,
-    useInGroupCreation: true,
-    qKey: qName,
-  };
-
-  const [questionOptionality, setQuestionOptionality] = useState(false);
-  const [useInGroupCreation, setUseInGroupCreation] = useState(true);
-  const [questionType, setQuestionType] = useState('singleChoice');
   const [options, setOptions] = useState([]);
-  const [question, setQuestion] = useState(defaultQuestion);
-  const [init, setInit] = useState(true);
+  const [questionType, setQuestionType] = useState(SINGLE_CHOICE);
+  const [optional, setOptional] = useState(false);
 
-  const { setValue, trigger, errors, setError, clearErrors, register, unregister } = hookForm;
+  const { errors, control, unregister, setValue, setError, clearErrors } = hookForm;
 
-  const missingChoicesErr = `choice-${qName}`;
+  const initialQuestion = questions[questionIndex];
 
+  // set initial values
   useEffect(() => {
-    register(
-      { name: qName },
-      {
-        required: intl.formatMessage({ id: 'questionForm.questionTitleMissingValidationMsg' }),
-        maxLength: {
-          value: 150,
-          message: intl.formatMessage({ id: 'questionForm.questionTitleTooLongValidationMsg' }),
-        },
-      }
-    );
-    if (questionType !== 'freeForm' && !options.length) {
+    const choices = initialQuestion.questionChoices
+      ? initialQuestion.questionChoices.map(qc => {
+          const oName =
+            qc.id || qc.oName || `question-${qName}-o-${new Date().getTime().toString()}`;
+          return {
+            ...qc,
+            oName,
+          };
+        })
+      : [];
+
+    setOptions(choices);
+    setQuestionType(initialQuestion.questionType || SINGLE_CHOICE);
+    setOptional(initialQuestion.optional || false);
+  }, []); // eslint-disable-line
+
+  // uncheck useInGroupCreation if necessary
+  useEffect(() => {
+    if (optional || questionType === FREEFORM) {
+      setValue(`questions.${qName}.useInGroupCreation`, false);
+    }
+  }, [optional, questionType]); // eslint-disable-line
+
+  const missingChoicesErr = `missingchoices-${qName}`;
+
+  // set or clear missingChoicesError
+  useEffect(() => {
+    if (questionType !== FREEFORM && options.length === 0) {
       setError(missingChoicesErr, {
         message: intl.formatMessage({
-          id: 'questionForm.questionChoicesMissingValidationMsg',
+          id: 'questionForm.questionChoicesMissing',
         }),
       });
     } else {
       clearErrors(missingChoicesErr);
     }
-  }, [options, question]); // eslint-disable-line
+  }, [options, questionType]); // eslint-disable-line
 
-  useEffect(() => {
-    const qstn = questions[questionIndex]
-      ? {
-          id: questions[questionIndex].id,
-          questionType: questions[questionIndex].questionType
-            ? questions[questionIndex].questionType
-            : defaultQuestion.questionType,
-          content: questions[questionIndex].content,
-          questionChoices: questions[questionIndex].questionChoices,
-          optional: questions[questionIndex].optional,
-          useInGroupCreation: questions[questionIndex].useInGroupCreation,
-          order: questionIndex,
-          qKey: qName,
-        }
-      : defaultQuestion;
-    setQuestionOptionality(qstn.optional);
-    setUseInGroupCreation(qstn.useInGroupCreation);
-    setQuestionType(qstn.questionType);
-    setQuestion(qstn);
-    setValue(qName, qstn.content);
-    if (init) {
-      setQuestions(questions.map(q => (q.qKey !== question.qKey ? q : question)));
-      setInit(false);
-    }
-    const opts = questions[questionIndex]?.questionChoices
-      ? questions[questionIndex].questionChoices.map(qc => {
-          const oName = qc.id
-            ? qc.id : qc.oName
-            ? qc.oName : `question-${qName}-o-${new Date().getTime().toString()}`;
-          if (!qc.oName)
-            register(
-              { name: oName },
-              {
-                required: intl.formatMessage({
-                  id: 'questionForm.questionChoiceLabelMissingValidationMsg',
-                }),
-                maxLength: {
-                  value: 150,
-                  message: intl.formatMessage({
-                    id: 'questionForm.questionChoiceLabelTooLongValidationMsg',
-                  }),
-                },
-              }
-            );
-          return {
-            id: qc.id,
-            content: qc.content,
-            order: qc.order,
-            oName,
-          };
-        })
-      : options;
-    setOptions(opts);
-    opts.forEach(o => {
-      setValue(o.oName, o.content);
-    });
-  }, [questions]); // eslint-disable-line
-
-  const updateQuestions = questionObject => {
-    const newQuestions = [...questions];
-    newQuestions[questionIndex] = questionObject;
-    setQuestion(questionObject);
-    setQuestions(newQuestions);
-  };
-
-  const handleUseInGroupCreationChange = value => {
-    const questionObject = {
-      ...question,
-      useInGroupCreation: value,
-    };
-
-    setUseInGroupCreation(value);
-    updateQuestions(questionObject);
-  };
-
-  useEffect(() => {
-    if (questionOptionality || questionType === 'freeForm') {
-      handleUseInGroupCreationChange(false);
-    }
-  }, [questionOptionality, questionType]); // eslint-disable-line
-
-  const handleOptionalityChange = () => {
-    const questionObject = {
-      ...question,
-      optional: !questionOptionality,
-    };
-
-    setQuestionOptionality(!questionOptionality);
-    updateQuestions(questionObject);
-  };
-
-  const handleOptionChange = (e, index, value) => {
-    const newOptions = options;
-    newOptions[index] = { ...newOptions[index], content: value };
-    setOptions(newOptions);
-
-    const questionObject = {
-      ...question,
-      questionChoices: newOptions,
-    };
-
-    updateQuestions(questionObject);
-  };
-
-  const handleTypeChange = value => {
-    const questionObject = { ...question, questionType: value };
-    // Remove options on type change to freeForm
-    if (questionType === 'freeForm') {
-      delete questionObject.questionChoices;
-      options.forEach(o => unregister(o.oName));
-      setOptions([]);
-    }
-    setQuestionType(value);
-    updateQuestions(questionObject);
-  };
-
-  const handleTitleChange = (e, value) => {
-    const questionObject = { ...question, content: value };
-    updateQuestions(questionObject);
-  };
-
-  const handleAddForm = () => {
-    const oName = `question-${qName}-o-${new Date().getTime().toString()}`;
-    register(
-      { name: oName },
-      {
-        required: intl.formatMessage({
-          id: 'questionForm.questionChoiceLabelMissingValidationMsg',
-        }),
-        maxLength: {
-          value: 150,
-          message: intl.formatMessage({
-            id: 'questionForm.questionChoiceLabelTooLongValidationMsg',
-          }),
-        },
-      }
-    );
-    setOptions([...options, { oName, order: options.length + 1, content: '' }]);
-  };
-
-  const handleRemoveForm = () => {
-    if (options.length === 0) return;
-    if (options) unregister(options[options.length - 1].oName);
-    const newOptions = options.slice(0, options.length - 1);
-    const newQuestion = { ...question, questionChoices: newOptions };
-    const newQuestions = [...questions];
-    newQuestions[questionIndex] = newQuestion;
-    setOptions(newOptions);
-    setQuestion(newQuestion);
-    setQuestions(newQuestions);
-  };
-
-  const removeQuestion = e => {
-    e.preventDefault();
+  const removeQuestion = () => {
     unregister(qName);
-    options.forEach(o => unregister(o.oName));
     clearErrors(missingChoicesErr);
-    setOptions([]);
     const newQuestions = questions
       .filter((q, i) => {
         return i !== questionIndex;
@@ -222,149 +93,245 @@ const QuestionForm = ({
     setQuestions(newQuestions);
   };
 
+  const handleTypeChange = type => {
+    setQuestionType(type);
+    if (questionType === FREEFORM) {
+      options.forEach(o => unregister(`questions.${qName}.options.${o.oName}`));
+      setOptions([]);
+    }
+  };
+
+  const handleAddOption = () => {
+    const oName = `question-${qName}-o-${new Date().getTime().toString()}`;
+    setOptions([...options, { oName, order: options.length + 1, content: '' }]);
+  };
+
+  const handleRemoveOption = () => {
+    if (options.length === 0) return;
+    const { oName } = options[options.length - 1];
+    unregister(`questions.${qName}.options.${oName}`);
+    const newOptions = options.slice(0, options.length - 1);
+    setOptions(newOptions);
+  };
+
   return (
-    <Segment style={{ padding: 15, margin: 10 }}>
+    <Box className={classes.questionContainer}>
       {!hideAddRemoveButtons && (
-        <Form.Button onClick={removeQuestion} floated="right" data-cy="question-remove-button">
-          X
-        </Form.Button>
+        <IconButton
+          onClick={removeQuestion}
+          style={{ float: 'right' }}
+          data-cy="question-remove-button"
+        >
+          <CloseIcon />
+        </IconButton>
       )}
-      <Form.Field
-        name={qName}
-        onChange={async (e, { name, value }) => {
-          handleTitleChange(e, value);
-          setValue(name, value);
-          await trigger(name);
+      {/* Question title input */}
+      <Controller
+        name={`questions.${qName}.content`}
+        control={control}
+        defaultValue={initialQuestion?.content || ''}
+        rules={{
+          required: intl.formatMessage({ id: 'questionForm.questionTitleMissing' }),
+          maxLength: {
+            value: 150,
+            message: intl.formatMessage({ id: 'questionForm.questionTitleTooLong' }),
+          },
         }}
-        error={errors[qName]?.message}
-        control={Input}
-        value={question.content}
-        label={intl.formatMessage({
-          id: 'questionForm.title',
-        })}
-        placeholder={intl.formatMessage({
-          id: 'questionForm.titlePlaceholder',
-        })}
-        data-cy="question-title"
+        render={props => (
+          <TextField
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...props}
+            fullWidth
+            variant="outlined"
+            label={intl.formatMessage({
+              id: 'questionForm.questionTitle',
+            })}
+            error={errors.questions && errors.questions[qName]?.content !== undefined}
+            helperText={errors.questions && errors.questions[qName]?.content?.message}
+            data-cy="question-title"
+            className={classes.textField}
+          />
+        )}
       />
-      {!hideAddRemoveButtons && (
-        <Form.Group inline>
-          <label>
-            <FormattedMessage id="questionForm.questionTypeLabel" />
-          </label>
-          <Form.Field
-            control={Radio}
-            label={intl.formatMessage({
-              id: 'questionForm.numericalQuestion',
-            })}
-            value="singleChoice"
-            checked={question.questionType === 'singleChoice'}
-            onChange={() => handleTypeChange('singleChoice')}
-            data-cy="question-type-single"
-          />
-          <Form.Field
-            control={Radio}
-            label={intl.formatMessage({
-              id: 'questionForm.multipleSelectOne',
-            })}
-            value="multipleChoice"
-            checked={question.questionType === 'multipleChoice'}
-            onChange={() => handleTypeChange('multipleChoice')}
-            data-cy="question-type-multi"
-          />
-          <Form.Field
-            control={Radio}
-            label={intl.formatMessage({
-              id: 'questionForm.freeformQuestion',
-            })}
-            value="freeForm"
-            checked={question.questionType === 'freeForm'}
-            onChange={() => handleTypeChange('freeForm')}
-            data-cy="question-type-freeform"
-          />
-        </Form.Group>
-      )}
 
-      {question.questionType !== 'freeForm' ? (
+      {/* Question type selection */}
+      <FormControl disabled={hideAddRemoveButtons} className={classes.questionType}>
+        <FormLabel>
+          <FormattedMessage id="questionForm.questionTypeLabel" />
+        </FormLabel>
+        <Controller
+          control={control}
+          defaultValue={initialQuestion?.questionType || SINGLE_CHOICE}
+          name={`questions.${qName}.type`}
+          render={props => (
+            <RadioGroup
+              row
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              {...props}
+              onChange={e => {
+                props.onChange(e);
+                handleTypeChange(e.target.value);
+              }}
+            >
+              <FormControlLabel
+                value={SINGLE_CHOICE}
+                control={<Radio />}
+                label={intl.formatMessage({
+                  id: 'questionForm.singleChoice',
+                })}
+                data-cy="question-type-single"
+              />
+              <FormControlLabel
+                value={MULTI_CHOICE}
+                control={<Radio />}
+                label={intl.formatMessage({
+                  id: 'questionForm.multipleSelect',
+                })}
+                data-cy="question-type-multi"
+              />
+              <FormControlLabel
+                value={FREEFORM}
+                control={<Radio />}
+                label={intl.formatMessage({
+                  id: 'questionForm.freeformQuestion',
+                })}
+                data-cy="question-type-freeform"
+              />
+            </RadioGroup>
+          )}
+        />
+      </FormControl>
+
+      {questionType !== FREEFORM && (
         <>
+          {/* Add/remove option buttons */}
           {!hideAddRemoveButtons && (
-            <Form.Group>
-              <Form.Button
-                type="button"
-                onClick={handleAddForm}
-                color="green"
+            <FormGroup row>
+              <Button
+                variant="contained"
+                onClick={handleAddOption}
                 data-cy="add-question-choice-button"
+                className={classes.addButton}
               >
-                <FormattedMessage id="questionForm.addQuestion" />
-              </Form.Button>
-
-              <Form.Button
-                type="button"
-                onClick={handleRemoveForm}
-                color="red"
+                <FormattedMessage id="questionForm.addOption" />
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleRemoveOption}
                 data-cy="remove-question-choice-button"
+                className={classes.removeButton}
               >
-                <FormattedMessage id="questionForm.removeQuestion" />
-              </Form.Button>
-            </Form.Group>
+                <FormattedMessage id="questionForm.removeOption" />
+              </Button>
+            </FormGroup>
           )}
 
           {errors[missingChoicesErr] && (
-            <Message negative header={errors[missingChoicesErr]?.message} />
+            <Alert severity="error" className={classes.alert}>
+              {errors[missingChoicesErr]?.message}
+            </Alert>
           )}
-          <Form.Group style={{ flexWrap: 'wrap' }}>
-            {options.map((q, index) => (
-              <Form.Field
-                name={q.oName}
-                onChange={async (e, { name, value }) => {
-                  handleOptionChange(e, index, value);
-                  setValue(name, value);
-                  await trigger(name);
+
+          {/* Question choice input */}
+          <FormGroup row className={classes.questionChoices}>
+            {options.map((o, index) => (
+              <Controller
+                key={o.oName}
+                control={control}
+                defaultValue={o?.content || ''}
+                name={`questions.${qName}.options.${o.oName}`}
+                rules={{
+                  required: intl.formatMessage({
+                    id: 'questionForm.questionChoiceLabelMissing',
+                  }),
+                  maxLength: {
+                    value: 150,
+                    message: intl.formatMessage({
+                      id: 'questionForm.questionChoiceLabelTooLong',
+                    }),
+                  },
                 }}
-                error={errors[q.oName]?.message}
-                control={Input}
-                type="text"
-                value={q.content}
-                label={intl.formatMessage(
-                  {
-                    id: 'questionForm.optionTitle',
-                  },
-                  {
-                    number: index + 1,
-                  }
+                render={props => (
+                  <TextField
+                    // eslint-disable-next-line react/jsx-props-no-spreading
+                    {...props}
+                    variant="outlined"
+                    label={intl.formatMessage(
+                      {
+                        id: 'questionForm.optionTitle',
+                      },
+                      {
+                        number: index + 1,
+                      }
+                    )}
+                    error={
+                      errors.questions &&
+                      errors.questions[qName]?.options &&
+                      errors.questions[qName].options[o.oName] !== undefined
+                    }
+                    helperText={
+                      errors.questions &&
+                      errors.questions[qName]?.options &&
+                      errors.questions[qName].options[o.oName]?.message
+                    }
+                    data-cy={`question-${questionIndex}-choice-${index}`}
+                    className={classes.textField}
+                  />
                 )}
-                key={`question${questionIndex}optionsForm${index}`}
-                placeholder={intl.formatMessage(
-                  {
-                    id: 'questionForm.optionTitle',
-                  },
-                  {
-                    number: index + 1,
-                  }
-                )}
-                data-cy={`question-${questionIndex}-choice-${index}`}
               />
             ))}
-          </Form.Group>
+          </FormGroup>
         </>
-      ) : null}
-
-      <Form.Checkbox
-        name="questionOptionality"
-        label={intl.formatMessage({ id: 'questionForm.optional' })}
-        checked={questionOptionality === true}
-        onClick={() => handleOptionalityChange()}
-        data-cy="question-optionality-checkbox"
-      />
-
-      <Form.Checkbox
-        name="useInGroupCreation"
-        label={intl.formatMessage({ id: 'questionForm.useInGroupCreation' })}
-        checked={useInGroupCreation}
-        onClick={() => handleUseInGroupCreationChange(!useInGroupCreation)}
-        disabled={questionOptionality || questionType === 'freeForm'}
-      />
-    </Segment>
+      )}
+      <FormGroup className={classes.checkboxGroup}>
+        {/* Optionality checkbox */}
+        <FormControlLabel
+          control={
+            <Controller
+              name={`questions.${qName}.optional`}
+              control={control}
+              defaultValue={initialQuestion?.optional || false}
+              render={props => (
+                <Checkbox
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  {...props}
+                  checked={props.value}
+                  onChange={e => {
+                    props.onChange(e.target.checked);
+                    setOptional(!optional);
+                  }}
+                  data-cy="question-optionality-checkbox"
+                />
+              )}
+            />
+          }
+          label={intl.formatMessage({ id: 'questionForm.optional' })}
+        />
+        {/* UseInGroupCreation checkbox */}
+        <FormControlLabel
+          control={
+            <Controller
+              name={`questions.${qName}.useInGroupCreation`}
+              control={control}
+              defaultValue={initialQuestion?.useInGroupCreation || false}
+              render={props => (
+                <Checkbox
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  {...props}
+                  checked={props.value}
+                  onChange={e => {
+                    props.onChange(e.target.checked);
+                  }}
+                  disabled={optional || questionType === FREEFORM}
+                />
+              )}
+            />
+          }
+          label={intl.formatMessage({ id: 'questionForm.useInGroupCreation' })}
+          disabled={optional || questionType === FREEFORM}
+        />
+      </FormGroup>
+    </Box>
   );
 };
 

@@ -1,15 +1,22 @@
-import React from 'react';
-import { Menu, Icon } from 'semantic-ui-react';
+import React, { useContext } from 'react';
 import axios from 'axios';
 import { useStore } from 'react-hookstore';
+import { AppContext } from '../App';
+
+import { AppBar, Button, ButtonGroup, Toolbar, Typography, Box } from '@material-ui/core';
+import { useDevBarStyles } from '../styles/ui/DevBar';
+
+const apiUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : process.env.PUBLIC_URL;
 
 const switchUser = async (setMocking, id) => {
   setMocking(prev => ({ ...prev, mockedUser: id }));
   window.location.reload();
 };
 
-const apiUrl =
-  process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : process.env.PUBLIC_URL;
+const stopMocking = async (setMocking, mockedBy) => {
+  setMocking(prev => ({ ...prev, mockedUser: mockedBy }));
+  window.location.reload();
+};
 
 const resetDatabase = async () => {
   await axios.get(`${apiUrl}/reset`);
@@ -28,25 +35,43 @@ const seedDemoDatabase = async () => {
 
 export default () => {
   const [mocking, setMocking] = useStore('mocking');
+  const { user } = useContext(AppContext);
+
+  const classes = useDevBarStyles();
 
   return (
-    <Menu className="mainHeader" size="massive" stackable borderless attached inverted>
-      <Menu.Item>DEV</Menu.Item>
-      <Menu.Item onClick={() => switchUser(setMocking, 1)} data-cy="switch-to-student">
-        Student
-      </Menu.Item>
-      <Menu.Item onClick={() => switchUser(setMocking, 2)} data-cy="switch-to-staff">
-        Staff
-      </Menu.Item>
-      <Menu.Item onClick={() => switchUser(setMocking, mocking.mockedBy)} data-cy="switch-to-admin">
-        Admin
-      </Menu.Item>
-      <Menu.Item>
-        <Icon name="cogs" style={{ color: '#fbbd08' }} />
-      </Menu.Item>
-      <Menu.Item onClick={resetDatabase}>Empty DB</Menu.Item>
-      <Menu.Item onClick={seedDatabase}>Seed DB</Menu.Item>
-      <Menu.Item onClick={seedDemoDatabase}>Demo DB</Menu.Item>
-    </Menu>
+    <AppBar className={classes.appbar} position={"static"}>
+      <Toolbar>
+
+        <Typography variant="h5" className={classes.title}>Devbar</Typography>
+
+        <Box>
+          <Typography>Log in as...</Typography>
+
+          <ButtonGroup className={classes.roleControls}>
+            <Button onClick={() => switchUser(setMocking, 1)} data-cy="switch-to-student">
+              Student
+            </Button>
+            <Button onClick={() => switchUser(setMocking, 2)} data-cy="switch-to-staff">
+              Staff
+            </Button>
+            <Button onClick={() => switchUser(setMocking, mocking.mockedBy)} data-cy="switch-to-admin">
+              Admin
+            </Button>
+          </ButtonGroup>
+        </Box>
+
+        <Box>
+          <Typography>Database options</Typography>
+
+          <ButtonGroup className={classes.dbControls}>
+            <Button onClick={resetDatabase}>Empty DB</Button>
+            <Button onClick={seedDatabase}>Seed DB</Button>
+            <Button onClick={seedDemoDatabase}>Demo DB</Button>
+          </ButtonGroup>
+        </Box>
+
+      </Toolbar>
+    </AppBar>
   );
 };

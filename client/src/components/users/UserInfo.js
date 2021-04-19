@@ -7,10 +7,20 @@ import roles from '../../util/userRoles';
 
 import { Container, Typography } from '@material-ui/core';
 import { AppContext } from '../../App';
+import { Loader } from 'semantic-ui-react';
+import { ALL_COURSES } from '../../GqlQueries';
+import { useQuery } from '@apollo/client';
 
-export default ({courses}) => {
+export default () => {
   const [privacyToggle] = useStore('toggleStore');
   const { user } = useContext(AppContext);
+  const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
+
+  if (courseLoading || courseError !== undefined) {
+    return <Loader active />
+  }
+
+  const courses = courseData.courses;
 
   const coursesTeachedOn = courses.filter(c => c.teachers.some(t => t.id === user.id));
 
@@ -22,8 +32,6 @@ export default ({courses}) => {
   };
 
   const divider = <span style={{ color: '#f2f2f2' }}>{' | '}</span>
-
-  
 
   return (
     <Container>

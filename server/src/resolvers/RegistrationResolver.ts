@@ -41,16 +41,11 @@ export class RegistrationResolver {
     registration.student = context.user;
 
     await registration.save();
-
     return registration;
   }
 
-  @Mutation(() => Boolean)
-  async deleteRegistration(
-    @Ctx() context,
-    @Arg("studentId") studentId: string,
-    @Arg("courseId") courseId: string,
-  ): Promise<boolean> {
+  @Mutation(() => String)
+  async deleteRegistration(@Ctx() context, @Arg("studentId") studentId: string, @Arg("courseId") courseId: string): Promise<String> {
     const { user } = context;
     let auth = false;
 
@@ -82,8 +77,10 @@ export class RegistrationResolver {
     unregisteredUser.groups = groups;
     await unregisteredUser.save();
 
+    const deletedRegistrationId = registration.id // copy registration, because the id is undefined after .remove()
+
     await registration.remove();
 
-    return true;
+    return deletedRegistrationId;
   }
 }

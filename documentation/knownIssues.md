@@ -5,3 +5,5 @@
 * Typing to form when creating or editing a course is quite sluggish due to constant validating of form inputs.
 
 * If the frontend appears as a blank page, the database is empty and needs to be seeded. This can be done by starting up the backend and visiting: `http://localhost:3001/seed`.
+
+* Cypress requires (more than little) patience. If you try to run all specs whilst in `npm run test:dev` -view, the test browser may crash (has happened with Chrome). Try with different browser or run the specs one by one.

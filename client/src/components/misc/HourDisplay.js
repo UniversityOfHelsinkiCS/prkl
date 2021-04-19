@@ -1,10 +1,70 @@
 import React from 'react';
-import { Table, Header } from 'semantic-ui-react';
 import { useIntl } from 'react-intl';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { red, orange, yellow, green } from '@material-ui/core/colors';
+
+const useStyles = makeStyles({
+  table: {
+    overflow: 'hidden',
+  },
+  headerCell: {
+    paddingRight: '10px',
+    paddingLeft: '10px',
+    textAlign: 'center',
+  },
+  contentRow: {
+    height: '10px',
+  },
+  hourLabel: {
+    padding: '0px 10px',
+    textAlign: 'center',
+    minWidth: '60px',
+  },
+  tableEntry: {
+    padding: '0px 10px',
+    textAlign: 'center',
+  },
+  // colors for table cells
+  all: {
+    backgroundColor: green.A400,
+    border: 'solid',
+    borderWidth: '1px',
+    borderColor: green.A700,
+  },
+  overHalf: {
+    backgroundColor: yellow[500],
+    border: 'solid',
+    borderWidth: '1px',
+    borderColor: yellow.A700,
+  },
+  underHalf: {
+    backgroundColor: orange[400],
+    border: 'solid',
+    borderWidth: '1px',
+    borderColor: orange['600'],
+  },
+  none: {
+    backgroundColor: red.A200,
+    border: 'solid',
+    borderWidth: '1px',
+    borderColor: red['600'],
+  },
+});
 
 const HourDisplay = ({ header, times, students, groupId }) => {
   const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
   const intl = useIntl();
+
+  const classes = useStyles();
 
   if (!times) {
     return null;
@@ -12,60 +72,57 @@ const HourDisplay = ({ header, times, students, groupId }) => {
   // get the transpose of times
   const timesTranspose = times[0].map((col, i) => times.map(row => row[i]));
 
-  const hsl_col_code = timeSlot => {
+  const colorClass = timeSlot => {
     const ratio = timeSlot / students;
-    let code = 0; // red
-
     if (ratio === 1) {
-      code = 120; // green
-    } else if (ratio > 0.5) {
-      code = 60; // yellow
-    } else if (ratio > 0) {
-      code = 30; // orange
+      return 'all';
     }
-
-    // Return a CSS HSL string
-    return `hsl(${code}, 100%, 70%)`;
+    if (ratio > 0.5) {
+      return 'overHalf';
+    }
+    if (ratio > 0) {
+      return 'underHalf';
+    }
+    return 'none';
   };
 
   return (
-    <Table unstackable celled collapsing textAlign="center" size="small" style={{ marginRight: 0 }}>
-      <Table.Header>
-        {header ? (
-          <Table.Row>
-            <Table.HeaderCell colSpan="8">
-              <Header>{header}</Header>
-            </Table.HeaderCell>
-          </Table.Row>
-        ) : null}
-
-        <Table.Row>
-          <Table.HeaderCell textAlign="center">
-            {intl.formatMessage({ id: `timeForm.hours` })}
-          </Table.HeaderCell>
-          {weekdays.map(day => (
-            <Table.HeaderCell textAlign="center" key={day}>
-              {intl.formatMessage({ id: `timeForm.${day}` })}
-            </Table.HeaderCell>
-          ))}
-        </Table.Row>
-      </Table.Header>
-      <Table.Body>
-        {timesTranspose.map((hours, index) => (
-          <Table.Row key={`${groupId}-${index}`}>
-            <Table.Cell style={{ padding: 0 }}>{`${index + 8}-${index + 9}`}</Table.Cell>
-            {hours.map((timeSlot, timeSlotIndex) => (
-              <Table.Cell
-                key={`${timeSlotIndex}-${groupId}-${index}`}
-                style={{ padding: 0, backgroundColor: hsl_col_code(timeSlot) }}
-              >
-                {timeSlot}
-              </Table.Cell>
+    <TableContainer component={Paper}>
+      <Table size="small" className={classes.table}>
+        <TableHead>
+          {header && (
+            <TableRow>
+              <TableCell colSpan="8">{header}</TableCell>
+            </TableRow>
+          )}
+          <TableRow>
+            <TableCell className={classes.headerCell}>
+              {intl.formatMessage({ id: 'timeForm.hours' })}
+            </TableCell>
+            {weekdays.map(day => (
+              <TableCell key={day} className={classes.headerCell}>
+                {intl.formatMessage({ id: `timeForm.${day}` })}
+              </TableCell>
             ))}
-          </Table.Row>
-        ))}
-      </Table.Body>
-    </Table>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {timesTranspose.map((hours, index) => (
+            <TableRow key={`${groupId}-${index}`} className={classes.contentRow}>
+              <TableCell className={classes.hourLabel}>{`${index + 8}-${index + 9}`}</TableCell>
+              {hours.map((timeSlot, timeSlotIndex) => (
+                <TableCell
+                  key={`${timeSlotIndex}-${groupId}-${index}`}
+                  className={`${classes.tableEntry} ${classes[colorClass(timeSlot)]}`}
+                >
+                  {timeSlot}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

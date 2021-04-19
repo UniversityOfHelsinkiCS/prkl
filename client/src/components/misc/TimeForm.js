@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Table, Icon, Message } from 'semantic-ui-react';
+import { Alert } from '@material-ui/lab';
+import { makeStyles, Table, TableCell, TableHead, TableRow } from '@material-ui/core';
+import ClearIcon from '@material-ui/icons/Clear';
+import CheckIcon from '@material-ui/icons/Check';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { useIntl } from 'react-intl';
 
 import timeChoices from '../../util/timeFormChoices';
@@ -18,24 +22,36 @@ const makeEmptySheet = () => {
   }, {});
 };
 
+const useStyles = makeStyles({
+  table: {
+    cursor: 'pointer',
+    userSelect: 'none'
+  },
+  tablecell: {
+    border: '1px solid'
+  }
+});
+
 const TimeForm = ({ onChange, description }) => {
   const intl = useIntl();
 
   const [table, setTable] = useState(makeEmptySheet());
   const [mouseDown, setMouseDown] = useState(false);
 
+  const classes = useStyles();
+
   useEffect(() => {
     onChange(makeEmptySheet());
   }, []); // eslint-disable-line
 
-  const switchChoiceIcon = choice => {
+  const getCellIcon = choice => {
     switch (choice) {
       case timeChoices.yes:
-        return 'check';
+        return <CheckIcon/>
       case timeChoices.maybe:
-        return 'question';
+        return <HelpOutlineIcon/>;
       case timeChoices.no:
-        return 'times';
+        return <ClearIcon/>
       default:
         throw new Error(`Unexpected switch fallthrough with choice: ${choice}`);
     }
@@ -90,71 +106,42 @@ const TimeForm = ({ onChange, description }) => {
       <h3>{description}</h3>
 
       {Intl.DateTimeFormat().resolvedOptions().timeZone !== 'Europe/Helsinki' ? (
-        <Message warning>{intl.formatMessage({ id: 'timeForm.timeZoneWarning' })}</Message>
+        <Alert severity="warning">{intl.formatMessage({ id: 'timeForm.timeZoneWarning' })}</Alert>
       ) : null}
-
-      <Table
-        unstackable
-        compact="very"
-        collapsing
-        celled
-        style={{
-          cursor: 'pointer',
-          userSelect: 'none',
-        }}
-        className="no_highlights"
-      >
-        <Table.Header>
-          <Table.Row>
-            {weekdays.map(day => (
-              <Table.HeaderCell textAlign="center" key={day}>
-                {intl.formatMessage({ id: `timeForm.${day}` })}
-              </Table.HeaderCell>
-            ))}
-          </Table.Row>
-        </Table.Header>
-
-        <Table.Body>
-          {hours.map(hour => (
-            <Table.Row key={hour}>
+      <Table className={classes.table} size="small" padding="none">
+        <TableHead>
+          {weekdays.map(day => (
+            <TableCell className={classes.tablecell} align="center">
+              {intl.formatMessage({ id: `timeForm.${day}` })}
+            </TableCell>))}
+        </TableHead>
+          {hours.map(hour => 
+            <TableRow>
               {weekdays.map(day => (
-                <Table.Cell
-                  style={{
-                    paddingTop: 5,
-                    paddingBottom: 5,
-                    paddingRight: 15,
-                    paddingLeft: 15,
-                  }}
-                  key={`${day}-${hour}`}
-                  textAlign="center"
-                  bgcolor={switchChoiceColor(table[day][hour])}
-                  data-weekday={day}
-                  data-hour={hour}
-                  onMouseDown={e => {
-                    handleClick(e);
-                    setMouseDown(true);
-                  }}
-                  onMouseUp={() => {
-                    setMouseDown(false);
-                  }}
-                  onMouseEnter={e => {
-                    if (mouseDown) {
+                <TableCell className={classes.tablecell} align="center" fullWidth data-weekday={day} data-hour={hour}
+                    bgcolor={switchChoiceColor(table[day][hour])}
+                     onMouseDown={e => {
                       handleClick(e);
-                    }
-                  }}
-                  onContextMenu={e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                  }}
-                >
-                  {`${hour} - ${hour + 1} `}
-                  <Icon name={switchChoiceIcon(table[day][hour])} />
-                </Table.Cell>
+                      setMouseDown(true);
+                      }}
+                      onMouseUp={() => {
+                        setMouseDown(false);
+                      }}
+                      onMouseEnter={e => {
+                        if (mouseDown) {
+                          handleClick(e);
+                        }
+                      }}
+                      onContextMenu={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                      }}>
+                    {`${hour} - ${hour + 1} `}
+                    {getCellIcon(table[day][hour])}
+                </TableCell>
               ))}
-            </Table.Row>
-          ))}
-        </Table.Body>
+            </TableRow>)}
       </Table>
     </div>
   );

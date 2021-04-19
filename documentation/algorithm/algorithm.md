@@ -29,7 +29,7 @@ Said versions can be found in the commit history (eg. [here](https://github.com/
 
 #### server/src/algorithm
 
-First one consists of the combined action of `types.ts`, `evaluate.ts` and `index.ts`
+First one consists of the combined action of `types.ts`, `evaluate.ts` and `index.ts`. For more specific description, see [documentation](oldalgorithm.md).
 
 Second one is `new_algo.ts`
 

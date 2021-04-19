@@ -4,13 +4,13 @@ export default {
 
     'home.welcome': 'Welcome!',
     'home.briefing':
-      'Please aquaint yourself with the available projects through the courses tab. Happy grouping!',
+      'Please acquaint yourself with the available projects through the courses tab. Happy grouping!',
 
     'header.personalInfo': 'Personal info',
     'header.toggle': 'Toggle privacy',
     'header.courses': 'Courses',
-    'header.addCourse': 'Add Course',
-    'header.userManagement': 'Manage Users',
+    'header.addCourse': 'Add course',
+    'header.userManagement': 'Manage users',
     'header.logout': 'Logout',
 
     'courseForm.pageTitle': 'Create course',
@@ -27,9 +27,9 @@ export default {
     'courseForm.publishCourse': 'Publish course',
     'courseForm.removeQuestion': 'Remove question',
     'courseForm.infoBox':
-      'Answer options in single choice questions are assumed to be on a continuum '
-      + '(ie. choices 1 and 2 are more similar than 1 and 3), give options in order. '
-      + 'In multiple choice question the order does not matter.',
+      'Answer options in single choice questions are assumed to be on a continuum ' +
+      '(ie. choices 1 and 2 are more similar than 1 and 3), give options in order. ' +
+      'In multiple choice questions the order does not matter.',
     'courseForm.publishAlert': 'Note: Admin privileges are required to edit published courses!',
     'courseForm.confirmSubmit': 'Confirm course creation?',
     'courseForm.confirmPublishSubmit': 'Create and publish course?',
@@ -81,20 +81,19 @@ export default {
     'gradeQuestion.gradeAnswer2': 'I want to pass the course',
     'gradeQuestion.gradeAnswer3': "I don't care about the grade",
 
-    'questionForm.addQuestion': 'Add answer option',
-    'questionForm.removeQuestion': 'Remove answer option',
-    'questionForm.titlePlaceholder': 'Question',
-    'questionForm.title': 'Title',
-    'questionForm.numericalQuestion': 'Single choice',
+    'questionForm.addOption': 'Add answer option',
+    'questionForm.removeOption': 'Remove answer option',
+    'questionForm.questionTitle': 'Question',
+    'questionForm.singleChoice': 'Single choice',
     'questionForm.freeformQuestion': 'Freeform',
-    'questionForm.multipleSelectOne': 'Multiple select',
+    'questionForm.multipleSelect': 'Multiple select',
     'questionForm.optionTitle': 'Choice {number}',
     'questionForm.questionTypeLabel': 'Question type',
-    'questionForm.questionTitleMissingValidationMsg': 'Question title required',
-    'questionForm.questionTitleTooLongValidationMsg': 'Question title is too long',
-    'questionForm.questionChoicesMissingValidationMsg': 'At least one answer option required',
-    'questionForm.questionChoiceLabelMissingValidationMsg': 'Choice label required',
-    'questionForm.questionChoiceLabelTooLongValidationMsg': 'Choice label is too long',
+    'questionForm.questionTitleMissing': 'Question title required',
+    'questionForm.questionTitleTooLong': 'Question title is too long',
+    'questionForm.questionChoicesMissing': 'At least one answer option required',
+    'questionForm.questionChoiceLabelMissing': 'Choice label required',
+    'questionForm.questionChoiceLabelTooLong': 'Choice label is too long',
     'questionForm.optional': 'Optional question',
     'questionForm.useInGroupCreation': 'Use in group creation',
 
@@ -119,6 +118,7 @@ export default {
     'course.showUserGroup': 'Check your group here',
     'course.switchRegistrationsView': 'Show enrolled students',
     'course.switchEditView': 'Edit course',
+    'course.switchRegisterView': 'Register',
     'course.noTeachers': 'This course has no teachers. You will be set as a teacher',
     'course.joinToGroups': 'Join group here',
 
@@ -169,6 +169,7 @@ export default {
     'courseRegistration.remove': 'Remove from course',
     'courseRegistration.cancelConfirmation': 'Confirm registration cancellation?',
     'courseRegistration.removeConfirmation': 'Remove student from this course?',
+    'courseRegistration.registrationRemoved': 'Registration removed successfully',
 
     'groups.title': 'Group',
     'groups.empty': 'No groups generated',
@@ -200,8 +201,7 @@ export default {
     'groups.combinedHourDisplay': 'Combined',
     'groups.newMessage': 'Your group has a new message:',
     'groups.lockGroup': 'Lock Group',
-    'groups.lockGroupInfo':
-      'Locks out the group from being used in group generation.',
+    'groups.lockGroupInfo': 'Locks out the group from being used in group generation.',
 
     'groupsView.noRegistrations': 'No registrations',
     'groupsView.matchingTimes': 'Matching times',

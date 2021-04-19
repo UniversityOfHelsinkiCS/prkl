@@ -1,23 +1,22 @@
 import React, { useContext, useState } from 'react';
-import { Menu, Button, Loader } from 'semantic-ui-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
 import axios from 'axios';
 import roles from '../util/userRoles';
 import { AppContext } from '../App';
+import { AppBar, Typography, Button, Grid, Toolbar } from '@material-ui/core';
+
+import { useHeaderStyles } from '../styles/ui/Header';
 
 export default () => {
-  const [activeItem, setActiveItem] = useState(null);
   const { user } = useContext(AppContext);
   const [privacyToggle, setPrivacyToggle] = useStore('toggleStore');
   const [groupsUnsaved] = useStore('groupsUnsavedStore');
 
   const intl = useIntl();
 
-  const handleItemClick = (e, { name }) => {
-    setActiveItem(name);
-  };
+  const classes = useHeaderStyles();
 
   // Logout feature. Calling Shibboleth headers from backend and redirecting there.
   const handleLogout = () => {
@@ -39,77 +38,80 @@ export default () => {
   };
 
   return (
-    <Menu className="mainHeader" size="massive" stackable borderless attached>
-      <Menu.Item header as={Link} to="/" name="Home" active={activeItem === 'Home'}>
-        Assembler
-      </Menu.Item>
+    <AppBar position={"static"} color={"transparent"}>
 
-      <Menu.Item
-        as={Link}
-        to="/courses"
-        name="Courses"
-        active={activeItem === 'Courses'}
-        onClick={handleItemClick}
-        data-cy="menu-item-courses"
-      >
-        <FormattedMessage id="header.courses" />
-      </Menu.Item>
-
-      {user && user.role >= roles.STAFF_ROLE ? (
-        <Menu.Item
-          as={Link}
-          to="/addcourse"
-          name="AddCourse"
-          active={activeItem === 'AddCourse'}
-          onClick={handleItemClick}
-          data-cy="menu-item-add-course"
+      <Toolbar>
+        <Typography 
+          component={Link}
+          to={"/"} 
+          variant="h5" 
+          className={classes.title}
         >
-          <FormattedMessage id="header.addCourse" />
-        </Menu.Item>
-      ) : null}
+          Assembler
+        </Typography>
 
-      {user && user.role === roles.ADMIN_ROLE ? (
-        <Menu.Item
-          as={Link}
-          to="/usermanagement"
-          name="Users"
-          active={activeItem === 'Users'}
-          onClick={handleItemClick}
-          data-cy="menu-item-user-mgmt"
-        >
-          <FormattedMessage id="header.userManagement" />
-        </Menu.Item>
-      ) : null}
-
-      <Menu.Item
-        as={Link}
-        to="/user"
-        name="personalInfo"
-        active={activeItem === 'personalInfo'}
-        onClick={handleItemClick}
-        data-cy="menu-item-info"
-      >
-        <FormattedMessage id="header.personalInfo" />
-      </Menu.Item>
-
-      {user && user.role > roles.STAFF_ROLE ? (
-        <Menu.Item position="right" data-cy="menu-item-privacy-toggle">
-          <Button onClick={() => setPrivacyToggle(!privacyToggle)}>
-            <FormattedMessage id="header.toggle" />
+        <Grid container>
+          <Button
+            component={Link}
+            to="/courses"
+            data-cy="menu-courses"
+            className={classes.navigationButton}
+          >
+            <FormattedMessage id="header.courses" />
           </Button>
-        </Menu.Item>
-      ) : null}
 
-      <Menu.Item
-        name="logout"
-        active={activeItem === 'logout'}
-        position="right"
-        data-cy="menu-item-logout"
-      >
-        <Button color="red" onClick={handleLogout}>
+          {user && user.role >= roles.STAFF_ROLE ? (
+          <Button
+            component={Link}
+            to="/addcourse"
+            data-cy="menu-add-course"
+            className={classes.navigationButton}
+          >
+            <FormattedMessage id="header.addCourse" />
+          </Button>) : null}
+
+          {user && user.role === roles.ADMIN_ROLE ? (
+          <Button
+            component={Link}
+            to="/usermanagement"
+            data-cy="menu-user-mgmt"
+            className={classes.navigationButton}
+          >
+            <FormattedMessage id="header.userManagement" />
+          </Button>) : null}
+        </Grid>
+
+        {/*these go to the right*/}
+        {user && user.role > roles.STAFF_ROLE ? (
+        <Button 
+          component={Link}
+          onClick={() => setPrivacyToggle(!privacyToggle)} 
+          data-cy="menu-privacy-toggle"
+          className={classes.navigationButton}
+        >
+          <FormattedMessage id="header.toggle" />
+        </Button>) : null}
+
+        <Button
+          component={Link}
+          to="/user"
+          data-cy="menu-info"
+          className={classes.navigationButton}
+        >
+          <FormattedMessage id="header.personalInfo" />
+        </Button>
+
+        <Button 
+          component={Link}
+          name="logout" 
+          onClick={handleLogout} 
+          data-cy="menu-logout"
+          className={classes.navigationButton}
+        >
           <FormattedMessage id="header.logout" />
         </Button>
-      </Menu.Item>
-    </Menu>
+
+      </Toolbar>
+    </AppBar>
   );
 };

@@ -1,105 +1,120 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React from 'react';
+import React, { useContext } from 'react';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Table, Popup, Icon, Button } from 'semantic-ui-react';
+import _ from 'lodash';
 
+import {
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Paper,
+  Typography,
+} from '@material-ui/core';
+import { red } from '@material-ui/core/colors';
+import DateRangeIcon from '@material-ui/icons/DateRange';
+
+import { CourseContext } from '../courses/Course';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import questionSwitch, { count } from '../../util/functions';
-import ConfirmationButton from '../ui/ConfirmationButton';
 import { TIMES } from '../../util/questionTypes';
+import ConfirmationButton from '../ui/ConfirmationButton';
 import HourDisplay from '../misc/HourDisplay';
+import Popup from '../ui/Popup';
 
-import { red } from '@material-ui/core/colors';
-
-// import { useMutation } from 'react-apollo';
-// import { DELETE_REGISTRATION } from '../../GqlQueries';
-
-const CourseRegistrations = ({
-  courseReducer: [{ registrations }, courseDispatch],
-  course,
-  regByStudentId,
-}) => {
+const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
   const intl = useIntl();
   const [privacyToggle] = useStore('toggleStore');
+  const [notification, setNotification] = useStore('notificationStore');
 
-  // eslint-disable-next-line no-unused-vars
-  const courseId = course.id;
+  const { deleteRegistration } = useContext(CourseContext);
 
-  const popupTimesDisplay = student => (
-    <HourDisplay
-      groupId={student.id}
-      header={`${student.firstname} ${student.lastname}`}
-      students={1}
-      times={count([regByStudentId[student.studentNo]])}
-    />
-  );
+  const handleRegistrationRemoval = async studentIdToRemove => {
+    try {
+      await deleteRegistration({
+        variables: { courseId: course.id, studentId: studentIdToRemove },
+      });
+
+      setNotification({
+        type: 'success',
+        message: intl.formatMessage({ id: 'courseRegistration.registrationRemoved' }),
+        visible: true,
+      });
+    } catch (deletionError) {
+      // eslint-disable-next-line no-console
+      console.log('Error while deleting enrolled registration: ', deletionError);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <h3>
-          <FormattedMessage id="courseRegistration.title" /> {registrations.length}
-        </h3>
+    <div>
+      <Typography variant="h5">
+        <FormattedMessage id="courseRegistration.title" /> {registrations.length}
+      </Typography>
 
+      <TableContainer component={Paper}>
         <Table data-cy="registration-table">
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>
+          <TableHead>
+            <TableRow>
+              <TableCell>
                 <FormattedMessage id="courseRegistration.firstName" />
-              </Table.HeaderCell>
-              <Table.HeaderCell>
+              </TableCell>
+              <TableCell>
                 <FormattedMessage id="courseRegistration.lastName" />
-              </Table.HeaderCell>
-              <Table.HeaderCell>
+              </TableCell>
+              <TableCell>
                 <FormattedMessage id="courseRegistration.studentNumber" />
-              </Table.HeaderCell>
-              <Table.HeaderCell>
+              </TableCell>
+              <TableCell>
                 <FormattedMessage id="courseRegistration.email" />
-              </Table.HeaderCell>
-              {course.questions.some(q => q.questionType === TIMES) ? (
-                <Table.HeaderCell>
+              </TableCell>
+              {course.questions.some(q => q.questionType === TIMES) && (
+                <TableCell>
                   <FormattedMessage id="courseRegistration.times" />
-                </Table.HeaderCell>
-              ) : null}
-
-              {course.questions.map(question =>
-                question.questionType !== TIMES ? (
-                  <Table.HeaderCell key={question.id}>{question.content}</Table.HeaderCell>
-                ) : null
+                </TableCell>
               )}
-              <Table.HeaderCell />
-            </Table.Row>
-          </Table.Header>
-
-          <Table.Body>
+              {course.questions.map(
+                question =>
+                  question.questionType !== TIMES && (
+                    <TableCell key={question.id}>{question.content}</TableCell>
+                  )
+              )}
+              <TableCell />
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {registrations.map(reg => (
-              <Table.Row key={reg.id} data-cy="student-registration-row">
-                <Table.Cell>{reg.student.firstname}</Table.Cell>
-                <Table.Cell>{reg.student.lastname}</Table.Cell>
-                <Table.Cell>
-                  {privacyToggle ? dummyStudentNumber : reg.student.studentNo}
-                </Table.Cell>
-                <Table.Cell>{privacyToggle ? dummyEmail : reg.student.email}</Table.Cell>
-                {course.questions.some(q => q.questionType === TIMES) ? (
-                  <Popup
-                    content={() => popupTimesDisplay(reg.student)}
-                    trigger={
-                      <Table.Cell>
-                        <Button icon>
-                          <Icon name="calendar alternate outline" color="blue" size="large" />
-                        </Button>
-                      </Table.Cell>
-                    }
-                  />
-                ) : null}
+              <TableRow key={reg.id} data-cy="student-registration-row">
+                <TableCell>{reg.student.firstname}</TableCell>
+                <TableCell>{reg.student.lastname}</TableCell>
+                <TableCell>{privacyToggle ? dummyStudentNumber : reg.student.studentNo}</TableCell>
+                <TableCell>{privacyToggle ? dummyEmail : reg.student.email}</TableCell>
 
+                {course.questions.some(q => q.questionType === TIMES) && (
+                  <TableCell>
+                    <Popup
+                      content={
+                        !_.isEmpty(regByStudentId) && (
+                          <HourDisplay
+                            groupId={reg.student.id}
+                            header={`${reg.student.firstname} ${reg.student.lastname}`}
+                            students={1}
+                            times={count([regByStudentId[reg.student.studentNo]])}
+                          />
+                        )
+                      }
+                    >
+                      <DateRangeIcon color="primary" />
+                    </Popup>
+                  </TableCell>
+                )}
                 {reg.questionAnswers.map(qa => questionSwitch(qa))}
-                <Table.Cell>
+                <TableCell>
                   <ConfirmationButton
-                    onConfirm={() => {
-                      courseDispatch({ type: 'delete_registration', payload: reg.student.id });
-                    }}
+                    onConfirm={() => handleRegistrationRemoval(reg.student.id)}
                     modalMessage={`${intl.formatMessage({
                       id: 'courseRegistration.removeConfirmation',
                     })} (${reg.student.firstname} ${reg.student.lastname})`}
@@ -108,13 +123,13 @@ const CourseRegistrations = ({
                   >
                     <FormattedMessage id="courseRegistration.remove" />
                   </ConfirmationButton>
-                </Table.Cell>
-              </Table.Row>
+                </TableCell>
+              </TableRow>
             ))}
-          </Table.Body>
+          </TableBody>
         </Table>
-      </div>
-    </>
+      </TableContainer>
+    </div>
   );
 };
 

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useQuery } from '@apollo/react-hooks';
-import { Header, Container } from 'semantic-ui-react';
+import { useQuery } from '@apollo/client';
 
 import { timeParse } from '../../util/functions';
 import { GROUP_TIMES } from '../../GqlQueries';
 import UserGroupItem from './UserGroupItem';
+import { Box, Paper, Typography } from '@material-ui/core';
+
+import { useUserGroupStyles } from '../../styles/users/UserGroup.js';
 
 export default ({ user, course }) => {
   const [groupTimes, setGroupTimes] = useState(undefined);
@@ -45,27 +47,31 @@ export default ({ user, course }) => {
     return found !== undefined;
   };
 
+  const classes = useUserGroupStyles();
+
   return (
-    <div>
+    <>
       {/* eslint-disable-next-line no-nested-ternary */}
       {userIsRegistered() ? (
         courseHasGroups() ? (
-          <div>
+          <>
             {group[0].groupMessage && group[0].groupMessage !== '' && (
-              <Container fluid textAlign="justified">
-                <Header as="h4">
+              <Box component={Paper} width="50%" m={2} p={2}>
+                <Typography variant="h5" gutterBottom>
                   <FormattedMessage id="groups.newMessage" />
-                </Header>
-                <p>{group[0].groupMessage}</p>
-              </Container>
+                </Typography>
+                <Typography variant="body1">
+                  {group[0].groupMessage}
+                </Typography>
+              </Box>
             )}
-            <Header as="h4">
+            <Typography variant="h4" gutterBottom>
               <FormattedMessage id="groups.published" />
-            </Header>
+            </Typography>
             <UserGroupItem group={group[0]} groupTimes={groupTimes} />
-          </div>
+          </>
         ) : null
       ) : null}
-    </div>
+    </>
   );
 };

@@ -3,14 +3,8 @@ import CourseRegistrations from './CourseRegistrations';
 import roles from '../../util/userRoles';
 import { AppContext } from '../../App';
 
-export default ({ courseReducer, course, regByStudentId }) => {
-
-  const [{ registrations }] = courseReducer;
-
+export default ({ registrations, course, regByStudentId }) => {
   const { user } = useContext(AppContext);
-
-  // eslint-disable-next-line no-console
-  console.log(courseReducer);
 
   const hasAccess = () => {
     if (user.role === roles.ADMIN_ROLE) {
@@ -28,8 +22,8 @@ export default ({ courseReducer, course, regByStudentId }) => {
         {course.questions && registrations && hasAccess ? (
           <div>
             <CourseRegistrations
-              courseReducer={courseReducer}
               course={course}
+              registrations={registrations}
               regByStudentId={regByStudentId}
             />
           </div>

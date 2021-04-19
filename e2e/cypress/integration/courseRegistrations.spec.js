@@ -39,7 +39,7 @@ describe('Course registrations', () => {
       cy.get('[data-cy="register-on-course-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
-      cy.get('[data-cy="registered"]').should('exist');
+      cy.get('[data-cy="notification"]').should('contain.text', 'Registration successful');
       cy.contains('Groups are not ready yet...');
 
       // Admin-role check for correct answers.
@@ -112,7 +112,7 @@ describe('Course registrations', () => {
       cy.get('[data-cy="toc-checkbox"]').click();
       cy.get('[data-cy="register-on-course-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.get('[data-cy="registered"]').should('exist');
+      cy.get('[data-cy="notification"]').should('contain.text', 'Registration successful');
 
       cy.visit('/');
       cy.contains(courses[0].title).click();

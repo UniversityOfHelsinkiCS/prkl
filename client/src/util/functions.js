@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'semantic-ui-react';
+import { TableCell } from '@material-ui/core';
 
 /**
  * A parser that intakes a student's answer to a question, and outputs a jsx table row -element containing the parsed answer.
@@ -35,6 +35,11 @@ const first = 8;
 export const count = registrations => {
   const times = [...Array(7)].map(() => [...Array(hours)].map(() => 0));
   // console.log('times begin:', times)
+
+  if (registrations[0] === undefined ) {
+    return null;
+  }
+
   registrations.forEach(reg => {
     reg.workingTimes.forEach(time => {
       const start = new Date(time.startTime).getHours();
@@ -70,15 +75,15 @@ export const timeParse = props => {
 export default qa => {
   switch (qa.question.questionType) {
     case 'multipleChoice':
-      return <Table.Cell key={qa.id}>{mapshit(qa)}</Table.Cell>;
+      return <TableCell key={qa.id}>{mapshit(qa)}</TableCell>;
     case 'singleChoice':
       return (
-        <Table.Cell key={qa.id}>
+        <TableCell key={qa.id}>
           {qa.answerChoices[0] !== undefined ? qa.answerChoices[0].content : ''}
-        </Table.Cell>
+        </TableCell>
       );
     case 'freeForm':
-      return <Table.Cell key={qa.id}>{qa.content !== undefined ? qa.content : ''}</Table.Cell>;
+      return <TableCell key={qa.id}>{qa.content !== undefined ? qa.content : ''}</TableCell>;
     default:
       return null;
   }

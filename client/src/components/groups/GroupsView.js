@@ -1,27 +1,24 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React, { useState, useEffect, useContext } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
-import { useStore } from 'react-hookstore';
-import { Prompt } from 'react-router-dom';
-import { useQuery, useMutation } from '@apollo/react-hooks';
-import { Form, Loader } from 'semantic-ui-react';
+import { useMutation, useQuery } from '@apollo/client';
+import { blue, green, orange, red } from '@material-ui/core/colors';
 import { Alert } from '@material-ui/lab';
 import _ from 'lodash';
+import React, { useContext, useEffect, useState } from 'react';
+import { useStore } from 'react-hookstore';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { Prompt } from 'react-router-dom';
+import { Form, Loader } from 'semantic-ui-react';
+import { AppContext } from '../../App';
 import {
-  GENERATE_GROUPS,
-  SAVE_GROUPS,
   COURSE_GROUPS,
+  GENERATE_GROUPS,
   PUBLISH_COURSE_GROUPS,
+  SAVE_GROUPS,
 } from '../../GqlQueries';
-
-import { green, blue, red, orange } from '@material-ui/core/colors';
-
+import userRoles from '../../util/userRoles';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import GrouplessStudents from './GrouplessStudents';
 import Groups from './Groups';
-
-import userRoles from '../../util/userRoles';
-import { AppContext } from '../../App';
 
 export default ({ course, registrations, regByStudentId, groups, setGroups }) => {
   const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
@@ -143,7 +140,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     } else {
       generateNewGroupsForNonLockedGroups();
     }
-  }
+  };
 
   const handleSampleGroupCreation = async () => {
     const minGroupS = minGroupSize || 1;
@@ -191,7 +188,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
       if (!lockedRegistrationIds.includes(registration.student.id)) {
         registrationIds.push(registration.id);
       }
-    })
+    });
 
     const minGroupS = minGroupSize || 1;
 
@@ -201,7 +198,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
           data: {
             courseId: course.id,
             targetGroupSize: minGroupS,
-            registrationIds: registrationIds
+            registrationIds,
           },
         },
       });
@@ -321,6 +318,14 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     return <Loader active content={intl.formatMessage({ id: 'groupsView.generatingGroups' })} />;
   }
 
+  /**
+   * A simple function to check if groups are ok to be published
+   * @returns {boolean}
+   */
+  const checkGroupPublishability = () => {
+    return !groupsPublished && !groupsUnsaved && groups.length !== 0;
+  };
+
   return (
     <div>
       <Prompt
@@ -376,8 +381,8 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
             >
               <FormattedMessage id="groupsView.generateGroups" />
             </ConfirmationButton>
-            
-            {!groupsPublished && (
+
+            {checkGroupPublishability() && (
               <ConfirmationButton
                 onConfirm={publishGroups}
                 color={green[500]}
@@ -430,6 +435,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
               setRegistrationsWithoutGroups={setRegistrationsWithoutGroups}
               course={course}
               regByStudentId={regByStudentId}
+              minGroupSize={minGroupSize}
             />
           )}
 
@@ -442,8 +448,6 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
             setGroupMessages={setGroupMessages}
             registrationsWithoutGroups={registrationsWithoutGroups}
             setRegistrationsWithoutGroups={setRegistrationsWithoutGroups}
-            grouplessStudents={grouplessStudents}
-            setGrouplessStudents={setGrouplessStudents}
           />
         </div>
       )}
