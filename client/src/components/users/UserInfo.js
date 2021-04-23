@@ -12,7 +12,6 @@ import { ALL_COURSES } from '../../GqlQueries';
 import { useQuery } from '@apollo/client';
 
 export default () => {
-  const [privacyToggle] = useStore('toggleStore');
   const { user } = useContext(AppContext);
   const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
 
@@ -49,11 +48,11 @@ export default () => {
 
             <FormattedMessage
               id="studentInfo.studentNo"
-              values={{ studentNo: privacyToggle ? dummyStudentNumber : user.studentNo }}
+              values={{ studentNo: user.studentNo }}
             />{divider}
             <FormattedMessage
               id="studentInfo.email"
-              values={{ email: privacyToggle ? dummyEmail : user.email }}
+              values={{ email: user.email }}
               className
             />
 

@@ -17,7 +17,6 @@ import HourDisplay from '../misc/HourDisplay';
 import { useUserGroupItemStyles } from '../../styles/users/UserGroupItem';
 
 export default ({ group, groupTimes }) => {
-  const [privacyToggle] = useStore('toggleStore');
   const [showTime, setShowTime] = useState(false);
 
   const classes = useUserGroupItemStyles();
@@ -60,7 +59,7 @@ export default ({ group, groupTimes }) => {
                 {student.firstname}
               </TableCell>
               <TableCell align="center">{student.lastname}</TableCell>
-              <TableCell align="center">{privacyToggle ? dummyEmail : student.email}</TableCell>
+              <TableCell align="center">{student.email}</TableCell>
             </TableRow>
           ))}
         </TableBody>

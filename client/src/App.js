@@ -24,7 +24,6 @@ import './App.css';
 createStore('grouplessStudentsStore', []);
 createStore('groupsUnsavedStore', false);
 createStore('lockedGroupsStore', []);
-createStore('toggleStore', false);
 createStore('teacherStore', []);
 createStore('groupsStore', []);
 createStore('notificationStore', {});
