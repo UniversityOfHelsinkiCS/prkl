@@ -40,7 +40,6 @@ export default () => {
   const changeOrder = event => {
     localStorage.setItem('assembler.courseOrder', event.target.value);
     setOrder(event.target.value);
-    console.log(event.target.value);
   };
 
   const togglePastCourses = () => {
