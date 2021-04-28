@@ -33,7 +33,9 @@ export default ({ questions, formControl, onSubmit }) => {
 
       {questions &&
         questions.map(question => (
-          <Question key={question.id} question={question} formControl={formControl} />
+          <FormControl> 
+            <Question key={question.id} question={question} formControl={formControl} />
+          </FormControl> 
         ))}
 
       <FormControlLabel
