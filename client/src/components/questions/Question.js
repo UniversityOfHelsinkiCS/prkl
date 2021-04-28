@@ -63,7 +63,7 @@ const Question = ({ question, formControl }) => {
             className={classes.selectField}
             optionality={question.optional}
             formControl={formControl}
-            renderValue={(question) => question.content.join(', ')}
+            renderValue={(selected) => selected.join(', ')}
             data-cy={`question-${question.order}`}
           >
             {question.questionChoices.map(c => (
