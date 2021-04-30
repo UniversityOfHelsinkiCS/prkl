@@ -134,7 +134,7 @@ export default {
     'studentInfo.group': 'Groups assigned to:',
     'studentInfo.noGroups': 'Not assigned to a group yet.',
 
-    'registrationForm.errorAnswerAll': 'Please answer all questions!',
+    'registrationForm.errorAnswerAll': 'Please answer all the required questions!',
     'registrationForm.submitRegistration': 'Register On The Course',
     'registrationForm.confirmRegistration': 'Confirm Registration',
     'registrationForm.toc':

@@ -49,7 +49,6 @@ const useClasses = makeStyles({
 export default ({ course, regByStudentId, group, tableIndex, setRegistrationsWithoutGroups }) => {
   const classes = useClasses();
   const [groups, setGroups] = useStore('groupsStore');
-  const [privacyToggle] = useStore('toggleStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
 
   const swapElements = (fromIndex, toIndex, fromTable, toTable) => {
@@ -109,9 +108,9 @@ export default ({ course, regByStudentId, group, tableIndex, setRegistrationsWit
                   <TableCell>
                     <StudentTimeDisplayPopup student={student} regByStudentId={regByStudentId} />
                   </TableCell>
-                  <TableCell>{privacyToggle ? dummyStudentNumber : student.studentNo}</TableCell>
+                  <TableCell>{student.studentNo}</TableCell>
 
-                  <TableCell>{privacyToggle ? dummyEmail : student.email}</TableCell>
+                  <TableCell>{student.email}</TableCell>
 
                   {regByStudentId[student.studentNo]?.questionAnswers.map(qa => questionSwitch(qa))}
 

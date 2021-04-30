@@ -7,7 +7,18 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Prompt } from 'react-router-dom';
-import { Form, Loader } from 'semantic-ui-react';
+import {
+  Typography,
+  FormGroup,
+  TextField,
+  FormControl,
+  Select,
+  InputLabel,
+  MenuItem,
+  CircularProgress,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { useLoaderStyle } from '../../styles/ui/Loader';
 import { AppContext } from '../../App';
 import {
   COURSE_GROUPS,
@@ -19,6 +30,21 @@ import userRoles from '../../util/userRoles';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import GrouplessStudents from './GrouplessStudents';
 import Groups from './Groups';
+
+const useStyles = makeStyles({
+  formInput: {
+    marginTop: 10,
+    marginRight: 10,
+    marginBottom: 10,
+  },
+  button: {
+    marginRight: 5,
+    marginBottom: 10,
+  },
+  alert: {
+    marginBottom: 10,
+  },
+});
 
 export default ({ course, registrations, regByStudentId, groups, setGroups }) => {
   const [generateGroups, { loading: generateGroupsLoading }] = useMutation(GENERATE_GROUPS);
@@ -42,6 +68,9 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
   const [oldGroups, setOldGroups] = useState([]);
 
   const intl = useIntl();
+
+  const classes = useStyles();
+  const loaderClass = useLoaderStyle();
 
   const { loading, error, data, refetch } = useQuery(COURSE_GROUPS, {
     skip: user.role === userRoles.STUDENT_ROLE,
@@ -134,14 +163,6 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     );
   }
 
-  const handleGroupCreation = () => {
-    if (lockedGroupsStore.length === 0) {
-      handleSampleGroupCreation();
-    } else {
-      generateNewGroupsForNonLockedGroups();
-    }
-  };
-
   const handleSampleGroupCreation = async () => {
     const minGroupS = minGroupSize || 1;
     try {
@@ -179,12 +200,11 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     const registrationIds = [];
     const lockedRegistrationIds = [];
 
-    lockedGroups.map(group => {
+    lockedGroups.forEach(group => {
       group.students.map(student => lockedRegistrationIds.push(student.id));
     });
 
-    registrations.map(registration => {
-      console.log(registration);
+    registrations.forEach(registration => {
       if (!lockedRegistrationIds.includes(registration.student.id)) {
         registrationIds.push(registration.id);
       }
@@ -221,6 +241,14 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     } catch (groupError) {
       // eslint-disable-next-line no-console
       console.log('error:', groupError);
+    }
+  };
+
+  const handleGroupCreation = () => {
+    if (lockedGroupsStore.length === 0) {
+      handleSampleGroupCreation();
+    } else {
+      generateNewGroupsForNonLockedGroups();
     }
   };
 
@@ -277,7 +305,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     setRegistrationsWithoutGroups(true);
   };
 
-  const handleSortGroups = value => {
+  const handleSortGroups = event => {
     // Sorting currently does not preserve saved group names & messages correctly, so warn about reload
     if (
       groupsUnsaved &&
@@ -286,36 +314,32 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     ) {
       return;
     }
-    setGroupSorting(value);
-    handleGroupsMessagesAndNames(sortGroups(groups, value));
+    setGroupSorting(event.target.value);
+    handleGroupsMessagesAndNames(sortGroups(groups, event.target.value));
     setGroupsUnsaved(false);
   };
 
   const sortOptions = [
     {
-      key: 'By name, ascending',
       text: intl.formatMessage({ id: 'groupsView.orderByNameAsc' }),
       value: 'nameAscending',
     },
     {
-      key: 'By name, descending',
       text: intl.formatMessage({ id: 'groupsView.orderByNameDesc' }),
       value: 'nameDescending',
     },
     {
-      key: 'By size, ascending',
       text: intl.formatMessage({ id: 'groupsView.orderBySizeAsc' }),
       value: 'sizeAscending',
     },
     {
-      key: 'By size, descending',
       text: intl.formatMessage({ id: 'groupsView.orderBySizeDesc' }),
       value: 'sizeDescending',
     },
   ];
 
   if (generateGroupsLoading) {
-    return <Loader active content={intl.formatMessage({ id: 'groupsView.generatingGroups' })} />;
+    return <CircularProgress className={loaderClass.root} />;
   }
 
   /**
@@ -332,98 +356,94 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
         when={groupsUnsaved}
         message={intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' })}
       />
-      &nbsp;
       {registrations.length === 0 ? (
-        <div>
-          <h3>
-            <FormattedMessage id="groupsView.noRegistrations" />
-          </h3>
-        </div>
+        <Typography variant="h5">
+          {intl.formatMessage({ id: 'groupsView.noRegistrations' })}
+        </Typography>
       ) : (
         <div>
-          <Form>
-            <Form.Group>
-              <Form.Field>
-                <Form.Input
-                  data-cy="target-group-size"
-                  required
-                  value={minGroupSize}
-                  type="number"
-                  min="1"
-                  max="9999999"
-                  label={
-                    <h4>
-                      <FormattedMessage id="groupsView.targetGroupSize" />
-                    </h4>
-                  }
-                  onChange={event => setMinGroupSize(Number.parseInt(event.target.value, 10) || '')}
-                />
-              </Form.Field>
-              <Form.Field>
-                <Form.Select
-                  label={
-                    <h4>
-                      <FormattedMessage id="groupsView.groupListingOrder" />
-                    </h4>
-                  }
-                  placeholder="Sort groups..."
-                  options={sortOptions}
-                  defaultValue={groupSorting}
-                  onChange={(e, { value }) => handleSortGroups(value)}
-                />
-              </Form.Field>
-            </Form.Group>
-            <ConfirmationButton
-              onConfirm={handleGroupCreation}
-              color={orange[500]}
-              modalMessage={intl.formatMessage({ id: 'groupsView.confirmGroupGeneration' })}
-              buttonDataCy="create-groups-submit"
-            >
-              <FormattedMessage id="groupsView.generateGroups" />
-            </ConfirmationButton>
-
-            {checkGroupPublishability() && (
-              <ConfirmationButton
-                onConfirm={publishGroups}
-                color={green[500]}
-                modalMessage={intl.formatMessage({ id: 'groupsView.publishGroupsConfirm' })}
-                buttonDataCy="publish-groups-button"
+          <FormGroup row>
+            <TextField
+              className={classes.formInput}
+              value={minGroupSize}
+              type="number"
+              min="1"
+              max="9999999"
+              label={intl.formatMessage({ id: 'groupsView.targetGroupSize' })}
+              onChange={event => setMinGroupSize(Number.parseInt(event.target.value, 10) || '')}
+              data-cy="target-group-size"
+            />
+            <FormControl className={classes.formInput}>
+              <InputLabel id="group-listing-order">
+                {intl.formatMessage({ id: 'groupsView.groupListingOrder' })}
+              </InputLabel>
+              <Select
+                labelId="group-listing-order"
+                value={groupSorting}
+                onChange={handleSortGroups}
               >
-                <FormattedMessage id="groupsView.publishGroupsBtn" />
-              </ConfirmationButton>
-            )}
+                {sortOptions.map(option => (
+                  <MenuItem value={option.value} key={option.value}>
+                    {option.text}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </FormGroup>
 
-            {groupsUnsaved && (
-              <>
-                <ConfirmationButton
-                  onConfirm={saveSampleGroups}
-                  color={blue[500]}
-                  modalMessage={intl.formatMessage({ id: 'groupsView.confirmGroupsSave' })}
-                  buttonDataCy="save-groups-button"
-                >
-                  <FormattedMessage id="groupsView.saveGroups" />
-                </ConfirmationButton>
-                <ConfirmationButton
-                  onConfirm={cancelGroups}
-                  color={red[500]}
-                  modalMessage={intl.formatMessage({ id: 'groupsView.confirmCancelGroups' })}
-                  buttonDataCy="cancel-groups-button"
-                >
-                  <FormattedMessage id="groupsView.cancelGroups" />
-                </ConfirmationButton>
-              </>
-            )}
-          </Form>
-          <p />
+          <ConfirmationButton
+            onConfirm={handleGroupCreation}
+            color={orange[500]}
+            modalMessage={intl.formatMessage({ id: 'groupsView.confirmGroupGeneration' })}
+            buttonDataCy="create-groups-submit"
+            className={classes.button}
+          >
+            <FormattedMessage id="groupsView.generateGroups" />
+          </ConfirmationButton>
+
+          {checkGroupPublishability() && (
+            <ConfirmationButton
+              onConfirm={publishGroups}
+              color={green[500]}
+              modalMessage={intl.formatMessage({ id: 'groupsView.publishGroupsConfirm' })}
+              buttonDataCy="publish-groups-button"
+              className={classes.button}
+            >
+              <FormattedMessage id="groupsView.publishGroupsBtn" />
+            </ConfirmationButton>
+          )}
+
+          {groupsUnsaved && (
+            <>
+              <ConfirmationButton
+                onConfirm={saveSampleGroups}
+                color={blue[500]}
+                modalMessage={intl.formatMessage({ id: 'groupsView.confirmGroupsSave' })}
+                buttonDataCy="save-groups-button"
+                className={classes.button}
+              >
+                <FormattedMessage id="groupsView.saveGroups" />
+              </ConfirmationButton>
+              <ConfirmationButton
+                onConfirm={cancelGroups}
+                color={red[500]}
+                modalMessage={intl.formatMessage({ id: 'groupsView.confirmCancelGroups' })}
+                buttonDataCy="cancel-groups-button"
+                className={classes.button}
+              >
+                <FormattedMessage id="groupsView.cancelGroups" />
+              </ConfirmationButton>
+            </>
+          )}
 
           {groupsPublished && (
-            <Alert severity="info">
+            <Alert severity="info" className={classes.alert}>
               {intl.formatMessage({ id: 'groupsView.publishedGroupsInfo' })}
             </Alert>
           )}
 
           {groupsUnsaved && (
-            <Alert severity="warning">
+            <Alert severity="warning" className={classes.alert}>
               {intl.formatMessage({ id: 'groupsView.unsavedGroupsInfo' })}
             </Alert>
           )}
