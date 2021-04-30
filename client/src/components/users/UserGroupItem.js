@@ -16,7 +16,7 @@ import { dummyEmail } from '../../util/privacyDefaults';
 import HourDisplay from '../misc/HourDisplay';
 import { useUserGroupItemStyles } from '../../styles/users/UserGroupItem';
 
-export default ({ group, groupTimes }) => {
+export default ({ group, groupTimes, course }) => {
   const [privacyToggle] = useStore('toggleStore');
   const [showTime, setShowTime] = useState(false);
 
@@ -31,7 +31,7 @@ export default ({ group, groupTimes }) => {
       <Table className={classes.table} aria-label="customized table">
         <TableHead data-cy="user-group-view-group-name" className={classes.head}>
           <TableRow>
-            <TableCell className={classes.head}>{group.groupName}</TableCell>
+            <TableCell className={classes.head}> {course.title}: {group.groupName}</TableCell>
             <TableCell className={classes.head} />
             <TableCell className={classes.head} align="right">
               {groupTimes[group.id] ? (

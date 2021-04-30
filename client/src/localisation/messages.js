@@ -131,7 +131,7 @@ export default {
     'studentInfo.userCourses': 'Enrolled courses - click the course to check your groups',
     'studentInfo.ownCourses': 'Courses you teach on - for staff and admin',
     'studentInfo.noOwnCourses': 'No courses!',
-    'studentInfo.group': 'Groups assigned to',
+    'studentInfo.group': 'Groups assigned to:',
     'studentInfo.noGroups': 'Not assigned to a group yet.',
 
     'registrationForm.errorAnswerAll': 'Please answer all questions!',
@@ -199,7 +199,7 @@ export default {
     'groups.targetGroupSizeInfo':
       'Sets the target group size for groups. The algorithm searches for a group with +/- 1 of the target group size. If there are no groups matching the target group size, the student(s) will not be added to any group.',
     'groups.combinedHourDisplay': 'Combined',
-    'groups.newMessage': 'Your group has a new message:',
+    'groups.newMessage': 'Message for',
     'groups.lockGroup': 'Lock Group',
     'groups.lockGroupInfo': 'Locks out the group from being used in group generation.',
 

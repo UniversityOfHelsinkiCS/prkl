@@ -4,6 +4,7 @@ import { useStore } from 'react-hookstore';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import UserCourseList from './UserCourseList';
 import roles from '../../util/userRoles';
+import UserGroup from './UserGroup';
 
 import { Container, Typography } from '@material-ui/core';
 import { AppContext } from '../../App';
@@ -19,6 +20,8 @@ export default () => {
   if (courseLoading || courseError !== undefined) {
     return <Loader active />
   }
+
+  console.log('user',user.groups );
 
   const courses = courseData.courses;
 
@@ -89,7 +92,18 @@ export default () => {
           
         </>
       ) : null}
+      &nbsp;
+      {user.groups ? (
+        <>
+          <Typography variant="h5" gutterBottom>
+            <FormattedMessage id="studentInfo.group" />
+          </Typography>
 
+          {user.groups.map(group => {         
+            return <UserGroup user={user} course={group.course} />
+          }) }
+        </>
+      ) : null}
     </Container>
   );
 };

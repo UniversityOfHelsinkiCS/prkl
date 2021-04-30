@@ -5,9 +5,20 @@ import { useQuery } from '@apollo/client';
 import { timeParse } from '../../util/functions';
 import { GROUP_TIMES } from '../../GqlQueries';
 import UserGroupItem from './UserGroupItem';
-import { Box, Paper, Typography } from '@material-ui/core';
+import { Box, makeStyles, Paper, Typography } from '@material-ui/core';
+import { grey } from '@material-ui/core/colors';
 
-import { useUserGroupStyles } from '../../styles/users/UserGroup.js';
+const useStyles = makeStyles({
+  messageBox: {
+    position: 'relative',
+    left: -15,
+    backgroundColor: grey[300],
+    marginTop: 50,
+  },
+  message: {
+    wordWrap: "break-word"
+  }
+});
 
 export default ({ user, course }) => {
   const [groupTimes, setGroupTimes] = useState(undefined);
@@ -47,7 +58,7 @@ export default ({ user, course }) => {
     return found !== undefined;
   };
 
-  const classes = useUserGroupStyles();
+  const classes = useStyles();
 
   return (
     <>
@@ -56,19 +67,18 @@ export default ({ user, course }) => {
         courseHasGroups() ? (
           <>
             {group[0].groupMessage && group[0].groupMessage !== '' && (
-              <Box component={Paper} width="50%" m={2} p={2}>
+              <Box component={Paper} width="75%" m={2} p={2} className={classes.messageBox}>
                 <Typography variant="h5" gutterBottom>
                   <FormattedMessage id="groups.newMessage" />
+                  &nbsp;
+                  {group[0].groupName}: ({course.title})
                 </Typography>
-                <Typography variant="body1">
+                <Typography variant="body1" className={classes.message}>
                   {group[0].groupMessage}
                 </Typography>
               </Box>
             )}
-            <Typography variant="h4" gutterBottom>
-              <FormattedMessage id="groups.published" />
-            </Typography>
-            <UserGroupItem group={group[0]} groupTimes={groupTimes} />
+            <UserGroupItem group={group[0]} groupTimes={groupTimes} course={course} />
           </>
         ) : null
       ) : null}
