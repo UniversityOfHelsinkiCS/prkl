@@ -6,75 +6,27 @@ import { Segment, Grid, Form } from 'semantic-ui-react';
 import { FREEFORM, SINGLE_CHOICE, MULTI_CHOICE, TIMES } from '../../util/questionTypes';
 import ValidatedInput from '../ui/ValidatedInput';
 import TimeForm from '../misc/TimeForm';
-import { makeStyles } from '@material-ui/core/styles';
-import { TextField, Select, MenuItem, Checkbox, ListItemText } from '@material-ui/core';
 
-const useStyles = makeStyles(({
-  selectField: {
-    minWidth: 120,
-  }
-}));
-
-const Question = ({ question, formControl }) => {
+const Question = ({ question, hookForm }) => {
   const intl = useIntl();
-  const name = question.id;
-
-  const classes = useStyles();
 
   const changeType = () => {
     switch (question.questionType) {
       case FREEFORM:
         return (
           <ValidatedInput
-            name={name}
-            type={TextField}
+            name={question.id}
+            type={Form.Input}
             placeholder={intl.formatMessage({ id: 'course.freeFormPlaceholder' })}
             optionality={question.optional}
-            formControl={formControl}
+            formControl={hookForm}
             data-cy={`question-${question.order}`}
           />
         );
       case SINGLE_CHOICE:
         return (
           <ValidatedInput
-            name={name}
-            type={Select}
-            defaultValue=""
-            className={classes.selectField}
-            optionality={question.optional}
-            formControl={formControl}
-            data-cy={`question-${question.order}`}
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            {question.questionChoices.map(c => (
-                <MenuItem value={c.id}>{c.content}</MenuItem> 
-             ))}
-          </ValidatedInput>
-        );
-      case MULTI_CHOICE:
-        return (
-          <ValidatedInput
-            name={name}
-            type={Select}
-            multiple
-            defaultValue={[]}
-            className={classes.selectField}
-            optionality={question.optional}
-            formControl={formControl}
-            renderValue={(selected) => selected.join(', ')}
-            data-cy={`question-${question.order}`}
-          >
-            {question.questionChoices.map(c => (
-                <MenuItem value={c.id}>
-                  <ListItemText primary={c.content} />  
-                </MenuItem> 
-             ))}
-          </ValidatedInput>
-          
-          /*<ValidatedInput
-            name={name}
+            name={question.id}
             placeholder={intl.formatMessage({ id: 'course.multipleChoicePlaceholder' })}
             options={question.questionChoices.map(choice => ({
               key: choice.id,
@@ -82,12 +34,29 @@ const Question = ({ question, formControl }) => {
               text: choice.content,
             }))}
             optionality={question.optional}
-            formControl={formControl}
+            formControl={hookForm}
+            type={Form.Dropdown}
+            selection
+            data-cy={`question-${question.order}`}
+          />
+        );
+      case MULTI_CHOICE:
+        return (
+          <ValidatedInput
+            name={question.id}
+            placeholder={intl.formatMessage({ id: 'course.multipleChoicePlaceholder' })}
+            options={question.questionChoices.map(choice => ({
+              key: choice.id,
+              value: choice.id,
+              text: choice.content,
+            }))}
+            optionality={question.optional}
+            formControl={hookForm}
             type={Form.Dropdown}
             selection
             multiple
             data-cy={`question-${question.order}`}
-          />*/
+          />
         );
 
       default:
@@ -103,12 +72,12 @@ const Question = ({ question, formControl }) => {
         onChange={([event]) => {
           return event;
         }}
-        control={formControl.control}
+        control={hookForm.control}
         description={question.content}
       />
     );
 
-    // return <TimeForm name={question.id} formControl={formControl} />;
+    // return <TimeForm name={question.id} formControl={hookForm} />;
   }
 
   return (
