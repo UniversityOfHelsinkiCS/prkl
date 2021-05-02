@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useStore } from 'react-hookstore';
 import { useMutation } from '@apollo/client';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -23,6 +23,7 @@ import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import { FIND_GROUP_FOR_GROUPLESS_STUDENTS } from '../../GqlQueries';
 import HourDisplay from '../misc/HourDisplay';
 import { count } from '../../util/functions';
+import Popup from '../ui/Popup';
 
 const useStyles = makeStyles({
   box: {
@@ -72,15 +73,16 @@ export default ({
   const [notification, setNotification] = useStore('notificationStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
 
-  const [moveToGroup, setMoveToGroup] = useState('');
-
   const intl = useIntl();
   const classes = useStyles();
 
   const handleSwitchingGroup = (student, toGroup) => {
-    const newGroups = groups[toGroup];
-    newGroups.students.push(student);
-    setGroups(groups);
+    const newGroup = {
+      ...groups[toGroup],
+      students: groups[toGroup].students.concat(student),
+    };
+    const newGroups = groups.map((group, i) => (i === toGroup ? newGroup : group));
+    setGroups(newGroups);
 
     const newGroupless = grouplessStudents.filter(groupless => groupless !== student);
 
@@ -90,15 +92,8 @@ export default ({
       setRegistrationsWithoutGroups(false);
     }
     setGrouplessStudents(newGroupless);
+    setGroupsUnsaved(true);
   };
-
-  const switchGroupOptions = groups.map((group, tableIndex) => ({
-    key: tableIndex,
-    text:
-      group.groupName ||
-      `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${tableIndex + 1}`,
-    value: tableIndex,
-  }));
 
   const findGroupForall = async () => {
     const groupsWithUserIds = groups.map(group => {
@@ -197,15 +192,6 @@ export default ({
     }
   };
 
-  const popupTimesDisplay = student => (
-    <HourDisplay
-      groupId={student.id}
-      header={`${student.firstname} ${student.lastname}`}
-      students={1}
-      times={count([regByStudentId[student.studentNo]])}
-    />
-  );
-
   return (
     <div>
       <TableContainer data-cy="groupless-container" component={Paper}>
@@ -233,7 +219,19 @@ export default ({
                 return (
                   <TableRow key={student.id}>
                     <TableCell component="th" scope="row">
-                      {`${student.firstname} ${student.lastname}`}
+                      <Popup
+                        content={
+                          // eslint-disable-next-line react/jsx-wrap-multilines
+                          <HourDisplay
+                            groupId={student.id}
+                            header={`${student.firstname} ${student.lastname}`}
+                            students={1}
+                            times={count([regByStudentId[student.studentNo]])}
+                          />
+                        }
+                      >
+                        {`${student.firstname} ${student.lastname}`}
+                      </Popup>
                     </TableCell>
                     <TableCell component="th" scope="row">
                       {student.studentNo}
@@ -292,7 +290,11 @@ export default ({
             </TableBody>
           </Table>
         </Box>
-        <Button data-cy="find-group-for-all-button" className={classes.button} onClick={() => findGroupForall()}>
+        <Button
+          data-cy="find-group-for-all-button"
+          className={classes.button}
+          onClick={() => findGroupForall()}
+        >
           {intl.formatMessage({ id: 'groupsView.findGroupForAll' })}
         </Button>
       </TableContainer>

@@ -23,7 +23,6 @@ import { AppContext } from '../../App';
 
 export default () => {
   const classes = useUsersStyle();
-  const [privacyToggle] = useStore('toggleStore');
   const [allUsers, setAllUsers] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [mocking, setMocking] = useStore('mocking');
@@ -39,12 +38,10 @@ export default () => {
 
   useEffect(() => {
     if (!loading && data?.users !== undefined) {
-      const usersToSet = privacyToggle
-        ? data.users.map(u => ({ ...u, email: dummyEmail, studentNo: dummyStudentNumber }))
-        : data.users;
+      const usersToSet = data.users;
       setAllUsers(usersToSet);
     }
-  }, [loading, data, privacyToggle]);
+  }, [loading, data]);
 
   const handleSearchChange = event => {
     setSearch(event.target.value);

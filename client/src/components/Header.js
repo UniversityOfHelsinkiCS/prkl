@@ -8,10 +8,10 @@ import { AppContext } from '../App';
 import { AppBar, Typography, Button, Grid, Toolbar } from '@material-ui/core';
 
 import { useHeaderStyles } from '../styles/ui/Header';
+import { privacyToggleVar } from '..';
 
 export default () => {
   const { user } = useContext(AppContext);
-  const [privacyToggle, setPrivacyToggle] = useStore('toggleStore');
   const [groupsUnsaved] = useStore('groupsUnsavedStore');
 
   const intl = useIntl();
@@ -85,7 +85,7 @@ export default () => {
         {user && user.role > roles.STAFF_ROLE ? (
         <Button 
           component={Link}
-          onClick={() => setPrivacyToggle(!privacyToggle)} 
+          onClick={() => {privacyToggleVar(!privacyToggleVar())}} 
           data-cy="menu-privacy-toggle"
           className={classes.navigationButton}
         >

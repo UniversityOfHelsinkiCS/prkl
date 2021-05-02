@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { Button, Dialog, DialogTitle, DialogActions } from '@material-ui/core';
-import { Close as CloseIcon, Done as DoneIcon }from '@material-ui/icons';
-import { RedButton, GreenButton } from '../../styles/ui/Button'
+import { Close as CloseIcon, Done as DoneIcon } from '@material-ui/icons';
+import { RedButton, GreenButton } from '../../styles/ui/Button';
 
 const ConfirmationButton = ({
   onConfirm,
@@ -12,7 +12,8 @@ const ConfirmationButton = ({
   cancelButtonText = 'Cancel',
   buttonDataCy,
   formControl,
-  color
+  color,
+  className,
 }) => {
   const [open, setOpen] = React.useState(false);
 
@@ -43,35 +44,30 @@ const ConfirmationButton = ({
 
   return (
     <>
-      <Button data-cy={buttonDataCy} onClick={triggerClick} style={{backgroundColor: color}}>
+      <Button
+        data-cy={buttonDataCy}
+        onClick={triggerClick}
+        style={{ backgroundColor: color }}
+        className={className}
+      >
         {children}
       </Button>
 
-      <Dialog
-        onClose={() => setOpen(false)}
-        open={open}
-      >
-
-        <DialogTitle>
-          {modalMessage}
-        </DialogTitle>
+      <Dialog onClose={() => setOpen(false)} open={open}>
+        <DialogTitle>{modalMessage}</DialogTitle>
 
         <DialogActions>
-
           <GreenButton data-cy="confirmation-button-confirm" onClick={confirm}>
-            <DoneIcon/> {confirmButtonText}
+            <DoneIcon /> {confirmButtonText}
           </GreenButton>
 
           <RedButton onClick={cancel}>
-            <CloseIcon/> {cancelButtonText} 
+            <CloseIcon /> {cancelButtonText}
           </RedButton>
-
         </DialogActions>
-        
       </Dialog>
     </>
   );
-
 };
 
 export default ConfirmationButton;

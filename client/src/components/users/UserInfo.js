@@ -4,6 +4,7 @@ import { useStore } from 'react-hookstore';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import UserCourseList from './UserCourseList';
 import roles from '../../util/userRoles';
+import UserGroup from './UserGroup';
 
 import { Container, Typography } from '@material-ui/core';
 import { AppContext } from '../../App';
@@ -12,13 +13,14 @@ import { ALL_COURSES } from '../../GqlQueries';
 import { useQuery } from '@apollo/client';
 
 export default () => {
-  const [privacyToggle] = useStore('toggleStore');
   const { user } = useContext(AppContext);
   const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
 
   if (courseLoading || courseError !== undefined) {
     return <Loader active />
   }
+
+  console.log('user',user.groups );
 
   const courses = courseData.courses;
 
@@ -49,11 +51,11 @@ export default () => {
 
             <FormattedMessage
               id="studentInfo.studentNo"
-              values={{ studentNo: privacyToggle ? dummyStudentNumber : user.studentNo }}
+              values={{ studentNo: user.studentNo }}
             />{divider}
             <FormattedMessage
               id="studentInfo.email"
-              values={{ email: privacyToggle ? dummyEmail : user.email }}
+              values={{ email: user.email }}
               className
             />
 
@@ -89,7 +91,18 @@ export default () => {
           
         </>
       ) : null}
+      &nbsp;
+      {user.groups ? (
+        <>
+          <Typography variant="h5" gutterBottom>
+            <FormattedMessage id="studentInfo.group" />
+          </Typography>
 
+          {user.groups.map(group => {         
+            return <UserGroup user={user} course={group.course} />
+          }) }
+        </>
+      ) : null}
     </Container>
   );
 };

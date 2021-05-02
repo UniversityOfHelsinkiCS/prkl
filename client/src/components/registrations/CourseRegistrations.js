@@ -27,7 +27,6 @@ import Popup from '../ui/Popup';
 
 const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
   const intl = useIntl();
-  const [privacyToggle] = useStore('toggleStore');
   const [notification, setNotification] = useStore('notificationStore');
 
   const { deleteRegistration } = useContext(CourseContext);
@@ -90,8 +89,8 @@ const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
               <TableRow key={reg.id} data-cy="student-registration-row">
                 <TableCell>{reg.student.firstname}</TableCell>
                 <TableCell>{reg.student.lastname}</TableCell>
-                <TableCell>{privacyToggle ? dummyStudentNumber : reg.student.studentNo}</TableCell>
-                <TableCell>{privacyToggle ? dummyEmail : reg.student.email}</TableCell>
+                <TableCell>{reg.student.studentNo}</TableCell>
+                <TableCell>{reg.student.email}</TableCell>
 
                 {course.questions.some(q => q.questionType === TIMES) && (
                   <TableCell>

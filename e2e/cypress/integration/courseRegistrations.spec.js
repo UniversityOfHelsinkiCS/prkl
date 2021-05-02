@@ -58,7 +58,7 @@ describe('Course registrations', () => {
       cy.wait(500);
       cy.get('[data-cy="confirmation-button-confirm"]').should('not.exist');
 
-      cy.contains('Please answer all questions!');
+      cy.contains('Please answer all the required questions!');
     });
 
     it('Can not enrol without accepting the privacy terms', () => {
@@ -71,7 +71,7 @@ describe('Course registrations', () => {
       cy.wait(500);
       cy.get('[data-cy="confirmation-button-confirm"]').should('not.exist');
 
-      cy.contains('Please answer all questions!');
+      cy.contains('Please answer all the required questions!');
     });
 
     it('Can enrol without answering optional questions', () => {

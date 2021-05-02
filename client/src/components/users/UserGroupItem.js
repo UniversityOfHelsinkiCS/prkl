@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useStore } from 'react-hookstore';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -12,14 +11,11 @@ import {
   Paper,
   Button,
 } from '@material-ui/core';
-import { dummyEmail } from '../../util/privacyDefaults';
 import HourDisplay from '../misc/HourDisplay';
 import { useUserGroupItemStyles } from '../../styles/users/UserGroupItem';
-
-export default ({ group, groupTimes }) => {
-  const [privacyToggle] = useStore('toggleStore');
+  
+export default ({ group, groupTimes, course }) => {
   const [showTime, setShowTime] = useState(false);
-
   const classes = useUserGroupItemStyles();
 
   const handleShowTime = () => {
@@ -31,7 +27,7 @@ export default ({ group, groupTimes }) => {
       <Table className={classes.table} aria-label="customized table">
         <TableHead data-cy="user-group-view-group-name" className={classes.head}>
           <TableRow>
-            <TableCell className={classes.head}>{group.groupName}</TableCell>
+            <TableCell className={classes.head}> {course.title}: {group.groupName}</TableCell>
             <TableCell className={classes.head} />
             <TableCell className={classes.head} align="right">
               {groupTimes[group.id] ? (
@@ -60,7 +56,7 @@ export default ({ group, groupTimes }) => {
                 {student.firstname}
               </TableCell>
               <TableCell align="center">{student.lastname}</TableCell>
-              <TableCell align="center">{privacyToggle ? dummyEmail : student.email}</TableCell>
+              <TableCell align="center">{student.email}</TableCell>
             </TableRow>
           ))}
         </TableBody>
