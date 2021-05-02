@@ -230,13 +230,13 @@ describe('Course registrations', () => {
       answers.push(course.questions[1].questionChoices[1].content);
       cy.get('[data-cy="question-1"]').contains(answers[1]).then((item) => {
         item.click();
-      });*/
+      });
 
       answers.push('My cool answer');
       cy.get('[data-cy="question-2"]').type(answers[2]);
       cy.get('[data-cy="toc-checkbox"]').click();
       cy.get('[data-cy="register-on-course-button"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();*/
 
       cy.visit('/courses');
       cy.switchToAdmin();
