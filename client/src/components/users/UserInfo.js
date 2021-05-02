@@ -1,26 +1,25 @@
 import React, { useContext } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useStore } from 'react-hookstore';
-import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import UserCourseList from './UserCourseList';
 import roles from '../../util/userRoles';
 import UserGroup from './UserGroup';
 
-import { Container, Typography } from '@material-ui/core';
+import { useLoaderStyle } from '../../styles/ui/Loader';
+
+import { CircularProgress, Container, Typography } from '@material-ui/core';
 import { AppContext } from '../../App';
-import { Loader } from 'semantic-ui-react';
 import { ALL_COURSES } from '../../GqlQueries';
 import { useQuery } from '@apollo/client';
 
 export default () => {
+  const loaderClass = useLoaderStyle();
+
   const { user } = useContext(AppContext);
   const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
 
   if (courseLoading || courseError !== undefined) {
-    return <Loader active />
+    return <CircularProgress className={loaderClass.root} />
   }
-
-  console.log('user',user.groups );
 
   const courses = courseData.courses;
 

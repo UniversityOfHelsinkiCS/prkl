@@ -2,6 +2,11 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
+/*
+  This file is a leftover from when the app was using Semantic UI. 
+  However, it can also be used with Material UI and has been repurposed for it. 
+*/
+
 /**
  * HOC to make react-hook-form work with semantic-ui.
  * (Semantic does not expose ref, which is very bad and therefore it should not be used for
@@ -25,9 +30,8 @@ const ValidatedInput = ({ name, type, formControl, optionality, ...rest }) => {
   return (
     <Inner
       name={name}
-      fluid
-      onChange={(e, { value }) => {
-        setValue(name, value);
+      onChange={(e) => {
+        setValue(name, e.target.value);
         trigger(name);
       }}
       error={!!errors[name]}

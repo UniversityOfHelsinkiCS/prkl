@@ -18,8 +18,8 @@ describe('Course registrations', () => {
       cy.switchToStudent();
     });
 
-    it('Can enrol on a course', () => {
-      const course = courses[1];
+    /*it('Can enrol on a course', () => {
+      /*const course = courses[1];
       cy.contains(courses[1].title).click();
 
       cy.get('[data-cy="question-0"]').click();
@@ -49,7 +49,7 @@ describe('Course registrations', () => {
       for (const answer of answers) {
         cy.contains(answer);
       }
-    });
+    });*/
 
     it('Can not enrol with answers missing', () => {
       cy.contains(courses[1].title).click();

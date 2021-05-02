@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
-import { Input, Divider, Menu, Loader } from 'semantic-ui-react';
-import { useIntl, FormattedMessage } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import { useCoursesStyles } from '../../styles/ui/Courses';
+import { useLoaderStyle } from '../../styles/ui/Loader';
 
 import CourseListStaffControls from './CourseListStaffControls';
 
@@ -10,11 +10,12 @@ import CourseList from './CourseList';
 import { AppContext } from '../../App';
 import { ALL_COURSES } from '../../GqlQueries';
 import { useQuery } from '@apollo/client';
-import { AppBar, FormControl, InputBase, InputLabel, Toolbar, Select, MenuItem, Box, TextField } from '@material-ui/core';
+import { AppBar, FormControl, InputLabel, Toolbar, Select, MenuItem, TextField, CircularProgress, Divider } from '@material-ui/core';
 
 export default () => {
   const intl = useIntl();
   const classes = useCoursesStyles();
+  const loaderClass = useLoaderStyle();
   const [search, setSearch] = useState('');
   const [order, setOrder] = useState(localStorage.getItem('assembler.courseOrder') || 'name');
   const [showPastCourses, setShowPastCourses] = useState(
@@ -28,7 +29,7 @@ export default () => {
   const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
 
   if (courseLoading || courseError !== undefined) {
-    return <Loader active/>
+    return <CircularProgress className={loaderClass.root}/>
   }
 
   const courses = courseData.courses;
@@ -166,7 +167,9 @@ export default () => {
         </Toolbar>
       </AppBar>
 
+      <br/>
       <Divider />
+      <br/>
 
       <CourseList courses={visibleCourses()} user={user} />
     </div>

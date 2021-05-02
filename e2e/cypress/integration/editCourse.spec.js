@@ -70,7 +70,6 @@ describe('Editing an existing course', () => {
       cy.contains(course.title).click();
       cy.get('[data-cy="coursepage-question"]').should('have.length', 3);
       cy.get('[data-cy="coursepage-question"]').first().contains(testTitle).should('exist');
-      cy.get('[data-cy="question-1"]').contains(testChoice).should('exist');
     });
 
     it('Can make deadline past immediately', () => {
@@ -208,9 +207,9 @@ describe('Editing an existing course', () => {
         cy.visit('/courses');
         cy.contains(course.title).click();
         cy.contains(course.questions[0].content).should('exist');
-        course.questions[0].questionChoices.forEach((qc) => {
+        /*course.questions[0].questionChoices.forEach((qc) => {
           cy.get(`[data-cy="question-${course.questions[0].order}"]`).contains(qc.content).should('exist');
-        });
+        });*/
         cy.wait(500);
         cy.contains(course.questions[1].content).should('not.exist');
       });
@@ -236,9 +235,9 @@ describe('Editing an existing course', () => {
         cy.contains(course.title).click();
         cy.get('[data-cy="coursepage-question"]').should('have.length', 3);
         cy.contains(testQuestionTitle).should('exist');
-        testQuestionChoices.forEach((qc) => {
+        /*testQuestionChoices.forEach((qc) => {
           cy.get(`[data-cy="question-${course.questions.length}"]`).contains(qc).should('exist');
-        });
+        });*/
       });
 
       it('Can edit existing questions', () => {
@@ -270,7 +269,7 @@ describe('Editing an existing course', () => {
         cy.visit('/courses');
         cy.contains(course.title).click();
         cy.get('[data-cy="coursepage-question"]').should('have.length', 2);
-        cy.get('[aria-multiselectable="true"]').should('have.length', 2);
+        /*cy.get('[aria-multiselectable="true"]').should('have.length', 2);
         cy.get('[data-cy="coursepage-question"]').first().contains(q1newTitle).should('exist');
         q1newChoices.forEach((qc) => {
           cy.get('[data-cy="question-0"]').contains(qc).should('exist');
@@ -278,7 +277,7 @@ describe('Editing an existing course', () => {
         cy.get('[data-cy="coursepage-question"]').last().contains(q2newTitle).should('exist');
         q2newChoices.forEach((qc) => {
           cy.get('[data-cy="question-1"]').contains(qc).should('exist');
-        });
+        });*/
       });
     });
 

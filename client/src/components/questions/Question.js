@@ -6,57 +6,62 @@ import { Segment, Grid, Form } from 'semantic-ui-react';
 import { FREEFORM, SINGLE_CHOICE, MULTI_CHOICE, TIMES } from '../../util/questionTypes';
 import ValidatedInput from '../ui/ValidatedInput';
 import TimeForm from '../misc/TimeForm';
+import { makeStyles } from '@material-ui/core/styles';
+import { TextField, MenuItem, Select } from '@material-ui/core';
 
-const Question = ({ question, hookForm }) => {
+const Question = ({ question, formControl }) => {
   const intl = useIntl();
+  const name = question.id;
 
   const changeType = () => {
     switch (question.questionType) {
       case FREEFORM:
         return (
           <ValidatedInput
-            name={question.id}
-            type={Form.Input}
+            name={name}
+            type={TextField}
             placeholder={intl.formatMessage({ id: 'course.freeFormPlaceholder' })}
             optionality={question.optional}
-            formControl={hookForm}
+            formControl={formControl}
             data-cy={`question-${question.order}`}
           />
         );
       case SINGLE_CHOICE:
         return (
           <ValidatedInput
-            name={question.id}
-            placeholder={intl.formatMessage({ id: 'course.multipleChoicePlaceholder' })}
-            options={question.questionChoices.map(choice => ({
-              key: choice.id,
-              value: choice.id,
-              text: choice.content,
-            }))}
+            name={name}
+            type={TextField}
+            select
+            defaultValue=""
+            displayEmpty
             optionality={question.optional}
-            formControl={hookForm}
-            type={Form.Dropdown}
-            selection
+            formControl={formControl}
             data-cy={`question-${question.order}`}
-          />
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            {question.questionChoices.map(c => (
+                <MenuItem key={c.id} value={c.id}>{c.content}</MenuItem> 
+             ))}
+          </ValidatedInput>
         );
       case MULTI_CHOICE:
         return (
           <ValidatedInput
-            name={question.id}
-            placeholder={intl.formatMessage({ id: 'course.multipleChoicePlaceholder' })}
-            options={question.questionChoices.map(choice => ({
-              key: choice.id,
-              value: choice.id,
-              text: choice.content,
-            }))}
-            optionality={question.optional}
-            formControl={hookForm}
-            type={Form.Dropdown}
-            selection
+            name={name}
+            type={Select}
+            select
             multiple
+            defaultValue={[]}
+            optionality={question.optional}
+            formControl={formControl}
             data-cy={`question-${question.order}`}
-          />
+          >
+            {question.questionChoices.map(c => (
+                <MenuItem key={c.id} value={c.id}>{c.content}</MenuItem>
+             ))}
+          </ValidatedInput>      
         );
 
       default:
@@ -72,12 +77,12 @@ const Question = ({ question, hookForm }) => {
         onChange={([event]) => {
           return event;
         }}
-        control={hookForm.control}
+        control={formControl.control}
         description={question.content}
       />
     );
 
-    // return <TimeForm name={question.id} formControl={hookForm} />;
+    // return <TimeForm name={question.id} formControl={formControl} />;
   }
 
   return (
