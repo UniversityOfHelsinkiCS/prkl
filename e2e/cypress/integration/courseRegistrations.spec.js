@@ -226,11 +226,11 @@ describe('Course registrations', () => {
       const answers = [course.questions[0].questionChoices[1].content];
       cy.contains(answers[0]).click();
 
-      cy.get('[data-cy="question-1"]').click();
+      /*cy.get('[data-cy="question-1"]').click();
       answers.push(course.questions[1].questionChoices[1].content);
       cy.get('[data-cy="question-1"]').contains(answers[1]).then((item) => {
         item.click();
-      });
+      });*/
 
       answers.push('My cool answer');
       cy.get('[data-cy="question-2"]').type(answers[2]);
