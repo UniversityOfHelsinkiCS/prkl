@@ -236,7 +236,7 @@ describe('Course registrations', () => {
       cy.get('[data-cy="question-2"]').type(answers[2]);
       cy.get('[data-cy="toc-checkbox"]').click();
       cy.get('[data-cy="register-on-course-button"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();*/
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
 
       cy.visit('/courses');
       cy.switchToAdmin();
@@ -245,7 +245,7 @@ describe('Course registrations', () => {
       cy.get('[data-cy="remove-registration-button"]').first().click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.wait(500);
-      cy.get('[data-cy="registration-table"]').contains(users[0].firstname).should('not.exist');
+      cy.get('[data-cy="registration-table"]').contains(users[0].firstname).should('not.exist');*/
     });
   });
 });
