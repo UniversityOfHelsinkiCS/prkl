@@ -1,6 +1,18 @@
 import React, { useContext, useState } from 'react';
 import { useIntl } from 'react-intl';
 
+import { useQuery } from '@apollo/client';
+import {
+  AppBar,
+  FormControl,
+  InputLabel,
+  Toolbar,
+  Select,
+  MenuItem,
+  TextField,
+  CircularProgress,
+  Divider,
+} from '@material-ui/core';
 import { useCoursesStyles } from '../../styles/ui/Courses';
 import { useLoaderStyle } from '../../styles/ui/Loader';
 
@@ -9,8 +21,6 @@ import CourseListStaffControls from './CourseListStaffControls';
 import CourseList from './CourseList';
 import { AppContext } from '../../App';
 import { ALL_COURSES } from '../../GqlQueries';
-import { useQuery } from '@apollo/client';
-import { AppBar, FormControl, InputLabel, Toolbar, Select, MenuItem, TextField, CircularProgress, Divider } from '@material-ui/core';
 
 export default () => {
   const intl = useIntl();
@@ -29,10 +39,10 @@ export default () => {
   const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
 
   if (courseLoading || courseError !== undefined) {
-    return <CircularProgress className={loaderClass.root}/>
+    return <CircularProgress className={loaderClass.root} />;
   }
 
-  const courses = courseData.courses;
+  const { courses } = courseData;
 
   const handleSearchChange = event => {
     setSearch(event.target.value);
@@ -137,9 +147,8 @@ export default () => {
 
   return (
     <div>
-      <AppBar position={"static"} color={"transparent"} elevation={0}>
+      <AppBar position="static" color="transparent" elevation={0}>
         <Toolbar>
-
           <TextField
             placeholder={intl.formatMessage({ id: 'courses.searchPlaceholder' })}
             onChange={handleSearchChange}
@@ -154,22 +163,21 @@ export default () => {
               name="value"
               labelId="orderBy"
               value={order}
-              style={{ width: "13em" }}
+              style={{ width: '13em' }}
             >
               {orderOptions.map(o => (
-                <MenuItem value={o.value}>{o.text}</MenuItem> 
+                <MenuItem value={o.value}>{o.text}</MenuItem>
               ))}
             </Select>
           </FormControl>
 
           <CourseListStaffControls controls={staffControls} />
-
         </Toolbar>
       </AppBar>
 
-      <br/>
+      <br />
       <Divider />
-      <br/>
+      <br />
 
       <CourseList courses={visibleCourses()} user={user} />
     </div>

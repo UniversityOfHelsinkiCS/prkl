@@ -69,6 +69,7 @@ export default {
     'courses.orderByCodeOption': 'Course Code',
     'courses.orderByDeadlineOption': 'Deadline',
     'courses.enrolledStudents': 'Enrolled students: ',
+    'courses.mailToTeacher': 'Send mail to teacher',
 
     'users.empty': 'No users found',
     'users.admin': 'Admin user',
@@ -122,7 +123,7 @@ export default {
     'course.noTeachers': 'This course has no teachers. You will be set as a teacher',
     'course.joinToGroups': 'Join group here',
 
-    'courseInfo.teachers': 'Teachers: ',
+    'courseInfo.teachers': 'Teachers',
 
     'studentInfo.header': 'Student Info',
     'studentInfo.fullname': '{fullname}',

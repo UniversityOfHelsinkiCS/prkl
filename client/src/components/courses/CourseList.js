@@ -119,7 +119,7 @@ export default ({ courses, user }) => {
               <Dropdown
                 teachers={course.teachers}
                 course={course}
-                placeHolder="Send mail to teacher"
+                placeHolder={intl.formatMessage({ id: 'courses.mailToTeacher' })}
               />
             </Typography>
             <Typography className={classes.description} color="textSecondary" gutterBottom>

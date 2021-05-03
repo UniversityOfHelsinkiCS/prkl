@@ -24,7 +24,15 @@ export default ({ controls }) => {
       <FormGroup className={classes.row}>
         <FormControlLabel
           label={text}
-          control={<Switch data-cy="checkbox-staff-controls" checked={checked} onChange={onChange} color="primary" />}
+          control={
+            // eslint-disable-next-line react/jsx-wrap-multilines
+            <Switch
+              data-cy="checkbox-staff-controls"
+              checked={checked}
+              onChange={onChange}
+              color="primary"
+            />
+          }
         />
       </FormGroup>
     );
