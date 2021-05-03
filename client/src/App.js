@@ -3,9 +3,9 @@ import { initShibbolethPinger } from 'unfuck-spa-shibboleth-session';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createStore, useStore } from 'react-hookstore';
 import { useQuery } from '@apollo/client';
-import { Loader } from 'semantic-ui-react';
+import { useLoaderStyle } from './styles/ui/Loader';
 
-import { ALL_COURSES, CURRENT_USER } from './GqlQueries';
+import { CURRENT_USER } from './GqlQueries';
 
 import CourseForm from './components/courses/CourseForm';
 import Notification from './components/ui/Notification';
@@ -21,6 +21,8 @@ import Header from './components/Header';
 import roles from './util/userRoles';
 import './App.css';
 
+import { CircularProgress } from '@material-ui/core';
+
 createStore('grouplessStudentsStore', []);
 createStore('groupsUnsavedStore', false);
 createStore('lockedGroupsStore', []);
@@ -32,6 +34,7 @@ export const AppContext = createContext();
 export default () => {
   // eslint-disable-next-line no-unused-vars
   const [mocking] = useStore('mocking');
+  const loaderClass = useLoaderStyle();
 
   const { loading: userLoading, error: userError, data: userData } = useQuery(CURRENT_USER);
 
@@ -40,7 +43,7 @@ export default () => {
   }, []);
 
   if (userLoading || !userData) {
-    return <Loader active data-cy="loader" />;
+    return <CircularProgress data-cy="loader" className={loaderClass.root} />;
   }
 
   const user = userData.currentUser;
@@ -55,7 +58,6 @@ export default () => {
         <Router basename={process.env.PUBLIC_URL}>
           <Header />
           <div className="mainContent">
-            <Loader />
             <Route path="/user" render={() => <UserInfo />} />
             <PrivateRoute
               path="/addcourse"

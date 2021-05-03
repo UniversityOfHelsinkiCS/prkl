@@ -14,6 +14,7 @@ import {
   Button,
 } from '@material-ui/core';
 import { useUsersStyle } from '../../styles/users/Users';
+import { useLoaderStyle } from '../../styles/ui/Loader';
 import { OrangeButton } from '../../styles/ui/Button';
 import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import { ALL_USERS, EDIT_USER_ROLE } from '../../GqlQueries';
@@ -23,6 +24,7 @@ import { AppContext } from '../../App';
 
 export default () => {
   const classes = useUsersStyle();
+  const loaderClass = useLoaderStyle();
   const [allUsers, setAllUsers] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [mocking, setMocking] = useStore('mocking');
@@ -76,7 +78,7 @@ export default () => {
   }
 
   if (loading || !allUsers) {
-    return <CircularProgress />;
+    return <CircularProgress className={loaderClass.root} />
   }
 
   return (

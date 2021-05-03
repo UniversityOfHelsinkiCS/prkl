@@ -18,7 +18,6 @@ import PropTypes from 'prop-types';
 const ValidatedInput = ({ name, type, formControl, optionality, ...rest }) => {
   const { setValue, trigger, errors, register } = formControl;
   const Inner = type;
-  console.log(rest);
 
   useEffect(() => {
     if (!optionality) {

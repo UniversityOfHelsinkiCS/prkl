@@ -7,19 +7,11 @@ import { FREEFORM, SINGLE_CHOICE, MULTI_CHOICE, TIMES } from '../../util/questio
 import ValidatedInput from '../ui/ValidatedInput';
 import TimeForm from '../misc/TimeForm';
 import { makeStyles } from '@material-ui/core/styles';
-import { TextField, Select, MenuItem, Checkbox, ListItemText } from '@material-ui/core';
-
-const useStyles = makeStyles(({
-  selectField: {
-    minWidth: 120,
-  }
-}));
+import { TextField, MenuItem, Select } from '@material-ui/core';
 
 const Question = ({ question, formControl }) => {
   const intl = useIntl();
   const name = question.id;
-
-  const classes = useStyles();
 
   const changeType = () => {
     switch (question.questionType) {
@@ -38,9 +30,10 @@ const Question = ({ question, formControl }) => {
         return (
           <ValidatedInput
             name={name}
-            type={Select}
+            type={TextField}
+            select
             defaultValue=""
-            className={classes.selectField}
+            displayEmpty
             optionality={question.optional}
             formControl={formControl}
             data-cy={`question-${question.order}`}
@@ -49,7 +42,7 @@ const Question = ({ question, formControl }) => {
               <em>None</em>
             </MenuItem>
             {question.questionChoices.map(c => (
-                <MenuItem value={c.id}>{c.content}</MenuItem> 
+                <MenuItem key={c.id} value={c.id}>{c.content}</MenuItem> 
              ))}
           </ValidatedInput>
         );
@@ -58,36 +51,17 @@ const Question = ({ question, formControl }) => {
           <ValidatedInput
             name={name}
             type={Select}
+            select
             multiple
             defaultValue={[]}
-            className={classes.selectField}
             optionality={question.optional}
             formControl={formControl}
-            renderValue={(question) => question.content.join(', ')}
             data-cy={`question-${question.order}`}
           >
             {question.questionChoices.map(c => (
-                <MenuItem value={c.id}>
-                  <ListItemText primary={c.content} />  
-                </MenuItem> 
+                <MenuItem key={c.id} value={c.id}>{c.content}</MenuItem>
              ))}
-          </ValidatedInput>
-          
-          /*<ValidatedInput
-            name={name}
-            placeholder={intl.formatMessage({ id: 'course.multipleChoicePlaceholder' })}
-            options={question.questionChoices.map(choice => ({
-              key: choice.id,
-              value: choice.id,
-              text: choice.content,
-            }))}
-            optionality={question.optional}
-            formControl={formControl}
-            type={Form.Dropdown}
-            selection
-            multiple
-            data-cy={`question-${question.order}`}
-          />*/
+          </ValidatedInput>      
         );
 
       default:

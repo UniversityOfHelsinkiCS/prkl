@@ -74,10 +74,9 @@ describe('Group publishing', () => {
               cy.switchToStudent();
               cy.visit(`/course/${courses[3].id}`);
               cy.get('[data-cy="show-user-groups-button"]').click();
-              cy.contains('Your group has a new message:');
+              cy.contains(`Message for ${groupName}:`);
               cy.contains(groupMessage);
               cy.get('[data-cy="user-group-view-group-name"]').contains(groupName);
-              cy.contains('Your group has been published:');
               cy.get('table>tbody>tr').each((tr) => {
                 const fullName = `${tr.children().eq(0).text()} ${tr.children().eq(1).text()}`;
                 expect(namesInGroup).to.include(fullName);
