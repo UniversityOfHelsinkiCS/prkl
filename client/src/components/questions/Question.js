@@ -1,17 +1,24 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { Controller } from 'react-hook-form';
-import { Segment, Grid, Form } from 'semantic-ui-react';
 
 import { FREEFORM, SINGLE_CHOICE, MULTI_CHOICE, TIMES } from '../../util/questionTypes';
 import ValidatedInput from '../ui/ValidatedInput';
 import TimeForm from '../misc/TimeForm';
 import { makeStyles } from '@material-ui/core/styles';
-import { TextField, MenuItem, Select } from '@material-ui/core';
+import { TextField, MenuItem, Select, Grid, FormControl } from '@material-ui/core';
+
+const useStyles = makeStyles({
+  selectField: {
+    minWidth: 120
+  }
+});
 
 const Question = ({ question, formControl }) => {
   const intl = useIntl();
   const name = question.id;
+
+  const classes = useStyles();
 
   const changeType = () => {
     switch (question.questionType) {
@@ -20,6 +27,7 @@ const Question = ({ question, formControl }) => {
           <ValidatedInput
             name={name}
             type={TextField}
+            classes={classes.selectField}
             placeholder={intl.formatMessage({ id: 'course.freeFormPlaceholder' })}
             optionality={question.optional}
             formControl={formControl}
@@ -31,6 +39,7 @@ const Question = ({ question, formControl }) => {
           <ValidatedInput
             name={name}
             type={TextField}
+            classes={classes.selectField}
             select
             defaultValue=""
             displayEmpty
@@ -51,6 +60,7 @@ const Question = ({ question, formControl }) => {
           <ValidatedInput
             name={name}
             type={Select}
+            classes={classes.selectField}
             select
             multiple
             defaultValue={[]}
@@ -87,19 +97,17 @@ const Question = ({ question, formControl }) => {
 
   return (
     <div style={{ paddingTop: 5, paddingBottom: 5 }}>
-      <Segment key={question.content} raised data-cy="coursepage-question">
-        <Grid>
-          <Grid.Row columns={2}>
-            <Grid.Column verticalAlign="middle">
+ 
+        <Grid container justify="space-between">
+          <Grid item>
               <b>{question.content}</b>
               {!question.optional && <span style={{ color: 'red' }}> *</span>}
-            </Grid.Column>
-            <Grid.Column textAlign="right">
-              <Form.Field>{changeType()}</Form.Field>
-            </Grid.Column>
-          </Grid.Row>
+          </Grid>
+          <Grid item>
+              <FormControl>{changeType()}</FormControl>
+          </Grid>
         </Grid>
-      </Segment>
+
     </div>
   );
 };
