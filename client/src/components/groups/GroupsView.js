@@ -30,6 +30,7 @@ import userRoles from '../../util/userRoles';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import GrouplessStudents from './GrouplessStudents';
 import Groups from './Groups';
+import { notificationVar } from '../..';
 
 const useStyles = makeStyles({
   formInput: {
@@ -57,7 +58,6 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
   const [grouplessStudents, setGrouplessStudents] = useStore('grouplessStudentsStore');
   const [lockedGroupsStore, setLockedGroupsStore] = useStore('lockedGroupsStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
-  const [notification, setNotification] = useStore('notificationStore');
 
   const [registrationsWithoutGroups, setRegistrationsWithoutGroups] = useState(true);
   const [groupSorting, setGroupSorting] = useState('nameAscending');
@@ -270,7 +270,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
       await saveGeneratedGroups({ variables });
       setGroupsUnsaved(false);
       await refetch();
-      setNotification({
+      notificationVar({
         type: 'success',
         message: intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' }),
         visible: true,
@@ -287,7 +287,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     try {
       await publishCourseGroups({ variables });
       setGroupsPublished(true);
-      setNotification({
+      notificationVar({
         type: 'success',
         message: intl.formatMessage({ id: 'groupsView.publishGroupsSuccessMsg' }),
         visible: true,

@@ -16,6 +16,7 @@ createStore('mocking', {
 });
 
 export const privacyToggleVar = makeVar(false);
+export const notificationVar = makeVar({});
 
 const MockingEnabledClient = () => {
   const [mocking, setMocking] = useStore('mocking');

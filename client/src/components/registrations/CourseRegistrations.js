@@ -24,10 +24,10 @@ import { TIMES } from '../../util/questionTypes';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import HourDisplay from '../misc/HourDisplay';
 import Popup from '../ui/Popup';
+import { notificationVar } from '../..';
 
 const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
   const intl = useIntl();
-  const [notification, setNotification] = useStore('notificationStore');
 
   const { deleteRegistration } = useContext(CourseContext);
 
@@ -37,7 +37,7 @@ const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
         variables: { courseId: course.id, studentId: studentIdToRemove },
       });
 
-      setNotification({
+      notificationVar({
         type: 'success',
         message: intl.formatMessage({ id: 'courseRegistration.registrationRemoved' }),
         visible: true,
