@@ -24,6 +24,7 @@ import { FIND_GROUP_FOR_GROUPLESS_STUDENTS } from '../../GqlQueries';
 import HourDisplay from '../misc/HourDisplay';
 import { count } from '../../util/functions';
 import Popup from '../ui/Popup';
+import { notificationVar } from '../..';
 
 const useStyles = makeStyles({
   box: {
@@ -70,7 +71,6 @@ export default ({
 }) => {
   const [findGroupForGrouplessStudents] = useMutation(FIND_GROUP_FOR_GROUPLESS_STUDENTS);
   const [groups, setGroups] = useStore('groupsStore');
-  const [notification, setNotification] = useStore('notificationStore');
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
 
   const intl = useIntl();
@@ -180,7 +180,7 @@ export default ({
       }
 
       if (groupless) {
-        setNotification({
+        notificationVar({
           type: 'error',
           message: intl.formatMessage({ id: 'groupsView.grouplessStudentAlert' }),
           visible: true,

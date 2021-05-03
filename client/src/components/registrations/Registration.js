@@ -16,6 +16,7 @@ import UserGroup from '../users/UserGroup';
 import { AppContext } from '../../App';
 import { CourseContext } from '../courses/Course';
 import { BlueButton } from '../../styles/ui/Button';
+import { notificationVar } from '../..';
 
 export default ({ course, match }) => {
   const hookForm = useForm({ mode: 'onChange' });
@@ -44,7 +45,6 @@ export default ({ course, match }) => {
   });
 
   const { deleteRegistration } = useContext(CourseContext);
-  const [notification, setNotification] = useStore('notificationStore');
   const courseId = course.id;
   const studentId = user.id;
 
@@ -158,7 +158,7 @@ export default ({ course, match }) => {
       const response = await createRegistration({ variables: { data: answer } });
 
       // TODO: add timeout success alert
-      setNotification({
+      notificationVar({
         type: 'success',
         message: intl.formatMessage({ id: 'registration.registrationSuccess' }),
         visible: true,
@@ -176,7 +176,7 @@ export default ({ course, match }) => {
         variables,
       });
 
-      setNotification({
+      notificationVar({
         type: 'success',
         message: intl.formatMessage({ id: 'registration.registrationCanceled' }),
         visible: true,

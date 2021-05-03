@@ -26,7 +26,6 @@ createStore('groupsUnsavedStore', false);
 createStore('lockedGroupsStore', []);
 createStore('teacherStore', []);
 createStore('groupsStore', []);
-createStore('notificationStore', {});
 
 export const AppContext = createContext();
 
