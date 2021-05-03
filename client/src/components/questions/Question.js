@@ -96,7 +96,7 @@ const Question = ({ question, formControl }) => {
   }
 
   return (
-    <div style={{ paddingTop: 5, paddingBottom: 5 }}>
+    <div style={{ paddingTop: 5, paddingBottom: 5 }} data-cy="coursepage-question">
  
         <Grid container justify="space-between">
           <Grid item>
