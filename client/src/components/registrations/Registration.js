@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { gql, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
-import { useStore } from 'react-hookstore';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import { Typography } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
@@ -16,7 +15,7 @@ import UserGroup from '../users/UserGroup';
 import { AppContext } from '../../App';
 import { CourseContext } from '../courses/Course';
 import { BlueButton } from '../../styles/ui/Button';
-import { notificationVar } from '../..';
+import { setNotification } from '../ui/Notification';
 
 export default ({ course, match }) => {
   const hookForm = useForm({ mode: 'onChange' });
@@ -157,12 +156,7 @@ export default ({ course, match }) => {
       // TODO: Add spinner before next line and disable the submit button on click.
       const response = await createRegistration({ variables: { data: answer } });
 
-      // TODO: add timeout success alert
-      notificationVar({
-        type: 'success',
-        message: intl.formatMessage({ id: 'registration.registrationSuccess' }),
-        visible: true,
-      });
+      setNotification(intl.formatMessage({ id: 'registration.registrationSuccess' }), 'success');
     } catch (err) {
       // TODO: Handle errors.
       // eslint-disable-next-line no-console
@@ -176,11 +170,7 @@ export default ({ course, match }) => {
         variables,
       });
 
-      notificationVar({
-        type: 'success',
-        message: intl.formatMessage({ id: 'registration.registrationCanceled' }),
-        visible: true,
-      });
+      setNotification(intl.formatMessage({ id: 'registration.registrationCanceled' }), 'success');
     } catch (deletionError) {
       // eslint-disable-next-line no-console
       console.log('Error while deleting registration:', deletionError);

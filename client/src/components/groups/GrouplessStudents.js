@@ -24,7 +24,7 @@ import { FIND_GROUP_FOR_GROUPLESS_STUDENTS } from '../../GqlQueries';
 import HourDisplay from '../misc/HourDisplay';
 import { count } from '../../util/functions';
 import Popup from '../ui/Popup';
-import { notificationVar } from '../..';
+import { setNotification } from '../ui/Notification';
 
 const useStyles = makeStyles({
   box: {
@@ -180,11 +180,7 @@ export default ({
       }
 
       if (groupless) {
-        notificationVar({
-          type: 'error',
-          message: intl.formatMessage({ id: 'groupsView.grouplessStudentAlert' }),
-          visible: true,
-        });
+        setNotification(intl.formatMessage({ id: 'groupsView.grouplessStudentAlert' }), 'error');
       }
     } catch (e) {
       // eslint-disable-next-line no-console

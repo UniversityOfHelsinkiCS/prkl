@@ -30,7 +30,7 @@ import userRoles from '../../util/userRoles';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import GrouplessStudents from './GrouplessStudents';
 import Groups from './Groups';
-import { notificationVar } from '../..';
+import { setNotification } from '../ui/Notification';
 
 const useStyles = makeStyles({
   formInput: {
@@ -270,11 +270,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
       await saveGeneratedGroups({ variables });
       setGroupsUnsaved(false);
       await refetch();
-      notificationVar({
-        type: 'success',
-        message: intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' }),
-        visible: true,
-      });
+      setNotification(intl.formatMessage({ id: 'groupsView.groupsSavedSuccessMsg' }), 'success');
     } catch (groupError) {
       // eslint-disable-next-line no-console
       console.log('error:', groupError);
@@ -287,11 +283,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     try {
       await publishCourseGroups({ variables });
       setGroupsPublished(true);
-      notificationVar({
-        type: 'success',
-        message: intl.formatMessage({ id: 'groupsView.publishGroupsSuccessMsg' }),
-        visible: true,
-      });
+      setNotification(intl.formatMessage({ id: 'groupsView.publishGroupsSuccessMsg' }), 'success');
     } catch (publishError) {
       // eslint-disable-next-line no-console
       console.log(publishError);

@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useContext } from 'react';
-import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
 import _ from 'lodash';
 
@@ -18,13 +17,12 @@ import { red } from '@material-ui/core/colors';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 
 import { CourseContext } from '../courses/Course';
-import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import questionSwitch, { count } from '../../util/functions';
 import { TIMES } from '../../util/questionTypes';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import HourDisplay from '../misc/HourDisplay';
 import Popup from '../ui/Popup';
-import { notificationVar } from '../..';
+import { setNotification } from '../ui/Notification';
 
 const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
   const intl = useIntl();
@@ -36,12 +34,10 @@ const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
       await deleteRegistration({
         variables: { courseId: course.id, studentId: studentIdToRemove },
       });
-
-      notificationVar({
-        type: 'success',
-        message: intl.formatMessage({ id: 'courseRegistration.registrationRemoved' }),
-        visible: true,
-      });
+      setNotification(
+        intl.formatMessage({ id: 'courseRegistration.registrationRemoved' }),
+        'success'
+      );
     } catch (deletionError) {
       // eslint-disable-next-line no-console
       console.log('Error while deleting enrolled registration: ', deletionError);
