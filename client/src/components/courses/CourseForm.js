@@ -1,25 +1,27 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState, useEffect, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useMutation } from '@apollo/client';
-import { useHistory } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
+import { useMutation } from '@apollo/client';
 import _ from 'lodash';
 
 import { TextField, Button, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
 import { blue, red } from '@material-ui/core/colors';
 import InfoIcon from '@material-ui/icons/Info';
+import { Alert } from '@material-ui/lab';
+
 import { CREATE_COURSE, UPDATE_COURSE } from '../../GqlQueries';
 
+import { useCourseFormStyles } from '../../styles/courses/CourseForm';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import QuestionForm from '../questions/QuestionForm';
-import TeacherList from './TeacherList';
-import roles from '../../util/userRoles';
 import { TIMES } from '../../util/questionTypes';
-import { AppContext } from '../../App';
+import roles from '../../util/userRoles';
+import TeacherList from './TeacherList';
 import Popup from '../ui/Popup';
-import { useCourseFormStyles } from '../../styles/courses/CourseForm';
+
+import { AppContext } from '../../App';
 
 // Renders form for both adding and editing a course
 const CourseForm = ({ course, onCancelEdit, editView }) => {
@@ -175,6 +177,8 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
     const variables = { id: editView ? course.id : undefined, data: { ...courseObject } };
     try {
       if (editView) {
+        // TODO: Responsive UI based on following variable result. See Notification.js
+        // eslint-disable-next-line no-unused-vars
         const result = await updateCourse({
           variables,
         });
@@ -461,7 +465,8 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
             formControl={hookForm}
           >
             <FormattedMessage id="courseForm.confirmButton" />
-          </ConfirmationButton>&nbsp;
+          </ConfirmationButton>
+          &nbsp;
           {editView ? (
             <ConfirmationButton
               onConfirm={onCancelEdit}

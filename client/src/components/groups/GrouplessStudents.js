@@ -71,6 +71,7 @@ export default ({
 }) => {
   const [findGroupForGrouplessStudents] = useMutation(FIND_GROUP_FOR_GROUPLESS_STUDENTS);
   const [groups, setGroups] = useStore('groupsStore');
+  // eslint-disable-next-line no-unused-vars
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
 
   const intl = useIntl();

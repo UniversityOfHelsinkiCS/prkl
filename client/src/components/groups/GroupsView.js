@@ -1,12 +1,9 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import { useMutation, useQuery } from '@apollo/client';
-import { blue, green, orange, red } from '@material-ui/core/colors';
-import { Alert } from '@material-ui/lab';
-import _ from 'lodash';
 import React, { useContext, useEffect, useState } from 'react';
-import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Prompt } from 'react-router-dom';
+import { useMutation, useQuery } from '@apollo/client';
+import { useStore } from 'react-hookstore';
+import _ from 'lodash';
 import {
   Typography,
   FormGroup,
@@ -17,20 +14,22 @@ import {
   MenuItem,
   CircularProgress,
 } from '@material-ui/core';
+import { blue, green, orange, red } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
-import { useLoaderStyle } from '../../styles/ui/Loader';
-import { AppContext } from '../../App';
+import { Alert } from '@material-ui/lab';
 import {
   COURSE_GROUPS,
   GENERATE_GROUPS,
   PUBLISH_COURSE_GROUPS,
   SAVE_GROUPS,
 } from '../../GqlQueries';
-import userRoles from '../../util/userRoles';
 import ConfirmationButton from '../ui/ConfirmationButton';
-import GrouplessStudents from './GrouplessStudents';
-import Groups from './Groups';
+import { useLoaderStyle } from '../../styles/ui/Loader';
 import { setNotification } from '../ui/Notification';
+import GrouplessStudents from './GrouplessStudents';
+import userRoles from '../../util/userRoles';
+import Groups from './Groups';
+import { AppContext } from '../../App';
 
 const useStyles = makeStyles({
   formInput: {
@@ -297,6 +296,10 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     setRegistrationsWithoutGroups(true);
   };
 
+  /**
+   * Handles the command for sorting the groups and makes sure that no unsaved changes get lost
+   * @param event
+   */
   const handleSortGroups = event => {
     // Sorting currently does not preserve saved group names & messages correctly, so warn about reload
     if (
@@ -311,6 +314,21 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     setGroupsUnsaved(false);
   };
 
+  /**
+   * Validates the input value for the group sizes from TextField
+   * @param event
+   */
+  const validateGroupSizeInput = event => {
+    const targetValue = Number.parseInt(event.target.value, 10);
+    if (!(targetValue < 1 || targetValue > 1000)) {
+      setMinGroupSize(targetValue);
+    }
+  };
+
+  /**
+   * Options for sorting the groups
+   * @type {[{text: string, value: string}, {text: string, value: string}, {text: string, value: string}, {text: string, value: string}]}
+   */
   const sortOptions = [
     {
       text: intl.formatMessage({ id: 'groupsView.orderByNameAsc' }),
@@ -344,10 +362,6 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
 
   return (
     <div>
-      <Prompt
-        when={groupsUnsaved}
-        message={intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' })}
-      />
       {registrations.length === 0 ? (
         <Typography variant="h5">
           {intl.formatMessage({ id: 'groupsView.noRegistrations' })}
@@ -359,10 +373,8 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
               className={classes.formInput}
               value={minGroupSize}
               type="number"
-              min="1"
-              max="9999999"
               label={intl.formatMessage({ id: 'groupsView.targetGroupSize' })}
-              onChange={event => setMinGroupSize(Number.parseInt(event.target.value, 10) || '')}
+              onChange={event => validateGroupSizeInput(event)}
               data-cy="target-group-size"
             />
             <FormControl className={classes.formInput}>

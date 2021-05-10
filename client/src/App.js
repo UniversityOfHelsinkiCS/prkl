@@ -2,9 +2,10 @@ import React, { createContext, useEffect } from 'react';
 import { initShibbolethPinger } from 'unfuck-spa-shibboleth-session';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createStore, useStore } from 'react-hookstore';
+import { CircularProgress } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
-import { useLoaderStyle } from './styles/ui/Loader';
 
+import { useLoaderStyle } from './styles/ui/Loader';
 import { CURRENT_USER } from './GqlQueries';
 
 import CourseForm from './components/courses/CourseForm';
@@ -21,8 +22,6 @@ import Header from './components/Header';
 import roles from './util/userRoles';
 import './App.css';
 
-import { CircularProgress } from '@material-ui/core';
-
 createStore('grouplessStudentsStore', []);
 createStore('groupsUnsavedStore', false);
 createStore('lockedGroupsStore', []);
@@ -36,6 +35,7 @@ export default () => {
   const [mocking] = useStore('mocking');
   const loaderClass = useLoaderStyle();
 
+  // eslint-disable-next-line no-unused-vars
   const { loading: userLoading, error: userError, data: userData } = useQuery(CURRENT_USER);
 
   useEffect(() => {

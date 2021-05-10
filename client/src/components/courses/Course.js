@@ -158,18 +158,24 @@ export default ({ id, match }) => {
 
   /**
    * Handles the exit from the manage groups -subpage. Makes sure that anything doesn't get discarded accidentally.
-   * Takes a subpage in string format as a parameter.
-   * @param subpage
    */
-  const handleExitFromGroupsView = subpage => {
+  const handleExitFromGroupsView = () => {
     if (
       !groupsUnsaved ||
       (groupsUnsaved &&
         // eslint-disable-next-line no-alert
         window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' })))
     ) {
+      history.push(`/course/${course.id}`);
       setGroupsUnsaved(false);
-      history.push(`/course/${course.id}/${subpage}`);
+    }
+  };
+
+  const handleExitButton = () => {
+    if (match.params.subpage === 'groups') {
+      handleExitFromGroupsView();
+    } else {
+      history.push(`/course/${course.id}`);
     }
   };
 
@@ -212,7 +218,7 @@ export default ({ id, match }) => {
    */
   const handlePlainView = () => {
     if (match.params.subpage === 'groups') {
-      handleExitFromGroupsView('');
+      handleExitFromGroupsView();
     } else {
       history.push(`/course/${course.id}`);
     }
@@ -341,7 +347,7 @@ export default ({ id, match }) => {
                           />
                           <br />
                           <BlueButton
-                            onClick={handleGroupsView}
+                            onClick={handleExitButton}
                             color="blue"
                             data-cy="back-to-info-from-groups-button"
                           >
@@ -358,7 +364,7 @@ export default ({ id, match }) => {
                           />
                           <br />
                           <BlueButton
-                            onClick={handleRegistrationsView}
+                            onClick={handleExitButton}
                             color="blue"
                             data-cy="back-to-info-from-groups-button"
                           >
