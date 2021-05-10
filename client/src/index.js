@@ -1,14 +1,13 @@
+import axios from 'axios';
+import ReactDOM from 'react-dom';
 import React, { useEffect } from 'react';
+import { IntlProvider } from 'react-intl';
 import { createStore, useStore } from 'react-hookstore';
 import { ApolloProvider, ApolloClient, InMemoryCache, makeVar } from '@apollo/client';
-import { IntlProvider } from 'react-intl';
-import ReactDOM from 'react-dom';
-import axios from 'axios';
-
-import App from './App';
-import messages from './localisation/messages';
-import './index.css';
 import { dummyEmail, dummyStudentNumber } from './util/privacyDefaults';
+import messages from './localisation/messages';
+import App from './App';
+import './index.css';
 
 createStore('mocking', {
   mockedBy: null,
@@ -41,16 +40,16 @@ const MockingEnabledClient = () => {
           studentNo: {
             read(studentNo) {
               return privacyToggleVar() ? dummyStudentNumber : studentNo;
-            }
+            },
           },
           email: {
             read(email) {
               return privacyToggleVar() ? dummyEmail : email;
-            }
-          }
-        }
-      }
-    }
+            },
+          },
+        },
+      },
+    },
   });
   const apolloClient = new ApolloClient({
     uri:
@@ -61,7 +60,7 @@ const MockingEnabledClient = () => {
       'x-admin-logged-in-as': mockingHeader,
     },
     cache,
-    connectToDevTools: true
+    connectToDevTools: true,
   });
 
   if (!mocking.mockedUser) {

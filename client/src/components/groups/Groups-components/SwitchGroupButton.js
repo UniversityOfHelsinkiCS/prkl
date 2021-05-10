@@ -1,11 +1,10 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
-import { makeStyles, Popover, Box, List, ListItem, Tooltip, IconButton } from '@material-ui/core';
 import { useStore } from 'react-hookstore';
-
-import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
-import { SwapHoriz } from '@material-ui/icons/';
+import { SwapHoriz } from '@material-ui/icons';
 import { grey } from '@material-ui/core/colors';
+import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
+import { makeStyles, Popover, Box, List, ListItem, Tooltip, IconButton } from '@material-ui/core';
 import swapElements from './SwapElements';
 
 const useClasses = makeStyles({

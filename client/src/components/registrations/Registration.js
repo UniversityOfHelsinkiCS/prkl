@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
-import { FormattedMessage, useIntl } from 'react-intl';
 import { gql, useMutation } from '@apollo/client';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { Typography } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';

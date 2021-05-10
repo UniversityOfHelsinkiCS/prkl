@@ -1,17 +1,15 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { Controller } from 'react-hook-form';
-
+import { makeStyles, TextField, MenuItem, Select, Grid, FormControl } from '@material-ui/core';
 import { FREEFORM, SINGLE_CHOICE, MULTI_CHOICE, TIMES } from '../../util/questionTypes';
 import ValidatedInput from '../ui/ValidatedInput';
 import TimeForm from '../misc/TimeForm';
-import { makeStyles } from '@material-ui/core/styles';
-import { TextField, MenuItem, Select, Grid, FormControl } from '@material-ui/core';
 
 const useStyles = makeStyles({
   selectField: {
-    minWidth: 120
-  }
+    minWidth: 120,
+  },
 });
 
 const Question = ({ question, formControl }) => {
@@ -51,8 +49,10 @@ const Question = ({ question, formControl }) => {
               <em>None</em>
             </MenuItem>
             {question.questionChoices.map(c => (
-                <MenuItem key={c.id} value={c.id}>{c.content}</MenuItem> 
-             ))}
+              <MenuItem key={c.id} value={c.id}>
+                {c.content}
+              </MenuItem>
+            ))}
           </ValidatedInput>
         );
       case MULTI_CHOICE:
@@ -69,9 +69,11 @@ const Question = ({ question, formControl }) => {
             data-cy={`question-${question.order}`}
           >
             {question.questionChoices.map(c => (
-                <MenuItem key={c.id} value={c.id}>{c.content}</MenuItem>
-             ))}
-          </ValidatedInput>      
+              <MenuItem key={c.id} value={c.id}>
+                {c.content}
+              </MenuItem>
+            ))}
+          </ValidatedInput>
         );
 
       default:
@@ -97,17 +99,15 @@ const Question = ({ question, formControl }) => {
 
   return (
     <div style={{ paddingTop: 5, paddingBottom: 5 }} data-cy="coursepage-question">
- 
-        <Grid container justify="space-between">
-          <Grid item>
-              <b>{question.content}</b>
-              {!question.optional && <span style={{ color: 'red' }}> *</span>}
-          </Grid>
-          <Grid item>
-              <FormControl>{changeType()}</FormControl>
-          </Grid>
+      <Grid container justify="space-between">
+        <Grid item>
+          <b>{question.content}</b>
+          {!question.optional && <span style={{ color: 'red' }}> *</span>}
         </Grid>
-
+        <Grid item>
+          <FormControl>{changeType()}</FormControl>
+        </Grid>
+      </Grid>
     </div>
   );
 };

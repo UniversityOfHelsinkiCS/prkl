@@ -3,8 +3,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { green, blue, red, orange } from '@material-ui/core/colors';
 
 const useButtonStyles = makeStyles({
-  root: {
-  }
+  root: {},
 });
 
 const BlueButton = withStyles({

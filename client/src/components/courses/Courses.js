@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
-import { useIntl } from 'react-intl';
-
 import { useQuery } from '@apollo/client';
+import { useIntl } from 'react-intl';
 import {
   AppBar,
   FormControl,
@@ -13,14 +12,12 @@ import {
   CircularProgress,
   Divider,
 } from '@material-ui/core';
-import { useCoursesStyles } from '../../styles/ui/Courses';
+import { ALL_COURSES } from '../../GqlQueries';
 import { useLoaderStyle } from '../../styles/ui/Loader';
-
+import { useCoursesStyles } from '../../styles/ui/Courses';
 import CourseListStaffControls from './CourseListStaffControls';
-
 import CourseList from './CourseList';
 import { AppContext } from '../../App';
-import { ALL_COURSES } from '../../GqlQueries';
 
 export default () => {
   const intl = useIntl();

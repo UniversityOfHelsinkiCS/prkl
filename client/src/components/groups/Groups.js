@@ -3,14 +3,17 @@ import React, { useState, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import { Container, Paper, Typography, makeStyles, Box } from '@material-ui/core';
-
 import { grey } from '@material-ui/core/colors';
-import StudentTable from './Groups-components/GroupStudentsTable';
-import GroupNameLabel from './Groups-components/GroupNameLabel';
 import Checkbox from './Groups-components/Checkbox';
-import GroupMessageField from './Groups-components/GroupMessageField';
 import GroupTimes from './Groups-components/GroupTimes';
-import { ToggleGroupTimeButton, RemoveGroupButton, AddGroupButton } from './Groups-components/Buttons';
+import GroupNameLabel from './Groups-components/GroupNameLabel';
+import StudentTable from './Groups-components/GroupStudentsTable';
+import GroupMessageField from './Groups-components/GroupMessageField';
+import {
+  ToggleGroupTimeButton,
+  RemoveGroupButton,
+  AddGroupButton,
+} from './Groups-components/Buttons';
 
 const useClasses = makeStyles({
   container: {
@@ -64,7 +67,13 @@ export default ({
         <div>
           {groups.map((group, tableIndex) => {
             return (
-              <Box key={`groups-container-index-${tableIndex.toString()}`} data-cy="group-container" border={1} borderRadius={5} style={{ marginTop: 10 }}>
+              <Box
+                key={`groups-container-index-${tableIndex.toString()}`}
+                data-cy="group-container"
+                border={1}
+                borderRadius={5}
+                style={{ marginTop: 10 }}
+              >
                 <GroupNameLabel
                   groupNames={groupNames}
                   tableIndex={tableIndex}

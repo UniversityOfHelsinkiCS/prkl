@@ -5,7 +5,7 @@ const useLoaderStyle = makeStyles({
     display: 'flex',
     position: 'relative',
     marginLeft: '50%',
-    marginTop: '15%'
+    marginTop: '15%',
   },
 });
 

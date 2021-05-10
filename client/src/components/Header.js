@@ -1,28 +1,25 @@
+import axios from 'axios';
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { AppBar, Typography, Button, Grid, Toolbar } from '@material-ui/core';
-import axios from 'axios';
-
 import { useHeaderStyles } from '../styles/ui/Header';
 import { privacyToggleVar } from '..';
 import roles from '../util/userRoles';
-
 import { AppContext } from '../App';
 
 export default () => {
+  const intl = useIntl();
+  const classes = useHeaderStyles();
   const { user } = useContext(AppContext);
   const [groupsUnsaved] = useStore('groupsUnsavedStore');
-
-  const intl = useIntl();
-
-  const classes = useHeaderStyles();
 
   // Logout feature. Calling Shibboleth headers from backend and redirecting there.
   const handleLogout = () => {
     if (
       groupsUnsaved &&
+      // eslint-disable-next-line no-alert
       !window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' }))
     ) {
       return;

@@ -1,12 +1,11 @@
 import React, { useContext, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
 import { useStore } from 'react-hookstore';
+import { useQuery } from '@apollo/client';
 import { useIntl } from 'react-intl';
 import { TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-
-import roles from '../../util/userRoles';
 import { FACULTY_USERS } from '../../GqlQueries';
+import roles from '../../util/userRoles';
 import { AppContext } from '../../App';
 
 export default ({ courseTeachers, setCourseTeachers }) => {

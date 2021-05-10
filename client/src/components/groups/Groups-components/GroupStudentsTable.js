@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
+import _ from 'lodash';
 import {
   Box,
   Typography,
@@ -13,9 +14,6 @@ import {
   TableRow,
 } from '@material-ui/core';
 import { blue } from '@material-ui/core/colors';
-
-import _ from 'lodash';
-
 import DraggableRow from '../DraggableRow';
 import { RemoveStudentButton } from './Buttons';
 import SwitchGroupButton from './SwitchGroupButton';

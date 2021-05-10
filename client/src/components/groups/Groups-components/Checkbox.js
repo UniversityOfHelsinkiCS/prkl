@@ -1,8 +1,8 @@
 import React from 'react';
-import { useStore } from 'react-hookstore';
 import { useIntl } from 'react-intl';
+import { useStore } from 'react-hookstore';
+import { Info } from '@material-ui/icons';
 import { Checkbox, FormControlLabel, Tooltip, IconButton, makeStyles } from '@material-ui/core';
-import { Info } from '@material-ui/icons/';
 
 const useClasses = makeStyles({
   checkbox: {

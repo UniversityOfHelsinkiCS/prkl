@@ -2,6 +2,8 @@ import React from 'react';
 import { useStore } from 'react-hookstore';
 import { useMutation } from '@apollo/client';
 import { FormattedMessage, useIntl } from 'react-intl';
+import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
+import { red, grey } from '@material-ui/core/colors';
 import {
   Table,
   TableBody,
@@ -18,13 +20,11 @@ import {
   List,
   ListItem,
 } from '@material-ui/core';
-import { red, grey } from '@material-ui/core/colors';
-import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import { FIND_GROUP_FOR_GROUPLESS_STUDENTS } from '../../GqlQueries';
+import { setNotification } from '../ui/Notification';
 import HourDisplay from '../misc/HourDisplay';
 import { count } from '../../util/functions';
 import Popup from '../ui/Popup';
-import { setNotification } from '../ui/Notification';
 
 const useStyles = makeStyles({
   box: {

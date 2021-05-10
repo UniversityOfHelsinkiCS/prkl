@@ -5,8 +5,8 @@ import { useMockBarStyles } from '../styles/ui/MockBar';
 import { AppContext } from '../App';
 
 export default () => {
-  const [mocking, setMocking] = useStore('mocking');
   const { user } = useContext(AppContext);
+  const [mocking, setMocking] = useStore('mocking');
 
   const stopMocking = async (setMocking, mockedBy) => {
     setMocking(prev => ({ ...prev, mockedUser: mockedBy }));

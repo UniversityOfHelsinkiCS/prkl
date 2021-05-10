@@ -2,7 +2,6 @@
 import React, { useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import _ from 'lodash';
-
 import {
   TableContainer,
   Table,
@@ -15,14 +14,13 @@ import {
 } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
 import DateRangeIcon from '@material-ui/icons/DateRange';
-
-import { CourseContext } from '../courses/Course';
 import questionSwitch, { count } from '../../util/functions';
-import { TIMES } from '../../util/questionTypes';
 import ConfirmationButton from '../ui/ConfirmationButton';
+import { setNotification } from '../ui/Notification';
+import { CourseContext } from '../courses/Course';
+import { TIMES } from '../../util/questionTypes';
 import HourDisplay from '../misc/HourDisplay';
 import Popup from '../ui/Popup';
-import { setNotification } from '../ui/Notification';
 
 const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
   const intl = useIntl();

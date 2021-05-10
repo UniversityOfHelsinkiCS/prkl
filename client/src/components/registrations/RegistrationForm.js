@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-
+import { FormControl, FormControlLabel, Checkbox, Typography } from '@material-ui/core';
+import { green } from '@material-ui/core/colors';
 import Question from '../questions/Question';
 import ValidationError from '../ui/ValidationError';
 import ConfirmationButton from '../ui/ConfirmationButton';
-
-import { green } from '@material-ui/core/colors';
-import { FormControl, FormControlLabel, Checkbox, Typography } from '@material-ui/core';
 
 export default ({ questions, formControl, onSubmit }) => {
   const [checkboxValue, setCheckboxValue] = useState('accepted');
   const { setValue, trigger, errors, register } = formControl;
   const intl = useIntl();
-  const terms = "toc";
+  const terms = 'toc';
 
   useEffect(() => {
     register({ name: 'toc' }, { required: true });
@@ -23,7 +21,6 @@ export default ({ questions, formControl, onSubmit }) => {
       <Typography variant="h4">
         <FormattedMessage id="course.questionsPreface" />
       </Typography>
-      
       {questions.some(q => q.questionType !== 'times') && (
         <div>
           <FormattedMessage id="registrationForm.requiredQuestions" />
@@ -33,23 +30,25 @@ export default ({ questions, formControl, onSubmit }) => {
 
       {questions &&
         questions.map(question => (
-          <FormControl> 
+          <FormControl>
             <Question key={question.id} question={question} formControl={formControl} />
-          </FormControl> 
+          </FormControl>
         ))}
 
       <FormControlLabel
-        control={<Checkbox 
-          name={terms}
-          onChange={(e, value) => {
-            setCheckboxValue(checkboxValue === 'accepted' ? undefined : 'accepted');
-            setValue(terms, value);
-            trigger(terms);
-          }} 
-          error={!!errors.toc}
-          value={checkboxValue}
-          data-cy="toc-checkbox"
-        />}
+        control={
+          <Checkbox
+            name={terms}
+            onChange={(e, value) => {
+              setCheckboxValue(checkboxValue === 'accepted' ? undefined : 'accepted');
+              setValue(terms, value);
+              trigger(terms);
+            }}
+            error={!!errors.toc}
+            value={checkboxValue}
+            data-cy="toc-checkbox"
+          />
+        }
         label={intl.formatMessage({ id: 'registrationForm.toc' })}
       />
 
