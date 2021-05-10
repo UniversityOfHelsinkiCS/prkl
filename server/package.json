@@ -46,12 +46,12 @@
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
     "express-promise-router": "^3.0.3",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "morgan": "^1.9.1",
     "pg": "^7.17.1",
     "reflect-metadata": "^0.1.10",
     "type-graphql": "^0.17.6",
-    "typeorm": "0.2.22",
+    "typeorm": "0.2.25",
     "unfuck-utf8-headers-middleware": "^1.0.1",
     "uuid": "^8.3.1"
   }
