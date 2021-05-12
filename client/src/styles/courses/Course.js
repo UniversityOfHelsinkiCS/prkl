@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core';
 
-const useCourseStyle = makeStyles((theme) => ({
+const useCourseStyle = makeStyles(theme => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,

@@ -1,11 +1,7 @@
 import React, { useContext } from 'react';
-import Switch from '@material-ui/core/Switch';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { makeStyles } from '@material-ui/core/styles';
-
-import { AppContext } from '../../App';
+import { makeStyles, Switch, FormGroup, FormControlLabel } from '@material-ui/core';
 import roles from '../../util/userRoles';
+import { AppContext } from '../../App';
 
 const useStyles = makeStyles({
   title: {
@@ -24,7 +20,15 @@ export default ({ controls }) => {
       <FormGroup className={classes.row}>
         <FormControlLabel
           label={text}
-          control={<Switch data-cy="checkbox-staff-controls" checked={checked} onChange={onChange} color="primary" />}
+          control={
+            // eslint-disable-next-line react/jsx-wrap-multilines
+            <Switch
+              data-cy="checkbox-staff-controls"
+              checked={checked}
+              onChange={onChange}
+              color="primary"
+            />
+          }
         />
       </FormGroup>
     );

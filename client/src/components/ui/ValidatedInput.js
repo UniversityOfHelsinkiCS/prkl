@@ -3,8 +3,8 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 /*
-  This file is a leftover from when the app was using Semantic UI. 
-  However, it can also be used with Material UI and has been repurposed for it. 
+  This file is a leftover from when the app was using Semantic UI.
+  However, it can also be used with Material UI and has been repurposed for it.
 */
 
 /**
@@ -30,7 +30,7 @@ const ValidatedInput = ({ name, type, formControl, optionality, ...rest }) => {
   return (
     <Inner
       name={name}
-      onChange={(e) => {
+      onChange={e => {
         setValue(name, e.target.value);
         trigger(name);
       }}

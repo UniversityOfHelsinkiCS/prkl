@@ -1,16 +1,25 @@
 import React from 'react';
 import { Snackbar } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
+import { useReactiveVar } from '@apollo/client';
 import { notificationVar } from '../..';
 
+export const setNotification = (message, type = 'info') => {
+  notificationVar({
+    visible: true,
+    type,
+    message,
+  });
+};
+
 const Notification = () => {
-  const {visible, type, message} = notificationVar();
+  const { visible, type, message } = useReactiveVar(notificationVar);
 
   const handleClose = () => {
     notificationVar({
       visible: false,
       type,
-      message
+      message,
     });
   };
 

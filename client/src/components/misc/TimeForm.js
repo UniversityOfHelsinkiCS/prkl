@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Alert } from '@material-ui/lab';
+import { useIntl } from 'react-intl';
 import { makeStyles, Table, TableCell, TableHead, TableRow } from '@material-ui/core';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import ClearIcon from '@material-ui/icons/Clear';
 import CheckIcon from '@material-ui/icons/Check';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
-import { useIntl } from 'react-intl';
-
+import { Alert } from '@material-ui/lab';
 import timeChoices from '../../util/timeFormChoices';
 
 const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
@@ -25,11 +24,11 @@ const makeEmptySheet = () => {
 const useStyles = makeStyles({
   table: {
     cursor: 'pointer',
-    userSelect: 'none'
+    userSelect: 'none',
   },
   tablecell: {
-    border: '1px solid'
-  }
+    border: '1px solid',
+  },
 });
 
 const TimeForm = ({ onChange, description }) => {
@@ -47,11 +46,11 @@ const TimeForm = ({ onChange, description }) => {
   const getCellIcon = choice => {
     switch (choice) {
       case timeChoices.yes:
-        return <CheckIcon/>
+        return <CheckIcon />;
       case timeChoices.maybe:
-        return <HelpOutlineIcon/>;
+        return <HelpOutlineIcon />;
       case timeChoices.no:
-        return <ClearIcon/>
+        return <ClearIcon />;
       default:
         throw new Error(`Unexpected switch fallthrough with choice: ${choice}`);
     }
@@ -104,7 +103,6 @@ const TimeForm = ({ onChange, description }) => {
   return (
     <div>
       <h3>{description}</h3>
-
       {Intl.DateTimeFormat().resolvedOptions().timeZone !== 'Europe/Helsinki' ? (
         <Alert severity="warning">{intl.formatMessage({ id: 'timeForm.timeZoneWarning' })}</Alert>
       ) : null}
@@ -113,35 +111,43 @@ const TimeForm = ({ onChange, description }) => {
           {weekdays.map(day => (
             <TableCell className={classes.tablecell} align="center">
               {intl.formatMessage({ id: `timeForm.${day}` })}
-            </TableCell>))}
+            </TableCell>
+          ))}
         </TableHead>
-          {hours.map(hour => 
-            <TableRow>
-              {weekdays.map(day => (
-                <TableCell className={classes.tablecell} align="center" fullWidth data-weekday={day} data-hour={hour}
-                    bgcolor={switchChoiceColor(table[day][hour])}
-                     onMouseDown={e => {
-                      handleClick(e);
-                      setMouseDown(true);
-                      }}
-                      onMouseUp={() => {
-                        setMouseDown(false);
-                      }}
-                      onMouseEnter={e => {
-                        if (mouseDown) {
-                          handleClick(e);
-                        }
-                      }}
-                      onContextMenu={e => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        return false;
-                      }}>
-                    {`${hour} - ${hour + 1} `}
-                    {getCellIcon(table[day][hour])}
-                </TableCell>
-              ))}
-            </TableRow>)}
+        {hours.map(hour => (
+          <TableRow>
+            {weekdays.map(day => (
+              <TableCell
+                className={classes.tablecell}
+                align="center"
+                fullWidth
+                data-weekday={day}
+                data-hour={hour}
+                bgcolor={switchChoiceColor(table[day][hour])}
+                onMouseDown={e => {
+                  handleClick(e);
+                  setMouseDown(true);
+                }}
+                onMouseUp={() => {
+                  setMouseDown(false);
+                }}
+                onMouseEnter={e => {
+                  if (mouseDown) {
+                    handleClick(e);
+                  }
+                }}
+                onContextMenu={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  return false;
+                }}
+              >
+                {`${hour} - ${hour + 1} `}
+                {getCellIcon(table[day][hour])}
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
       </Table>
     </div>
   );

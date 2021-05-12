@@ -1,6 +1,7 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
 import {
+  makeStyles,
   Table,
   TableBody,
   TableCell,
@@ -9,7 +10,6 @@ import {
   TableRow,
   Paper,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { red, orange, yellow, green } from '@material-ui/core/colors';
 
 const useStyles = makeStyles({

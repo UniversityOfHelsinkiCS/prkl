@@ -1,20 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import axios from 'axios';
 import { useStore } from 'react-hookstore';
-import { AppContext } from '../App';
-
 import { AppBar, Button, ButtonGroup, Toolbar, Typography, Box } from '@material-ui/core';
 import { useDevBarStyles } from '../styles/ui/DevBar';
 
-const apiUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : process.env.PUBLIC_URL;
+const apiUrl =
+  process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : process.env.PUBLIC_URL;
 
 const switchUser = async (setMocking, id) => {
   setMocking(prev => ({ ...prev, mockedUser: id }));
-  window.location.reload();
-};
-
-const stopMocking = async (setMocking, mockedBy) => {
-  setMocking(prev => ({ ...prev, mockedUser: mockedBy }));
   window.location.reload();
 };
 
@@ -35,19 +29,16 @@ const seedDemoDatabase = async () => {
 
 export default () => {
   const [mocking, setMocking] = useStore('mocking');
-  const { user } = useContext(AppContext);
-
   const classes = useDevBarStyles();
 
   return (
-    <AppBar className={classes.appbar} position={"static"}>
+    <AppBar className={classes.appbar} position="static">
       <Toolbar>
-
-        <Typography variant="h5" className={classes.title}>Devbar</Typography>
-
+        <Typography variant="h5" className={classes.title}>
+          Devbar
+        </Typography>
         <Box>
           <Typography>Log in as...</Typography>
-
           <ButtonGroup className={classes.roleControls}>
             <Button onClick={() => switchUser(setMocking, 1)} data-cy="switch-to-student">
               Student
@@ -55,22 +46,22 @@ export default () => {
             <Button onClick={() => switchUser(setMocking, 2)} data-cy="switch-to-staff">
               Staff
             </Button>
-            <Button onClick={() => switchUser(setMocking, mocking.mockedBy)} data-cy="switch-to-admin">
+            <Button
+              onClick={() => switchUser(setMocking, mocking.mockedBy)}
+              data-cy="switch-to-admin"
+            >
               Admin
             </Button>
           </ButtonGroup>
         </Box>
-
         <Box>
           <Typography>Database options</Typography>
-
           <ButtonGroup className={classes.dbControls}>
             <Button onClick={resetDatabase}>Empty DB</Button>
             <Button onClick={seedDatabase}>Seed DB</Button>
             <Button onClick={seedDemoDatabase}>Demo DB</Button>
           </ButtonGroup>
         </Box>
-
       </Toolbar>
     </AppBar>
   );

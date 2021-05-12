@@ -2,9 +2,8 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { makeStyles, List, ListItem } from '@material-ui/core';
-
-import HourDisplay from '../../misc/HourDisplay';
 import questionSwitch, { count } from '../../../util/functions';
+import HourDisplay from '../../misc/HourDisplay';
 
 const useClasses = makeStyles({
   hourDisplayList: {

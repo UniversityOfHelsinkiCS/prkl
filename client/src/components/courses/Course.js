@@ -1,29 +1,27 @@
 import React, { useState, useEffect, useContext, createContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useQuery, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
-import { useQuery, useMutation } from '@apollo/client';
 import { AppBar, CircularProgress, Tab } from '@material-ui/core';
-import { red } from '@material-ui/core/colors';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
+import { red } from '@material-ui/core/colors';
 import {
   COURSE_BY_ID,
   DELETE_COURSE,
   COURSE_REGISTRATION,
   DELETE_REGISTRATION,
 } from '../../GqlQueries';
-
 import { BlueButton } from '../../styles/ui/Button';
 import { useLoaderStyle } from '../../styles/ui/Loader';
 import { useCourseStyle } from '../../styles/courses/Course';
-
 import RegistrationList from '../registrations/RegistrationList';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import Registration from '../registrations/Registration';
 import GroupsView from '../groups/GroupsView';
+import roles from '../../util/userRoles';
 import CourseForm from './CourseForm';
 import CourseInfo from './CourseInfo';
-import roles from '../../util/userRoles';
 import { AppContext } from '../../App';
 
 export const CourseContext = createContext();
@@ -158,18 +156,24 @@ export default ({ id, match }) => {
 
   /**
    * Handles the exit from the manage groups -subpage. Makes sure that anything doesn't get discarded accidentally.
-   * Takes a subpage in string format as a parameter.
-   * @param subpage
    */
-  const handleExitFromGroupsView = subpage => {
+  const handleExitFromGroupsView = () => {
     if (
       !groupsUnsaved ||
       (groupsUnsaved &&
         // eslint-disable-next-line no-alert
         window.confirm(intl.formatMessage({ id: 'groupsView.unsavedGroupsPrompt' })))
     ) {
+      history.push(`/course/${course.id}`);
       setGroupsUnsaved(false);
-      history.push(`/course/${course.id}/${subpage}`);
+    }
+  };
+
+  const handleExitButton = () => {
+    if (match.params.subpage === 'groups') {
+      handleExitFromGroupsView();
+    } else {
+      history.push(`/course/${course.id}`);
     }
   };
 
@@ -212,7 +216,7 @@ export default ({ id, match }) => {
    */
   const handlePlainView = () => {
     if (match.params.subpage === 'groups') {
-      handleExitFromGroupsView('');
+      handleExitFromGroupsView();
     } else {
       history.push(`/course/${course.id}`);
     }
@@ -341,7 +345,7 @@ export default ({ id, match }) => {
                           />
                           <br />
                           <BlueButton
-                            onClick={handleGroupsView}
+                            onClick={handleExitButton}
                             color="blue"
                             data-cy="back-to-info-from-groups-button"
                           >
@@ -358,7 +362,7 @@ export default ({ id, match }) => {
                           />
                           <br />
                           <BlueButton
-                            onClick={handleRegistrationsView}
+                            onClick={handleExitButton}
                             color="blue"
                             data-cy="back-to-info-from-groups-button"
                           >

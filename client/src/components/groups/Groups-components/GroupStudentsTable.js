@@ -1,7 +1,7 @@
-/* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
+import _ from 'lodash';
 import {
   Box,
   Typography,
@@ -15,14 +15,10 @@ import {
   Container,
 } from '@material-ui/core';
 import { blue } from '@material-ui/core/colors';
-
-import _ from 'lodash';
-
 import DraggableRow from '../DraggableRow';
-import questionSwitch from '../../../util/functions';
-import { dummyEmail, dummyStudentNumber } from '../../../util/privacyDefaults';
-import SwitchGroupButton from './SwitchGroupButton';
 import { RemoveStudentButton } from './Buttons';
+import SwitchGroupButton from './SwitchGroupButton';
+import questionSwitch from '../../../util/functions';
 import StudentTimeDisplayPopup from './StudentTimeDisplayPopup';
 
 const useClasses = makeStyles({
@@ -50,6 +46,7 @@ const useClasses = makeStyles({
 export default ({ course, regByStudentId, group, tableIndex, setRegistrationsWithoutGroups }) => {
   const classes = useClasses();
   const [groups, setGroups] = useStore('groupsStore');
+  // eslint-disable-next-line no-unused-vars
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
 
   const swapElements = (fromIndex, toIndex, fromTable, toTable) => {
