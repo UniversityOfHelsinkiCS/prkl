@@ -12,7 +12,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Container,
 } from '@material-ui/core';
 import { blue } from '@material-ui/core/colors';
 import DraggableRow from '../DraggableRow';
@@ -54,9 +53,7 @@ export default ({ course, regByStudentId, group, tableIndex, setRegistrationsWit
       return;
     }
     const newGroups = _.cloneDeep(groups);
-    console.log('newGroups', newGroups, 'totable', toTable)
     const removed = newGroups[fromTable].students.splice(fromIndex, 1);
-    console.log(newGroups[toTable])
     newGroups[toTable].students.splice(toIndex, 0, removed[0]);
     if (newGroups[fromTable].length === 0) {
       newGroups.splice(fromTable, 1);
@@ -98,43 +95,43 @@ export default ({ course, regByStudentId, group, tableIndex, setRegistrationsWit
             </TableHead>
             <TableBody>
               {group.students.length === 0 ? (
-                <DraggableRow
-                action={swapElements}
-                index={0}
-                tableIndex={tableIndex}
-              >
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
+                <DraggableRow action={swapElements} index={0} tableIndex={tableIndex}>
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
                 </DraggableRow>
               ) : (
                 <>
                   {group.students.map((student, rowIndex) => (
                     <DraggableRow
-                    key={student.id}
-                    action={swapElements}
-                    index={rowIndex}
-                    tableIndex={tableIndex}
-                  >
-                    <TableCell>
-                      <StudentTimeDisplayPopup student={student} regByStudentId={regByStudentId} />
-                    </TableCell>
-                    <TableCell>{student.studentNo}</TableCell>
-  
-                    <TableCell>{student.email}</TableCell>
-  
-                    {regByStudentId[student.studentNo]?.questionAnswers.map(qa => questionSwitch(qa))}
-  
-                    <TableCell className={classes.buttons}>
-                      <SwitchGroupButton setGroupsUnsaved={setGroupsUnsaved} student={student} />
-                      <RemoveStudentButton
-                        tableIndex={tableIndex}
-                        rowIndex={rowIndex}
-                        setRegistrationsWithoutGroups={setRegistrationsWithoutGroups}
-                      />
-                    </TableCell>
-                  </DraggableRow>
+                      key={student.id}
+                      action={swapElements}
+                      index={rowIndex}
+                      tableIndex={tableIndex}
+                    >
+                      <TableCell>
+                        <StudentTimeDisplayPopup
+                          student={student}
+                          regByStudentId={regByStudentId}
+                        />
+                      </TableCell>
+                      <TableCell>{student.studentNo}</TableCell>
+                      <TableCell>{student.email}</TableCell>
+
+                      {regByStudentId[student.studentNo]?.questionAnswers.map(qa =>
+                        questionSwitch(qa)
+                      )}
+
+                      <TableCell className={classes.buttons}>
+                        <SwitchGroupButton setGroupsUnsaved={setGroupsUnsaved} student={student} />
+                        <RemoveStudentButton
+                          tableIndex={tableIndex}
+                          rowIndex={rowIndex}
+                          setRegistrationsWithoutGroups={setRegistrationsWithoutGroups}
+                        />
+                      </TableCell>
+                    </DraggableRow>
                   ))}
                 </>
               )}

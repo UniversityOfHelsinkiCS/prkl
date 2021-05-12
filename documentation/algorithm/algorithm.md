@@ -25,7 +25,7 @@ Same algorithm is used in generating completely new groups, finding a group for 
 
 At least three versions of the algorithm have been developed in the previous iterations. 
 
-Said versions can be found in the commit history (eg. [here](https://github.com/UniversityOfHelsinkiCS/prkl/tree/274c2321ac988f77815b0f58364389df192d8436/server/src/algorithm))
+Said versions can be found in the commit history (e.g. [here](https://github.com/UniversityOfHelsinkiCS/prkl/tree/274c2321ac988f77815b0f58364389df192d8436/server/src/algorithm))
 
 #### server/src/algorithm
 

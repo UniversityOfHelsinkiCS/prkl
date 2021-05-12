@@ -14,7 +14,7 @@ Each elevation of privileges (student -> staff -> admin) retains old privileges 
 * can see a list of current published courses and past courses that s/he has registered on
 * can order and filter courses
 * can register on a published course if its deadline has not passed
-* can see info about themselves (name, email, list of own registrations etc.)
+* can see info about themselves (name, email, list of own registrations and groups etc.)
 * can delete own registration if course’s deadline has not passed
 * can see groups s/he has been assigned to after course's teacher has published them
 
