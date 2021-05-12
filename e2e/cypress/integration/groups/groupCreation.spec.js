@@ -138,7 +138,7 @@ describe('Group creation', () => {
       cy.contains('Testgroup').should('exist');
       cy.contains(users[0].firstname).should('not.exist');
       cy.contains(newGroupName).parents('[data-cy="group-container"]').within(() => {
-        cy.get('tr').should('have.length', 1);
+        cy.get('tr').should('have.length', 2);
         cy.get('[data-cy="group-remove-button"]').should('exist');
       });
     });
@@ -175,7 +175,7 @@ describe('Group creation', () => {
       cy.contains(groupForDelete).should('exist');
       cy.contains(users[0].firstname).should('not.exist');
       cy.contains(groupForDelete).parents('[data-cy="group-container"]').within(() => {
-        cy.get('tr').should('have.length', 1);
+        cy.get('tr').should('have.length', 2);
         cy.get('[data-cy="group-remove-button"]').click();
       });
       cy.contains(groupForDelete).should('not.exist');
