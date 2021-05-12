@@ -1,21 +1,21 @@
 import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { FormattedMessage, useIntl } from 'react-intl';
-import { gql, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
-import { useStore } from 'react-hookstore';
-import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import { gql, useMutation } from '@apollo/client';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { Typography } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
-import { FREEFORM, MULTI_CHOICE, SINGLE_CHOICE, TIMES } from '../../util/questionTypes';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import { REGISTER_TO_COURSE } from '../../GqlQueries';
+import { FREEFORM, MULTI_CHOICE, SINGLE_CHOICE, TIMES } from '../../util/questionTypes';
 import ConfirmationButton from '../ui/ConfirmationButton';
-import RegistrationForm from './RegistrationForm';
 import timeChoices from '../../util/timeFormChoices';
+import RegistrationForm from './RegistrationForm';
 import UserGroup from '../users/UserGroup';
-import { AppContext } from '../../App';
-import { CourseContext } from '../courses/Course';
 import { BlueButton } from '../../styles/ui/Button';
+import { setNotification } from '../ui/Notification';
+import { CourseContext } from '../courses/Course';
+import { AppContext } from '../../App';
 
 export default ({ course, match }) => {
   const hookForm = useForm({ mode: 'onChange' });
@@ -44,7 +44,6 @@ export default ({ course, match }) => {
   });
 
   const { deleteRegistration } = useContext(CourseContext);
-  const [notification, setNotification] = useStore('notificationStore');
   const courseId = course.id;
   const studentId = user.id;
 
@@ -155,14 +154,10 @@ export default ({ course, match }) => {
 
     try {
       // TODO: Add spinner before next line and disable the submit button on click.
+      // eslint-disable-next-line no-unused-vars
       const response = await createRegistration({ variables: { data: answer } });
 
-      // TODO: add timeout success alert
-      setNotification({
-        type: 'success',
-        message: intl.formatMessage({ id: 'registration.registrationSuccess' }),
-        visible: true,
-      });
+      setNotification(intl.formatMessage({ id: 'registration.registrationSuccess' }), 'success');
     } catch (err) {
       // TODO: Handle errors.
       // eslint-disable-next-line no-console
@@ -176,11 +171,7 @@ export default ({ course, match }) => {
         variables,
       });
 
-      setNotification({
-        type: 'success',
-        message: intl.formatMessage({ id: 'registration.registrationCanceled' }),
-        visible: true,
-      });
+      setNotification(intl.formatMessage({ id: 'registration.registrationCanceled' }), 'success');
     } catch (deletionError) {
       // eslint-disable-next-line no-console
       console.log('Error while deleting registration:', deletionError);

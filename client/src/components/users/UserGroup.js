@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useQuery } from '@apollo/client';
-
-import { timeParse } from '../../util/functions';
-import { GROUP_TIMES } from '../../GqlQueries';
-import UserGroupItem from './UserGroupItem';
 import { Box, makeStyles, Paper, Typography } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
+import { GROUP_TIMES } from '../../GqlQueries';
+import { timeParse } from '../../util/functions';
+import UserGroupItem from './UserGroupItem';
 
 const useStyles = makeStyles({
   messageBox: {
@@ -16,8 +15,8 @@ const useStyles = makeStyles({
     marginTop: 50,
   },
   message: {
-    wordWrap: "break-word"
-  }
+    wordWrap: 'break-word',
+  },
 });
 
 export default ({ user, course }) => {

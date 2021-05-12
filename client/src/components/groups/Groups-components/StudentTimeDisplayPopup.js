@@ -1,8 +1,7 @@
 import React from 'react';
-import PopupState, { bindHover, bindPopover } from 'material-ui-popup-state';
-import HoverPopover from 'material-ui-popup-state/HoverPopover';
-
 import { Box, Typography } from '@material-ui/core';
+import HoverPopover from 'material-ui-popup-state/HoverPopover';
+import PopupState, { bindHover, bindPopover } from 'material-ui-popup-state';
 import HourDisplay from '../../misc/HourDisplay';
 import { count } from '../../../util/functions';
 

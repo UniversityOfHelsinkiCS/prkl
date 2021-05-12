@@ -3,14 +3,14 @@ import { makeStyles } from '@material-ui/core/styles';
 const useHeaderStyles = makeStyles(theme => ({
   title: {
     marginRight: theme.spacing(2),
-    color: "inherit"
+    color: 'inherit',
   },
   navigationButton: {
-    textTransform: "none",
-    "&:hover": {
-      background: "none"
-    }
-  }
+    textTransform: 'none',
+    '&:hover': {
+      background: 'none',
+    },
+  },
 }));
 
 // eslint-disable-next-line import/prefer-default-export

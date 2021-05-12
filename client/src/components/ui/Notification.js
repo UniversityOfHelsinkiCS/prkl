@@ -1,15 +1,25 @@
 import React from 'react';
 import { Snackbar } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import { useStore } from 'react-hookstore';
+import { useReactiveVar } from '@apollo/client';
+import { notificationVar } from '../..';
+
+export const setNotification = (message, type = 'info') => {
+  notificationVar({
+    visible: true,
+    type,
+    message,
+  });
+};
 
 const Notification = () => {
-  const [notification, setNotification] = useStore('notificationStore');
+  const { visible, type, message } = useReactiveVar(notificationVar);
 
   const handleClose = () => {
-    setNotification({
-      ...notification,
+    notificationVar({
       visible: false,
+      type,
+      message,
     });
   };
 
@@ -19,12 +29,12 @@ const Notification = () => {
         vertical: 'bottom',
         horizontal: 'right',
       }}
-      open={notification.visible}
+      open={visible}
       autoHideDuration={5000}
       onClose={handleClose}
     >
-      <Alert severity={notification.type} variant="filled" data-cy="notification">
-        {notification.message}
+      <Alert severity={type} variant="filled" data-cy="notification">
+        {message}
       </Alert>
     </Snackbar>
   );

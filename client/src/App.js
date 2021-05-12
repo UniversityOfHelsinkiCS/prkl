@@ -2,10 +2,11 @@ import React, { createContext, useEffect } from 'react';
 import { initShibbolethPinger } from 'unfuck-spa-shibboleth-session';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createStore, useStore } from 'react-hookstore';
+import { CircularProgress } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
-import { Loader } from 'semantic-ui-react';
 
-import { ALL_COURSES, CURRENT_USER } from './GqlQueries';
+import { useLoaderStyle } from './styles/ui/Loader';
+import { CURRENT_USER } from './GqlQueries';
 
 import CourseForm from './components/courses/CourseForm';
 import Notification from './components/ui/Notification';
@@ -26,14 +27,15 @@ createStore('groupsUnsavedStore', false);
 createStore('lockedGroupsStore', []);
 createStore('teacherStore', []);
 createStore('groupsStore', []);
-createStore('notificationStore', {});
 
 export const AppContext = createContext();
 
 export default () => {
   // eslint-disable-next-line no-unused-vars
   const [mocking] = useStore('mocking');
+  const loaderClass = useLoaderStyle();
 
+  // eslint-disable-next-line no-unused-vars
   const { loading: userLoading, error: userError, data: userData } = useQuery(CURRENT_USER);
 
   useEffect(() => {
@@ -41,7 +43,7 @@ export default () => {
   }, []);
 
   if (userLoading || !userData) {
-    return <Loader active data-cy="loader" />;
+    return <CircularProgress data-cy="loader" className={loaderClass.root} />;
   }
 
   const user = userData.currentUser;
@@ -56,7 +58,6 @@ export default () => {
         <Router basename={process.env.PUBLIC_URL}>
           <Header />
           <div className="mainContent">
-            <Loader />
             <Route path="/user" render={() => <UserInfo />} />
             <PrivateRoute
               path="/addcourse"

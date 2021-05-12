@@ -1,7 +1,7 @@
-/* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
+import _ from 'lodash';
 import {
   Box,
   Typography,
@@ -14,14 +14,10 @@ import {
   TableRow,
 } from '@material-ui/core';
 import { blue } from '@material-ui/core/colors';
-
-import _ from 'lodash';
-
 import DraggableRow from '../DraggableRow';
-import questionSwitch from '../../../util/functions';
-import { dummyEmail, dummyStudentNumber } from '../../../util/privacyDefaults';
-import SwitchGroupButton from './SwitchGroupButton';
 import { RemoveStudentButton } from './Buttons';
+import SwitchGroupButton from './SwitchGroupButton';
+import questionSwitch from '../../../util/functions';
 import StudentTimeDisplayPopup from './StudentTimeDisplayPopup';
 
 const useClasses = makeStyles({
@@ -49,6 +45,7 @@ const useClasses = makeStyles({
 export default ({ course, regByStudentId, group, tableIndex, setRegistrationsWithoutGroups }) => {
   const classes = useClasses();
   const [groups, setGroups] = useStore('groupsStore');
+  // eslint-disable-next-line no-unused-vars
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
 
   const swapElements = (fromIndex, toIndex, fromTable, toTable) => {
@@ -57,7 +54,6 @@ export default ({ course, regByStudentId, group, tableIndex, setRegistrationsWit
     }
     const newGroups = _.cloneDeep(groups);
     const removed = newGroups[fromTable].students.splice(fromIndex, 1);
-
     newGroups[toTable].students.splice(toIndex, 0, removed[0]);
     if (newGroups[fromTable].length === 0) {
       newGroups.splice(fromTable, 1);
@@ -98,32 +94,47 @@ export default ({ course, regByStudentId, group, tableIndex, setRegistrationsWit
               </TableRow>
             </TableHead>
             <TableBody>
-              {group.students.map((student, rowIndex) => (
-                <DraggableRow
-                  key={student.id}
-                  action={swapElements}
-                  index={rowIndex}
-                  tableIndex={tableIndex}
-                >
-                  <TableCell>
-                    <StudentTimeDisplayPopup student={student} regByStudentId={regByStudentId} />
-                  </TableCell>
-                  <TableCell>{student.studentNo}</TableCell>
-
-                  <TableCell>{student.email}</TableCell>
-
-                  {regByStudentId[student.studentNo]?.questionAnswers.map(qa => questionSwitch(qa))}
-
-                  <TableCell className={classes.buttons}>
-                    <SwitchGroupButton setGroupsUnsaved={setGroupsUnsaved} student={student} />
-                    <RemoveStudentButton
-                      tableIndex={tableIndex}
-                      rowIndex={rowIndex}
-                      setRegistrationsWithoutGroups={setRegistrationsWithoutGroups}
-                    />
-                  </TableCell>
+              {group.students.length === 0 ? (
+                <DraggableRow action={swapElements} index={0} tableIndex={tableIndex}>
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
                 </DraggableRow>
-              ))}
+              ) : (
+                <>
+                  {group.students.map((student, rowIndex) => (
+                    <DraggableRow
+                      key={student.id}
+                      action={swapElements}
+                      index={rowIndex}
+                      tableIndex={tableIndex}
+                    >
+                      <TableCell>
+                        <StudentTimeDisplayPopup
+                          student={student}
+                          regByStudentId={regByStudentId}
+                        />
+                      </TableCell>
+                      <TableCell>{student.studentNo}</TableCell>
+                      <TableCell>{student.email}</TableCell>
+
+                      {regByStudentId[student.studentNo]?.questionAnswers.map(qa =>
+                        questionSwitch(qa)
+                      )}
+
+                      <TableCell className={classes.buttons}>
+                        <SwitchGroupButton setGroupsUnsaved={setGroupsUnsaved} student={student} />
+                        <RemoveStudentButton
+                          tableIndex={tableIndex}
+                          rowIndex={rowIndex}
+                          setRegistrationsWithoutGroups={setRegistrationsWithoutGroups}
+                        />
+                      </TableCell>
+                    </DraggableRow>
+                  ))}
+                </>
+              )}
             </TableBody>
           </Table>
         </Box>

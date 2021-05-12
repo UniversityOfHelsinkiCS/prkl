@@ -1,20 +1,28 @@
 import React, { useContext, useState } from 'react';
-import { Input, Divider, Menu, Loader } from 'semantic-ui-react';
-import { useIntl, FormattedMessage } from 'react-intl';
-
+import { useQuery } from '@apollo/client';
+import { useIntl } from 'react-intl';
+import {
+  AppBar,
+  FormControl,
+  InputLabel,
+  Toolbar,
+  Select,
+  MenuItem,
+  TextField,
+  CircularProgress,
+  Divider,
+} from '@material-ui/core';
+import { ALL_COURSES } from '../../GqlQueries';
+import { useLoaderStyle } from '../../styles/ui/Loader';
 import { useCoursesStyles } from '../../styles/ui/Courses';
-
 import CourseListStaffControls from './CourseListStaffControls';
-
 import CourseList from './CourseList';
 import { AppContext } from '../../App';
-import { ALL_COURSES } from '../../GqlQueries';
-import { useQuery } from '@apollo/client';
-import { AppBar, FormControl, InputBase, InputLabel, Toolbar, Select, MenuItem, Box, TextField } from '@material-ui/core';
 
 export default () => {
   const intl = useIntl();
   const classes = useCoursesStyles();
+  const loaderClass = useLoaderStyle();
   const [search, setSearch] = useState('');
   const [order, setOrder] = useState(localStorage.getItem('assembler.courseOrder') || 'name');
   const [showPastCourses, setShowPastCourses] = useState(
@@ -28,10 +36,10 @@ export default () => {
   const { loading: courseLoading, error: courseError, data: courseData } = useQuery(ALL_COURSES);
 
   if (courseLoading || courseError !== undefined) {
-    return <Loader active/>
+    return <CircularProgress className={loaderClass.root} />;
   }
 
-  const courses = courseData.courses;
+  const { courses } = courseData;
 
   const handleSearchChange = event => {
     setSearch(event.target.value);
@@ -136,9 +144,8 @@ export default () => {
 
   return (
     <div>
-      <AppBar position={"static"} color={"transparent"} elevation={0}>
+      <AppBar position="static" color="transparent" elevation={0}>
         <Toolbar>
-
           <TextField
             placeholder={intl.formatMessage({ id: 'courses.searchPlaceholder' })}
             onChange={handleSearchChange}
@@ -153,20 +160,21 @@ export default () => {
               name="value"
               labelId="orderBy"
               value={order}
-              style={{ width: "13em" }}
+              style={{ width: '13em' }}
             >
               {orderOptions.map(o => (
-                <MenuItem value={o.value}>{o.text}</MenuItem> 
+                <MenuItem value={o.value}>{o.text}</MenuItem>
               ))}
             </Select>
           </FormControl>
 
           <CourseListStaffControls controls={staffControls} />
-
         </Toolbar>
       </AppBar>
 
+      <br />
       <Divider />
+      <br />
 
       <CourseList courses={visibleCourses()} user={user} />
     </div>

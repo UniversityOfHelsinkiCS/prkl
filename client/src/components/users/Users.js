@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
-import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useQuery, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
+import { useStore } from 'react-hookstore';
 import {
   TextField,
   CircularProgress,
@@ -13,16 +13,16 @@ import {
   Typography,
   Button,
 } from '@material-ui/core';
-import { useUsersStyle } from '../../styles/users/Users';
-import { OrangeButton } from '../../styles/ui/Button';
-import { dummyEmail, dummyStudentNumber } from '../../util/privacyDefaults';
 import { ALL_USERS, EDIT_USER_ROLE } from '../../GqlQueries';
+import { useUsersStyle } from '../../styles/users/Users';
+import { useLoaderStyle } from '../../styles/ui/Loader';
+import { OrangeButton } from '../../styles/ui/Button';
 import roles from '../../util/userRoles';
-
 import { AppContext } from '../../App';
 
 export default () => {
   const classes = useUsersStyle();
+  const loaderClass = useLoaderStyle();
   const [allUsers, setAllUsers] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [mocking, setMocking] = useStore('mocking');
@@ -76,7 +76,7 @@ export default () => {
   }
 
   if (loading || !allUsers) {
-    return <CircularProgress />;
+    return <CircularProgress className={loaderClass.root} />;
   }
 
   return (

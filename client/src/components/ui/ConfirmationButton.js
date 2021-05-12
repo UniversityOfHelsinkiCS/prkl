@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Button, Dialog, DialogTitle, DialogActions } from '@material-ui/core';
 import { Close as CloseIcon, Done as DoneIcon } from '@material-ui/icons';
 import { RedButton, GreenButton } from '../../styles/ui/Button';

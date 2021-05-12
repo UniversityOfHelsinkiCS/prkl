@@ -1,11 +1,11 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState } from 'react';
 import { useStore } from 'react-hookstore';
-import { makeStyles, Tooltip, IconButton, Button } from '@material-ui/core';
-import _ from 'lodash';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Delete } from '@material-ui/icons/';
+import { makeStyles, Tooltip, IconButton, Button } from '@material-ui/core';
 import { red, grey, green } from '@material-ui/core/colors';
+import { Delete } from '@material-ui/icons';
+import _ from 'lodash';
 
 const useClasses = makeStyles({
   deleteIcon: {
@@ -151,6 +151,7 @@ export const RemoveStudentButton = ({ tableIndex, rowIndex, setRegistrationsWith
   const classes = useClasses();
   const intl = useIntl();
 
+  // eslint-disable-next-line no-unused-vars
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
   const [groups, setGroups] = useStore('groupsStore');
   const [grouplessStudents, setGrouplessStudents] = useStore('grouplessStudentsStore');
