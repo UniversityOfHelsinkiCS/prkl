@@ -206,10 +206,13 @@ describe('Editing an existing course', () => {
 
         cy.visit('/courses');
         cy.contains(course.title).click();
-        cy.contains(course.questions[0].content).should('exist');
-        /*course.questions[0].questionChoices.forEach((qc) => {
-          cy.get(`[data-cy="question-${course.questions[0].order}"]`).contains(qc.content).should('exist');
-        });*/
+
+        cy.contains(course.questions[0].content);
+        cy.get(`[data-cy="question-${course.questions[0].order}"]`).click();
+        course.questions[0].questionChoices.forEach((qc) => {
+          cy.get(`[data-cy="question-${course.questions[0].order}-option-${qc.order}"]`).contains(qc.content);
+        });
+
         cy.wait(500);
         cy.contains(course.questions[1].content).should('not.exist');
       });
@@ -233,11 +236,13 @@ describe('Editing an existing course', () => {
 
         cy.visit('/courses');
         cy.contains(course.title).click();
+
         cy.get('[data-cy="coursepage-question"]').should('have.length', 3);
-        cy.contains(testQuestionTitle).should('exist');
-        /*testQuestionChoices.forEach((qc) => {
-          cy.get(`[data-cy="question-${course.questions.length}"]`).contains(qc).should('exist');
-        });*/
+        cy.contains(testQuestionTitle);
+        cy.get(`[data-cy="question-${course.questions.length}"]`).click();
+        testQuestionChoices.forEach((qc, i) => {
+          cy.get(`[data-cy="question-${course.questions.length}-option-${i}"]`).contains(qc);
+        });
       });
 
       it('Can edit existing questions', () => {
@@ -269,15 +274,20 @@ describe('Editing an existing course', () => {
         cy.visit('/courses');
         cy.contains(course.title).click();
         cy.get('[data-cy="coursepage-question"]').should('have.length', 2);
-        /*cy.get('[aria-multiselectable="true"]').should('have.length', 2);
-        cy.get('[data-cy="coursepage-question"]').first().contains(q1newTitle).should('exist');
-        q1newChoices.forEach((qc) => {
-          cy.get('[data-cy="question-0"]').contains(qc).should('exist');
+
+        cy.get('[data-cy="coursepage-question"]').first().contains(q1newTitle);
+        cy.get('[data-cy="question-0"]').click();
+        q1newChoices.forEach((qc, i) => {
+          cy.get(`[data-cy="question-0-option-${i}"]`).contains(qc);
         });
-        cy.get('[data-cy="coursepage-question"]').last().contains(q2newTitle).should('exist');
-        q2newChoices.forEach((qc) => {
-          cy.get('[data-cy="question-1"]').contains(qc).should('exist');
-        });*/
+
+        cy.get('body').type('{esc}');
+
+        cy.get('[data-cy="coursepage-question"]').last().contains(q2newTitle);
+        cy.get('[data-cy="question-1"]').click();
+        q2newChoices.forEach((qc, i) => {
+          cy.get(`[data-cy="question-1-option-${i}"]`).contains(qc);
+        });
       });
     });
 

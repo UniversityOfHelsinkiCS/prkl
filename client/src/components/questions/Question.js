@@ -49,7 +49,11 @@ const Question = ({ question, formControl }) => {
               <em>None</em>
             </MenuItem>
             {question.questionChoices.map(c => (
-              <MenuItem key={c.id} value={c.id}>
+              <MenuItem
+                key={c.id}
+                value={c.id}
+                data-cy={`question-${question.order}-option-${c.order}`}
+              >
                 {c.content}
               </MenuItem>
             ))}
@@ -69,7 +73,11 @@ const Question = ({ question, formControl }) => {
             data-cy={`question-${question.order}`}
           >
             {question.questionChoices.map(c => (
-              <MenuItem key={c.id} value={c.id}>
+              <MenuItem
+                key={c.id}
+                value={c.id}
+                data-cy={`question-${question.order}-option-${c.order}`}
+              >
                 {c.content}
               </MenuItem>
             ))}
@@ -93,8 +101,6 @@ const Question = ({ question, formControl }) => {
         description={question.content}
       />
     );
-
-    // return <TimeForm name={question.id} formControl={formControl} />;
   }
 
   return (
