@@ -18,8 +18,8 @@ describe('Course registrations', () => {
       cy.switchToStudent();
     });
 
-    /*it('Can enrol on a course', () => {
-      /*const course = courses[1];
+    it('Can enrol on a course', () => {
+      const course = courses[1];
       cy.contains(courses[1].title).click();
 
       cy.get('[data-cy="question-0"]').click();
@@ -28,9 +28,9 @@ describe('Course registrations', () => {
 
       cy.get('[data-cy="question-1"]').click();
       answers.push(course.questions[1].questionChoices[1].content);
-      cy.get('[data-cy="question-1"]').contains(answers[1]).then((item) => {
-        item.click();
-      });
+      cy.contains(answers[1]).click();
+
+      cy.get('body').type('{esc}');
 
       answers.push('My cool answer');
       cy.get('[data-cy="question-2"]').type(answers[2]);
@@ -49,7 +49,7 @@ describe('Course registrations', () => {
       for (const answer of answers) {
         cy.contains(answer);
       }
-    });*/
+    });
 
     it('Can not enrol with answers missing', () => {
       cy.contains(courses[1].title).click();
@@ -226,11 +226,11 @@ describe('Course registrations', () => {
       const answers = [course.questions[0].questionChoices[1].content];
       cy.contains(answers[0]).click();
 
-      /*cy.get('[data-cy="question-1"]').click();
+      cy.get('[data-cy="question-1"]').click();
       answers.push(course.questions[1].questionChoices[1].content);
-      cy.get('[data-cy="question-1"]').contains(answers[1]).then((item) => {
-        item.click();
-      });
+      cy.contains(answers[1]).click();
+
+      cy.get('body').type('{esc}');
 
       answers.push('My cool answer');
       cy.get('[data-cy="question-2"]').type(answers[2]);
@@ -245,7 +245,7 @@ describe('Course registrations', () => {
       cy.get('[data-cy="remove-registration-button"]').first().click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
       cy.wait(500);
-      cy.get('[data-cy="registration-table"]').contains(users[0].firstname).should('not.exist');*/
+      cy.get('[data-cy="registration-table"]').contains(users[0].firstname).should('not.exist');
     });
   });
 });
