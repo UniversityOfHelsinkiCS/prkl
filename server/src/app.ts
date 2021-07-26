@@ -45,7 +45,7 @@ const main = async (): Promise<void> => {
 
   // Middleware.
   app
-    .use(headersMiddleware(["uid", "givenname", "sn", "mail", "schacpersonaluniquecode"]))
+    .use(headersMiddleware(["uid", "givenname", "sn", "mail", "hypersonstudentid"]))
     .use(authorization)
     .use(logInAs)
     .use("/graphql", graphqlHttp({ schema, graphiql: true }))
