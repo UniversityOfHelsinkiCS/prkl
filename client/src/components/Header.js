@@ -39,7 +39,7 @@ export default () => {
     <AppBar position="static" color="transparent">
       <Toolbar>
         <Typography component={Link} to="/" variant="h5" className={classes.title}>
-          Assembler
+          AssemblerTesti
         </Typography>
 
         <Grid container>
