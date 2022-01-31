@@ -32,7 +32,10 @@ services:
       - "REACT_APP_CUSTOM_NODE_ENV=test"
     depends_on:
       - test-db
+    networks:
+      - test-network
     command: npm run start:test
+
 
   adminer:
     image: adminer
@@ -58,6 +61,8 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - 5432:5432
+    networks:
+      - test-network
 
   tests:
     build: ./e2e/
@@ -70,3 +75,11 @@ services:
     volumes:
       - ./e2e/cypress:/e2e/cypress
       - ./server/data:/server/data
+    networks:
+      - test-network
+
+
+
+networks:
+  test-network:
+    name: test-network
