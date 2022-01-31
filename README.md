@@ -85,7 +85,7 @@ The server has unit tests written with Jest. You can run them with `cd server` a
 npm test
 ```
 
-### Miscellaneous Commands
+#### Miscellaneous Commands
 
 Most of the commands defined in various `package.json` files accross the project are meant to be run through Docker. However, here are some you may find useful to run manually:
 
