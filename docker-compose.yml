@@ -25,7 +25,7 @@ services:
         NODE_ENV: test
         REACT_APP_CUSTOM_NODE_ENV: test
     ports:
-      - 3001:3001
+      - 3001
     container_name: test-app
     environment:
       - "NODE_ENV=test"
@@ -60,7 +60,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
     ports:
-      - 5432:5432
+      - 5432
     networks:
       - test-network
 
