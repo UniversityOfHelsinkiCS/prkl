@@ -7,9 +7,9 @@ import CheckIcon from '@material-ui/icons/Check';
 import { Alert } from '@material-ui/lab';
 import timeChoices from '../../util/timeFormChoices';
 
-const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
 const hours = [];
-for (let i = 8; i < 22; i += 1) hours.push(i);
+for (let i = 8; i < 18; i += 1) hours.push(i);
 
 const makeEmptySheet = () => {
   return weekdays.reduce((sheet, day) => {
