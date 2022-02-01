@@ -8,5 +8,5 @@ RUN mkdir /e2e && cp -a /tmp/node_modules /e2e/
 
 WORKDIR /e2e
 COPY cypress.json .
-
+SLEEP 15
 CMD ./node_modules/.bin/cypress run --headless -b chrome
