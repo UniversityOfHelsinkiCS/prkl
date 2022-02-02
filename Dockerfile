@@ -1,4 +1,7 @@
 FROM node:12.16
+# Install nc for wait-for script
+RUN apt-get update && apt-get install -y netcat
+
 
 # Configure frontend url via --build-arg.
 ARG PUBLIC_URL=/
@@ -37,6 +40,7 @@ RUN cp -r build/ ../server/public
 # Build backend
 WORKDIR /usr/src/app
 COPY server server/
+COPY ./wait-for /usr/src/app/server
 WORKDIR /usr/src/app/server
 RUN npm run build
 

@@ -37,4 +37,4 @@ services:
       - "REACT_APP_CUSTOM_NODE_ENV=test"
     depends_on:
       - test-db
-    command: npm run start:test
+    command: sh -c './wait-for test-db:5432 -- npm run start:test'
