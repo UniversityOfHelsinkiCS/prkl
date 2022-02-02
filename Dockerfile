@@ -1,5 +1,5 @@
 FROM node:12.16
-# Install nc for wait-for script
+# Install netcat for wait-for script
 RUN apt-get update && apt-get install -y netcat
 
 
