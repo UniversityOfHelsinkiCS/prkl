@@ -42,6 +42,8 @@ WORKDIR /usr/src/app
 COPY server server/
 COPY ./wait-for /usr/src/app/server
 WORKDIR /usr/src/app/server
+RUN ["chmod", "+x", "./wait-for"]
+
 RUN npm run build
 
 EXPOSE 3001
