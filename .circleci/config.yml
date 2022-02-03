@@ -13,7 +13,7 @@ jobs:
     executor: test-exec
     steps:
       - checkout
-      - run: docker-compose -f docker-compose.ci.yml run tests
+      - run: docker-compose run tests
       - store_artifacts:
           path: e2e/cypress/videos
       - store_artifacts:
@@ -31,8 +31,6 @@ workflows:
           filters:
             branches:
               only: trunk
-          requires:
-            - run-tests
 
       - dockerhub/publish:
           image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
