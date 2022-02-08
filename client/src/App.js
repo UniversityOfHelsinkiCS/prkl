@@ -30,6 +30,8 @@ createStore('groupsStore', []);
 
 export const AppContext = createContext();
 
+console.log("Version 08022022");
+
 export default () => {
   // eslint-disable-next-line no-unused-vars
   const [mocking] = useStore('mocking');
