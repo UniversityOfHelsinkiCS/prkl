@@ -7,6 +7,11 @@ Assembler is a tool for automating division of students into project groups. It 
 |`master`|[![CircleCI](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/master.svg?style=svg)](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/master)|
 |`trunk`|[![CircleCI](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/trunk.svg?style=svg)](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/trunk)|
 
+### GitHub Actions status:
+|Branch|Test status|
+|---|---|
+|`trunk`|[![Docker Image CI](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml/badge.svg)](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml)|
+
 ### Documentation:
 
 Basic documentation is listed here. If you are member of development group in _Ohjelmistotuotantoprojekti_-course, you might be interested in more "beginner-friendly" explanation in [wiki](https://github.com/UniversityOfHelsinkiCS/prkl/wiki) (in Finnish).

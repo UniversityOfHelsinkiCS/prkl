@@ -97,6 +97,7 @@ const Question = ({ question, formControl }) => {
         onChange={([event]) => {
           return event;
         }}
+        formControl={formControl}
         control={formControl.control}
         description={question.content}
       />
