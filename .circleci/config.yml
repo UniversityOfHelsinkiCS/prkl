@@ -39,5 +39,4 @@ workflows:
           filters:
             branches:
               only: master
-          requires:
-            - run-tests
+
