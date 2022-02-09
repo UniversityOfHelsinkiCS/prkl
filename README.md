@@ -26,7 +26,9 @@ Basic documentation is listed here. If you are member of development group in _O
 
 #### Backlog and known issues
 
-Backlog can be found [here](https://github.com/UniversityOfHelsinkiCS/prkl/projects/1). For more user-friendly way to view suggested improvements check [unfinished tasks](documentation/unfinished.md) and [known issues](documentation/knownIssues.md). 
+The product backlog can be found [here](https://github.com/UniversityOfHelsinkiCS/prkl/projects/1). For more user-friendly way to view suggested improvements check [unfinished tasks](documentation/unfinished.md) and [known issues](documentation/knownIssues.md). 
+
+
 
 #### Structure
 
@@ -99,3 +101,9 @@ Most of the commands defined in various `package.json` files accross the project
 ```bash
 npm run build:client
 ```
+### Working hours log and metrics
+
+[![Working hours log](https://docs.google.com/spreadsheets/d/e/2PACX-1vQRwia3ZLhC4J046vuJhMoKXh6w4IL-4fMTSHe6KPpdE6ZcXQZ4RUbkcivK4aHKZ4X7QFYGH39PchOu/pubchart?oid=1214125970&format=image)](https://docs.google.com/spreadsheets/d/1lHQkXljYu6rwUU9aYqCAmCOKvt7ys9mvTZlw7vPWSDU/edit#gid=587171835)
+
+
+[Metrics](https://docs.google.com/spreadsheets/d/1lHQkXljYu6rwUU9aYqCAmCOKvt7ys9mvTZlw7vPWSDU/edit#gid=1999191550)
