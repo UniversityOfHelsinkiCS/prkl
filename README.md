@@ -96,18 +96,28 @@ Most of the commands defined in various `package.json` files accross the project
 ```bash
 npm run build:client
 ```
-## Working hours log
-
-[![Working hours log](https://docs.google.com/spreadsheets/d/e/2PACX-1vQRwia3ZLhC4J046vuJhMoKXh6w4IL-4fMTSHe6KPpdE6ZcXQZ4RUbkcivK4aHKZ4X7QFYGH39PchOu/pubchart?oid=1214125970&format=image)](https://docs.google.com/spreadsheets/d/1lHQkXljYu6rwUU9aYqCAmCOKvt7ys9mvTZlw7vPWSDU/edit#gid=587171835)
-
-## Metrics
-
-[Metrics.](https://docs.google.com/spreadsheets/d/1lHQkXljYu6rwUU9aYqCAmCOKvt7ys9mvTZlw7vPWSDU/edit#gid=1999191550)
-Chart to be added when more data has been added. 
 
 ## Product backlog
 
 The product backlog can be found [here](https://github.com/UniversityOfHelsinkiCS/prkl/projects/1). 
 
 Previous teams have composed these lists of [unfinished tasks](documentation/unfinished.md) and [known issues](documentation/knownIssues.md). 
+
+## Working hours log
+
+[![Working hours log](https://docs.google.com/spreadsheets/d/e/2PACX-1vQRwia3ZLhC4J046vuJhMoKXh6w4IL-4fMTSHe6KPpdE6ZcXQZ4RUbkcivK4aHKZ4X7QFYGH39PchOu/pubchart?oid=1214125970&format=image)](https://docs.google.com/spreadsheets/d/1lHQkXljYu6rwUU9aYqCAmCOKvt7ys9mvTZlw7vPWSDU/edit#gid=587171835)
+
+## Metrics
+
+
+![Cumulative flow diagram](https://docs.google.com/spreadsheets/d/e/2PACX-1vQRwia3ZLhC4J046vuJhMoKXh6w4IL-4fMTSHe6KPpdE6ZcXQZ4RUbkcivK4aHKZ4X7QFYGH39PchOu/pubchart?oid=188702353&format=image)
+
+
+
+![Lead time histogram](https://docs.google.com/spreadsheets/d/e/2PACX-1vQRwia3ZLhC4J046vuJhMoKXh6w4IL-4fMTSHe6KPpdE6ZcXQZ4RUbkcivK4aHKZ4X7QFYGH39PchOu/pubchart?oid=445390584&format=image)
+
+
+![Cycle time histogram](https://docs.google.com/spreadsheets/d/e/2PACX-1vQRwia3ZLhC4J046vuJhMoKXh6w4IL-4fMTSHe6KPpdE6ZcXQZ4RUbkcivK4aHKZ4X7QFYGH39PchOu/pubchart?oid=111466189&format=image)
+
+
 
