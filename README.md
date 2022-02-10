@@ -2,15 +2,14 @@
 
 Assembler is a tool for automating division of students into project groups. It goes by the nickname "prkl" which is shorthand for _Projektiryhmäytymistyökalu_. More comprehensive description [here](documentation/introduction.md).
 
-|Branch|CI Status|
-|---|---|
-|`master`|[![CircleCI](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/master.svg?style=svg)](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/master)|
-|`trunk`|[![CircleCI](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/trunk.svg?style=svg)](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/trunk)|
+|Branch|CI Status|GitHub Actions tests|
+|---|---|---|
+|`master`|[![CircleCI](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/master.svg?style=svg)](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/master)||
+|`trunk`|[![CircleCI](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/trunk.svg?style=svg)](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/trunk)|[![Docker Image CI](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml/badge.svg)](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml)|
 
-### GitHub Actions status:
-|Branch|Test status|
-|---|---|
-|`trunk`|[![Docker Image CI](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml/badge.svg)](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml)|
+
+PROJECT STATUS: All tests pass locally in development environments. The team is currently focused on fixing bugs. Repairing the CI and test pipelines will be a next focus area from 18.2.2022 onwards. 
+
 
 ### Documentation:
 
@@ -101,27 +100,16 @@ npm run build:client
 
 The product backlog can be found [here](https://github.com/UniversityOfHelsinkiCS/prkl/projects/1). 
 
-![Item count table](https://docs.google.com/spreadsheets/d/e/2PACX-1vQRwia3ZLhC4J046vuJhMoKXh6w4IL-4fMTSHe6KPpdE6ZcXQZ4RUbkcivK4aHKZ4X7QFYGH39PchOu/pubchart?oid=1248091356&format=image)
+
 
 Previous teams have composed these lists of [unfinished tasks](documentation/unfinished.md) and [known issues](documentation/knownIssues.md). 
 
-## Working hours log
+## Working hours log spring 2022
 
 [![Working hours log](https://docs.google.com/spreadsheets/d/e/2PACX-1vQRwia3ZLhC4J046vuJhMoKXh6w4IL-4fMTSHe6KPpdE6ZcXQZ4RUbkcivK4aHKZ4X7QFYGH39PchOu/pubchart?oid=1214125970&format=image)](https://docs.google.com/spreadsheets/d/1lHQkXljYu6rwUU9aYqCAmCOKvt7ys9mvTZlw7vPWSDU/edit#gid=587171835)
 
-## Metrics
+## Metrics spring 2022
 
-
-![Lead time and cycle time table](https://docs.google.com/spreadsheets/d/e/2PACX-1vQRwia3ZLhC4J046vuJhMoKXh6w4IL-4fMTSHe6KPpdE6ZcXQZ4RUbkcivK4aHKZ4X7QFYGH39PchOu/pubchart?oid=215978432&format=image)
-
-![Cumulative flow diagram](https://docs.google.com/spreadsheets/d/e/2PACX-1vQRwia3ZLhC4J046vuJhMoKXh6w4IL-4fMTSHe6KPpdE6ZcXQZ4RUbkcivK4aHKZ4X7QFYGH39PchOu/pubchart?oid=188702353&format=image)
-
-
-
-![Lead time histogram](https://docs.google.com/spreadsheets/d/e/2PACX-1vQRwia3ZLhC4J046vuJhMoKXh6w4IL-4fMTSHe6KPpdE6ZcXQZ4RUbkcivK4aHKZ4X7QFYGH39PchOu/pubchart?oid=445390584&format=image)
-
-
-![Cycle time histogram](https://docs.google.com/spreadsheets/d/e/2PACX-1vQRwia3ZLhC4J046vuJhMoKXh6w4IL-4fMTSHe6KPpdE6ZcXQZ4RUbkcivK4aHKZ4X7QFYGH39PchOu/pubchart?oid=111466189&format=image)
-
+See the separate [metrics document](metriikat.md) for metrics and charts. 
 
 
