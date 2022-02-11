@@ -67,6 +67,23 @@ export class GroupResolver {
       .getMany();
   }
 
+  // Group times based on group id
+  @Authorized(STAFF)
+  @Query(() => [Group])
+  async groupTimesByGroupId(@Arg("groupId") groupId: string): Promise<Group[]> {
+    return getRepository(Group)
+      .createQueryBuilder("group")
+      .select(["group", "student.id", "student.firstname", "registration", "times"])
+      .innerJoin("group.students", "student")
+      .innerJoin("student.registrations", "registration")
+      .innerJoin("registration.workingTimes", "times")
+      .where("group.id = :groupId")
+      .setParameter("groupId", groupId)
+      .andWhere("registration.courseId = group.courseId")
+      .getMany();
+  }
+  
+
   // Returns sample groups based on received data, does not save them
   @Authorized(STAFF)
   @Mutation(() => [Group])
