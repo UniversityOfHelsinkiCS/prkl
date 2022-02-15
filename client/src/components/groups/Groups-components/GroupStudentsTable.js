@@ -2,6 +2,8 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import _ from 'lodash';
+import CountGroupHours from '../../misc/CountGroupHours';
+import { count } from '../../../util/functions';
 import {
   Box,
   Typography,
@@ -138,6 +140,8 @@ export default ({ course, regByStudentId, group, tableIndex, setRegistrationsWit
             </TableBody>
           </Table>
         </Box>
+        <CountGroupHours times={count(group.students.map(student => regByStudentId[student.studentNo]))} 
+                        students={group.students.map(student => regByStudentId[student.studentNo]).length} />
       </TableContainer>
     </div>
   );
