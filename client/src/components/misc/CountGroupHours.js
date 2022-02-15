@@ -8,13 +8,15 @@ const CountGroupHours = ({
 
   let counter = 0;
 
-  times.forEach(element => {
-      element.forEach(t => {
-          if(t === students){
-              counter+=1;
-          }
-      });
-  });
+  if (times) {
+    times.forEach(element => {
+        element.forEach(t => {
+            if(t === students){
+                counter+=1;
+            }
+        });
+    });
+  }
 
   if (counter===0) {
       return null;
