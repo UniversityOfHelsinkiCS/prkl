@@ -211,6 +211,11 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
 
     const minGroupS = minGroupSize || 1;
 
+    const lockedGroupNames = lockedGroups.map(g => g.groupName)
+    const nonLockedGroupNames = Array.apply(null, Array(registrations.length))
+      .map((v, i) => `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${i + 1}`)
+      .filter(n => !lockedGroupNames.includes(n))
+
     try {
       const res = await generateGroups({
         variables: {
@@ -226,7 +231,7 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
           groupId: '',
           students: e.students,
           groupMessage: '',
-          groupName: `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${i + 1}`,
+          groupName: nonLockedGroupNames[i],
         };
       });
 
