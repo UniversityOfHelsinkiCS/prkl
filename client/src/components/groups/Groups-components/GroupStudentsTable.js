@@ -29,7 +29,6 @@ const useClasses = makeStyles({
     backgroundColor: blue[100],
     fontWeight: 'bold',
     fontSize: 14,
-    borderRadius: 5,
   },
   buttons: {
     display: 'flex',
