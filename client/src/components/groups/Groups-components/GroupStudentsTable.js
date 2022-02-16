@@ -119,10 +119,10 @@ export default ({ course, regByStudentId, group, tableIndex, setRegistrationsWit
                       <TableCell>{student.studentNo}</TableCell>
                       <TableCell>{student.email}</TableCell>
 
-                      {regByStudentId[student.studentNo]?.questionAnswers.map(qa =>
-                        questionSwitch(qa)
-                      )}
-
+                        {regByStudentId[student.studentNo]?.questionAnswers.map(x => x).sort((a,b) => a.question.order-b.question.order).map(qa => questionSwitch(qa))}
+  
+                      
+                      
                       <TableCell className={classes.buttons}>
                         <SwitchGroupButton setGroupsUnsaved={setGroupsUnsaved} student={student} />
                         <RemoveStudentButton
