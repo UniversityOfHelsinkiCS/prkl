@@ -10,13 +10,13 @@ const useClasses = makeStyles({
 
 const MatchingGroupHours = ({ matchingHours: hours, studentsInGroup }) => {
   const amountOfMatchingHours = hours?.flat().filter(hour => hour === studentsInGroup).length;
-  const hoursTotal = hours?.flat().length;
+  // const hoursTotal = hours?.flat().length;
   const classes = useClasses();
 
   if (amountOfMatchingHours) {
     return (
       <Typography className={classes.matchingHourText} variant="h6">
-      Matching hours ({amountOfMatchingHours} / {hoursTotal}) ⌛
+      Matching hours ({amountOfMatchingHours}) ⌛
       </Typography>
     );
   }
