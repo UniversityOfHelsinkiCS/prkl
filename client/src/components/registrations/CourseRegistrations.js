@@ -106,7 +106,7 @@ const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
                     </Popup>
                   </TableCell>
                 )}
-                {reg.questionAnswers.map(qa => questionSwitch(qa))}
+                {reg.questionAnswers.map(x => x).sort((a,b) => a.question.order-b.question.order).map(qa => questionSwitch(qa))}
                 <TableCell>
                   <ConfirmationButton
                     onConfirm={() => handleRegistrationRemoval(reg.student.id)}
