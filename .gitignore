@@ -10,3 +10,4 @@ pg_data*
 .vscode
 .DS_Store
 .idea
+/pate
