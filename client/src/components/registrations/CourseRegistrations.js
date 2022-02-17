@@ -11,10 +11,11 @@ import {
   TableBody,
   Paper,
   Typography,
+  Button,
 } from '@material-ui/core';
-import { red } from '@material-ui/core/colors';
+import { red, green } from '@material-ui/core/colors';
 import DateRangeIcon from '@material-ui/icons/DateRange';
-import questionSwitch, { count } from '../../util/functions';
+import questionSwitch, { count, getEmailsSeparatedBySemiColon } from '../../util/functions';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import { setNotification } from '../ui/Notification';
 import { CourseContext } from '../courses/Course';
@@ -63,6 +64,7 @@ const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
               </TableCell>
               <TableCell>
                 <FormattedMessage id="courseRegistration.email" />
+                <Button style={{backgroundColor: green[500]}} onClick={() => {navigator.clipboard.writeText(getEmailsSeparatedBySemiColon(registrations))}} >Copy All</Button>
               </TableCell>
               {course.questions.some(q => q.questionType === TIMES) && (
                 <TableCell>

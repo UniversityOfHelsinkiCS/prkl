@@ -32,6 +32,11 @@ const hours = 14;
 // either 8 or 6 depending on the timezone
 const first = 8;
 
+export const getEmailsSeparatedBySemiColon = registrations => {
+  const emails = registrations.map(reg => reg.student.email).reduce((a, b) => a + ';' + b);
+  return emails;
+};
+
 export const count = registrations => {
   const times = [...Array(7)].map(() => [...Array(hours)].map(() => 0));
   // console.log('times begin:', times)
