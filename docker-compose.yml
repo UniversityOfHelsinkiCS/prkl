@@ -18,22 +18,6 @@ services:
       - "REACT_APP_CUSTOM_NODE_ENV=development"
     command: npm run start:dev
 
-  test-app:
-    build:
-      context: .
-      args:
-        NODE_ENV: test
-        REACT_APP_CUSTOM_NODE_ENV: test
-    ports:
-      - 3001:3001
-    container_name: test-app
-    environment:
-      - "NODE_ENV=test"
-      - "REACT_APP_CUSTOM_NODE_ENV=test"
-    depends_on:
-      - test-db
-    command: npm run start:test
-
   adminer:
     image: adminer
     restart: always
@@ -50,24 +34,3 @@ services:
       - ./pg_data:/data
     ports:
       - 5432:5432
-
-  test-db:
-    image: postgres:12
-    container_name: test-db
-    environment:
-      - POSTGRES_PASSWORD=postgres
-    ports:
-      - 5432:5432
-
-  tests:
-    build: ./e2e/
-    container_name: prkl-test
-    environment:
-      - CYPRESS_VERIFY_TIMEOUT=90000
-      - CYPRESS_BASE_URL=http://test-app:3001
-      - API_URL=http://test-app:3001
-    depends_on:
-      - test-app
-    volumes:
-      - ./e2e/cypress:/e2e/cypress
-      - ./server/data:/server/data

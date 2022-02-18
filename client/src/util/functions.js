@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableCell } from '@material-ui/core';
+import { TableCell, Chip } from '@material-ui/core';
 
 /**
  * A parser that intakes a student's answer to a question, and outputs a jsx table row -element containing the parsed answer.
@@ -31,6 +31,11 @@ const mapshit = qa => {
 const hours = 14;
 // either 8 or 6 depending on the timezone
 const first = 8;
+
+export const getEmailsSeparatedBySemiColon = registrations => {
+  const emails = registrations.map(reg => reg.student.email).reduce((a, b) => a + ';' + b);
+  return emails;
+};
 
 export const count = registrations => {
   const times = [...Array(7)].map(() => [...Array(hours)].map(() => 0));
@@ -75,7 +80,9 @@ export const timeParse = props => {
 export default qa => {
   switch (qa.question.questionType) {
     case 'multipleChoice':
-      return <TableCell key={qa.id}>{mapshit(qa)}</TableCell>;
+      return (
+        <TableCell key={qa.id}>{qa.answerChoices.map(question => <Chip label={question.content} />)}</TableCell>
+      );
     case 'singleChoice':
       return (
         <TableCell key={qa.id}>

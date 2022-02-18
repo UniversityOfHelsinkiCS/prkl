@@ -4,6 +4,9 @@ import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
 import { Container, Paper, Typography, makeStyles, Box } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
+import { count } from '../../util/functions';
+import MatchingGroupHours from '../misc/MatchingGroupHours';
+
 import Checkbox from './Groups-components/Checkbox';
 import GroupTimes from './Groups-components/GroupTimes';
 import GroupNameLabel from './Groups-components/GroupNameLabel';
@@ -93,6 +96,10 @@ export default ({
                   group={group}
                   tableIndex={tableIndex}
                   setRegistrationsWithoutGroups={setRegistrationsWithoutGroups}
+                />
+                <MatchingGroupHours
+                matchingHours={count(group.students.map(student => regByStudentId[student.studentNo]))} 
+                studentsInGroup={group.students.map(student => regByStudentId[student.studentNo]).length}
                 />
                 <ToggleGroupTimeButton
                   groupTimesVisible={groupTimesVisible}

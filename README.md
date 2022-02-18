@@ -2,15 +2,14 @@
 
 Assembler is a tool for automating division of students into project groups. It goes by the nickname "prkl" which is shorthand for _Projektiryhmäytymistyökalu_. More comprehensive description [here](documentation/introduction.md).
 
-|Branch|CI Status|
-|---|---|
-|`master`|[![CircleCI](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/master.svg?style=svg)](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/master)|
-|`trunk`|[![CircleCI](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/trunk.svg?style=svg)](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/trunk)|
+|Branch|CI Status|GitHub Actions tests|
+|---|---|---|
+|`master`|[![CircleCI](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/master.svg?style=svg)](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/master)||
+|`trunk`|[![CircleCI](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/trunk.svg?style=svg)](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/trunk)|[![Docker Image CI](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml/badge.svg)](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml)|
 
-### GitHub Actions status:
-|Branch|Test status|
-|---|---|
-|`trunk`|[![Docker Image CI](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml/badge.svg)](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml)|
+
+PROJECT STATUS: All tests pass locally in development environments. The team is currently focused on fixing bugs. Repairing the CI and test pipelines will be a next focus area from 18.2.2022 onwards. 
+
 
 ### Documentation:
 
@@ -24,9 +23,6 @@ Basic documentation is listed here. If you are member of development group in _O
 - [Middlewares](documentation/middlewares.md)
 - [User roles](documentation/user_roles.md)
 
-#### Backlog and known issues
-
-Backlog can be found [here](https://github.com/UniversityOfHelsinkiCS/prkl/projects/1). For more user-friendly way to view suggested improvements check [unfinished tasks](documentation/unfinished.md) and [known issues](documentation/knownIssues.md). 
 
 #### Structure
 
@@ -80,7 +76,7 @@ npm run test:dev
 
 This command configures Cypress and our tests to use different URL's for client and server requests, enabling you to take advantage of hotloading on both sides of the stack when writing tests. It is recommended that you have Cypress installed globally (`npm i -g cypress`) for local development.
 
-## Backend unit tests
+### Backend unit tests
 
 The server has unit tests written with Jest. You can run them with `cd server` and `npm run start:test`
 
@@ -99,3 +95,21 @@ Most of the commands defined in various `package.json` files accross the project
 ```bash
 npm run build:client
 ```
+
+## Product backlog
+
+The product backlog can be found [here](https://github.com/UniversityOfHelsinkiCS/prkl/projects/1). 
+
+
+
+Previous teams have composed these lists of [unfinished tasks](documentation/unfinished.md) and [known issues](documentation/knownIssues.md). 
+
+## Working hours log spring 2022
+
+[![Working hours log](https://docs.google.com/spreadsheets/d/e/2PACX-1vQRwia3ZLhC4J046vuJhMoKXh6w4IL-4fMTSHe6KPpdE6ZcXQZ4RUbkcivK4aHKZ4X7QFYGH39PchOu/pubchart?oid=1214125970&format=image)](https://docs.google.com/spreadsheets/d/1lHQkXljYu6rwUU9aYqCAmCOKvt7ys9mvTZlw7vPWSDU/edit#gid=587171835)
+
+## Metrics spring 2022
+
+See the separate [metrics document](metriikat.md) for metrics and charts. 
+
+
