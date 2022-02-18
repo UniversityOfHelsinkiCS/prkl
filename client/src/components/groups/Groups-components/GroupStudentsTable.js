@@ -62,7 +62,7 @@ export default ({ course, regByStudentId, group, tableIndex, setRegistrationsWit
     setGroupsUnsaved(true);
   };
 
-  const emails = group.students.map(student => student.email).reduce((a, b) => a + ';' + b, '');
+  const emails = group.students.map(student => student.email).reduce((a, b) => a + ((a) ? ';' : '') + b, '');
 
   return (
     <div>
