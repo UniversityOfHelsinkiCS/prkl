@@ -13,15 +13,18 @@ const MatchingGroupHours = ({ matchingHours: hours, studentsInGroup }) => {
   // const hoursTotal = hours?.flat().length;
   const classes = useClasses();
 
-  if (amountOfMatchingHours) {
-    return (
+  return (
+    <>
+      {amountOfMatchingHours &&  
       <Typography className={classes.matchingHourText} variant="h6">
-      Matching hours ({amountOfMatchingHours}) ⌛
+        Matching hours ({amountOfMatchingHours}) ⌛
       </Typography>
-    );
-  }
+      }
+    </>
 
-  return <></>;
+
+  );
+
 };
 
 export default MatchingGroupHours;
