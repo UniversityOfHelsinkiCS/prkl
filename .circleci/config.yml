@@ -13,7 +13,7 @@ jobs:
     executor: test-exec
     steps:
       - checkout
-      - run: docker-compose run tests
+      - run: docker-compose -f docker-compose.ci.yml up
       - store_artifacts:
           path: e2e/cypress/videos
       - store_artifacts:
