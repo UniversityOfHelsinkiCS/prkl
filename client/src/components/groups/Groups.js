@@ -5,7 +5,7 @@ import { useStore } from 'react-hookstore';
 import { Container, Paper, Typography, makeStyles, Box } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import { count } from '../../util/functions';
-import MatchingGroupHours from './Groups-components/MatchingGroupHours';
+import MatchingGroupHours from '../misc/MatchingGroupHours';
 
 import Checkbox from './Groups-components/Checkbox';
 import GroupTimes from './Groups-components/GroupTimes';

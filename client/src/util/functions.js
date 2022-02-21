@@ -28,13 +28,6 @@ const mapshit = qa => {
   return formattedMultipleAnswers;
 };
 
-
-export const copyTextToClipboard = (text) => {
-  if (text) {
-    navigator.clipboard.writeText(text)
-  }
-} 
-
 const hours = 14;
 // either 8 or 6 depending on the timezone
 const first = 8;
