@@ -1,4 +1,5 @@
-name: Docker Image CI
+
+name: Run tests
 
 on:
   push:
@@ -7,10 +8,48 @@ on:
     branches: [ trunk ]
 
 jobs:
-
-  build:
+  run-tests:
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        server: [ci1, ci2] # Used to run tests on two different servers in parallel
     steps:
     - uses: actions/checkout@v2
-    - name: Test
-      run: docker-compose -f docker-compose.ci.yml run tests
+    - name: Start test-db and test-app
+      run: docker-compose -f docker-compose.ci.yml up -d test-db test-app 
+    - name: Print container info
+      run: | 
+        docker ps
+        docker images
+        docker exec test-app env    
+    - name: Run Cypress tests
+      uses: cypress-io/github-action@v2
+      with:
+        working-directory: e2e
+        browser: chrome
+        headless: true
+        quiet: false
+        config: video=false
+        wait-on: 'http://localhost:3001, http://localhost:3001/graphql'
+        spec: cypress/integration/*.${{ matrix.server }}.spec.js
+    - name: Upload screenshots    
+      uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: cypress-screenshots
+        path: e2e/cypress/screenshots
+    - name: Upload videos    
+      uses: actions/upload-artifact@v2
+      if: always()
+      with:
+        name: cypress-videos
+        path: e2e/cypress/videos
+        if-no-files-found: ignore
+        
+  build-and-publish:
+    needs: [run-tests]
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Upload docker image
+      run: echo 'add commands here...'
+      
