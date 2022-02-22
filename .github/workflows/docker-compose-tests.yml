@@ -57,7 +57,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Build and upload docker image
         run: |
-          docker build . -t ${{ secrets.DOCKER_HUB_USER }}/prkl:staging
+          docker build . -t toska/prkl:staging
           docker push ${{ secrets.DOCKER_HUB_USER }}/toska/prkl:staging
 
   
