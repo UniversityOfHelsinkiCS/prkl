@@ -58,6 +58,6 @@ jobs:
       - name: Build and upload docker image
         run: |
           docker build . -t toska/prkl:staging
-          docker push ${{ secrets.DOCKER_HUB_USER }}/toska/prkl:staging
+          docker push toska/prkl:staging
 
   
