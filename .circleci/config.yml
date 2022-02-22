@@ -24,13 +24,13 @@ workflows:
     jobs:
       - run-tests
 
-      #- dockerhub/publish:
-      #    image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
-      #    tag: 'staging'
-      #    extra_build_args: '--build-arg PUBLIC_URL=/assembler'
-      #    filters:
-      #      branches:
-      #        only: trunk
+      - dockerhub/publish:
+          image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
+          tag: 'staging'
+          extra_build_args: '--build-arg PUBLIC_URL=/assembler'
+          filters:
+            branches:
+              only: trunk
 
       - dockerhub/publish:
           image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
