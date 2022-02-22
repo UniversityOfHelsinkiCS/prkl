@@ -1,5 +1,5 @@
 
-name: Run tests
+name: CI/CD Pipeline
 
 on:
   push:
@@ -55,9 +55,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      #- name: Build and upload docker image
-      #  run: |
-      #    docker build . -t toska/prkl:staging
-      #    docker push toska/prkl:staging
+      - name: Build and upload docker image
+        run: |
+          docker build . -t toska/prkl:staging --build-arg PUBLIC_URL=/assembler
+          docker push toska/prkl:staging
 
   
