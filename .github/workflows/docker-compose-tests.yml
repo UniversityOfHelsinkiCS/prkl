@@ -4,8 +4,6 @@ name: Run tests
 on:
   push:
     branches: [ trunk ]
-  pull_request:
-    branches: [ trunk ]
 
 jobs:
   run-tests:
@@ -46,10 +44,20 @@ jobs:
         path: e2e/cypress/videos
         if-no-files-found: ignore
         
-  build-and-publish:
-    needs: [run-tests]
+build-and-publish:
+    needs: run-tests
+    if:  github.ref == 'refs/heads/trunk'
     runs-on: ubuntu-20.04
     steps:
-    - name: Upload docker image
-      run: echo 'add commands here...'
-      
+    - uses: actions/checkout@v2
+    - name: Log in to Docker Hub
+      uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+      with:
+        username: ${{ secrets.DOCKER_HUB_USER }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+    - name: Build and upload docker image
+      run: |
+        docker build . -t ${{ secrets.DOCKER_HUB_USER }}/prkl:staging
+        docker push ${{ secrets.DOCKER_HUB_USER }}/prkl:staging
+
+  
