@@ -324,6 +324,57 @@ describe('Group creation', () => {
       // check groupless is empty
       cy.get('[data-cy="groupless-container"]').should('not.exist');
     });
+    context('Matchin hours label check', () => {
+     
+      it('Matching hours label exist when there is hours to compare', () => {
+        const testCourse = courses[10];
+        cy.visit(`/course/${testCourse.id}`);
+        cy.get('[data-cy="manage-groups-button"]').click();
 
+        // group size 9
+        // change target group size and create groups
+        cy.get('[data-cy="target-group-size"]').type('{selectAll}$9');
+        cy.get('[data-cy="create-groups-submit"]').click();
+        cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+        // Check that label exists
+        cy.get('[data-cy="group-container"]')
+        .should('contain','Matching hours');
+      });
+
+      it('There is no matching hours label if there is no hours to compare', () => {
+        const testCourse = courses[3];
+        cy.visit(`/course/${testCourse.id}`);
+        cy.get('[data-cy="manage-groups-button"]').click();
+
+        // group size 9
+        // change target group size and create groups
+        cy.get('[data-cy="target-group-size"]').type('{selectAll}$9');
+        cy.get('[data-cy="create-groups-submit"]').click();
+        cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+        // Check that label exists
+        cy.get('[data-cy="group-container"]')
+        .should('not.contain','Matching hours');
+      });
+
+      it('Matching hours label is 0 there is no matching hours' , () => {
+        const testCourse = courses[9];
+        cy.visit(`/course/${testCourse.id}`);
+        cy.get('[data-cy="manage-groups-button"]').click();
+
+        // group size 9
+        // change target group size and create groups
+        cy.get('[data-cy="target-group-size"]').type('{selectAll}$4');
+        cy.get('[data-cy="create-groups-submit"]').click();
+        cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+        // Check that label doesnt exists
+        cy.get('[data-cy="group-container"]')
+        .should('contain','Matching hours (0)');
+
+        
+      });
+    });
   });
 });
