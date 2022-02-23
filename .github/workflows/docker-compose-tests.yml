@@ -1,11 +1,13 @@
+# TODO: Add cache functionality to speed up builds. 
 
 name: CI/CD Pipeline
-
 on:
   push:
-    branches: [ trunk ]
+    branches: [ master, trunk ]
 
 jobs:
+
+  # Run end to end tests using Cypress
   run-tests:
     runs-on: ubuntu-20.04
     strategy:
@@ -43,7 +45,8 @@ jobs:
         name: cypress-videos
         path: e2e/cypress/videos
         if-no-files-found: ignore
-        
+
+  # Publish app for deployment to staging or production after successful test run. 
   build-and-publish:
       needs: run-tests
       if:  github.ref == 'refs/heads/trunk'
@@ -55,9 +58,13 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Build and upload docker image
+      - name: Build and upload (staging))
+        if:  github.ref == 'refs/heads/trunk'
         run: |
           docker build . -t toska/prkl:staging --build-arg PUBLIC_URL=/assembler
           docker push toska/prkl:staging
-
-  
+      - name: Build and upload (staging))
+        if:  github.ref == 'refs/heads/master'
+        run: |
+          docker build . -t toska/prkl:production --build-arg PUBLIC_URL=/assembler
+          docker push toska/prkl:production
