@@ -13,7 +13,7 @@ jobs:
     executor: test-exec
     steps:
       - checkout
-      - run: docker-compose run tests
+      - run: docker-compose -f docker-compose.ci.yml up
       - store_artifacts:
           path: e2e/cypress/videos
       - store_artifacts:
@@ -24,19 +24,19 @@ workflows:
     jobs:
       - run-tests
 
-      - dockerhub/publish:
-          image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
-          tag: 'staging'
-          extra_build_args: '--build-arg PUBLIC_URL=/assembler'
-          filters:
-            branches:
-              only: trunk
+      #- dockerhub/publish:
+      #    image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
+      #    tag: 'staging'
+      #    extra_build_args: '--build-arg PUBLIC_URL=/assembler'
+      #    filters:
+      #      branches:
+      #        only: trunk
 
-      - dockerhub/publish:
-          image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
-          tag: 'production'
-          extra_build_args: '--build-arg PUBLIC_URL=/assembler'
-          filters:
-            branches:
-              only: master
+      #- dockerhub/publish:
+      #    image: $DOCKER_USER/$CIRCLE_PROJECT_REPONAME
+      #    tag: 'production'
+      #    extra_build_args: '--build-arg PUBLIC_URL=/assembler'
+      #    filters:
+      #      branches:
+      #        only: master
 

@@ -1,7 +1,7 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 const { v4: uuidv4 } = require('uuid');
-const courses = require('../../fixtures/courses');
-const users = require('../../fixtures/users');
+const courses = require('../fixtures/courses');
+const users = require('../fixtures/users');
 
 describe('Group publishing', () => {
   beforeEach(() => {

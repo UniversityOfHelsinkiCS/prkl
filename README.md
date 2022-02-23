@@ -2,13 +2,10 @@
 
 Assembler is a tool for automating division of students into project groups. It goes by the nickname "prkl" which is shorthand for _Projektiryhmäytymistyökalu_. More comprehensive description [here](documentation/introduction.md).
 
-|Branch|CI Status|GitHub Actions tests|
-|---|---|---|
-|`master`|[![CircleCI](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/master.svg?style=svg)](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/master)||
-|`trunk`|[![CircleCI](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/trunk.svg?style=svg)](https://circleci.com/gh/UniversityOfHelsinkiCS/prkl/tree/trunk)|[![Docker Image CI](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml/badge.svg)](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml)|
-
-
-PROJECT STATUS: All tests pass locally in development environments. The team is currently focused on fixing bugs. Repairing the CI and test pipelines will be a next focus area from 18.2.2022 onwards. 
+|Branch|CI Status|
+|---|---|
+|`master`| [![CI/CD Pipeline](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml/badge.svg?branch=master)](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml) |
+|`trunk`| [![CI/CD Pipeline](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml/badge.svg?branch=trunk)](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml) |
 
 
 ### Documentation:
