@@ -61,6 +61,15 @@ describe('Course registrations', () => {
       cy.contains('Please answer all the required questions!');
     });
 
+    it('Can not enrol with required multichoise awnsers missing', () => {
+      cy.contains(courses[1].title).click();
+      cy.get('[data-cy="toc-checkbox"]').click();
+      cy.get("#multiChoise").click();
+      cy.contains("First of many choices").click().click();
+
+      cy.contains('Please answer all the required questions!');
+    });
+
     it('Can not enrol without accepting the privacy terms', () => {
       cy.contains(courses[0].title).click();
 

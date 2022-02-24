@@ -18,10 +18,9 @@ import PropTypes from 'prop-types';
 const ValidatedInput = ({ name, type, formControl, optionality, ...rest }) => {
   const { setValue, trigger, errors, register } = formControl;
   const Inner = type;
-
   useEffect(() => {
     if (!optionality) {
-      register({ name }, { required: true });
+      register({ name }, { validate: selectedOptions => selectedOptions && selectedOptions.length !== 0});
     } else {
       register({ name }, { required: false });
     }

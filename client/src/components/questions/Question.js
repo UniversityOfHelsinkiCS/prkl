@@ -62,6 +62,7 @@ const Question = ({ question, formControl }) => {
       case MULTI_CHOICE:
         return (
           <ValidatedInput
+            id="multiChoise"
             name={name}
             type={Select}
             classes={classes.selectField}
