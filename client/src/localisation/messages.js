@@ -56,6 +56,8 @@ export default {
     'editView.closeRegistrationBtn': 'Close registration',
     'editView.pastDeadlineWarning':
       'Warning: You have set a registration deadline that has already passed. Registration will be effectively closed.',
+    'editView.todayDeadlineWarning':
+      'Warning: You have set a registration deadline that is due today. Registration will close at 23:59pm ',
     'editView.cancelEditsButton': 'Cancel',
     'editView.confirmCancelEdits': 'Discard all changes?',
 

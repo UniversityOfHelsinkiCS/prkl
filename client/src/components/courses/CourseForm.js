@@ -450,12 +450,19 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
         )}
 
         {role === roles.ADMIN_ROLE &&
-          new Date(getValues('deadline')).getTime() <= new Date().getTime() && (
+          new Date(new Date(getValues('deadline')).getTime()).setHours(0, 0, 0, 0) < new Date(new Date().getTime()).setHours(0, 0, 0, 0) && (
             <Alert severity="warning" className={classes.alert}>
               <FormattedMessage id="editView.pastDeadlineWarning" />
             </Alert>
           )}
 
+        {role === roles.ADMIN_ROLE &&
+          new Date(new Date(getValues('deadline')).getTime()).setHours(0, 0, 0, 0) === new Date(Date.now()).setHours(0, 0, 0, 0) && (
+            <Alert severity="warning" className={classes.alert}>
+              <FormattedMessage id="editView.todayDeadlineWarning" />
+            </Alert>
+          )}
+          
         <FormGroup row className={classes.buttonGroup}>
           <ConfirmationButton
             onConfirm={handleSubmit(onSubmit)}
