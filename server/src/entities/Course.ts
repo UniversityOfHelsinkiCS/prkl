@@ -47,6 +47,18 @@ export class Course extends BaseEntity {
   @Column()
   minGroupSize: number;
 
+  @Field(() => Number, { nullable: true })
+  @Column({ nullable: true })
+  workTimeEndsAt: number;
+
+  @Field(() => Boolean, { nullable: true })
+  @Column({ nullable: true })
+  weekends: boolean;
+
+  @Field(() => Number, { nullable: true })
+  @Column({ nullable: true })
+  minHours: number;
+
   @Field(() => Boolean)
   @Column()
   published: boolean;
