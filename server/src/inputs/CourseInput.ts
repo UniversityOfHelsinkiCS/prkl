@@ -25,6 +25,15 @@ export class CourseInput {
   @Field()
   minGroupSize: number;
 
+  @Field(() => Number, { nullable: true })
+  workTimeEndsAt: number;
+
+  @Field(() => Boolean, { nullable: true })
+  weekends: boolean;
+
+  @Field(() => Number, { nullable: true })
+  minHours: number;
+
   @Field()
   published: boolean;
 
