@@ -6,7 +6,18 @@ import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import _ from 'lodash';
 
-import { TextField, Button, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
+import {
+  TextField,
+  Button,
+  FormGroup,
+  Slider,
+  Box,
+  Card,
+  CardContent,
+  CardActions,
+  FormControlLabel,
+  Checkbox,
+} from '@material-ui/core';
 import { blue, red } from '@material-ui/core/colors';
 import InfoIcon from '@material-ui/icons/Info';
 import { Alert } from '@material-ui/lab';
@@ -42,6 +53,8 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   const [questions, setQuestions] = useState([]);
   const [publishToggle, setPublishToggle] = useState(false);
   const [calendarToggle, setCalendarToggle] = useState(false);
+  const [workingTimes, setWorkingTimes] = useState([9, 21]);
+  const [weekend, setWeekend] = useState(false);
   const [calendar, setCalendar] = useState(null);
 
   const hookForm = useForm({ mode: 'onChange' });
@@ -358,6 +371,40 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
           }
           label={intl.formatMessage({ id: 'courseForm.includeCalendar' })}
         />
+
+        {calendarToggle && (
+          <div>
+            <Card variant="outlined">
+              <CardActions >
+                <FormControlLabel
+                  control={<Checkbox color="primary" checked={weekend} onClick={() => setWeekend(!weekend)} />}
+                  label={'include weekends as selectable times'}
+                />
+              </CardActions>
+              <CardContent>
+                <h4>
+                  {`Select the selectable working hours in week. Current selection ${workingTimes[0]}.00 – ${workingTimes[1]}.00`}
+                </h4>
+              </CardContent>
+              <CardActions className={classes.slider}>
+                  <Slider
+                    marks={[...Array(22 - 7)].map((x, i) => {
+                      return {
+                        label: `${i + 8}.00`,
+                        value: i + 8,
+                      };
+                    })}
+                    value={workingTimes}
+                    onChange={(event, newValue) => setWorkingTimes(newValue)}
+                    getAriaValueText={value => `${value}.00`}
+                    step={1}
+                    min={8}
+                    max={22}
+                  />
+              </CardActions>
+            </Card>
+          </div>
+        )}
 
         {/* Calendar description input */}
         <Controller
