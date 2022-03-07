@@ -53,7 +53,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   const [questions, setQuestions] = useState([]);
   const [publishToggle, setPublishToggle] = useState(false);
   const [calendarToggle, setCalendarToggle] = useState(false);
-  const [workingTimes, setWorkingTimes] = useState([9, 21]);
+  const [workTimeEndsAt, setWorkTimeEndsAt] = useState(21);
   const [weekend, setWeekend] = useState(false);
   const [calendar, setCalendar] = useState(null);
 
@@ -378,12 +378,12 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
               <CardActions >
                 <FormControlLabel
                   control={<Checkbox color="primary" checked={weekend} onClick={() => setWeekend(!weekend)} />}
-                  label={'include weekends as selectable times'}
+                  label={intl.formatMessage({ id: 'courseForm.includeCalendarWeekends' })}
                 />
               </CardActions>
               <CardContent>
                 <h4>
-                  {`Select the selectable working hours in week. Current selection ${workingTimes[0]}.00 – ${workingTimes[1]}.00`}
+                  {`Select the selectable working hours in week. Current selection 8.00 – ${workTimeEndsAt}.00`}
                 </h4>
               </CardContent>
               <CardActions className={classes.slider}>
@@ -394,8 +394,8 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                         value: i + 8,
                       };
                     })}
-                    value={workingTimes}
-                    onChange={(event, newValue) => setWorkingTimes(newValue)}
+                    value={workTimeEndsAt}
+                    onChange={(event, newValue) => setWorkTimeEndsAt(newValue)}
                     getAriaValueText={value => `${value}.00`}
                     step={1}
                     min={8}
