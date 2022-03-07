@@ -54,7 +54,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   const [publishToggle, setPublishToggle] = useState(false);
   const [calendarToggle, setCalendarToggle] = useState(false);
   const [workTimeEndsAt, setWorkTimeEndsAt] = useState(21);
-  const [weekend, setWeekend] = useState(false);
+  const [weekends, setWeekends] = useState(false);
   const [calendar, setCalendar] = useState(null);
 
   const hookForm = useForm({ mode: 'onChange' });
@@ -181,6 +181,8 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
       code: formData.courseCode,
       minGroupSize: editView ? course.minGroupSize : 1,
       maxGroupSize: editView ? course.maxGroupSize : 1,
+      workTimeEndsAt,
+      weekends,
       deadline: new Date(formData.deadline).setHours(23, 59),
       teachers: teachersWithoutType,
       questions: calendarToggle ? questionsWOKeys.concat(calendarQuestion) : questionsWOKeys,
@@ -377,7 +379,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
             <Card variant="outlined">
               <CardActions >
                 <FormControlLabel
-                  control={<Checkbox color="primary" checked={weekend} onClick={() => setWeekend(!weekend)} />}
+                  control={<Checkbox color="primary" checked={weekends} onClick={() => setWeekends(!weekends)} />}
                   label={intl.formatMessage({ id: 'courseForm.includeCalendarWeekends' })}
                 />
               </CardActions>
