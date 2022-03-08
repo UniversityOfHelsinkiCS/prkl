@@ -6,14 +6,10 @@ import ClearIcon from '@material-ui/icons/Clear';
 import CheckIcon from '@material-ui/icons/Check';
 import { Alert } from '@material-ui/lab';
 import timeChoices from '../../util/timeFormChoices';
+import { concat } from 'lodash';
 
-const minHours = 10
-const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
-const hours = [];
-for (let i = 8; i < 18; i += 1) hours.push(i);
-
-const makeEmptySheet = () => {
-  return weekdays.reduce((sheet, day) => {
+const makeEmptySheet = (hours, wdays) => {
+  return wdays.reduce((sheet, day) => {
     sheet[day] = hours.reduce((acc, hour) => {
       acc[hour] = timeChoices.yes;
       return acc;
@@ -32,17 +28,20 @@ const useStyles = makeStyles({
   },
 });
 
-const TimeForm = ({ onChange, description, formControl, name }) => {
+const TimeForm = ({ onChange, description, weekends, minHours, workTimeEndsAt, formControl, name }) => {
+  const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+  const wdays = (!weekends && weekends !== null) ? concat(weekdays.slice(0,5)) : concat(weekdays)
   const intl = useIntl();
+  const hours = (workTimeEndsAt!==null) ? Array.from(Array(workTimeEndsAt-8)).map((e,i)=>i+8) :  Array.from(Array(14)).map((e,i)=>i+8)
   const { register } = formControl;
-  const [table, setTable] = useState(makeEmptySheet());
+  const [table, setTable] = useState(makeEmptySheet(hours, wdays));
   const [mouseDown, setMouseDown] = useState(false);
   const classes = useStyles();
-  
-  register({name}, { validate: tableAtSubmit => numberOfSelectedHours(tableAtSubmit) >= minHours || 'Please choose at least 10 hours'})
+
+  register({name}, { validate: tableAtSubmit => numberOfSelectedHours(tableAtSubmit, hours, wdays) >= minHours || `Please choose at least ${minHours} hours`})
 
   useEffect(() => {
-    onChange(makeEmptySheet());
+    onChange(makeEmptySheet(hours, wdays));
   }, []); // eslint-disable-line
 
   const getCellIcon = choice => {
@@ -113,7 +112,7 @@ const TimeForm = ({ onChange, description, formControl, name }) => {
         ) : null}
       <Table className={classes.table} size="small" padding="none">
         <TableHead>
-          {weekdays.map(day => (
+          {wdays.map(day => (
             <TableCell className={classes.tablecell} align="center">
               {intl.formatMessage({ id: `timeForm.${day}` })}
             </TableCell>
@@ -121,7 +120,7 @@ const TimeForm = ({ onChange, description, formControl, name }) => {
         </TableHead>
         {hours.map(hour => (
           <TableRow>
-            {weekdays.map(day => (
+            {wdays.map(day => (
               <TableCell
               className={classes.tablecell}
               align="center"
@@ -158,14 +157,14 @@ const TimeForm = ({ onChange, description, formControl, name }) => {
   );
 };
 
-const numberOfSelectedHours = (table) => {
+const numberOfSelectedHours = (table, hours, wdays) => {
   const getWeekHours = day => {
     return hours.reduce((total, time) => {
       return day[time] === 'no' ? total : total + 1;
     }, 0);
   };
   
-  return weekdays.reduce((total, today) => {
+  return wdays.reduce((total, today) => {
     return total + getWeekHours(table[today]);
   }, 0);
 };

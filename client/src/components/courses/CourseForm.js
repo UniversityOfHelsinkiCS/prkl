@@ -179,7 +179,6 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
       return newQ;
     });
 
-    console.log(minHours)
     const courseObject = {
       title: formData.courseTitle,
       description: formData.courseDescription,
@@ -205,7 +204,6 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
         });
         history.push(`/course/${course.id}`);
       } else {
-        console.log(workTimeEndsAt)
         const result = await createCourse({
           variables,
         });

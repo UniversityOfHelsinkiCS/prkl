@@ -8,6 +8,9 @@ export const ALL_COURSES = gql`
       code
       maxGroupSize
       minGroupSize
+      minHours
+      weekends
+      workTimeEndsAt
       description
       deadline
       published
@@ -94,6 +97,9 @@ export const COURSE_BY_ID = gql`
       maxGroupSize
       minGroupSize
       title
+      minHours
+      workTimeEndsAt
+      weekends
       description
       code
       deadline

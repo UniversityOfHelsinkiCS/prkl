@@ -6,12 +6,12 @@ import Question from '../questions/Question';
 import ValidationError from '../ui/ValidationError';
 import ConfirmationButton from '../ui/ConfirmationButton';
 
-export default ({ questions, formControl, onSubmit }) => {
+export default ({ course, formControl, onSubmit }) => {
   const [checkboxValue, setCheckboxValue] = useState('accepted');
   const { setValue, trigger, errors, register } = formControl;
   const intl = useIntl();
   const terms = 'toc';
-
+  const questions = course.questions;
   useEffect(() => {
     register({ name: 'toc' }, { required: true });
   });
@@ -31,7 +31,8 @@ export default ({ questions, formControl, onSubmit }) => {
       {questions &&
         questions.map(question => (
           <FormControl>
-            <Question key={question.id} question={question} formControl={formControl} />
+            
+            <Question key={question.id} question={question} workTimeEndsAt={course.workTimeEndsAt} minHours={course.minHours} weekends={course.weekends} formControl={formControl} />
           </FormControl>
         ))}
 

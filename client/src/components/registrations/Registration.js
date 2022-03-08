@@ -239,7 +239,7 @@ export default ({ course, match }) => {
               {new Date(course.deadline) > new Date() ? (
                 <RegistrationForm
                   onSubmit={handleSubmit(onSubmit)}
-                  questions={course.questions}
+                  course={course}
                   formControl={hookForm}
                 />
               ) : null}
