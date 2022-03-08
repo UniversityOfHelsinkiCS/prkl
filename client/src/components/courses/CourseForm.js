@@ -11,7 +11,10 @@ import {
   Button,
   FormGroup,
   Slider,
-  Box,
+  InputLabel,
+  FormControl,
+  OutlinedInput,
+  FormHelperText,
   Card,
   CardContent,
   CardActions,
@@ -54,6 +57,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   const [publishToggle, setPublishToggle] = useState(false);
   const [calendarToggle, setCalendarToggle] = useState(false);
   const [workTimeEndsAt, setWorkTimeEndsAt] = useState(21);
+  const [minHours, setMinWorkingHours] = useState(10);
   const [weekends, setWeekends] = useState(false);
   const [calendar, setCalendar] = useState(null);
 
@@ -175,14 +179,16 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
       return newQ;
     });
 
+    console.log(minHours)
     const courseObject = {
       title: formData.courseTitle,
       description: formData.courseDescription,
       code: formData.courseCode,
       minGroupSize: editView ? course.minGroupSize : 1,
       maxGroupSize: editView ? course.maxGroupSize : 1,
-      workTimeEndsAt,
-      weekends,
+      workTimeEndsAt: workTimeEndsAt,
+      minHours: minHours,
+      weekends: weekends,
       deadline: new Date(formData.deadline).setHours(23, 59),
       teachers: teachersWithoutType,
       questions: calendarToggle ? questionsWOKeys.concat(calendarQuestion) : questionsWOKeys,
@@ -199,6 +205,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
         });
         history.push(`/course/${course.id}`);
       } else {
+        console.log(workTimeEndsAt)
         const result = await createCourse({
           variables,
         });
@@ -209,6 +216,10 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
       console.log('error:', error);
     }
   };
+
+  // Used by minimum workinghour.
+  let maxHours = ((weekends) ? 7 : 5)*(workTimeEndsAt-8);
+  const min = 0;
 
   return (
     <div className={classes.root}>
@@ -376,13 +387,35 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
 
         {calendarToggle && (
           <div>
+
+
             <Card variant="outlined">
               <CardActions >
                 <FormControlLabel
-                  control={<Checkbox color="primary" checked={weekends} onClick={() => setWeekends(!weekends)} />}
+                  control={<Checkbox color="primary" checked={weekends} onClick={() =>{ setWeekends(!weekends)}} />}
                   label={intl.formatMessage({ id: 'courseForm.includeCalendarWeekends' })}
                 />
               </CardActions>
+
+              <CardActions >
+              <TextField
+                label="Minimum working hours"
+                style = {{width: 200}}
+                type="number"
+                inputProps={{ min, maxHours }}
+                value={minHours}
+                onChange={(e) => {
+                  var value = parseInt(e.target.value, 10);
+                  if (value > maxHours) value = maxHours;
+                  if (value < 0) value = 0;
+                  setMinWorkingHours(value);
+                }}
+                error={minHours > maxHours}
+                helperText={minHours > maxHours ? 'Minimum hours too much!' : ' '}
+                variant="outlined"
+              />
+              </CardActions>
+              
               <CardContent>
                 <h4>
                   {`Select the selectable working hours in week. Current selection 8.00 – ${workTimeEndsAt}.00`}
