@@ -24,7 +24,7 @@ export default () => {
   const classes = useCoursesStyles();
   const loaderClass = useLoaderStyle();
   const [search, setSearch] = useState('');
-  const [order, setOrder] = useState(localStorage.getItem('assembler.courseOrder') || 'name');
+  const [order, setOrder] = useState(localStorage.getItem('assembler.courseOrder') || 'createdAt');
   const [showPastCourses, setShowPastCourses] = useState(
     localStorage.getItem('assembler.showPastCourses') === 'true'
   );
@@ -146,7 +146,7 @@ export default () => {
       checked: showMyCourses,
     },
   ];
-  console.log("courses: ", courses);
+  
   return (
     <div>
       <AppBar position="static" color="transparent" elevation={0}>
