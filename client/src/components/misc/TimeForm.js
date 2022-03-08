@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useIntl } from 'react-intl';
-import { makeStyles, Table, TableCell, TableHead, TableRow } from '@material-ui/core';
+import { makeStyles, Table, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import ClearIcon from '@material-ui/icons/Clear';
 import CheckIcon from '@material-ui/icons/Check';
@@ -26,6 +26,7 @@ const useStyles = makeStyles({
   tablecell: {
     border: '1px solid',
   },
+
 });
 
 const TimeForm = ({ onChange, description, weekends, minHours, workTimeEndsAt, formControl, name }) => {
@@ -106,11 +107,17 @@ const TimeForm = ({ onChange, description, weekends, minHours, workTimeEndsAt, f
   
   return (
     <div>
-      <h3>{description}</h3>
+    
+
+        <h3>{description}</h3>
+        <Typography variant="h6" data-cy="time-table-minhours">
+        Choose at least ({minHours}) hours
+      </Typography>
+      
       {Intl.DateTimeFormat().resolvedOptions().timeZone !== 'Europe/Helsinki' ? (
         <Alert severity="warning">{intl.formatMessage({ id: 'timeForm.timeZoneWarning' })}</Alert>
         ) : null}
-      <Table className={classes.table} size="small" padding="none">
+      <Table className={classes.table} size="small" padding="none" data-cy="time-table">
         <TableHead>
           {wdays.map(day => (
             <TableCell className={classes.tablecell} align="center">

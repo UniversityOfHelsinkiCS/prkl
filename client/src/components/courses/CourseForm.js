@@ -378,6 +378,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
               disabled={editView && course.published}
               checked={calendarToggle}
               onClick={() => setCalendarToggle(!calendarToggle)}
+              data-cy="calendar-checkbox"
             />
           }
           label={intl.formatMessage({ id: 'courseForm.includeCalendar' })}
@@ -390,6 +391,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
             <Card variant="outlined">
               <CardActions >
                 <FormControlLabel
+                  data-cy="weekend-checkbox"
                   control={<Checkbox color="primary" checked={weekends} onClick={() =>{ setWeekends(!weekends)}} />}
                   label={intl.formatMessage({ id: 'courseForm.includeCalendarWeekends' })}
                 />
@@ -397,6 +399,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
 
               <CardActions >
               <TextField
+                data-cy="min-hour-field"
                 label="Minimum working hours"
                 style = {{width: 200}}
                 type="number"
@@ -421,6 +424,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
               </CardContent>
               <CardActions className={classes.slider}>
                   <Slider
+                    data-cy="working-hour-slider"
                     marks={[...Array(22 - 7)].map((x, i) => {
                       return {
                         label: `${i + 8}.00`,

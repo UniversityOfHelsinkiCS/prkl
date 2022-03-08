@@ -1,3 +1,4 @@
+const { copyTextToClipboard } = require('../../../client/src/util/functions');
 const users = require('../fixtures/users');
 
 describe('Adding a new course', () => {
@@ -24,6 +25,55 @@ describe('Adding a new course', () => {
     cy.createCourse(0, 2).then((resp) => {
       expect(resp.status).to.eq(200);
     });
+  });
+
+  it('Can add course with timetable', () => {
+    // when staff is creating course, staff is preselected and admin is not
+    cy.get('[data-cy="menu-add-course"]').click();
+    cy.get('[data-cy="course-title-input"]').type('Course from Cypress');
+    cy.get('[data-cy="course-code-input"]').type('CYP999');
+    cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
+    cy.get('[data-cy="course-description-input"]').type('Description for test course.');
+
+    cy.get('[data-cy="calendar-checkbox"]').click();
+    cy.get('[data-cy="create-course-submit"]').click();
+    cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+    cy.get('[data-cy="time-table"]').should('exist')
+  });
+
+  it('Can change minimum working hours', () => {
+    const minHour = 5
+    // when staff is creating course, staff is preselected and admin is not
+    cy.get('[data-cy="menu-add-course"]').click();
+    cy.get('[data-cy="course-title-input"]').type('Course from Cypress');
+    cy.get('[data-cy="course-code-input"]').type('CYP999');
+    cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
+    cy.get('[data-cy="course-description-input"]').type('Description for test course.');
+
+    cy.get('[data-cy="calendar-checkbox"]').click();
+    cy.get('[data-cy="min-hour-field"]').clear()
+    cy.get('[data-cy="min-hour-field"]').type(5);
+    cy.get('[data-cy="create-course-submit"]').click();
+    cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+    cy.get('[data-cy="time-table-minhours"]').should('contain', `Choose at least (${minHour}) hours`)
+  });
+
+  it('Can choose weekends to timetable', () => {
+    // when staff is creating course, staff is preselected and admin is not
+    cy.get('[data-cy="menu-add-course"]').click();
+    cy.get('[data-cy="course-title-input"]').type('Course from Cypress');
+    cy.get('[data-cy="course-code-input"]').type('CYP999');
+    cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
+    cy.get('[data-cy="course-description-input"]').type('Description for test course.');
+
+    cy.get('[data-cy="calendar-checkbox"]').click();
+    cy.get('[data-cy="weekend-checkbox"]').click()
+    cy.get('[data-cy="create-course-submit"]').click();
+    cy.get('[data-cy="confirmation-button-confirm"]').click();
+
+    cy.get('[data-cy="time-table"]').should('contain', `Sat`)
   });
 
   it('Correct person is preselected as teacher', () => {
