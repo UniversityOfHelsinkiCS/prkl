@@ -11,6 +11,7 @@ export const ALL_COURSES = gql`
       description
       deadline
       published
+      createdAt
       teachers {
         id
         firstname

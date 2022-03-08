@@ -71,9 +71,11 @@ export class Course extends BaseEntity {
   @Column({ default: false })
   deleted: boolean;
 
+  @Field(() => Date)
   @CreateDateColumn({ type: "timestamptz" })
   createdAt: Date;
 
+  @Field(() => Date)
   @UpdateDateColumn({ type: "timestamptz", nullable: true })
   updatedAt: Date;
 
