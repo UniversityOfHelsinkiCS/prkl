@@ -70,6 +70,7 @@ export default {
     'courses.orderByLabel': 'Order by:',
     'courses.orderByNameOption': 'Name',
     'courses.orderByCodeOption': 'Course Code',
+    'courses.orderByCreatedAtOption': 'Course Creation date',
     'courses.orderByDeadlineOption': 'Deadline',
     'courses.enrolledStudents': 'Enrolled students: ',
     'courses.mailToTeacher': 'Send mail to teacher',

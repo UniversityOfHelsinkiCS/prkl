@@ -126,6 +126,7 @@ export default () => {
   const orderOptions = [
     { value: 'name', text: intl.formatMessage({ id: 'courses.orderByNameOption' }) },
     { value: 'code', text: intl.formatMessage({ id: 'courses.orderByCodeOption' }) },
+    { value: 'createdAt', text: intl.formatMessage({ id: 'courses.orderByCreatedAtOption' }) },
     { value: 'deadline', text: intl.formatMessage({ id: 'courses.orderByDeadlineOption' }) },
   ];
 
@@ -141,7 +142,7 @@ export default () => {
       checked: showMyCourses,
     },
   ];
-
+  console.log("courses: ", courses);
   return (
     <div>
       <AppBar position="static" color="transparent" elevation={0}>
