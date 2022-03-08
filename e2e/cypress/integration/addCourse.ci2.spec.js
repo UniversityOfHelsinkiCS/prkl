@@ -1,4 +1,3 @@
-const { copyTextToClipboard } = require('../../../client/src/util/functions');
 const users = require('../fixtures/users');
 
 describe('Adding a new course', () => {
