@@ -351,3 +351,17 @@ export const GROUP_TIMES = gql`
     }
   }
 `;
+
+export const COURSE_BY_CODE = gql`
+    query coursesByCode($courseCode: String!){
+      getCourseByCode(code: $courseCode) {
+        title
+        code
+        createdAt
+        questions {
+          questionType
+          content
+        }
+      }
+    }
+`;
