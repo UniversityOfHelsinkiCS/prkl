@@ -3,12 +3,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useForm, Controller } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
-import { useMutation } from '@apollo/client';
+import { useMutation, useLazyQuery } from '@apollo/client';
 import _ from 'lodash';
 
 import {
   TextField,
   Button,
+  IconButton,
   FormGroup,
   Slider,
   InputLabel,
@@ -23,9 +24,11 @@ import {
 } from '@material-ui/core';
 import { blue, red } from '@material-ui/core/colors';
 import InfoIcon from '@material-ui/icons/Info';
+import SearchIcon from '@material-ui/icons/Search';
+
 import { Alert } from '@material-ui/lab';
 
-import { CREATE_COURSE, UPDATE_COURSE } from '../../GqlQueries';
+import { CREATE_COURSE, UPDATE_COURSE, COURSE_BY_CODE } from '../../GqlQueries';
 
 import { useCourseFormStyles } from '../../styles/courses/CourseForm';
 import ConfirmationButton from '../ui/ConfirmationButton';
@@ -141,22 +144,22 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
       const formQuestion = formData.questions[q.id || q.qKey];
       const existingChoices = q.questionChoices
         ? q.questionChoices.map(qc => {
-            const formChoice = formQuestion.options[qc.id];
-            delete formQuestion.options[qc.id];
-            return {
-              ...qc,
-              content: formChoice,
-            };
-          })
+          const formChoice = formQuestion.options[qc.id];
+          delete formQuestion.options[qc.id];
+          return {
+            ...qc,
+            content: formChoice,
+          };
+        })
         : [];
 
       const newChoices = formQuestion.options
         ? Object.keys(formQuestion.options).map((key, i) => {
-            return {
-              content: formQuestion.options[key],
-              order: existingChoices.length + i,
-            };
-          })
+          return {
+            content: formQuestion.options[key],
+            order: existingChoices.length + i,
+          };
+        })
         : [];
 
       const choices = existingChoices.concat(newChoices);
@@ -195,6 +198,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
     };
 
     const variables = { id: editView ? course.id : undefined, data: { ...courseObject } };
+
     try {
       if (editView) {
         // TODO: Responsive UI based on following variable result. See Notification.js
@@ -216,8 +220,35 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   };
 
   // Used by minimum workinghour.
-  let maxHours = ((weekends) ? 7 : 5)*(workTimeEndsAt-8);
+  let maxHours = ((weekends) ? 7 : 5) * (workTimeEndsAt - 8);
   const min = 0;
+
+  /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
+
+  const code = getValues("courseCode")
+  const [getByCode, { called, loading, error, data }] = useLazyQuery(COURSE_BY_CODE, {
+    variables: { code },
+  });
+
+
+  if (called && !loading && questions.length === 0) {
+    const result = data.getCourseByCode;
+    console.log(data.getCourseByCode);
+    setValue("courseTitle", result[0].title)
+    setValue("courseDescription", result[0].description)
+    if (result[0].questions) {
+      const qstns = result[0].questions
+        .map(q => {
+          const newQ = removeTypename(q);
+          newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
+          return newQ;
+        });
+
+      console.log(qstns)
+      setQuestions(qstns);
+    }
+  }
+  /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
 
   return (
     <div className={classes.root}>
@@ -274,18 +305,24 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
               },
             }}
             render={props => (
-              <TextField
-                // eslint-disable-next-line react/jsx-props-no-spreading
-                {...props}
-                variant="outlined"
-                label={intl.formatMessage({
-                  id: 'courseForm.courseCodeForm',
-                })}
-                error={errors.courseCode !== undefined}
-                helperText={errors.courseCode?.message}
-                data-cy="course-code-input"
-                className={classes.textField}
-              />
+              <>
+                <TextField
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  {...props}
+                  variant="outlined"
+                  label={intl.formatMessage({
+                    id: 'courseForm.courseCodeForm',
+                  })}
+                  error={errors.courseCode !== undefined}
+                  helperText={errors.courseCode?.message}
+                  data-cy="course-code-input"
+                  className={classes.textField}
+                />
+
+                <IconButton onClick={() => getByCode()}>
+                  <SearchIcon />
+                </IconButton>
+              </>
             )}
           />
           {/* Deadline input */}
@@ -297,16 +334,16 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
               required: intl.formatMessage({ id: 'courseForm.deadlineMissingValidationMsg' }),
               min: editView
                 ? {
-                    value:
-                      user === undefined || user.role === roles.ADMIN_ROLE
-                        ? null
-                        : getFormattedDate(),
-                    message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationMsg' }),
-                  }
+                  value:
+                    user === undefined || user.role === roles.ADMIN_ROLE
+                      ? null
+                      : getFormattedDate(),
+                  message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationMsg' }),
+                }
                 : {
-                    value: getFormattedDate(),
-                    message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationMsg' }),
-                  },
+                  value: getFormattedDate(),
+                  message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationMsg' }),
+                },
             }}
             render={props => (
               <TextField
@@ -392,52 +429,52 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
               <CardActions >
                 <FormControlLabel
                   data-cy="weekend-checkbox"
-                  control={<Checkbox color="primary" checked={weekends} onClick={() =>{ setWeekends(!weekends)}} />}
+                  control={<Checkbox color="primary" checked={weekends} onClick={() => { setWeekends(!weekends) }} />}
                   label={intl.formatMessage({ id: 'courseForm.includeCalendarWeekends' })}
                 />
               </CardActions>
 
               <CardActions >
-              <TextField
-                data-cy="min-hour-field"
-                label="Minimum working hours"
-                style = {{width: 200}}
-                type="number"
-                inputProps={{ min, maxHours }}
-                value={minHours}
-                onChange={(e) => {
-                  var value = parseInt(e.target.value, 10);
-                  if (value > maxHours) value = maxHours;
-                  if (value < 0) value = 0;
-                  setMinWorkingHours(value);
-                }}
-                error={minHours > maxHours}
-                helperText={minHours > maxHours ? 'Minimum hours too much!' : ' '}
-                variant="outlined"
-              />
+                <TextField
+                  data-cy="min-hour-field"
+                  label="Minimum working hours"
+                  style={{ width: 200 }}
+                  type="number"
+                  inputProps={{ min, maxHours }}
+                  value={minHours}
+                  onChange={(e) => {
+                    var value = parseInt(e.target.value, 10);
+                    if (value > maxHours) value = maxHours;
+                    if (value < 0) value = 0;
+                    setMinWorkingHours(value);
+                  }}
+                  error={minHours > maxHours}
+                  helperText={minHours > maxHours ? 'Minimum hours too much!' : ' '}
+                  variant="outlined"
+                />
               </CardActions>
-              
+
               <CardContent>
                 <h4>
                   {`Select the selectable working hours in week. Current selection 8.00 – ${workTimeEndsAt}.00`}
                 </h4>
               </CardContent>
               <CardActions className={classes.slider}>
-                  <Slider
-                    data-cy="working-hour-slider"
-                    marks={[...Array(22 - 7)].map((x, i) => {
-                      return {
-                        label: `${i + 8}.00`,
-                        value: i + 8,
-                      };
-                    })}
-                    value={workTimeEndsAt}
-                    onChange={(event, newValue) => setWorkTimeEndsAt(newValue)}
-                    getAriaValueText={value => `${value}.00`}
-                    step={1}
-                    min={8}
-                    max={22}
-                  />
+                <Slider
+                  data-cy="working-hour-slider"
+                  marks={[...Array(22 - 7)].map((x, i) => {
+                    return {
+                      label: `${i + 8}.00`,
+                      value: i + 8,
+                    };
+                  })}
+                  value={workTimeEndsAt}
+                  onChange={(event, newValue) => setWorkTimeEndsAt(newValue)}
+                  getAriaValueText={value => `${value}.00`}
+                  step={1}
+                  min={8}
+                  max={22}
+                />
               </CardActions>
             </Card>
           </div>
@@ -546,7 +583,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
               <FormattedMessage id="editView.todayDeadlineWarning" />
             </Alert>
           )}
-          
+
         <FormGroup row className={classes.buttonGroup}>
           <ConfirmationButton
             onConfirm={handleSubmit(onSubmit)}

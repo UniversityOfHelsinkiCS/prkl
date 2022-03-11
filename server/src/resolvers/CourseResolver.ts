@@ -1,6 +1,6 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { getRepository } from "typeorm";
-import _ from "lodash";
+import _, { orderBy } from "lodash";
 import { User } from "../entities/User";
 import { Course } from "../entities/Course";
 import { Question } from "../entities/Question";
@@ -38,6 +38,23 @@ export class CourseResolver {
     }
   }
 
+  @Query(() => [Course])
+  async getCourseByCode(@Ctx() context, @Arg("code") code: string): Promise<Course[]> {
+    const { user } = context;
+
+    const courses = await Course.find({
+      where: { code },
+      relations: ["questions", "questions.questionChoices", "teachers"]
+    })
+    
+
+    if (!courses || user.role < STAFF) {
+      throw new Error("Course not found.")
+    }
+
+    return courses;
+  }
+
   @Query(() => Course)
   async course(@Ctx() context, @Arg("id") id: string): Promise<Course> {
     const { user } = context;
@@ -69,7 +86,7 @@ export class CourseResolver {
   @Mutation(() => Course)
   async createCourse(@Ctx() context, @Arg("data") data: CourseInput): Promise<Course> {
     const course = Course.create(data);
-
+    console.log(data)
     if (data.teachers.length === 0) {
       const { user } = context;
       course.teachers = [user];
