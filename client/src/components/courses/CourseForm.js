@@ -215,9 +215,6 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
     }
   };
 
-  // Used by minimum workinghour.
-  let maxHours = ((weekends) ? 7 : 5)*(workTimeEndsAt-8);
-  const min = 0;
 
   return (
     <div className={classes.root}>
@@ -403,7 +400,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                 label="Minimum working hours"
                 style = {{width: 200}}
                 type="number"
-                inputProps={{ min, maxHours }}
+                InputProps={{ inputProps: { min: 0, max: 40 } }}
                 value={minHours}
                 onChange={(e) => {
                   var value = parseInt(e.target.value, 10);
