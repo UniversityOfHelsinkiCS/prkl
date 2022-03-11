@@ -11,10 +11,6 @@ import {
   Button,
   FormGroup,
   Slider,
-  InputLabel,
-  FormControl,
-  OutlinedInput,
-  FormHelperText,
   Card,
   CardContent,
   CardActions,
@@ -404,12 +400,12 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                 value={minHours}
                 onChange={(e) => {
                   var value = parseInt(e.target.value, 10);
-                  if (value > maxHours) value = maxHours;
+                  if (value > 40) value = 40;
                   if (value < 0) value = 0;
                   setMinWorkingHours(value);
                 }}
-                error={minHours > maxHours}
-                helperText={minHours > maxHours ? 'Minimum hours too much!' : ' '}
+                error={minHours > 40}
+                helperText={minHours > 40 ? 'Minimum hours too much!' : ' '}
                 variant="outlined"
               />
               </CardActions>
