@@ -12,10 +12,9 @@ const useStyles = makeStyles({
   },
 });
 
-const Question = ({ question, formControl }) => {
+const Question = ({ question, minHours, weekends, workTimeEndsAt, formControl }) => {
   const intl = useIntl();
   const name = question.id;
-
   const classes = useStyles();
 
   const changeType = () => {
@@ -62,6 +61,7 @@ const Question = ({ question, formControl }) => {
       case MULTI_CHOICE:
         return (
           <ValidatedInput
+            id="multiChoise"
             name={name}
             type={Select}
             classes={classes.selectField}
@@ -94,12 +94,16 @@ const Question = ({ question, formControl }) => {
       <Controller
         as={TimeForm}
         name={question.id}
+        weekends = {weekends}
+        minHours = {minHours}
+        workTimeEndsAt = {workTimeEndsAt}
         onChange={([event]) => {
           return event;
         }}
         formControl={formControl}
         control={formControl.control}
         description={question.content}
+        
       />
     );
   }

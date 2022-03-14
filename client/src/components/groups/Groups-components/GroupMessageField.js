@@ -38,6 +38,7 @@ export default ({ setGroupMessages, tableIndex, setUnsaved, groupMessages }) => 
         data-cy="group-message-input"
         placeholder={intl.formatMessage({ id: 'groups.messageInfo' })}
         variant="outlined"
+        value={groupMessages[tableIndex]}
         className={classes.groupMessageField}
       />
     </div>

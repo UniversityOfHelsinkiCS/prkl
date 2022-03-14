@@ -8,9 +8,13 @@ export const ALL_COURSES = gql`
       code
       maxGroupSize
       minGroupSize
+      minHours
+      weekends
+      workTimeEndsAt
       description
       deadline
       published
+      createdAt
       teachers {
         id
         firstname
@@ -93,6 +97,9 @@ export const COURSE_BY_ID = gql`
       maxGroupSize
       minGroupSize
       title
+      minHours
+      workTimeEndsAt
+      weekends
       description
       code
       deadline
@@ -343,4 +350,18 @@ export const GROUP_TIMES = gql`
       }
     }
   }
+`;
+
+export const COURSE_BY_CODE = gql`
+    query coursesByCode($courseCode: String!){
+      getCourseByCode(code: $courseCode) {
+        title
+        code
+        createdAt
+        questions {
+          questionType
+          content
+        }
+      }
+    }
 `;

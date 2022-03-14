@@ -24,6 +24,9 @@ const useCourseFormStyles = makeStyles({
     fontSize: 30,
     margin: 5,
   },
+  slider: {
+    padding: '0 30px'
+  },
 });
 
 // eslint-disable-next-line import/prefer-default-export

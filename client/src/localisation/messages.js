@@ -19,6 +19,7 @@ export default {
     'courseForm.courseDeadlineForm': 'Enrollment deadline',
     'courseForm.courseDescriptionForm': 'Course description',
     'courseForm.includeCalendar': 'Include a time table',
+    'courseForm.includeCalendarWeekends': 'include weekends as selectable times',
     'courseForm.timeFormLabel': 'Purpose of the time table',
     'courseForm.timeQuestionDefault':
       'Working hours that are okay/unsure/impossible for you, respectively',
@@ -56,6 +57,8 @@ export default {
     'editView.closeRegistrationBtn': 'Close registration',
     'editView.pastDeadlineWarning':
       'Warning: You have set a registration deadline that has already passed. Registration will be effectively closed.',
+    'editView.todayDeadlineWarning':
+      'Warning: You have set a registration deadline that is due today. Registration will close at 23:59pm ',
     'editView.cancelEditsButton': 'Cancel',
     'editView.confirmCancelEdits': 'Discard all changes?',
 
@@ -67,6 +70,7 @@ export default {
     'courses.orderByLabel': 'Order by:',
     'courses.orderByNameOption': 'Name',
     'courses.orderByCodeOption': 'Course Code',
+    'courses.orderByCreatedAtOption': 'Course Creation date',
     'courses.orderByDeadlineOption': 'Deadline',
     'courses.enrolledStudents': 'Enrolled students: ',
     'courses.mailToTeacher': 'Send mail to teacher',

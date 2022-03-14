@@ -6,7 +6,17 @@ import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import _ from 'lodash';
 
-import { TextField, Button, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
+import {
+  TextField,
+  Button,
+  FormGroup,
+  Slider,
+  Card,
+  CardContent,
+  CardActions,
+  FormControlLabel,
+  Checkbox,
+} from '@material-ui/core';
 import { blue, red } from '@material-ui/core/colors';
 import InfoIcon from '@material-ui/icons/Info';
 import { Alert } from '@material-ui/lab';
@@ -42,6 +52,9 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   const [questions, setQuestions] = useState([]);
   const [publishToggle, setPublishToggle] = useState(false);
   const [calendarToggle, setCalendarToggle] = useState(false);
+  const [workTimeEndsAt, setWorkTimeEndsAt] = useState(21);
+  const [minHours, setMinWorkingHours] = useState(10);
+  const [weekends, setWeekends] = useState(false);
   const [calendar, setCalendar] = useState(null);
 
   const hookForm = useForm({ mode: 'onChange' });
@@ -168,6 +181,9 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
       code: formData.courseCode,
       minGroupSize: editView ? course.minGroupSize : 1,
       maxGroupSize: editView ? course.maxGroupSize : 1,
+      workTimeEndsAt: workTimeEndsAt,
+      minHours: minHours,
+      weekends: weekends,
       deadline: new Date(formData.deadline).setHours(23, 59),
       teachers: teachersWithoutType,
       questions: calendarToggle ? questionsWOKeys.concat(calendarQuestion) : questionsWOKeys,
@@ -194,6 +210,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
       console.log('error:', error);
     }
   };
+
 
   return (
     <div className={classes.root}>
@@ -354,10 +371,70 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
               disabled={editView && course.published}
               checked={calendarToggle}
               onClick={() => setCalendarToggle(!calendarToggle)}
+              data-cy="calendar-checkbox"
             />
           }
           label={intl.formatMessage({ id: 'courseForm.includeCalendar' })}
         />
+
+        {calendarToggle && (
+          <div>
+
+
+            <Card variant="outlined">
+              <CardActions >
+                <FormControlLabel
+                  data-cy="weekend-checkbox"
+                  control={<Checkbox color="primary" checked={weekends} onClick={() =>{ setWeekends(!weekends)}} />}
+                  label={intl.formatMessage({ id: 'courseForm.includeCalendarWeekends' })}
+                />
+              </CardActions>
+
+              <CardActions >
+              <TextField
+                data-cy="min-hour-field"
+                label="Minimum working hours"
+                style = {{width: 200}}
+                type="number"
+                InputProps={{ inputProps: { min: 0, max: 40 } }}
+                value={minHours}
+                onChange={(e) => {
+                  var value = parseInt(e.target.value, 10);
+                  if (value > 40) value = 40;
+                  if (value < 0) value = 0;
+                  setMinWorkingHours(value);
+                }}
+                error={minHours > 40}
+                helperText={minHours > 40 ? 'Minimum hours too much!' : ' '}
+                variant="outlined"
+              />
+              </CardActions>
+              
+              <CardContent>
+                <h4>
+                  {`Select the selectable working hours in week. Current selection 8.00 – ${workTimeEndsAt}.00`}
+                </h4>
+              </CardContent>
+              <CardActions className={classes.slider}>
+                  <Slider
+                    data-cy="working-hour-slider"
+                    marks={[...Array(22 - 7)].map((x, i) => {
+                      return {
+                        label: `${i + 8}.00`,
+                        value: i + 8,
+                      };
+                    })}
+                    value={workTimeEndsAt}
+                    onChange={(event, newValue) => setWorkTimeEndsAt(newValue)}
+                    getAriaValueText={value => `${value}.00`}
+                    step={1}
+                    min={8}
+                    max={22}
+                  />
+              </CardActions>
+            </Card>
+          </div>
+        )}
 
         {/* Calendar description input */}
         <Controller
@@ -450,12 +527,19 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
         )}
 
         {role === roles.ADMIN_ROLE &&
-          new Date(getValues('deadline')).getTime() <= new Date().getTime() && (
+          new Date(new Date(getValues('deadline')).getTime()).setHours(0, 0, 0, 0) < new Date(new Date().getTime()).setHours(0, 0, 0, 0) && (
             <Alert severity="warning" className={classes.alert}>
               <FormattedMessage id="editView.pastDeadlineWarning" />
             </Alert>
           )}
 
+        {role === roles.ADMIN_ROLE &&
+          new Date(new Date(getValues('deadline')).getTime()).setHours(0, 0, 0, 0) === new Date(Date.now()).setHours(0, 0, 0, 0) && (
+            <Alert severity="warning" className={classes.alert}>
+              <FormattedMessage id="editView.todayDeadlineWarning" />
+            </Alert>
+          )}
+          
         <FormGroup row className={classes.buttonGroup}>
           <ConfirmationButton
             onConfirm={handleSubmit(onSubmit)}

@@ -47,6 +47,18 @@ export class Course extends BaseEntity {
   @Column()
   minGroupSize: number;
 
+  @Field(() => Number, { nullable: true })
+  @Column({ nullable: true })
+  workTimeEndsAt: number;
+
+  @Field(() => Boolean, { nullable: true })
+  @Column({ nullable: true })
+  weekends: boolean;
+
+  @Field(() => Number, { nullable: true })
+  @Column({ nullable: true })
+  minHours: number;
+
   @Field(() => Boolean)
   @Column()
   published: boolean;
@@ -59,9 +71,11 @@ export class Course extends BaseEntity {
   @Column({ default: false })
   deleted: boolean;
 
+  @Field(() => Date)
   @CreateDateColumn({ type: "timestamptz" })
   createdAt: Date;
 
+  @Field(() => Date)
   @UpdateDateColumn({ type: "timestamptz", nullable: true })
   updatedAt: Date;
 
