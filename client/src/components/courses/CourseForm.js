@@ -229,7 +229,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   });
   
     useEffect(() => {
-      if (called && !loading) {
+      if (called && !loading && data.getCourseByCode.length > 0) {
         const result = data.getCourseByCode;
         console.log(data.getCourseByCode);
         setValue("courseTitle", result[0].title)
@@ -245,6 +245,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
           console.log(qstns)
           setQuestions(qstns);
         }
+
       }
   
     }, [data])
