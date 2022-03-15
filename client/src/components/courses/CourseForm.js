@@ -5,7 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { useMutation, useLazyQuery } from '@apollo/client';
 import _ from 'lodash';
-
+import { useCourseAsTemplate } from './hooks/useCourseAsTemplate';
 import {
   TextField,
   Button,
@@ -224,30 +224,40 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   const min = 0;
 
   /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
-
   const code = getValues("courseCode")
   const [getByCode, { called, loading, error, data }] = useLazyQuery(COURSE_BY_CODE, {
     variables: { code },
   });
+  const searchByCodeHook = useCourseAsTemplate(called, loading, data, setQuestions, setValue)
+  console.log(questions)
+
+  /*   const code = getValues("courseCode")
+    const [getByCode, { called, loading, error, data }] = useLazyQuery(COURSE_BY_CODE, {
+      variables: { code },
+    });
+  
+    useEffect(() => {
+      if (called && !loading) {
+        const result = data.getCourseByCode;
+        console.log(data.getCourseByCode);
+        setValue("courseTitle", result[0].title)
+        setValue("courseDescription", result[0].description)
+        if (result[0].questions) {
+          const qstns = result[0].questions
+            .map(q => {
+              const newQ = removeTypename(q);
+              newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
+              return newQ;
+            });
+  
+          console.log(qstns)
+          setQuestions(qstns);
+        }
+      }
+  
+    }, [called]) */
 
 
-  if (called && !loading && questions.length === 0) {
-    const result = data.getCourseByCode;
-    console.log(data.getCourseByCode);
-    setValue("courseTitle", result[0].title)
-    setValue("courseDescription", result[0].description)
-    if (result[0].questions) {
-      const qstns = result[0].questions
-        .map(q => {
-          const newQ = removeTypename(q);
-          newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
-          return newQ;
-        });
-
-      console.log(qstns)
-      setQuestions(qstns);
-    }
-  }
   /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
 
   return (
