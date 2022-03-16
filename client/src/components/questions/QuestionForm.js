@@ -234,7 +234,9 @@ const QuestionForm = ({
 
           {/* Question choice input */}
           <FormGroup row className={classes.questionChoices}>
-            {options.map((o, index) => (
+            {options.map((o, index) => {
+              // console.log(o);
+              return (
               <Controller
                 key={o.oName}
                 control={control}
@@ -279,7 +281,7 @@ const QuestionForm = ({
                   />
                 )}
               />
-            ))}
+            )})}
           </FormGroup>
         </>
       )}

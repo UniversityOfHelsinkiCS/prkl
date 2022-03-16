@@ -65,7 +65,6 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
 
   const hookForm = useForm({ mode: 'onChange' });
   const { setValue, getValues, errors, handleSubmit, control, reset } = hookForm;
-
   let confirmPromptText;
   if (editView) {
     confirmPromptText = intl.formatMessage({
@@ -176,7 +175,8 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
 
     const questionsWOKeys = updatedQuestions.map(q => {
       const opts = q.questionChoices ? q.questionChoices.map(qc => _.omit(qc, 'oName')) : [];
-      const newQ = _.omit(q, 'qKey');
+      // tähä lisätty toi id
+      const newQ = _.omit(q, ['qKey', "id"]);
       newQ.questionChoices = opts;
       return newQ;
     });
@@ -223,6 +223,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   const min = 0;
 
   /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
+
   const code = getValues("courseCode")
   const [getByCode, { called, loading, error, data }] = useLazyQuery(COURSE_BY_CODE, {
     variables: { code },
@@ -251,6 +252,25 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
     }, [data])
 
 
+  if (called && !loading && questions.length === 0) {
+    const result = data.getCourseByCode;
+    console.log(data.getCourseByCode);
+    setValue("courseTitle", result[0].title)
+    setValue("courseDescription", result[0].description)
+    if (result[0].questions && result[0].questions.length !== 0) {
+      const qstns = result[0].questions
+        .map(q => {
+          const newQ = removeTypename(q);
+          console.log(q);
+          newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
+          return newQ;
+        });
+
+      console.log(qstns)
+      // console.log([...qstns, { content: '', qKey: new Date().getTime().toString() }])
+      setQuestions(qstns);
+    }
+  }
   /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
 
   return (
@@ -532,7 +552,11 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
         )}
 
         <FormGroup row>
-          {questions?.map((q, index) => (
+          {questions?.map((q, index) => {
+            // console.log(q);
+            // console.log(q.qKey);
+            // console.log(q.id);
+            return (
             <QuestionForm
               key={q.qKey ? q.qKey : q.id}
               qName={q.qKey ? q.qKey : q.id}
@@ -542,7 +566,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
               hideAddRemoveButtons={editView ? course.published : false}
               hookForm={hookForm}
             />
-          ))}
+          )})}
         </FormGroup>
 
         <h3>

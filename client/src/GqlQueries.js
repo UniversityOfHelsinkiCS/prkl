@@ -355,6 +355,7 @@ export const GROUP_TIMES = gql`
 export const COURSE_BY_CODE = gql`
   query coursesByCode($code: String!){
     getCourseByCode(code: $code) {
+      id
       title
       code
       createdAt
@@ -363,12 +364,14 @@ export const COURSE_BY_CODE = gql`
       minGroupSize
           
       questions {
+        id
         content
         optional
         order
         useInGroupCreation
         questionType
         questionChoices {
+          id
           content
           order
         }
