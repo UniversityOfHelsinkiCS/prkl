@@ -54,7 +54,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   const [questions, setQuestions] = useState([]);
   const [publishToggle, setPublishToggle] = useState(false);
   const [calendarToggle, setCalendarToggle] = useState(false);
-  const [workTimeEndsAt, setWorkTimeEndsAt] = useState(21);
+  const [workTimeEndsAt, setWorkTimeEndsAt] = useState(18);
   const [minHours, setMinWorkingHours] = useState(10);
   const [weekends, setWeekends] = useState(false);
   const [calendar, setCalendar] = useState(null);
