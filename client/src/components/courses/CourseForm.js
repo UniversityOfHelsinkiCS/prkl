@@ -21,7 +21,7 @@ import { blue, red } from '@material-ui/core/colors';
 import InfoIcon from '@material-ui/icons/Info';
 import { Alert } from '@material-ui/lab';
 
-import { CREATE_COURSE, UPDATE_COURSE } from '../../GqlQueries';
+import { CREATE_COURSE, UPDATE_COURSE, ALL_COURSES } from '../../GqlQueries';
 
 import { useCourseFormStyles } from '../../styles/courses/CourseForm';
 import ConfirmationButton from '../ui/ConfirmationButton';
@@ -41,8 +41,10 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   const history = useHistory();
   const intl = useIntl();
 
-  const [updateCourse] = useMutation(UPDATE_COURSE);
-  const [createCourse] = useMutation(CREATE_COURSE);
+  const [updateCourse] = useMutation(UPDATE_COURSE, {
+    refetchQueries: [ { query: ALL_COURSES } ]  });
+  const [createCourse] = useMutation(CREATE_COURSE, {
+    refetchQueries: [ { query: ALL_COURSES } ]  })
 
   const { id, firstname, lastname, studentNo, email, role } = user;
   const userFields = { id, firstname, lastname, studentNo, email, role };
