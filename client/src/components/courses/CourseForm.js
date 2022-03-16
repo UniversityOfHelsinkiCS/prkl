@@ -174,10 +174,12 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
     });
 
     const questionsWOKeys = updatedQuestions.map(q => {
+      const omitOName = editView ? ['oName'] : ['oName', 'id']
+      const omitQKey = editView ? ['qKey'] :  ['qKey', 'id']
       const opts = q.questionChoices
-        ? q.questionChoices.map(qc => _.omit(qc, ['oName', 'id']))
+        ? q.questionChoices.map(qc => _.omit(qc, omitOName))
         : [];
-      const newQ = _.omit(q, ['qKey', 'id']);
+      const newQ = _.omit(q, omitQKey);
       newQ.questionChoices = opts;
       return newQ;
     });
