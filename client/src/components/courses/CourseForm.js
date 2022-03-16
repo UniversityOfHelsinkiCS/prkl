@@ -142,22 +142,22 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
       const formQuestion = formData.questions[q.id || q.qKey];
       const existingChoices = q.questionChoices
         ? q.questionChoices.map(qc => {
-          const formChoice = formQuestion.options[qc.id];
-          delete formQuestion.options[qc.id];
-          return {
-            ...qc,
-            content: formChoice,
-          };
-        })
+            const formChoice = formQuestion.options[qc.id];
+            delete formQuestion.options[qc.id];
+            return {
+              ...qc,
+              content: formChoice,
+            };
+          })
         : [];
 
       const newChoices = formQuestion.options
         ? Object.keys(formQuestion.options).map((key, i) => {
-          return {
-            content: formQuestion.options[key],
-            order: existingChoices.length + i,
-          };
-        })
+            return {
+              content: formQuestion.options[key],
+              order: existingChoices.length + i,
+            };
+          })
         : [];
 
       const choices = existingChoices.concat(newChoices);
@@ -174,9 +174,10 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
     });
 
     const questionsWOKeys = updatedQuestions.map(q => {
-      const opts = q.questionChoices ? q.questionChoices.map(qc => _.omit(qc, 'oName')) : [];
-      // tähä lisätty toi id
-      const newQ = _.omit(q, ['qKey', "id"]);
+      const opts = q.questionChoices
+        ? q.questionChoices.map(qc => _.omit(qc, ['oName', 'id']))
+        : [];
+      const newQ = _.omit(q, ['qKey', 'id']);
       newQ.questionChoices = opts;
       return newQ;
     });
@@ -219,58 +220,35 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   };
 
   // Used by minimum workinghour.
-  let maxHours = ((weekends) ? 7 : 5) * (workTimeEndsAt - 8);
+  let maxHours = (weekends ? 7 : 5) * (workTimeEndsAt - 8);
   const min = 0;
 
   /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
 
-  const code = getValues("courseCode")
+  const code = getValues('courseCode');
   const [getByCode, { called, loading, error, data }] = useLazyQuery(COURSE_BY_CODE, {
     variables: { code },
   });
-  
-    useEffect(() => {
-      if (called && !loading && data.getCourseByCode.length > 0) {
-        const result = data.getCourseByCode;
-        console.log(data.getCourseByCode);
-        setValue("courseTitle", result[0].title)
-        setValue("courseDescription", result[0].description)
-        if (result[0].questions) {
-          const qstns = result[0].questions
-            .map(q => {
-              const newQ = removeTypename(q);
-              newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
-              return newQ;
-            });
-  
-          console.log(qstns)
-          setQuestions(qstns);
-        }
 
-      }
-  
-    }, [data])
-
-
-  if (called && !loading && questions.length === 0) {
-    const result = data.getCourseByCode;
-    console.log(data.getCourseByCode);
-    setValue("courseTitle", result[0].title)
-    setValue("courseDescription", result[0].description)
-    if (result[0].questions && result[0].questions.length !== 0) {
-      const qstns = result[0].questions
-        .map(q => {
+  useEffect(() => {
+    if (called && !loading && data.getCourseByCode.length > 0) {
+      const result = data.getCourseByCode;
+      console.log(data.getCourseByCode);
+      setValue('courseTitle', result[0].title);
+      setValue('courseDescription', result[0].description);
+      if (result[0].questions && result[0].questions.length !== 0) {
+        const qstns = result[0].questions.map(q => {
           const newQ = removeTypename(q);
-          console.log(q);
           newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
           return newQ;
         });
 
-      console.log(qstns)
-      // console.log([...qstns, { content: '', qKey: new Date().getTime().toString() }])
-      setQuestions(qstns);
+        console.log(qstns);
+        setQuestions(qstns);
+      }
     }
-  }
+  }, [data]);
+
   /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
 
   return (
@@ -357,16 +335,16 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
               required: intl.formatMessage({ id: 'courseForm.deadlineMissingValidationMsg' }),
               min: editView
                 ? {
-                  value:
-                    user === undefined || user.role === roles.ADMIN_ROLE
-                      ? null
-                      : getFormattedDate(),
-                  message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationMsg' }),
-                }
+                    value:
+                      user === undefined || user.role === roles.ADMIN_ROLE
+                        ? null
+                        : getFormattedDate(),
+                    message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationMsg' }),
+                  }
                 : {
-                  value: getFormattedDate(),
-                  message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationMsg' }),
-                },
+                    value: getFormattedDate(),
+                    message: intl.formatMessage({ id: 'courseForm.deadlinePassedValidationMsg' }),
+                  },
             }}
             render={props => (
               <TextField
@@ -446,18 +424,24 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
 
         {calendarToggle && (
           <div>
-
-
             <Card variant="outlined">
-              <CardActions >
+              <CardActions>
                 <FormControlLabel
                   data-cy="weekend-checkbox"
-                  control={<Checkbox color="primary" checked={weekends} onClick={() => { setWeekends(!weekends) }} />}
+                  control={
+                    <Checkbox
+                      color="primary"
+                      checked={weekends}
+                      onClick={() => {
+                        setWeekends(!weekends);
+                      }}
+                    />
+                  }
                   label={intl.formatMessage({ id: 'courseForm.includeCalendarWeekends' })}
                 />
               </CardActions>
 
-              <CardActions >
+              <CardActions>
                 <TextField
                   data-cy="min-hour-field"
                   label="Minimum working hours"
@@ -465,7 +449,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                   type="number"
                   inputProps={{ min, maxHours }}
                   value={minHours}
-                  onChange={(e) => {
+                  onChange={e => {
                     var value = parseInt(e.target.value, 10);
                     if (value > maxHours) value = maxHours;
                     if (value < 0) value = 0;
@@ -553,20 +537,18 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
 
         <FormGroup row>
           {questions?.map((q, index) => {
-            // console.log(q);
-            // console.log(q.qKey);
-            // console.log(q.id);
             return (
-            <QuestionForm
-              key={q.qKey ? q.qKey : q.id}
-              qName={q.qKey ? q.qKey : q.id}
-              setQuestions={setQuestions}
-              questions={questions}
-              questionIndex={index}
-              hideAddRemoveButtons={editView ? course.published : false}
-              hookForm={hookForm}
-            />
-          )})}
+              <QuestionForm
+                key={q.qKey ? q.qKey : q.id}
+                qName={q.qKey ? q.qKey : q.id}
+                setQuestions={setQuestions}
+                questions={questions}
+                questionIndex={index}
+                hideAddRemoveButtons={editView ? course.published : false}
+                hookForm={hookForm}
+              />
+            );
+          })}
         </FormGroup>
 
         <h3>
@@ -598,14 +580,16 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
         )}
 
         {role === roles.ADMIN_ROLE &&
-          new Date(new Date(getValues('deadline')).getTime()).setHours(0, 0, 0, 0) < new Date(new Date().getTime()).setHours(0, 0, 0, 0) && (
+          new Date(new Date(getValues('deadline')).getTime()).setHours(0, 0, 0, 0) <
+            new Date(new Date().getTime()).setHours(0, 0, 0, 0) && (
             <Alert severity="warning" className={classes.alert}>
               <FormattedMessage id="editView.pastDeadlineWarning" />
             </Alert>
           )}
 
         {role === roles.ADMIN_ROLE &&
-          new Date(new Date(getValues('deadline')).getTime()).setHours(0, 0, 0, 0) === new Date(Date.now()).setHours(0, 0, 0, 0) && (
+          new Date(new Date(getValues('deadline')).getTime()).setHours(0, 0, 0, 0) ===
+            new Date(Date.now()).setHours(0, 0, 0, 0) && (
             <Alert severity="warning" className={classes.alert}>
               <FormattedMessage id="editView.todayDeadlineWarning" />
             </Alert>
