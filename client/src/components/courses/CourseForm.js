@@ -236,14 +236,22 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
     if (called && !loading && data.getCourseByCode.length > 0) {
       const result = data.getCourseByCode;
       console.log(data.getCourseByCode);
+      console.log(result[0]);
       setValue('courseTitle', result[0].title);
       setValue('courseDescription', result[0].description);
       if (result[0].questions && result[0].questions.length !== 0) {
-        const qstns = result[0].questions.map(q => {
+        const calendarQuestion = result[0].questions.find(q => q.questionType === TIMES);
+        if (calendarQuestion) {
+          setCalendarToggle(true);
+          setValue('calendarDescription', calendarQuestion.content);
+        }
+        const qstns = result[0].questions.filter(q => q.questionType !== TIMES)
+        .map(q => {
           const newQ = removeTypename(q);
           newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
           return newQ;
         });
+
 
         console.log(qstns);
         setQuestions(qstns);
