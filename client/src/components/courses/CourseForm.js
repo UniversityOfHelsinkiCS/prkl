@@ -223,13 +223,14 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
 
   const code = getValues('courseCode');
-  const [getByCode, { called, loading, error, data }] = useLazyQuery(COURSE_BY_CODE, {
+  const [getByCode, { called, loading, error, data, refetch }] = useLazyQuery(COURSE_BY_CODE, {
     variables: { code },
   });
 
   useEffect(() => {
     if (called && !loading && data.getCourseByCode.length > 0) {
-      //Haetaan viimeisin kurssi, (tämän voisi toteuttaa jo queryssa)
+      refetch();
+      //Haetaan viimeisin kurssi, (tämän voisi toteuttaa jo wu)
       const result = data.getCourseByCode[data.getCourseByCode.length-1];
       console.log(result)
       setMinWorkingHours(result.minHours || minHours);
