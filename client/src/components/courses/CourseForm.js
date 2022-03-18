@@ -4,7 +4,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useForm, Controller } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { useMutation, useLazyQuery } from '@apollo/client';
-import _, { set } from 'lodash';
+import _ from 'lodash';
 import {
   TextField,
   Button,
@@ -228,38 +228,34 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   });
 
   useEffect(() => {
-    //Käppäratkaisu, jolle voisi tehdä jotain
-    setCalendarToggle(false);
-    setCalendar(null);
-    setQuestions([]);
     if (called && !loading && data.getCourseByCode.length > 0) {
-      const result = data.getCourseByCode;
-      console.log(data.getCourseByCode);
-      console.log(result[0]);
+      //Haetaan viimeisin kurssi, (tämän voisi toteuttaa jo queryssa)
+      const result = data.getCourseByCode[data.getCourseByCode.length-1];
+      console.log(result)
+      setMinWorkingHours(result.minHours || minHours);
+      setWorkTimeEndsAt(result.workTimeEndsAt || workTimeEndsAt);
+      setWeekends(result.weekends || weekends);
+      setValue('courseTitle', result.title);
+      setValue('courseDescription', result.description);
       
-      setMinWorkingHours(result[0].minHours || minHours);
-      setWorkTimeEndsAt(result[0].workTimeEndsAt || workTimeEndsAt);
-      setWeekends(result[0].weekends || weekends);
-      setValue('courseTitle', result[0].title);
-      setValue('courseDescription', result[0].description);
-      if (result[0].questions && result[0].questions.length !== 0) {
-        const calendarQuestion = result[0].questions.find(q => q.questionType === TIMES);
-        if (calendarQuestion) {
+      const calendarQuestion = result.questions.find(q => q.questionType === TIMES);
+      if (calendarQuestion) {
           //tämä ei todellakaan ole paras ratkaisu, sillä jos kirjoittaa muun kurssin, jolla ei ole timetablea, niin arvo jää. ratkaistu rivillä 230.
-          setCalendarToggle(true);
-          setValue('calendarDescription', calendarQuestion.content);
-        }
-        const qstns = result[0].questions.filter(q => q.questionType !== TIMES)
-        .map(q => {
-          const newQ = removeTypename(q);
-          newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
-          return newQ;
-        });
-
-
-        console.log(qstns);
-        setQuestions(qstns);
+        setCalendarToggle(true);
+        setValue('calendarDescription', calendarQuestion.content);
+      }else{
+        setCalendarToggle(false);
       }
+      const qstns = result.questions.filter(q => q.questionType !== TIMES)
+      .map(q => {
+        const newQ = removeTypename(q);
+        newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
+        return newQ;
+      });
+
+
+      console.log(qstns);
+      setQuestions(qstns);
     }
   }, [data]);
 
@@ -474,7 +470,6 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                 helperText={minHours > 40 ? 'Minimum hours too much!' : ' '}
                 variant="outlined"
               />
-                  
               </CardActions>
 
               <CardContent>
@@ -531,6 +526,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
             />
           )}
         />
+
         {editView && course.published ? (
           <Alert severity="info" className={classes.alert}>
             {intl.formatMessage({ id: 'editView.coursePublishedNotification' })}
