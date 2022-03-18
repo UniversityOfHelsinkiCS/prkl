@@ -4,7 +4,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useForm, Controller } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { useMutation, useLazyQuery } from '@apollo/client';
-import _ from 'lodash';
+import _, { set } from 'lodash';
 import {
   TextField,
   Button,
@@ -43,6 +43,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   const history = useHistory();
   const intl = useIntl();
 
+  //TARVITAAN JOKU JOKA PÄIVITTÄÄ NÄÄ kaikki sivut ku vaihdetaan sivua päivitys toimii todella huonosti
   const [updateCourse] = useMutation(UPDATE_COURSE, {
     refetchQueries: [ { query: ALL_COURSES } ]  });
   const [createCourse] = useMutation(CREATE_COURSE, {
@@ -227,18 +228,24 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   });
 
   useEffect(() => {
+    //Käppäratkaisu, jolle voisi tehdä jotain
+    setCalendarToggle(false);
+    setCalendar(null);
+    setQuestions([]);
     if (called && !loading && data.getCourseByCode.length > 0) {
       const result = data.getCourseByCode;
       console.log(data.getCourseByCode);
       console.log(result[0]);
-      setMinWorkingHours(result[0].minHours);
-      setWorkTimeEndsAt(result[0].workTimeEndsAt);
-      setWeekends(result[0].weekends);
+      
+      setMinWorkingHours(result[0].minHours || minHours);
+      setWorkTimeEndsAt(result[0].workTimeEndsAt || workTimeEndsAt);
+      setWeekends(result[0].weekends || weekends);
       setValue('courseTitle', result[0].title);
       setValue('courseDescription', result[0].description);
       if (result[0].questions && result[0].questions.length !== 0) {
         const calendarQuestion = result[0].questions.find(q => q.questionType === TIMES);
         if (calendarQuestion) {
+          //tämä ei todellakaan ole paras ratkaisu, sillä jos kirjoittaa muun kurssin, jolla ei ole timetablea, niin arvo jää. ratkaistu rivillä 230.
           setCalendarToggle(true);
           setValue('calendarDescription', calendarQuestion.content);
         }
