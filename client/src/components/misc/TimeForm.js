@@ -25,7 +25,11 @@ const useStyles = makeStyles({
   },
   tablecell: {
     border: '1px solid',
+    fontWeight: 600,
+    padding: 1,
+    fontSize: '10pt',
   },
+  
 
 });
 
@@ -65,7 +69,8 @@ const TimeForm = ({ onChange, description, weekends, minHours, workTimeEndsAt, f
         case timeChoices.maybe:
           return 'yellow';
       case timeChoices.no:
-        return '#ff004c';
+        return '#EC0046';
+        
       default:
         throw new Error(`Unexpected switch fallthrough with choice: ${choice}`);
       }

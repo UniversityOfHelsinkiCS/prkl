@@ -8,7 +8,7 @@ Assembler is a tool for automating division of students into project groups. It 
 |`trunk`| [![CI/CD Pipeline](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml/badge.svg?branch=trunk)](https://github.com/UniversityOfHelsinkiCS/prkl/actions/workflows/docker-compose-tests.yml) |
 
 
-### Documentation:
+## Documentation:
 
 Basic documentation is listed here. If you are member of development group in _Ohjelmistotuotantoprojekti_-course, you might be interested in more "beginner-friendly" explanation in [wiki](https://github.com/UniversityOfHelsinkiCS/prkl/wiki) (in Finnish).
 
@@ -21,76 +21,52 @@ Basic documentation is listed here. If you are member of development group in _O
 - [User roles](documentation/user_roles.md)
 
 
-#### Structure
+### Structure
 
 A descriptive graph of the frontend structure can be found [here](documentation/structure/structureFrontend.svg)
 
 A similar graph for the backend structure can be found [here](documentation/structure/structureBackend.svg)
 
-## Usage
-
-Assembler uses `npm` to configure scripts, including `docker-compose` commands for development and testing. The commands outlined in this section should be run at project root unless preceded with a `cd` command and the directory where the related `package.json` is located.
-
 ### Setup
 
 A little `Getting started` -guide can be found [here](documentation/setup.md)
 
-### Development
-
-Hot-loading of changes works currently only separately with backend and frontend. I.e., if you are running the backend in development mode, changes in the frontend are not loaded.
-
-First start the backend server in development mode:
-
-```bash
-npm run dev
+## Development
+Docker-compose is used the run the app in development mode on your computer. First make sure docker and docker-compose are installed on your computer. Then the development environment can be started using
+```
+docker-compose up
 ```
 
-If setting up the development environment for the first time, or if the database is empty for any reason, seed the database by visiting:
+This starts the client, graphQl server, database and adminer service in their own containers. Use `docker ps` to list all running containers and `docker-compose down` to stop them. 
+
+A graphQl endpoint can be found at http://localhost:3001/grapgql. The server restarts automatically after changes to the source code. The server also contains a production version of the client but it's not hot-loadable so it is more convenient to use the hot-loadable development front end at http://localhost:3000.
+
+The Postgres database starts in it's own container. The local database can be accessed using Adminer at http://localhost:4000 (user: postgres, password: postgres).
+
+Note to Windows users: Hot loading changes in the front end and back end may not work as intended on a Windows machine. A workaround is ....
+
+## End to end tests
+
+Cypress is used for end-to-end tests. It is recommended to have Cypress installed globally (`npm i -g cypress`). To use cypress locally, launch Assembler in development mode as outlined above. Then do:
 
 ```
-http://localhost:3001/seed
-```
-
-And follow with launching the frontend with CRA's standard development server:
-
-```bash
-cd client/
-npm start
-```
-
-NPM configuration is stored separately for frontend and backend in `client/` and `server/`, respectively. If you want to use `npm` directly, `cd` into these folders. You will need to provide the database service yourself and probably tinker with the configuration if you do not want use Docker.
-
-### Tests
-
-Cypress is used for end-to-end tests. **Deployment should always be conditional on all tests passing.**
-
-To use cypress locally, launch Assembler in development mode as outlined above. Then do:
-
-```bash
-cd e2e/
+cd e2e
+npm install
 npm run test:dev
 ```
-
-This command configures Cypress and our tests to use different URL's for client and server requests, enabling you to take advantage of hotloading on both sides of the stack when writing tests. It is recommended that you have Cypress installed globally (`npm i -g cypress`) for local development.
-
-### Backend unit tests
-
-The server has unit tests written with Jest. You can run them with `cd server` and `npm run start:test`
-
-#### Run all tests in containers (like they are run on CI)
-
-```bash
-npm test
+To run all tests in headless mode like they are run in CI
 ```
+docker-compose -f docker-compose.ci.yml run tests
+```
+The development app needs to be close for this in order to avoid port conflicts. Also if docker-compose runs as root you may need `sudo chown -R $USER:$USER pg_data`.
 
-### Miscellaneous Commands
 
-Most of the commands defined in various `package.json` files accross the project are meant to be run through Docker. However, here are some you may find useful to run manually:
+## Backend unit tests
 
-#### Build frontend and copy to server directory
-
-```bash
-npm run build:client
+The server has unit tests written with Jest. You can run them with 
+```
+cd server
+npm run start:test`
 ```
 
 ## Product backlog

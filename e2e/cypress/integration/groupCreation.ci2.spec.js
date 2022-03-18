@@ -73,6 +73,18 @@ describe('Group creation', () => {
       cy.contains(namedGroup).should('exist');
     });
 
+    it('Teacher can see group message after refreshing page', () =>{
+      cy.visit(`/course/${course.id}/groups`);
+      cy.get('[data-cy="target-group-size"]').type('{selectAll}$9');
+      cy.get('[data-cy="create-groups-submit"]').click();
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.get('[data-cy="group-message-input"]').type('msg');
+      cy.get('[data-cy="save-groups-button"]').click({ force: true });
+      cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.reload();
+      cy.get('[data-cy="group-message-input"]').find('[type="text"]').should('have.value', 'msg');
+    });
+
     it('Can drag a student from group to another', () => {
       cy.visit(`/course/${course.id}`);
       cy.get('[data-cy="manage-groups-button"]').click();

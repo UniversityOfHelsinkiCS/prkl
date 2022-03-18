@@ -11,10 +11,6 @@ import {
   IconButton,
   FormGroup,
   Slider,
-  InputLabel,
-  FormControl,
-  OutlinedInput,
-  FormHelperText,
   Card,
   CardContent,
   CardActions,
@@ -27,7 +23,7 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import { Alert } from '@material-ui/lab';
 
-import { CREATE_COURSE, UPDATE_COURSE, COURSE_BY_CODE } from '../../GqlQueries';
+import { CREATE_COURSE, UPDATE_COURSE, COURSE_BY_CODE, ALL_COURSES } from '../../GqlQueries';
 
 import { useCourseFormStyles } from '../../styles/courses/CourseForm';
 import ConfirmationButton from '../ui/ConfirmationButton';
@@ -47,8 +43,10 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   const history = useHistory();
   const intl = useIntl();
 
-  const [updateCourse] = useMutation(UPDATE_COURSE);
-  const [createCourse] = useMutation(CREATE_COURSE);
+  const [updateCourse] = useMutation(UPDATE_COURSE, {
+    refetchQueries: [ { query: ALL_COURSES } ]  });
+  const [createCourse] = useMutation(CREATE_COURSE, {
+    refetchQueries: [ { query: ALL_COURSES } ]  })
 
   const { id, firstname, lastname, studentNo, email, role } = user;
   const userFields = { id, firstname, lastname, studentNo, email, role };
@@ -58,7 +56,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   const [questions, setQuestions] = useState([]);
   const [publishToggle, setPublishToggle] = useState(false);
   const [calendarToggle, setCalendarToggle] = useState(false);
-  const [workTimeEndsAt, setWorkTimeEndsAt] = useState(21);
+  const [workTimeEndsAt, setWorkTimeEndsAt] = useState(18);
   const [minHours, setMinWorkingHours] = useState(10);
   const [weekends, setWeekends] = useState(false);
   const [calendar, setCalendar] = useState(null);
@@ -220,10 +218,6 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
       console.log('error:', error);
     }
   };
-
-  // Used by minimum workinghour.
-  let maxHours = (weekends ? 7 : 5) * (workTimeEndsAt - 8);
-  const min = 0;
 
   /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
 
@@ -454,24 +448,26 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                 />
               </CardActions>
 
+
               <CardActions>
-                <TextField
-                  data-cy="min-hour-field"
-                  label="Minimum working hours"
-                  style={{ width: 200 }}
-                  type="number"
-                  inputProps={{ min, maxHours }}
-                  value={minHours}
-                  onChange={e => {
-                    var value = parseInt(e.target.value, 10);
-                    if (value > maxHours) value = maxHours;
-                    if (value < 0) value = 0;
-                    setMinWorkingHours(value);
-                  }}
-                  error={minHours > maxHours}
-                  helperText={minHours > maxHours ? 'Minimum hours too much!' : ' '}
-                  variant="outlined"
-                />
+              <TextField
+                data-cy="min-hour-field"
+                label="Minimum working hours"
+                style = {{width: 200}}
+                type="number"
+                InputProps={{ inputProps: { min: 0, max: 40 } }}
+                value={minHours}
+                onChange={e => {
+                  var value = parseInt(e.target.value, 10);
+                  if (value > 40) value = 40;
+                  if (value < 0) value = 0;
+                  setMinWorkingHours(value);
+                }}
+                error={minHours > 40}
+                helperText={minHours > 40 ? 'Minimum hours too much!' : ' '}
+                variant="outlined"
+              />
+                  
               </CardActions>
 
               <CardContent>
