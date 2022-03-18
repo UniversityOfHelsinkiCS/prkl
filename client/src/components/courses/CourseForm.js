@@ -237,6 +237,9 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
       const result = data.getCourseByCode;
       console.log(data.getCourseByCode);
       console.log(result[0]);
+      setMinWorkingHours(result[0].minHours);
+      setWorkTimeEndsAt(result[0].workTimeEndsAt);
+      setWeekends(result[0].weekends);
       setValue('courseTitle', result[0].title);
       setValue('courseDescription', result[0].description);
       if (result[0].questions && result[0].questions.length !== 0) {

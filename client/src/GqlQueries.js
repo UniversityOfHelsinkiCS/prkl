@@ -362,7 +362,9 @@ export const COURSE_BY_CODE = gql`
       description
       maxGroupSize
       minGroupSize
-          
+      workTimeEndsAt
+      weekends
+      minHours
       questions {
         id
         content
