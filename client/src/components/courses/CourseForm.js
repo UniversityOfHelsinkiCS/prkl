@@ -43,6 +43,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   const history = useHistory();
   const intl = useIntl();
 
+  //TARVITAAN JOKU JOKA PÄIVITTÄÄ NÄÄ kaikki sivut ku vaihdetaan sivua päivitys toimii todella huonosti
   const [updateCourse] = useMutation(UPDATE_COURSE, {
     refetchQueries: [ { query: ALL_COURSES } ]  });
   const [createCourse] = useMutation(CREATE_COURSE, {
@@ -222,35 +223,39 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
 
   const code = getValues('courseCode');
-  const [getByCode, { called, loading, error, data }] = useLazyQuery(COURSE_BY_CODE, {
+  const [getByCode, { called, loading, error, data, refetch }] = useLazyQuery(COURSE_BY_CODE, {
     variables: { code },
   });
 
   useEffect(() => {
     if (called && !loading && data.getCourseByCode.length > 0) {
-      const result = data.getCourseByCode;
-
-      setMinWorkingHours(result[0].minHours);
-      setWorkTimeEndsAt(result[0].workTimeEndsAt);
-      setWeekends(result[0].weekends);
-      setValue('courseTitle', result[0].title);
-      setValue('courseDescription', result[0].description);
-      if (result[0].questions && result[0].questions.length !== 0) {
-        const calendarQuestion = result[0].questions.find(q => q.questionType === TIMES);
-        if (calendarQuestion) {
-          setCalendarToggle(true);
-          setValue('calendarDescription', calendarQuestion.content);
-        }
-        const qstns = result[0].questions.filter(q => q.questionType !== TIMES)
-        .map(q => {
-          const newQ = removeTypename(q);
-          newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
-          return newQ;
-        });
-
-
-        setQuestions(qstns);
+      refetch();
+      //Haetaan viimeisin kurssi, (tämän voisi toteuttaa jo wu)
+      const result = data.getCourseByCode[0];
+  
+      setMinWorkingHours(result.minHours || minHours);
+      setWorkTimeEndsAt(result.workTimeEndsAt || workTimeEndsAt);
+      setWeekends(result.weekends || weekends);
+      setValue('courseTitle', result.title);
+      setValue('courseDescription', result.description);
+      
+      const calendarQuestion = result.questions.find(q => q.questionType === TIMES);
+      if (calendarQuestion) {
+          //tämä ei todellakaan ole paras ratkaisu, sillä jos kirjoittaa muun kurssin, jolla ei ole timetablea, niin arvo jää. ratkaistu rivillä 230.
+        setCalendarToggle(true);
+        setValue('calendarDescription', calendarQuestion.content);
+      }else{
+        setCalendarToggle(false);
       }
+      const qstns = result.questions.filter(q => q.questionType !== TIMES)
+      .map(q => {
+        const newQ = removeTypename(q);
+        newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
+        return newQ;
+      });
+      
+      setQuestions(qstns);
+
     }
   }, [data]);
 
@@ -465,7 +470,6 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                 helperText={minHours > 40 ? 'Minimum hours too much!' : ' '}
                 variant="outlined"
               />
-                  
               </CardActions>
 
               <CardContent>
@@ -522,6 +526,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
             />
           )}
         />
+
         {editView && course.published ? (
           <Alert severity="info" className={classes.alert}>
             {intl.formatMessage({ id: 'editView.coursePublishedNotification' })}
