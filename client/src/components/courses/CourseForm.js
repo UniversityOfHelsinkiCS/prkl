@@ -231,8 +231,8 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
     if (called && !loading && data.getCourseByCode.length > 0) {
       refetch();
       //Haetaan viimeisin kurssi, (tämän voisi toteuttaa jo wu)
-      const result = data.getCourseByCode[data.getCourseByCode.length-1];
-      console.log(result)
+      const result = data.getCourseByCode[0];
+  
       setMinWorkingHours(result.minHours || minHours);
       setWorkTimeEndsAt(result.workTimeEndsAt || workTimeEndsAt);
       setWeekends(result.weekends || weekends);
@@ -253,10 +253,9 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
         newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
         return newQ;
       });
-
-
-      console.log(qstns);
+      
       setQuestions(qstns);
+
     }
   }, [data]);
 

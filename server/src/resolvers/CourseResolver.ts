@@ -44,7 +44,9 @@ export class CourseResolver {
 
     const courses = await Course.find({
       where: { code },
-      relations: ["questions", "questions.questionChoices", "teachers"]
+      relations: ["questions", "questions.questionChoices", "teachers"],
+      order: { createdAt: "DESC" },
+      take: 1
     })
     
 
