@@ -229,8 +229,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   useEffect(() => {
     if (called && !loading && data.getCourseByCode.length > 0) {
       const result = data.getCourseByCode;
-      console.log(data.getCourseByCode);
-      console.log(result[0]);
+
       setMinWorkingHours(result[0].minHours);
       setWorkTimeEndsAt(result[0].workTimeEndsAt);
       setWeekends(result[0].weekends);
@@ -250,7 +249,6 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
         });
 
 
-        console.log(qstns);
         setQuestions(qstns);
       }
     }
