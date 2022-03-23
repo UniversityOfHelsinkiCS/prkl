@@ -140,6 +140,9 @@ export class CourseResolver {
     course.description = data.description;
     course.code = data.code;
     course.deadline = data.deadline;
+    course.workTimeEndsAt = data.workTimeEndsAt;
+    course.minHours = data.minHours;
+    course.weekends = data.weekends;
 
     // Published course questions or their choices may not be added or deleted even by admins, as it will likely mess up the algorithm
     if (course.published) {
