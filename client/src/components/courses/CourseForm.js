@@ -64,6 +64,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
 
   const hookForm = useForm({ mode: 'onChange' });
   const { setValue, getValues, errors, handleSubmit, control, reset } = hookForm;
+
   let confirmPromptText;
   if (editView) {
     confirmPromptText = intl.formatMessage({
@@ -84,9 +85,14 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
 
   useEffect(() => {
     if (editView) {
+      setPublishToggle(course.published);
       const calendarQuestion = course.questions.find(q => q.questionType === TIMES);
       if (calendarQuestion) {
+        setMinWorkingHours(course.minHours);
+        setWorkTimeEndsAt(course.workTimeEndsAt);
+        setWeekends(course.weekends);
         setCalendarToggle(true);
+        setValue('calendarDescription', calendarQuestion.content);
         setCalendar(calendarQuestion);
         reset(calendarQuestion);
       }
@@ -216,29 +222,27 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
       }
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.log('error:', error);
     }
   };
 
   /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
 
   const code = getValues('courseCode');
-  const [getByCode, { called, loading, error, data }] = useLazyQuery(COURSE_BY_CODE, {
+  const [getByCode, { called, loading, error, data, refetch }] = useLazyQuery(COURSE_BY_CODE, {
     variables: { code },
+    fetchPolicy: 'network-only',
+    
   });
 
   useEffect(() => {
-    
     if (called && !loading && data.getCourseByCode.length > 0) {
-     
       const result = data.getCourseByCode[0];
-  
+      refetch();
       setMinWorkingHours(result.minHours || minHours);
       setWorkTimeEndsAt(result.workTimeEndsAt || workTimeEndsAt);
       setWeekends(result.weekends || weekends);
       setValue('courseTitle', result.title);
       setValue('courseDescription', result.description);
-      
       const calendarQuestion = result.questions.find(q => q.questionType === TIMES);
       if (calendarQuestion) {
           //tämä ei todellakaan ole paras ratkaisu, sillä jos kirjoittaa muun kurssin, jolla ei ole timetablea, niin arvo jää. ratkaistu rivillä 230.
@@ -253,7 +257,6 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
         newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
         return newQ;
       });
-      
       setQuestions(qstns);
 
     }
@@ -331,6 +334,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                 />
 
                 <Button
+                  disabled={editView}   //Ehdotus ettei tätä tulisi käyttää editissä.
                   title={"Copy course by code"}
                   onClick={() => getByCode()}
                   startIcon={<SearchIcon/>}
@@ -448,6 +452,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                   data-cy="weekend-checkbox"
                   control={
                     <Checkbox
+                      disabled={editView}   //Tässä bugi timeformin kanssa siksi disabled editviewissä
                       color="primary"
                       checked={weekends}
                       onClick={() => {
@@ -498,6 +503,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                   onChange={(event, newValue) => setWorkTimeEndsAt(newValue)}
                   getAriaValueText={value => `${value}.00`}
                   step={1}
+                  disabled={editView}   //Tässä bugi timeformin kanssa siksi disabled editviewissä
                   min={8}
                   max={22}
                 />
