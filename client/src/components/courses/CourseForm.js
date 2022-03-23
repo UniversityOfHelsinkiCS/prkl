@@ -212,7 +212,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
         const result = await createCourse({
           variables,
         });
-        history.push(`/course/${result.data.createCourse.id}`);
+        history.push(`/`);
       }
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -223,14 +223,14 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
 
   const code = getValues('courseCode');
-  const [getByCode, { called, loading, error, data, refetch }] = useLazyQuery(COURSE_BY_CODE, {
+  const [getByCode, { called, loading, error, data }] = useLazyQuery(COURSE_BY_CODE, {
     variables: { code },
   });
 
   useEffect(() => {
+    
     if (called && !loading && data.getCourseByCode.length > 0) {
-      refetch();
-      //Haetaan viimeisin kurssi, (tämän voisi toteuttaa jo wu)
+     
       const result = data.getCourseByCode[0];
   
       setMinWorkingHours(result.minHours || minHours);
@@ -330,9 +330,17 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                   className={classes.textField}
                 />
 
-                <IconButton onClick={() => getByCode()}>
-                  <SearchIcon />
-                </IconButton>
+                <Button
+                  title={"Copy course by code"}
+                  onClick={() => getByCode()}
+                  startIcon={<SearchIcon/>}
+                  size="small"
+                  variant="outlined"
+                  className={classes.searchButton}
+                  data-cy="search-code-button"
+                >
+                  Copy by code
+                  </Button>
               </>
             )}
           />

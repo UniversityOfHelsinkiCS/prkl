@@ -6,6 +6,14 @@ const useCourseFormStyles = makeStyles({
     backgroundColor: green.A400,
     marginTop: 10,
   },
+
+  searchButton: {
+    marginTop: 10,
+    paddingTop: 3,
+    marginRight: 10,
+    height: '53px',
+  },
+
   closeRegButton: {
     marginTop: 10,
   },
