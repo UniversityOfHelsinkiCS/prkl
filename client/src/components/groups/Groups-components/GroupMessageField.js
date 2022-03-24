@@ -1,7 +1,9 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Typography, makeStyles, TextField } from '@material-ui/core';
+import { Typography, TextField } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
 
 const useClasses = makeStyles({
   groupMessage: {

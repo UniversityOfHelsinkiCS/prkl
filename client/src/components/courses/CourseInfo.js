@@ -9,8 +9,8 @@ import {
   Popover,
   List,
   ListItem,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export default ({ code, title, deadline, teachers, paragraphs }) => {
   const intl = useIntl();

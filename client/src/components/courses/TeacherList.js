@@ -2,8 +2,8 @@ import React, { useContext, useEffect } from 'react';
 import { useStore } from 'react-hookstore';
 import { useQuery } from '@apollo/client';
 import { useIntl } from 'react-intl';
-import { TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import { TextField } from '@mui/material';
+import { Autocomplete } from '@mui/material';
 import { FACULTY_USERS } from '../../GqlQueries';
 import roles from '../../util/userRoles';
 import { AppContext } from '../../App';
@@ -41,7 +41,7 @@ export default ({ courseTeachers, setCourseTeachers }) => {
         multiple
         options={teachers}
         getOptionLabel={option => `${option.firstname} ${option.lastname}`}
-        getOptionSelected={(option, value) => option.id === value.id}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
         value={courseTeachers}
         onChange={handleTeacherToggle}
         renderInput={params => (

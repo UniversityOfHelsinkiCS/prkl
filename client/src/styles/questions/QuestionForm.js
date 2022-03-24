@@ -1,5 +1,5 @@
-import { makeStyles } from '@material-ui/core/styles';
-import { green, red, grey } from '@material-ui/core/colors';
+import makeStyles from '@mui/styles/makeStyles';
+import { green, red, grey } from '@mui/material/colors';
 
 const useQuestionFormStyles = makeStyles({
   addButton: {

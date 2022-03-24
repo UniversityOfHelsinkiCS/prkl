@@ -1,7 +1,8 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { Controller } from 'react-hook-form';
-import { makeStyles, TextField, MenuItem, Select, Grid, FormControl } from '@material-ui/core';
+import { TextField, MenuItem, Select, Grid, FormControl } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { FREEFORM, SINGLE_CHOICE, MULTI_CHOICE, TIMES } from '../../util/questionTypes';
 import ValidatedInput from '../ui/ValidatedInput';
 import TimeForm from '../misc/TimeForm';
@@ -110,7 +111,7 @@ const Question = ({ question, minHours, weekends, workTimeEndsAt, formControl })
 
   return (
     <div style={{ paddingTop: 5, paddingBottom: 5 }} data-cy="coursepage-question">
-      <Grid container justify="space-between">
+      <Grid container justifyContent="space-between">
         <Grid item>
           <b>{question.content}</b>
           {!question.optional && <span style={{ color: 'red' }}> *</span>}

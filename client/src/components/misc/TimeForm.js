@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useIntl } from 'react-intl';
-import { makeStyles, Table, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
-import ClearIcon from '@material-ui/icons/Clear';
-import CheckIcon from '@material-ui/icons/Check';
-import { Alert } from '@material-ui/lab';
+import { Table, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import ClearIcon from '@mui/icons-material/Clear';
+import CheckIcon from '@mui/icons-material/Check';
+import { Alert } from '@mui/material';
 import timeChoices from '../../util/timeFormChoices';
 import { concat } from 'lodash';
 

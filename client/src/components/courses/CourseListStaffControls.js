@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
-import { makeStyles, Switch, FormGroup, FormControlLabel } from '@material-ui/core';
+import { Switch, FormGroup, FormControlLabel } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import roles from '../../util/userRoles';
 import { AppContext } from '../../App';
 

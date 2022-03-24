@@ -1,6 +1,7 @@
-import Chip from '@material-ui/core/Chip';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { green, blue, orange, red } from '@material-ui/core/colors';
+import Chip from '@mui/material/Chip';
+import makeStyles from '@mui/styles/makeStyles';
+import withStyles from '@mui/styles/withStyles';
+import { green, blue, orange, red } from '@mui/material/colors';
 
 const useCourseTagStyles = makeStyles(theme => ({
   root: {

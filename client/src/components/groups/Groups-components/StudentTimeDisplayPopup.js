@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
 import HoverPopover from 'material-ui-popup-state/HoverPopover';
 import PopupState, { bindHover, bindPopover } from 'material-ui-popup-state';
 import HourDisplay from '../../misc/HourDisplay';

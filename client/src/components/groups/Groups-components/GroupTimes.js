@@ -1,7 +1,8 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
 import { useIntl } from 'react-intl';
-import { makeStyles, List, ListItem } from '@material-ui/core';
+import { List, ListItem } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import questionSwitch, { count } from '../../../util/functions';
 import HourDisplay from '../../misc/HourDisplay';
 

@@ -2,9 +2,10 @@
 import React, { useState } from 'react';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { makeStyles, Tooltip, IconButton, Button } from '@material-ui/core';
-import { red, grey, green } from '@material-ui/core/colors';
-import { Delete } from '@material-ui/icons';
+import { Tooltip, IconButton, Button } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { red, grey, green } from '@mui/material/colors';
+import { Delete } from '@mui/icons-material';
 import _ from 'lodash';
 
 const useClasses = makeStyles({
@@ -173,7 +174,7 @@ export const RemoveStudentButton = ({ tableIndex, rowIndex, setRegistrationsWith
         onClick={() => removeStudentFromGroup(tableIndex, rowIndex)}
         aria-label="delete"
         className={classes.deleteIcon}
-      >
+        size="large">
         <Delete />
       </IconButton>
     </Tooltip>

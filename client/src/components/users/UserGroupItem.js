@@ -9,7 +9,7 @@ import {
   TableRow,
   Paper,
   Button,
-} from '@material-ui/core';
+} from '@mui/material';
 import HourDisplay from '../misc/HourDisplay';
 import { useUserGroupItemStyles } from '../../styles/users/UserGroupItem';
 

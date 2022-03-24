@@ -1,17 +1,9 @@
 import { useIntl } from 'react-intl';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Paper,
-  Card,
-  Select,
-  makeStyles,
-  MenuItem,
-  Typography,
-  CardContent,
-  FormControl,
-} from '@material-ui/core';
-import EmailIcon from '@material-ui/icons/Email';
+import { Paper, Card, Select, MenuItem, Typography, CardContent, FormControl } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import EmailIcon from '@mui/icons-material/Email';
 import { useCourseListStyles } from '../../styles/courses/CourseList';
 import CourseTag from './CourseTag';
 

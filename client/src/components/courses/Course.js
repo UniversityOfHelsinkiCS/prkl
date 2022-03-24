@@ -3,9 +3,9 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useQuery, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
-import { AppBar, CircularProgress, Tab } from '@material-ui/core';
-import { TabContext, TabList, TabPanel } from '@material-ui/lab';
-import { red } from '@material-ui/core/colors';
+import { AppBar, CircularProgress, Tab } from '@mui/material';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { red } from '@mui/material/colors';
 import {
   COURSE_BY_ID,
   DELETE_COURSE,

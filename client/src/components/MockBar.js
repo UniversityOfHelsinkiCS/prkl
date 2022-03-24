@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useStore } from 'react-hookstore';
-import { AppBar, Button, ButtonGroup, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Button, ButtonGroup, Toolbar, Typography } from '@mui/material';
 import { useMockBarStyles } from '../styles/ui/MockBar';
 import { AppContext } from '../App';
 

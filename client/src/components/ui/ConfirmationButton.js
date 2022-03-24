@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, Dialog, DialogTitle, DialogActions } from '@material-ui/core';
-import { Close as CloseIcon, Done as DoneIcon } from '@material-ui/icons';
+import { Button, Dialog, DialogTitle, DialogActions } from '@mui/material';
+import { Close as CloseIcon, Done as DoneIcon } from '@mui/icons-material';
 import { RedButton, GreenButton } from '../../styles/ui/Button';
 
 const ConfirmationButton = ({

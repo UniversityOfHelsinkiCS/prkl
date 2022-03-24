@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableRow } from '@material-ui/core';
+import { TableRow } from '@mui/material';
 
 const DraggableRow = ({ index, action, children, tableIndex }) => {
   const onDragStart = ev => {

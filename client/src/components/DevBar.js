@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { useStore } from 'react-hookstore';
-import { AppBar, Button, ButtonGroup, Toolbar, Typography, Box } from '@material-ui/core';
+import { AppBar, Button, ButtonGroup, Toolbar, Typography, Box } from '@mui/material';
 import { useDevBarStyles } from '../styles/ui/DevBar';
 
 const apiUrl =

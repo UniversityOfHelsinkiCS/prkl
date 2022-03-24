@@ -1,16 +1,8 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
-import {
-  makeStyles,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-} from '@material-ui/core';
-import { red, orange, yellow, green } from '@material-ui/core/colors';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { red, orange, yellow, green } from '@mui/material/colors';
 
 const useStyles = makeStyles({
   table: {

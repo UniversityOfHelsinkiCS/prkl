@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { FormControl, FormControlLabel, Checkbox, Typography } from '@material-ui/core';
-import { green } from '@material-ui/core/colors';
+import { FormControl, FormControlLabel, Checkbox, Typography } from '@mui/material';
+import { green } from '@mui/material/colors';
 import Question from '../questions/Question';
 import ValidationError from '../ui/ValidationError';
 import ConfirmationButton from '../ui/ConfirmationButton';

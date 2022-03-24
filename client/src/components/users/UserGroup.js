@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useQuery } from '@apollo/client';
-import { Box, makeStyles, Paper, Typography } from '@material-ui/core';
-import { grey } from '@material-ui/core/colors';
+import { Box, Paper, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { grey } from '@mui/material/colors';
 import { GROUP_TIMES } from '../../GqlQueries';
 import { timeParse } from '../../util/functions';
 import UserGroupItem from './UserGroupItem';

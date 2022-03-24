@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert } from '@material-ui/lab';
+import { Alert } from '@mui/material';
 
 export default ({ children, errors }) => {
   // Error means that input requirement was not fulfilled

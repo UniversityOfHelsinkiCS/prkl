@@ -8,7 +8,7 @@ import {
   TableHead,
   TableRow,
   Paper,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useUserCourseListStyles } from '../../styles/users/UserCourseList';
 
 export default ({ courses }) => {

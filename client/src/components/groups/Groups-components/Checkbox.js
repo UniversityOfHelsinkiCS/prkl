@@ -1,8 +1,10 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { useStore } from 'react-hookstore';
-import { Info } from '@material-ui/icons';
-import { Checkbox, FormControlLabel, Tooltip, IconButton, makeStyles } from '@material-ui/core';
+import { Info } from '@mui/icons-material';
+import { Checkbox, FormControlLabel, Tooltip, IconButton } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
 
 const useClasses = makeStyles({
   checkbox: {
@@ -39,7 +41,7 @@ export default ({ group }) => {
         label={intl.formatMessage({ id: 'groups.lockGroup' })}
       />
       <Tooltip title={intl.formatMessage({ id: 'groups.lockGroupInfo' })}>
-        <IconButton aria-label="delete">
+        <IconButton aria-label="delete" size="large">
           <Info />
         </IconButton>
       </Tooltip>

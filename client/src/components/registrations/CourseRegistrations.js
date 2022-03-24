@@ -12,9 +12,9 @@ import {
   Paper,
   Typography,
   Button,
-} from '@material-ui/core';
-import { red, green } from '@material-ui/core/colors';
-import DateRangeIcon from '@material-ui/icons/DateRange';
+} from '@mui/material';
+import { red, green } from '@mui/material/colors';
+import DateRangeIcon from '@mui/icons-material/DateRange';
 import questionSwitch, { count, getEmailsSeparatedBySemiColon } from '../../util/functions';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import { setNotification } from '../ui/Notification';

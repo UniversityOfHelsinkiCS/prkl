@@ -16,12 +16,12 @@ import {
   CardActions,
   FormControlLabel,
   Checkbox,
-} from '@material-ui/core';
-import { blue, red } from '@material-ui/core/colors';
-import InfoIcon from '@material-ui/icons/Info';
-import SearchIcon from '@material-ui/icons/Search';
+} from '@mui/material';
+import { blue, red } from '@mui/material/colors';
+import InfoIcon from '@mui/icons-material/Info';
+import SearchIcon from '@mui/icons-material/Search';
 
-import { Alert } from '@material-ui/lab';
+import { Alert } from '@mui/material';
 
 import { CREATE_COURSE, UPDATE_COURSE, COURSE_BY_CODE, ALL_COURSES } from '../../GqlQueries';
 
@@ -418,7 +418,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
               {...props}
               fullWidth
               multiline
-              rowsMax={5}
+              maxRows={5}
               variant="outlined"
               label={intl.formatMessage({
                 id: 'courseForm.courseDescriptionForm',

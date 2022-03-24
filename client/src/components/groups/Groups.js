@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useStore } from 'react-hookstore';
-import { Container, Paper, Typography, makeStyles, Box } from '@material-ui/core';
-import { grey } from '@material-ui/core/colors';
+import { Container, Paper, Typography, Box } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { grey } from '@mui/material/colors';
 import { count } from '../../util/functions';
 import MatchingGroupHours from './Groups-components/MatchingGroupHours';
 
@@ -74,7 +75,7 @@ export default ({
                 key={`groups-container-index-${tableIndex.toString()}`}
                 data-cy="group-container"
                 border={1}
-                borderRadius={5}
+                borderRadius="5px"
                 style={{ marginTop: 10 }}
               >
                 <GroupNameLabel

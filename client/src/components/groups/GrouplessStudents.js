@@ -3,7 +3,7 @@ import { useStore } from 'react-hookstore';
 import { useMutation } from '@apollo/client';
 import { FormattedMessage, useIntl } from 'react-intl';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
-import { red, grey } from '@material-ui/core/colors';
+import { red, grey } from '@mui/material/colors';
 import {
   Table,
   TableBody,
@@ -13,13 +13,13 @@ import {
   TableRow,
   Paper,
   Typography,
-  makeStyles,
   Button,
   Popover,
   Box,
   List,
   ListItem,
-} from '@material-ui/core';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { FIND_GROUP_FOR_GROUPLESS_STUDENTS } from '../../GqlQueries';
 import { setNotification } from '../ui/Notification';
 import HourDisplay from '../misc/HourDisplay';

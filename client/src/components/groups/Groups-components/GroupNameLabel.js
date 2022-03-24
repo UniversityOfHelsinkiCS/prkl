@@ -1,7 +1,8 @@
 import React from 'react';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
-import { Container, Paper, Typography, makeStyles, Popover, TextField } from '@material-ui/core';
-import { grey } from '@material-ui/core/colors';
+import { Container, Paper, Typography, Popover, TextField } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { grey } from '@mui/material/colors';
 
 const useClasses = makeStyles({
   container: {

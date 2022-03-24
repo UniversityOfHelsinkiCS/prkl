@@ -2,12 +2,12 @@ import React, { createContext, useEffect } from 'react';
 import { initShibbolethPinger } from 'unfuck-spa-shibboleth-session';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createStore, useStore } from 'react-hookstore';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import { useQuery } from '@apollo/client';
 
 import { useLoaderStyle } from './styles/ui/Loader';
 import { CURRENT_USER } from './GqlQueries';
-
+import { ThemeProvider, StyledEngineProvider, createTheme } from '@mui/material/styles';
 import CourseForm from './components/courses/CourseForm';
 import Notification from './components/ui/Notification';
 import PrivateRoute from './components/ui/PrivateRoute';
@@ -30,7 +30,7 @@ createStore('groupsStore', []);
 
 export const AppContext = createContext();
 
-console.log("Version 22022022");
+console.log('Version: mui5 testing');
 
 export default () => {
   // eslint-disable-next-line no-unused-vars
@@ -49,38 +49,43 @@ export default () => {
   }
 
   const user = userData.currentUser;
+  const theme = createTheme();
 
   return (
-    <AppContext.Provider value={{ user }}>
-      {process.env.REACT_APP_CUSTOM_NODE_ENV !== 'production' ? <DevBar /> : null}
-      {mocking.mockedBy ? <MockBar /> : null}
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <AppContext.Provider value={{ user }}>
+          {process.env.REACT_APP_CUSTOM_NODE_ENV !== 'production' ? <DevBar /> : null}
+          {mocking.mockedBy ? <MockBar /> : null}
 
-      <div className="App">
-        <Notification />
-        <Router basename={process.env.PUBLIC_URL}>
-          <Header />
-          <div className="mainContent">
-            <Route path="/user" render={() => <UserInfo />} />
-            <PrivateRoute
-              path="/addcourse"
-              requiredRole={roles.STAFF_ROLE}
-              render={() => <CourseForm />}
-            />
-            <PrivateRoute
-              path="/usermanagement"
-              requiredRole={roles.ADMIN_ROLE}
-              render={() => <Users />}
-            />
-            <Route
-              exact
-              path="/course/:id/:subpage?"
-              render={({ match }) => <Course id={match.params.id} match={match} />}
-            />
-            <Route exact path={['/', '/courses']} component={Courses} />
+          <div className="App">
+            <Notification />
+            <Router basename={process.env.PUBLIC_URL}>
+              <Header />
+              <div className="mainContent">
+                <Route path="/user" render={() => <UserInfo />} />
+                <PrivateRoute
+                  path="/addcourse"
+                  requiredRole={roles.STAFF_ROLE}
+                  render={() => <CourseForm />}
+                />
+                <PrivateRoute
+                  path="/usermanagement"
+                  requiredRole={roles.ADMIN_ROLE}
+                  render={() => <Users />}
+                />
+                <Route
+                  exact
+                  path="/course/:id/:subpage?"
+                  render={({ match }) => <Course id={match.params.id} match={match} />}
+                />
+                <Route exact path={['/', '/courses']} component={Courses} />
+              </div>
+            </Router>
+            <KeepAlive />
           </div>
-        </Router>
-        <KeepAlive />
-      </div>
-    </AppContext.Provider>
+        </AppContext.Provider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 };

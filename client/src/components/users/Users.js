@@ -12,7 +12,7 @@ import {
   CardContent,
   Typography,
   Button,
-} from '@material-ui/core';
+} from '@mui/material';
 import { ALL_USERS, EDIT_USER_ROLE } from '../../GqlQueries';
 import { useUsersStyle } from '../../styles/users/Users';
 import { useLoaderStyle } from '../../styles/ui/Loader';

@@ -5,7 +5,6 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useStore } from 'react-hookstore';
 import _ from 'lodash';
 import {
-  makeStyles,
   Typography,
   FormGroup,
   TextField,
@@ -14,9 +13,10 @@ import {
   InputLabel,
   MenuItem,
   CircularProgress,
-} from '@material-ui/core';
-import { blue, green, orange, red } from '@material-ui/core/colors';
-import { Alert } from '@material-ui/lab';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { blue, green, orange, red } from '@mui/material/colors';
+import { Alert } from '@mui/material';
 import {
   COURSE_GROUPS,
   GENERATE_GROUPS,

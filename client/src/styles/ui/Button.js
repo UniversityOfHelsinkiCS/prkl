@@ -1,6 +1,7 @@
-import Button from '@material-ui/core/Button';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { green, blue, red, orange } from '@material-ui/core/colors';
+import Button from '@mui/material/Button';
+import makeStyles from '@mui/styles/makeStyles';
+import withStyles from '@mui/styles/withStyles';
+import { green, blue, red, orange } from '@mui/material/colors';
 
 const useButtonStyles = makeStyles({
   root: {},

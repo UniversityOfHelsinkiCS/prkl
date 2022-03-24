@@ -5,7 +5,6 @@ import _ from 'lodash';
 import {
   Box,
   Typography,
-  makeStyles,
   Table,
   TableBody,
   TableCell,
@@ -13,8 +12,9 @@ import {
   TableHead,
   TableRow,
   Button,
-} from '@material-ui/core';
-import { blue, green } from '@material-ui/core/colors';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { blue, green } from '@mui/material/colors';
 import DraggableRow from '../DraggableRow';
 import { RemoveStudentButton } from './Buttons';
 import SwitchGroupButton from './SwitchGroupButton';

@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Route } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Alert, AlertTitle } from '@mui/material';
 import { AppContext } from '../../App';
 
 const NotAllowed = () => (

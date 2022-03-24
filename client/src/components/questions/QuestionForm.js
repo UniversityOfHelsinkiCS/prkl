@@ -14,9 +14,9 @@ import {
   FormControlLabel,
   Checkbox,
   IconButton,
-} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import CloseIcon from '@material-ui/icons/Close';
+} from '@mui/material';
+import { Alert } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { SINGLE_CHOICE, MULTI_CHOICE, FREEFORM } from '../../util/questionTypes';
 import { useQuestionFormStyles } from '../../styles/questions/QuestionForm';
 
@@ -121,7 +121,7 @@ const QuestionForm = ({
           onClick={removeQuestion}
           style={{ float: 'right' }}
           data-cy="question-remove-button"
-        >
+          size="large">
           <CloseIcon />
         </IconButton>
       )}

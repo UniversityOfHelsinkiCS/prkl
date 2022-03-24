@@ -11,7 +11,7 @@ import {
   TextField,
   CircularProgress,
   Divider,
-} from '@material-ui/core';
+} from '@mui/material';
 import { ALL_COURSES } from '../../GqlQueries';
 import { useLoaderStyle } from '../../styles/ui/Loader';
 import { useCoursesStyles } from '../../styles/ui/Courses';

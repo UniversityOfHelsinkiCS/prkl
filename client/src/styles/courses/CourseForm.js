@@ -1,5 +1,5 @@
-import { makeStyles } from '@material-ui/core/styles';
-import { green, blue } from '@material-ui/core/colors';
+import makeStyles from '@mui/styles/makeStyles';
+import { green, blue } from '@mui/material/colors';
 
 const useCourseFormStyles = makeStyles({
   addButton: {

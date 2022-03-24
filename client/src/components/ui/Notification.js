@@ -1,6 +1,6 @@
 import React from 'react';
-import { Snackbar } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Snackbar } from '@mui/material';
+import { Alert } from '@mui/material';
 import { useReactiveVar } from '@apollo/client';
 import { notificationVar } from '../..';
 

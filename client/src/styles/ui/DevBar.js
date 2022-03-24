@@ -1,5 +1,5 @@
-import { blue, grey, orange, red } from '@material-ui/core/colors';
-import { makeStyles } from '@material-ui/core/styles';
+import { blue, grey, orange, red } from '@mui/material/colors';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useDevBarStyles = makeStyles(theme => ({
   appbar: {

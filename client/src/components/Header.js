@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { AppBar, Typography, Button, Grid, Toolbar } from '@material-ui/core';
+import { AppBar, Typography, Button, Grid, Toolbar } from '@mui/material';
 import { useHeaderStyles } from '../styles/ui/Header';
 import { privacyToggleVar } from '..';
 import roles from '../util/userRoles';

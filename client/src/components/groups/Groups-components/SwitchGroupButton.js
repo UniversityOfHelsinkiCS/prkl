@@ -1,10 +1,11 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
 import { useStore } from 'react-hookstore';
-import { SwapHoriz } from '@material-ui/icons';
-import { grey } from '@material-ui/core/colors';
+import { SwapHoriz } from '@mui/icons-material';
+import { grey } from '@mui/material/colors';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
-import { makeStyles, Popover, Box, List, ListItem, Tooltip, IconButton } from '@material-ui/core';
+import { Popover, Box, List, ListItem, Tooltip, IconButton } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import swapElements from './SwapElements';
 
 const useClasses = makeStyles({
@@ -59,7 +60,7 @@ export default ({ setGroupsUnsaved, student }) => {
               className={classes.switchIcon}
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...bindTrigger(popupState)}
-            >
+              size="large">
               <SwapHoriz />
             </IconButton>
           </Tooltip>

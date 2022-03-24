@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useQuery } from '@apollo/client';
 import { FormattedMessage } from 'react-intl';
-import { CircularProgress, Container, Typography } from '@material-ui/core';
+import { CircularProgress, Container, Typography } from '@mui/material';
 import { useLoaderStyle } from '../../styles/ui/Loader';
 import { ALL_COURSES } from '../../GqlQueries';
 import UserCourseList from './UserCourseList';

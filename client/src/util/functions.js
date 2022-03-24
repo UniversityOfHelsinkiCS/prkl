@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableCell, Chip } from '@material-ui/core';
+import { TableCell, Chip } from '@mui/material';
 
 /**
  * A parser that intakes a student's answer to a question, and outputs a jsx table row -element containing the parsed answer.
