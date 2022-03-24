@@ -88,9 +88,9 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
       setPublishToggle(course.published);
       const calendarQuestion = course.questions.find(q => q.questionType === TIMES);
       if (calendarQuestion) {
-        setMinWorkingHours(course.minHours);
-        setWorkTimeEndsAt(course.workTimeEndsAt);
-        setWeekends(course.weekends);
+        setMinWorkingHours(course.minHours || minHours);
+        setWorkTimeEndsAt(course.workTimeEndsAt || workTimeEndsAt);
+        setWeekends(course.weekends || weekends);
         setCalendarToggle(true);
         setValue('calendarDescription', calendarQuestion.content);
         setCalendar(calendarQuestion);

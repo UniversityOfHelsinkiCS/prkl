@@ -16,7 +16,7 @@ const MatchingGroupHours = ({ matchingHours: hours, studentsInGroup }) => {
 
   return (
     <>
-    {amountOfMatchingHours || sumOfHours != 0 ? (
+    {amountOfMatchingHours || sumOfHours !== 0 ? (
       <Typography className={classes.matchingHourText} variant="h6">
         Matching hours ({amountOfMatchingHours}) ⌛
       </Typography>

@@ -8,16 +8,7 @@ describe('Editing an existing course', () => {
     cy.switchToAdmin();
   });
 
-  after(() => {
-    cy.switchToAdmin();
-    cy.seedDatabase();
-  });
-
-  describe('Admin', () => {
-    beforeEach(() => {
-      cy.switchToAdmin();
-    });
-
+  context('Admin', () => {
     it('Can delete any course', () => {
       cy.contains(courses[0].title).click();
       cy.get('[data-cy="delete-course-button"]').click();
@@ -52,10 +43,8 @@ describe('Editing an existing course', () => {
       const testTitle = 'test title';
       const testChoice = 'test choice';
 
-      cy.wait(300);
       cy.contains(course.title).click();
       cy.get('[data-cy="edit-course-button"]').click();
-      cy.wait(500);
       cy.get('[data-cy="add-question-choice-button"]').should('not.exist');
       cy.get('[data-cy="question-remove-button"]').should('not.exist');
       cy.get('[data-cy="add-question-choice-button"]').should('not.exist');
@@ -123,7 +112,7 @@ describe('Editing an existing course', () => {
     });
   });
 
-  describe('Staff', () => {
+  context('Staff', () => {
     beforeEach(() => {
       cy.switchToStaff();
     });
@@ -172,20 +161,7 @@ describe('Editing an existing course', () => {
       cy.get('[data-cy="publish-checkbox"]').should('not.have.class', 'checked');
     });
 
-    it('Can not edit course after publishing it', () => {
-      cy.contains(courses[2].title).click();
-      cy.get('[data-cy="edit-course-button"]').click();
-
-      cy.get('[data-cy="publish-checkbox"]').click();
-      cy.get('[data-cy="create-course-submit"]').click();
-      cy.get('[data-cy="confirmation-button-confirm"]').click();
-
-      cy.visit('/courses');
-      cy.contains(courses[2].title).click();
-      cy.wait(500);
-      cy.get('[data-cy="edit-course-button"]').should('not.exist');
-    });
-
+    
     it('Cannot make deadline past immediately', () => {
       cy.contains(courses[2].title).click();
       cy.get('[data-cy="edit-course-button"]').click();
