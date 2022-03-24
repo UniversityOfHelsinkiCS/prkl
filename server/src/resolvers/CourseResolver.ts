@@ -88,13 +88,11 @@ export class CourseResolver {
   @Mutation(() => Course)
   async createCourse(@Ctx() context, @Arg("data") data: CourseInput): Promise<Course> {
     const course = Course.create(data);
-    console.log(data)
     if (data.teachers.length === 0) {
       const { user } = context;
       course.teachers = [user];
     }
 
-    console.log("course is:", course);
     await course.save();
     return course;
   }
@@ -132,8 +130,8 @@ export class CourseResolver {
       throw new Error("Course with given id not found.");
     }
 
-    if (course.published && user.role !== ADMIN) {
-      throw new Error("You do not have authorization to update a published course.");
+    if (user.role !== ADMIN && !course.teachers.map(t => t.id).includes(user.id)) {
+      throw new Error("You do not have authorization to update this course.");
     }
 
     course.title = data.title;
@@ -144,7 +142,7 @@ export class CourseResolver {
     course.minHours = data.minHours;
     course.weekends = data.weekends;
 
-    // Published course questions or their choices may not be added or deleted even by admins, as it will likely mess up the algorithm
+    // Published course questions or their choices may not be added or deleted even by admins
     if (course.published) {
       const hasSameQuestionsAndChoices = course.questions.filter(q => {
         return data.questions.some(dq => {
@@ -152,7 +150,6 @@ export class CourseResolver {
           let oldChoices = q.questionChoices?.map(qChoice => qChoice.id);
           if (!newChoices) newChoices = [];
           if (!oldChoices) oldChoices = [];
-
           return dq.id === q.id && _.isEqual(_.sortBy(newChoices), _.sortBy(oldChoices));
         });
       });
