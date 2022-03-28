@@ -98,8 +98,12 @@ export default ({
                   setRegistrationsWithoutGroups={setRegistrationsWithoutGroups}
                 />
                 <MatchingGroupHours
-                matchingHours={count(group.students.map(student => regByStudentId[student.studentNo]))} 
-                studentsInGroup={group.students.map(student => regByStudentId[student.studentNo]).length}
+                  matchingHours={count(
+                    group.students.map(student => regByStudentId[student.studentNo])
+                  )}
+                  studentsInGroup={
+                    group.students.map(student => regByStudentId[student.studentNo]).length
+                  }
                 />
                 <ToggleGroupTimeButton
                   groupTimesVisible={groupTimesVisible}

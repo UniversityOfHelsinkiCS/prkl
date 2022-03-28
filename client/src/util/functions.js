@@ -28,19 +28,18 @@ const mapshit = qa => {
   return formattedMultipleAnswers;
 };
 
-
-export const copyTextToClipboard = (text) => {
+export const copyTextToClipboard = text => {
   if (text) {
-    navigator.clipboard.writeText(text)
+    navigator.clipboard.writeText(text);
   }
-} 
+};
 
 const hours = 14;
 // either 8 or 6 depending on the timezone
 const first = 8;
 
 export const getEmailsSeparatedBySemiColon = registrations => {
-  const emails = registrations.map(reg => reg.student.email).reduce((a, b) => a + ';' + b);
+  const emails = registrations.map(reg => reg.student.email).reduce((a, b) => `${a};${b}`);
   return emails;
 };
 
@@ -48,7 +47,7 @@ export const count = registrations => {
   const times = [...Array(7)].map(() => [...Array(hours)].map(() => 0));
   // console.log('times begin:', times)
 
-  if (registrations[0] === undefined ) {
+  if (registrations[0] === undefined) {
     return null;
   }
 
@@ -62,11 +61,11 @@ export const count = registrations => {
       if (day === 0) {
         day = 7;
       }
-      day--;
+      day -= 1;
 
       if (diff >= 1) {
-        for (let i = 0; i <= diff - 1; i++) {
-          times[day][start - first + i]++;
+        for (let i = 0; i <= diff - 1; i += 1) {
+          times[day][start - first + i] += 1;
         }
       }
     });
@@ -88,7 +87,11 @@ export default qa => {
   switch (qa.question.questionType) {
     case 'multipleChoice':
       return (
-        <TableCell key={qa.id}>{qa.answerChoices.map(question => <Chip label={question.content} />)}</TableCell>
+        <TableCell key={qa.id}>
+          {qa.answerChoices.map(question => (
+            <Chip label={question.content} />
+          ))}
+        </TableCell>
       );
     case 'singleChoice':
       return (

@@ -74,11 +74,11 @@ export default ({ id, match }) => {
   });
 
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION, {
-    update(cache, { data: { deleteRegistration: id } }) {
+    update(cache, { data: { deleteRegistration: regId } }) {
       const success = cache.evict({
         id: cache.identify({
           __typename: 'Registration',
-          id,
+          regId,
         }),
       });
 
@@ -264,12 +264,12 @@ export default ({ id, match }) => {
             {userHasAccess() ? (
               <div style={{ maxWidth: '800px' }}>
                 {/* Only admin can edit or delete after publish */}
-               
-                  <>
-                    <BlueButton onClick={handleEditCourse} data-cy="edit-course-button">
-                      <FormattedMessage id="course.switchEditView" />
-                    </BlueButton>
-                    {!course.published || user.role === roles.ADMIN_ROLE ? (
+
+                <>
+                  <BlueButton onClick={handleEditCourse} data-cy="edit-course-button">
+                    <FormattedMessage id="course.switchEditView" />
+                  </BlueButton>
+                  {!course.published || user.role === roles.ADMIN_ROLE ? (
                     <ConfirmationButton
                       onConfirm={handleDeletion}
                       color={red[500]}
@@ -278,8 +278,7 @@ export default ({ id, match }) => {
                     >
                       <FormattedMessage id="course.delete" />
                     </ConfirmationButton>
-                  
-                ) : null}
+                  ) : null}
                 </>
               </div>
             ) : null}

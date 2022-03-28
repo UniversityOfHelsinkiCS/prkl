@@ -90,7 +90,7 @@ export default () => {
     const sortByName = (a, b) => (a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1);
     const sortByCode = (a, b) => (a.code.toLowerCase() < b.code.toLowerCase() ? -1 : 1);
     const sortByDeadline = (a, b) => (new Date(a.deadline) > new Date(b.deadline) ? -1 : 1);
-    const sortByCreatedAt = (a, b) => (new Date(a.createdAt) >new Date(b.createdAt) ? -1 : 1);
+    const sortByCreatedAt = (a, b) => (new Date(a.createdAt) > new Date(b.createdAt) ? -1 : 1);
 
     // Filter with role check.
     let filteredCourses;
@@ -146,7 +146,7 @@ export default () => {
       checked: showMyCourses,
     },
   ];
-  
+
   return (
     <div>
       <AppBar position="static" color="transparent" elevation={0}>

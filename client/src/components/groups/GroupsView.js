@@ -86,16 +86,16 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
     setGroupsPublished(course.groupsPublished);
   }, [course]);
 
-  const handleGroupsMessagesAndNames = groups => {
-    setGroups(groups);
-    const groupNames = groups.map(g => g.groupName);
-    const groupMsgs = groups.map(g => g.groupMessage);
-    setGroupNames(groupNames);
-    setGroupMessages(groupMsgs);
+  const handleGroupsMessagesAndNames = newGroups => {
+    setGroups(newGroups);
+    const newGroupNames = newGroups.map(g => g.groupName);
+    const newGroupMsgs = newGroups.map(g => g.groupMessage);
+    setGroupNames(newGroupNames);
+    setGroupMessages(newGroupMsgs);
   };
 
-  const sortGroups = (groups, sorting) => {
-    const sortedGroups = _.cloneDeep(groups);
+  const sortGroups = (newGroups, sorting) => {
+    const sortedGroups = _.cloneDeep(newGroups);
     if (sorting === 'nameAscending' || sorting === 'nameDescending') {
       sortedGroups.sort((a, b) => {
         const x = a.groupName.toLowerCase();
@@ -211,10 +211,11 @@ export default ({ course, registrations, regByStudentId, groups, setGroups }) =>
 
     const minGroupS = minGroupSize || 1;
 
-    const lockedGroupNames = lockedGroups.map(g => g.groupName)
-    const nonLockedGroupNames = Array.apply(null, Array(registrations.length))
+    const lockedGroupNames = lockedGroups.map(g => g.groupName);
+    const nonLockedGroupNames = Array(registrations.length)
+      .fill(0)
       .map((v, i) => `${intl.formatMessage({ id: 'groupsView.defaultGroupNamePrefix' })} ${i + 1}`)
-      .filter(n => !lockedGroupNames.includes(n))
+      .filter(n => !lockedGroupNames.includes(n));
 
     try {
       const res = await generateGroups({

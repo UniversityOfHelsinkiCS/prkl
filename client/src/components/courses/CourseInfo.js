@@ -67,7 +67,12 @@ export default ({ code, title, deadline, teachers, paragraphs }) => {
               <List>
                 {teachers.map(t => (
                   <ListItem divider key={t.id}>
-                    {t.firstname} {t.lastname} &nbsp; {divider} &nbsp;<Link href={`mailto:${t.email}`}>{t.email}</Link>
+                    {t.firstname}
+                    {t.lastname}
+                    &nbsp;
+                    {divider}
+                    &nbsp;
+                    <Link href={`mailto:${t.email}`}>{t.email}</Link>
                   </ListItem>
                 ))}
               </List>

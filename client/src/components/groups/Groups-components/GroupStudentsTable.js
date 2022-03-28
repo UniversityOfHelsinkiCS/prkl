@@ -62,9 +62,10 @@ export default ({ course, regByStudentId, group, tableIndex, setRegistrationsWit
     setGroupsUnsaved(true);
   };
 
-  const emails = group.students.length > 0
-    ? group.students.map(student => student.email).reduce((a, b) => a + ';' + b)
-    : undefined;
+  const emails =
+    group.students.length > 0
+      ? group.students.map(student => student.email).reduce((a, b) => `${a};${b}`)
+      : undefined;
 
   return (
     <div>
@@ -84,7 +85,12 @@ export default ({ course, regByStudentId, group, tableIndex, setRegistrationsWit
                 </TableCell>
                 <TableCell className={classes.heading}>
                   <FormattedMessage id="groups.email" />
-                  <Button style={{ backgroundColor: green[500] }} onClick={() => copyTextToClipboard(emails)}>Copy All</Button>
+                  <Button
+                    style={{ backgroundColor: green[500] }}
+                    onClick={() => copyTextToClipboard(emails)}
+                  >
+                    Copy All
+                  </Button>
                 </TableCell>
                 {course.questions.map(question =>
                   question.questionType !== 'times' ? (
@@ -124,9 +130,10 @@ export default ({ course, regByStudentId, group, tableIndex, setRegistrationsWit
                       <TableCell>{student.studentNo}</TableCell>
                       <TableCell>{student.email}</TableCell>
 
-                      {regByStudentId[student.studentNo]?.questionAnswers.map(x => x).sort((a, b) => a.question.order - b.question.order).map(qa => questionSwitch(qa))}
-
-
+                      {regByStudentId[student.studentNo]?.questionAnswers
+                        .map(x => x)
+                        .sort((a, b) => a.question.order - b.question.order)
+                        .map(qa => questionSwitch(qa))}
 
                       <TableCell className={classes.buttons}>
                         <SwitchGroupButton setGroupsUnsaved={setGroupsUnsaved} student={student} />

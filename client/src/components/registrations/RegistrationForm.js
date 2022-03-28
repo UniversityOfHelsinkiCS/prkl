@@ -11,7 +11,7 @@ export default ({ course, formControl, onSubmit }) => {
   const { setValue, trigger, errors, register } = formControl;
   const intl = useIntl();
   const terms = 'toc';
-  const questions = course.questions;
+  const { questions } = course;
   useEffect(() => {
     register({ name: 'toc' }, { required: true });
   });
@@ -31,8 +31,14 @@ export default ({ course, formControl, onSubmit }) => {
       {questions &&
         questions.map(question => (
           <FormControl>
-            
-            <Question key={question.id} question={question} workTimeEndsAt={course.workTimeEndsAt} minHours={course.minHours} weekends={course.weekends} formControl={formControl} />
+            <Question
+              key={question.id}
+              question={question}
+              workTimeEndsAt={course.workTimeEndsAt}
+              minHours={course.minHours}
+              weekends={course.weekends}
+              formControl={formControl}
+            />
           </FormControl>
         ))}
 

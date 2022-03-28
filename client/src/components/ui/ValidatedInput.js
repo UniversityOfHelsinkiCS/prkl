@@ -20,7 +20,10 @@ const ValidatedInput = ({ name, type, formControl, optionality, ...rest }) => {
   const Inner = type;
   useEffect(() => {
     if (!optionality) {
-      register({ name }, { validate: selectedOptions => selectedOptions && selectedOptions.length !== 0});
+      register(
+        { name },
+        { validate: selectedOptions => selectedOptions && selectedOptions.length !== 0 }
+      );
     } else {
       register({ name }, { required: false });
     }

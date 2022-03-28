@@ -64,7 +64,14 @@ const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
               </TableCell>
               <TableCell>
                 <FormattedMessage id="courseRegistration.email" />
-                <Button style={{backgroundColor: green[500]}} onClick={() => {navigator.clipboard.writeText(getEmailsSeparatedBySemiColon(registrations))}} >Copy All</Button>
+                <Button
+                  style={{ backgroundColor: green[500] }}
+                  onClick={() => {
+                    navigator.clipboard.writeText(getEmailsSeparatedBySemiColon(registrations));
+                  }}
+                >
+                  Copy All
+                </Button>
               </TableCell>
               {course.questions.some(q => q.questionType === TIMES) && (
                 <TableCell>
@@ -106,7 +113,10 @@ const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
                     </Popup>
                   </TableCell>
                 )}
-                {reg.questionAnswers.map(x => x).sort((a,b) => a.question.order-b.question.order).map(qa => questionSwitch(qa))}
+                {reg.questionAnswers
+                  .map(x => x)
+                  .sort((a, b) => a.question.order - b.question.order)
+                  .map(qa => questionSwitch(qa))}
                 <TableCell>
                   <ConfirmationButton
                     onConfirm={() => handleRegistrationRemoval(reg.student.id)}

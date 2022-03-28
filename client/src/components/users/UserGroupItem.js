@@ -27,7 +27,7 @@ export default ({ group, groupTimes, course }) => {
         <TableHead data-cy="user-group-view-group-name" className={classes.head}>
           <TableRow>
             <TableCell className={classes.head}>
-              {course.title}: {group.groupName}
+              {course.title}:{group.groupName}
             </TableCell>
             <TableCell className={classes.head} />
             <TableCell className={classes.head} align="right">

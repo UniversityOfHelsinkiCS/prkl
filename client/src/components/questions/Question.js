@@ -94,16 +94,15 @@ const Question = ({ question, minHours, weekends, workTimeEndsAt, formControl })
       <Controller
         as={TimeForm}
         name={question.id}
-        weekends = {weekends}
-        minHours = {minHours}
-        workTimeEndsAt = {workTimeEndsAt}
+        weekends={weekends}
+        minHours={minHours}
+        workTimeEndsAt={workTimeEndsAt}
         onChange={([event]) => {
           return event;
         }}
         formControl={formControl}
         control={formControl.control}
         description={question.content}
-        
       />
     );
   }

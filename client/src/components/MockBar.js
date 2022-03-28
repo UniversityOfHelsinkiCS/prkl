@@ -8,7 +8,7 @@ export default () => {
   const { user } = useContext(AppContext);
   const [mocking, setMocking] = useStore('mocking');
 
-  const stopMocking = async (setMocking, mockedBy) => {
+  const stopMocking = async mockedBy => {
     setMocking(prev => ({ ...prev, mockedUser: mockedBy }));
     window.location.reload();
   };
@@ -21,13 +21,12 @@ export default () => {
         <AppBar className={classes.appbar} position="static" data-cy="mockbar">
           <Toolbar>
             <Typography className={classes.typography}>
-              Logged in as: {user.firstname} {user.lastname}
+              Logged in as:
+              {user.firstname}
+              {user.lastname}
             </Typography>
             <ButtonGroup className={classes.mockingControls}>
-              <Button
-                onClick={() => stopMocking(setMocking, mocking.mockedBy)}
-                data-cy="stop-mocking-button"
-              >
+              <Button onClick={() => stopMocking(mocking.mockedBy)} data-cy="stop-mocking-button">
                 Switch back to Admin
               </Button>
             </ButtonGroup>
