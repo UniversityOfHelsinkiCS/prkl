@@ -21,9 +21,7 @@ export default () => {
         <AppBar className={classes.appbar} position="static" data-cy="mockbar">
           <Toolbar>
             <Typography className={classes.typography}>
-              Logged in as:
-              {user.firstname}
-              {user.lastname}
+              Logged in as: {user.firstname} {user.lastname}
             </Typography>
             <ButtonGroup className={classes.mockingControls}>
               <Button onClick={() => stopMocking(mocking.mockedBy)} data-cy="stop-mocking-button">
