@@ -74,11 +74,11 @@ export default ({ id, match }) => {
   });
 
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION, {
-    update(cache, { data: { deleteRegistration: regId } }) {
+    update(cache, { data: { deleteRegistration: id } }) { // eslint-disable-line
       const success = cache.evict({
         id: cache.identify({
           __typename: 'Registration',
-          regId,
+          id,
         }),
       });
 
