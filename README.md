@@ -43,7 +43,11 @@ A graphQl endpoint can be found at http://localhost:3001/grapgql. The server res
 
 The Postgres database starts in it's own container. The local database can be accessed using Adminer at http://localhost:4000 (user: postgres, password: postgres).
 
-Note to Windows users: Hot loading changes in the front end and back end may not work as intended on a Windows machine. A workaround is ....
+Note to Windows users: Hot loading changes in the front end and back end may not work as intended on a Windows machine. A possible solution is to use [Docker Desktop](https://docs.docker.com/desktop/windows/install/). Make sure the program is running before using `docker-compose up`, shut down prkl_frontend_1 and finally
+```
+cd client
+npm start dev
+```
 
 ## End to end tests
 
