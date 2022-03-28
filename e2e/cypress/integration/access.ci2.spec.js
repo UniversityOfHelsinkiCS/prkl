@@ -7,15 +7,9 @@ describe('User access and content', () => {
     cy.seedDatabase();
   });
 
-  after(() => {
-    cy.switchToAdmin();
-    cy.seedDatabase();
-  });
-
   it('Student', () => {
     cy.switchToStudent();
     // menu
-    cy.wait(300);
     cy.get('[data-cy="menu-courses"]').should('exist');
     cy.get('[data-cy="menu-add-course"]').should('not.exist');
     cy.get('[data-cy="menu-user-mgmt"]').should('not.exist');
@@ -31,8 +25,6 @@ describe('User access and content', () => {
 
     // course listing
     cy.visit('/courses');
-    cy.wait(500);
-
     // course descriptions
     cy.get(`[data-cy="${courses[0].code}"]`).within(() => {
       cy.contains(courses[0].description);

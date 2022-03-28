@@ -264,11 +264,12 @@ export default ({ id, match }) => {
             {userHasAccess() ? (
               <div style={{ maxWidth: '800px' }}>
                 {/* Only admin can edit or delete after publish */}
-                {!course.published || user.role === roles.ADMIN_ROLE ? (
+               
                   <>
                     <BlueButton onClick={handleEditCourse} data-cy="edit-course-button">
                       <FormattedMessage id="course.switchEditView" />
                     </BlueButton>
+                    {!course.published || user.role === roles.ADMIN_ROLE ? (
                     <ConfirmationButton
                       onConfirm={handleDeletion}
                       color={red[500]}
@@ -277,8 +278,9 @@ export default ({ id, match }) => {
                     >
                       <FormattedMessage id="course.delete" />
                     </ConfirmationButton>
-                  </>
+                  
                 ) : null}
+                </>
               </div>
             ) : null}
             <CourseInfo
@@ -296,8 +298,7 @@ export default ({ id, match }) => {
         <div>
           {userHasAccess() ? (
             <div>
-              {(!course.published || user.role === roles.ADMIN_ROLE) &&
-              match.params.subpage === 'edit' ? (
+              {match.params.subpage === 'edit' ? (
                 <CourseForm
                   course={course}
                   user={user}

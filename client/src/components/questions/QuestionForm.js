@@ -234,52 +234,54 @@ const QuestionForm = ({
 
           {/* Question choice input */}
           <FormGroup row className={classes.questionChoices}>
-            {options.map((o, index) => (
-              <Controller
-                key={o.oName}
-                control={control}
-                defaultValue={o?.content || ''}
-                name={`questions.${qName}.options.${o.oName}`}
-                rules={{
-                  required: intl.formatMessage({
-                    id: 'questionForm.questionChoiceLabelMissing',
-                  }),
-                  maxLength: {
-                    value: 150,
-                    message: intl.formatMessage({
-                      id: 'questionForm.questionChoiceLabelTooLong',
+            {options.map((o, index) => {
+              return (
+                <Controller
+                  key={o.oName}
+                  control={control}
+                  defaultValue={o?.content || ''}
+                  name={`questions.${qName}.options.${o.oName}`}
+                  rules={{
+                    required: intl.formatMessage({
+                      id: 'questionForm.questionChoiceLabelMissing',
                     }),
-                  },
-                }}
-                render={props => (
-                  <TextField
-                    // eslint-disable-next-line react/jsx-props-no-spreading
-                    {...props}
-                    variant="outlined"
-                    label={intl.formatMessage(
-                      {
-                        id: 'questionForm.optionTitle',
-                      },
-                      {
-                        number: index + 1,
+                    maxLength: {
+                      value: 150,
+                      message: intl.formatMessage({
+                        id: 'questionForm.questionChoiceLabelTooLong',
+                      }),
+                    },
+                  }}
+                  render={props => (
+                    <TextField
+                      // eslint-disable-next-line react/jsx-props-no-spreading
+                      {...props}
+                      variant="outlined"
+                      label={intl.formatMessage(
+                        {
+                          id: 'questionForm.optionTitle',
+                        },
+                        {
+                          number: index + 1,
+                        }
+                      )}
+                      error={
+                        errors.questions &&
+                        errors.questions[qName]?.options &&
+                        errors.questions[qName].options[o.oName] !== undefined
                       }
-                    )}
-                    error={
-                      errors.questions &&
-                      errors.questions[qName]?.options &&
-                      errors.questions[qName].options[o.oName] !== undefined
-                    }
-                    helperText={
-                      errors.questions &&
-                      errors.questions[qName]?.options &&
-                      errors.questions[qName].options[o.oName]?.message
-                    }
-                    data-cy={`question-${questionIndex}-choice-${index}`}
-                    className={classes.textField}
-                  />
-                )}
-              />
-            ))}
+                      helperText={
+                        errors.questions &&
+                        errors.questions[qName]?.options &&
+                        errors.questions[qName].options[o.oName]?.message
+                      }
+                      data-cy={`question-${questionIndex}-choice-${index}`}
+                      className={classes.textField}
+                    />
+                  )}
+                />
+              );
+            })}
           </FormGroup>
         </>
       )}
