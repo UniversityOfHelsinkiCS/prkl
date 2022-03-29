@@ -1,14 +1,16 @@
 version: "3.7"
 
-services:
+volumes:
+  pg_data:
 
+services:
   frontend:
     build: ./client
     ports:
       - 3000:3000
     volumes:
-      - ./client/src:/usr/src/app/frontend/src
-      
+      - ./client:/usr/src/app/frontend
+
   app:
     build:
       context: ./
@@ -24,7 +26,6 @@ services:
     environment:
       - "NODE_ENV=development"
       - "REACT_APP_CUSTOM_NODE_ENV=development"
-    command: npm run start:dev
     depends_on:
       - frontend
 
@@ -41,6 +42,6 @@ services:
       - PGDATA=/data
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - ./pg_data:/data
+      - pg_data:/data
     ports:
       - 5432:5432

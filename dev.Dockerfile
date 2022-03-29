@@ -11,4 +11,5 @@ WORKDIR /usr/src/app/server
 
 EXPOSE 3001
 
-CMD npm run dev
+# If node_modules do not exist, install before starting.  
+CMD [ -d "node_modules" ] && npm run start:dev || npm ci && npm run start:dev
