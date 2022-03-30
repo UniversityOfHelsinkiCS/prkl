@@ -31,7 +31,7 @@ export default {
       'Answer options in single choice questions are assumed to be on a continuum ' +
       '(ie. choices 1 and 2 are more similar than 1 and 3), give options in order. ' +
       'In multiple choice questions the order does not matter.',
-    'courseForm.publishAlert': 'Note: Admin privileges are required to edit published courses!',
+    'courseForm.publishAlert': 'Note: Some edit features are restricted after publishing!',
     'courseForm.confirmSubmit': 'Confirm course creation?',
     'courseForm.confirmPublishSubmit': 'Create and publish course?',
     'courseForm.teacherInfo': 'Choose teachers for your course from this list',
@@ -51,7 +51,7 @@ export default {
     'editView.coursePublishedNotification':
       'Course has been published, adding or removing questions is not allowed. Texts of existing questions and their answer choices may be edited.',
     'editView.confirmPublishSubmit':
-      'Confirm all edits and publish course? Published courses can only be edited by admins!',
+      'Confirm all edits and publish course? Some edit features are restricted after publishing!',
     'editView.confirmSubmit': 'Confirm all edits?',
     'editView.closeRegistrationLabel': 'Immediately close registration (for admin)',
     'editView.closeRegistrationBtn': 'Close registration',

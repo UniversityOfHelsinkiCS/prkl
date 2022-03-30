@@ -3,12 +3,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useForm, Controller } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
-import { useMutation } from '@apollo/client';
+import { useMutation, useLazyQuery } from '@apollo/client';
 import _ from 'lodash';
-
 import {
   TextField,
   Button,
+  IconButton,
   FormGroup,
   Slider,
   Card,
@@ -19,9 +19,11 @@ import {
 } from '@material-ui/core';
 import { blue, red } from '@material-ui/core/colors';
 import InfoIcon from '@material-ui/icons/Info';
+import SearchIcon from '@material-ui/icons/Search';
+
 import { Alert } from '@material-ui/lab';
 
-import { CREATE_COURSE, UPDATE_COURSE, ALL_COURSES } from '../../GqlQueries';
+import { CREATE_COURSE, UPDATE_COURSE, COURSE_BY_CODE, ALL_COURSES } from '../../GqlQueries';
 
 import { useCourseFormStyles } from '../../styles/courses/CourseForm';
 import ConfirmationButton from '../ui/ConfirmationButton';
@@ -41,6 +43,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   const history = useHistory();
   const intl = useIntl();
 
+  //TARVITAAN JOKU JOKA PÄIVITTÄÄ NÄÄ kaikki sivut ku vaihdetaan sivua päivitys toimii todella huonosti
   const [updateCourse] = useMutation(UPDATE_COURSE, {
     refetchQueries: [ { query: ALL_COURSES } ]  });
   const [createCourse] = useMutation(CREATE_COURSE, {
@@ -82,9 +85,14 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
 
   useEffect(() => {
     if (editView) {
+      setPublishToggle(course.published);
       const calendarQuestion = course.questions.find(q => q.questionType === TIMES);
       if (calendarQuestion) {
+        setMinWorkingHours(course.minHours || minHours);
+        setWorkTimeEndsAt(course.workTimeEndsAt || workTimeEndsAt);
+        setWeekends(course.weekends || weekends);
         setCalendarToggle(true);
+        setValue('calendarDescription', calendarQuestion.content);
         setCalendar(calendarQuestion);
         reset(calendarQuestion);
       }
@@ -171,8 +179,12 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
     });
 
     const questionsWOKeys = updatedQuestions.map(q => {
-      const opts = q.questionChoices ? q.questionChoices.map(qc => _.omit(qc, 'oName')) : [];
-      const newQ = _.omit(q, 'qKey');
+      const omitOName = editView ? ['oName'] : ['oName', 'id']
+      const omitQKey = editView ? ['qKey'] :  ['qKey', 'id']
+      const opts = q.questionChoices
+        ? q.questionChoices.map(qc => _.omit(qc, omitOName))
+        : [];
+      const newQ = _.omit(q, omitQKey);
       newQ.questionChoices = opts;
       return newQ;
     });
@@ -193,6 +205,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
     };
 
     const variables = { id: editView ? course.id : undefined, data: { ...courseObject } };
+
     try {
       if (editView) {
         // TODO: Responsive UI based on following variable result. See Notification.js
@@ -205,14 +218,51 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
         const result = await createCourse({
           variables,
         });
-        history.push(`/course/${result.data.createCourse.id}`);
+        history.push(`/`);
       }
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.log('error:', error);
     }
   };
 
+  /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
+
+  const code = getValues('courseCode');
+  const [getByCode, { called, loading, error, data, refetch }] = useLazyQuery(COURSE_BY_CODE, {
+    variables: { code },
+    fetchPolicy: 'network-only',
+    
+  });
+
+  useEffect(() => {
+    if (called && !loading && data.getCourseByCode.length > 0) {
+      const result = data.getCourseByCode[0];
+      refetch();
+      setMinWorkingHours(result.minHours || minHours);
+      setWorkTimeEndsAt(result.workTimeEndsAt || workTimeEndsAt);
+      setWeekends(result.weekends || weekends);
+      setValue('courseTitle', result.title);
+      setValue('courseDescription', result.description);
+      const calendarQuestion = result.questions.find(q => q.questionType === TIMES);
+      if (calendarQuestion) {
+          //tämä ei todellakaan ole paras ratkaisu, sillä jos kirjoittaa muun kurssin, jolla ei ole timetablea, niin arvo jää. ratkaistu rivillä 230.
+        setCalendarToggle(true);
+        setValue('calendarDescription', calendarQuestion.content);
+      }else{
+        setCalendarToggle(false);
+      }
+      const qstns = result.questions.filter(q => q.questionType !== TIMES)
+      .map(q => {
+        const newQ = removeTypename(q);
+        newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
+        return newQ;
+      });
+      setQuestions(qstns);
+
+    }
+  }, [data]);
+
+  /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
 
   return (
     <div className={classes.root}>
@@ -269,18 +319,33 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
               },
             }}
             render={props => (
-              <TextField
-                // eslint-disable-next-line react/jsx-props-no-spreading
-                {...props}
-                variant="outlined"
-                label={intl.formatMessage({
-                  id: 'courseForm.courseCodeForm',
-                })}
-                error={errors.courseCode !== undefined}
-                helperText={errors.courseCode?.message}
-                data-cy="course-code-input"
-                className={classes.textField}
-              />
+              <>
+                <TextField
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  {...props}
+                  variant="outlined"
+                  label={intl.formatMessage({
+                    id: 'courseForm.courseCodeForm',
+                  })}
+                  error={errors.courseCode !== undefined}
+                  helperText={errors.courseCode?.message}
+                  data-cy="course-code-input"
+                  className={classes.textField}
+                />
+
+                <Button
+                  disabled={editView}   //Ehdotus ettei tätä tulisi käyttää editissä.
+                  title={"Copy course by code"}
+                  onClick={() => getByCode()}
+                  startIcon={<SearchIcon/>}
+                  size="small"
+                  variant="outlined"
+                  className={classes.searchButton}
+                  data-cy="search-code-button"
+                >
+                  Copy by code
+                  </Button>
+              </>
             )}
           />
           {/* Deadline input */}
@@ -381,18 +446,26 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
 
         {calendarToggle && (
           <div>
-
-
             <Card variant="outlined">
-              <CardActions >
+              <CardActions>
                 <FormControlLabel
                   data-cy="weekend-checkbox"
-                  control={<Checkbox color="primary" checked={weekends} onClick={() =>{ setWeekends(!weekends)}} />}
+                  control={
+                    <Checkbox
+                      disabled={editView}   //Tässä bugi timeformin kanssa siksi disabled editviewissä
+                      color="primary"
+                      checked={weekends}
+                      onClick={() => {
+                        setWeekends(!weekends);
+                      }}
+                    />
+                  }
                   label={intl.formatMessage({ id: 'courseForm.includeCalendarWeekends' })}
                 />
               </CardActions>
 
-              <CardActions >
+
+              <CardActions>
               <TextField
                 data-cy="min-hour-field"
                 label="Minimum working hours"
@@ -400,7 +473,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                 type="number"
                 InputProps={{ inputProps: { min: 0, max: 40 } }}
                 value={minHours}
-                onChange={(e) => {
+                onChange={e => {
                   var value = parseInt(e.target.value, 10);
                   if (value > 40) value = 40;
                   if (value < 0) value = 0;
@@ -411,28 +484,29 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                 variant="outlined"
               />
               </CardActions>
-              
+
               <CardContent>
                 <h4>
                   {`Select the selectable working hours in week. Current selection 8.00 – ${workTimeEndsAt}.00`}
                 </h4>
               </CardContent>
               <CardActions className={classes.slider}>
-                  <Slider
-                    data-cy="working-hour-slider"
-                    marks={[...Array(22 - 7)].map((x, i) => {
-                      return {
-                        label: `${i + 8}.00`,
-                        value: i + 8,
-                      };
-                    })}
-                    value={workTimeEndsAt}
-                    onChange={(event, newValue) => setWorkTimeEndsAt(newValue)}
-                    getAriaValueText={value => `${value}.00`}
-                    step={1}
-                    min={8}
-                    max={22}
-                  />
+                <Slider
+                  data-cy="working-hour-slider"
+                  marks={[...Array(22 - 7)].map((x, i) => {
+                    return {
+                      label: `${i + 8}.00`,
+                      value: i + 8,
+                    };
+                  })}
+                  value={workTimeEndsAt}
+                  onChange={(event, newValue) => setWorkTimeEndsAt(newValue)}
+                  getAriaValueText={value => `${value}.00`}
+                  step={1}
+                  disabled={editView}   //Tässä bugi timeformin kanssa siksi disabled editviewissä
+                  min={8}
+                  max={22}
+                />
               </CardActions>
             </Card>
           </div>
@@ -466,6 +540,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
             />
           )}
         />
+
         {editView && course.published ? (
           <Alert severity="info" className={classes.alert}>
             {intl.formatMessage({ id: 'editView.coursePublishedNotification' })}
@@ -487,17 +562,19 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
         )}
 
         <FormGroup row>
-          {questions?.map((q, index) => (
-            <QuestionForm
-              key={q.qKey ? q.qKey : q.id}
-              qName={q.qKey ? q.qKey : q.id}
-              setQuestions={setQuestions}
-              questions={questions}
-              questionIndex={index}
-              hideAddRemoveButtons={editView ? course.published : false}
-              hookForm={hookForm}
-            />
-          ))}
+          {questions?.map((q, index) => {
+            return (
+              <QuestionForm
+                key={q.qKey ? q.qKey : q.id}
+                qName={q.qKey ? q.qKey : q.id}
+                setQuestions={setQuestions}
+                questions={questions}
+                questionIndex={index}
+                hideAddRemoveButtons={editView ? course.published : false}
+                hookForm={hookForm}
+              />
+            );
+          })}
         </FormGroup>
 
         <h3>
@@ -529,19 +606,21 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
         )}
 
         {role === roles.ADMIN_ROLE &&
-          new Date(new Date(getValues('deadline')).getTime()).setHours(0, 0, 0, 0) < new Date(new Date().getTime()).setHours(0, 0, 0, 0) && (
+          new Date(new Date(getValues('deadline')).getTime()).setHours(0, 0, 0, 0) <
+            new Date(new Date().getTime()).setHours(0, 0, 0, 0) && (
             <Alert severity="warning" className={classes.alert}>
               <FormattedMessage id="editView.pastDeadlineWarning" />
             </Alert>
           )}
 
         {role === roles.ADMIN_ROLE &&
-          new Date(new Date(getValues('deadline')).getTime()).setHours(0, 0, 0, 0) === new Date(Date.now()).setHours(0, 0, 0, 0) && (
+          new Date(new Date(getValues('deadline')).getTime()).setHours(0, 0, 0, 0) ===
+            new Date(Date.now()).setHours(0, 0, 0, 0) && (
             <Alert severity="warning" className={classes.alert}>
               <FormattedMessage id="editView.todayDeadlineWarning" />
             </Alert>
           )}
-          
+
         <FormGroup row className={classes.buttonGroup}>
           <ConfirmationButton
             onConfirm={handleSubmit(onSubmit)}

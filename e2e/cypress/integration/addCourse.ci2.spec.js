@@ -6,11 +6,6 @@ describe('Adding a new course', () => {
     cy.switchToAdmin();
   });
 
-  after(() => {
-    cy.switchToAdmin();
-    cy.seedDatabase();
-  });
-
   it('Straight to backend', () => {
     // Student cannot create a course
     cy.createCourse(0, 0).then((resp) => {
@@ -37,6 +32,7 @@ describe('Adding a new course', () => {
     cy.get('[data-cy="calendar-checkbox"]').click();
     cy.get('[data-cy="create-course-submit"]').click();
     cy.get('[data-cy="confirmation-button-confirm"]').click();
+    cy.get('[data-cy="CYP999"]').first().click();
 
     cy.get('[data-cy="time-table"]').should('exist')
   });
@@ -55,6 +51,8 @@ describe('Adding a new course', () => {
     cy.get('[data-cy="min-hour-field"]').type(5);
     cy.get('[data-cy="create-course-submit"]').click();
     cy.get('[data-cy="confirmation-button-confirm"]').click();
+    cy.get('[data-cy="CYP999"]').first().click();
+
 
     cy.get('[data-cy="time-table-minhours"]').should('contain', `Choose at least (${minHour}) hours`)
   });
@@ -71,6 +69,7 @@ describe('Adding a new course', () => {
     cy.get('[data-cy="weekend-checkbox"]').click()
     cy.get('[data-cy="create-course-submit"]').click();
     cy.get('[data-cy="confirmation-button-confirm"]').click();
+    cy.get('[data-cy="CYP999"]').first().click();
 
     cy.get('[data-cy="time-table"]').should('contain', `Sat`)
   });
@@ -198,6 +197,8 @@ describe('Adding a new course', () => {
       // confirm
       cy.get('[data-cy="create-course-submit"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
+      cy.get('[data-cy="123"]').first().click();
+
 
       // check that questions are marked correctly on course page
       cy.contains('Optional freeform')

@@ -1,6 +1,6 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { getRepository } from "typeorm";
-import _ from "lodash";
+import _, { orderBy } from "lodash";
 import { User } from "../entities/User";
 import { Course } from "../entities/Course";
 import { Question } from "../entities/Question";
@@ -38,6 +38,25 @@ export class CourseResolver {
     }
   }
 
+  @Query(() => [Course])
+  async getCourseByCode(@Ctx() context, @Arg("code") code: string): Promise<Course[]> {
+    const { user } = context;
+
+    const courses = await Course.find({
+      where: { code },
+      relations: ["questions", "questions.questionChoices", "teachers"],
+      order: { createdAt: "DESC" },
+      take: 1
+    })
+    
+
+    if (!courses || user.role < STAFF) {
+      throw new Error("Course not found.")
+    }
+
+    return courses;
+  }
+
   @Query(() => Course)
   async course(@Ctx() context, @Arg("id") id: string): Promise<Course> {
     const { user } = context;
@@ -69,13 +88,11 @@ export class CourseResolver {
   @Mutation(() => Course)
   async createCourse(@Ctx() context, @Arg("data") data: CourseInput): Promise<Course> {
     const course = Course.create(data);
-
     if (data.teachers.length === 0) {
       const { user } = context;
       course.teachers = [user];
     }
 
-    console.log("course is:", course);
     await course.save();
     return course;
   }
@@ -113,16 +130,19 @@ export class CourseResolver {
       throw new Error("Course with given id not found.");
     }
 
-    if (course.published && user.role !== ADMIN) {
-      throw new Error("You do not have authorization to update a published course.");
+    if (user.role !== ADMIN && !course.teachers.map(t => t.id).includes(user.id)) {
+      throw new Error("You do not have authorization to update this course.");
     }
 
     course.title = data.title;
     course.description = data.description;
     course.code = data.code;
     course.deadline = data.deadline;
+    course.workTimeEndsAt = data.workTimeEndsAt;
+    course.minHours = data.minHours;
+    course.weekends = data.weekends;
 
-    // Published course questions or their choices may not be added or deleted even by admins, as it will likely mess up the algorithm
+    // Published course questions or their choices may not be added or deleted even by admins
     if (course.published) {
       const hasSameQuestionsAndChoices = course.questions.filter(q => {
         return data.questions.some(dq => {
@@ -130,7 +150,6 @@ export class CourseResolver {
           let oldChoices = q.questionChoices?.map(qChoice => qChoice.id);
           if (!newChoices) newChoices = [];
           if (!oldChoices) oldChoices = [];
-
           return dq.id === q.id && _.isEqual(_.sortBy(newChoices), _.sortBy(oldChoices));
         });
       });
