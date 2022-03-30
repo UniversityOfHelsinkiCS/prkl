@@ -46,12 +46,11 @@ export class CourseResolver {
       where: { code },
       relations: ["questions", "questions.questionChoices", "teachers"],
       order: { createdAt: "DESC" },
-      take: 1
-    })
-    
+      take: 1,
+    });
 
     if (!courses || user.role < STAFF) {
-      throw new Error("Course not found.")
+      throw new Error("Course not found.");
     }
 
     return courses;
@@ -229,7 +228,7 @@ export class CourseResolver {
 
   @Authorized(STAFF)
   @Mutation(() => String)
-  async deleteCourse(@Ctx() context, @Arg("id") id: string): Promise<String> {
+  async deleteCourse(@Ctx() context, @Arg("id") id: string): Promise<string> {
     const { user } = context;
     const course = await Course.findOne({ where: { id }, relations: ["teachers"] });
     if (!course) throw new Error("Course not found!");

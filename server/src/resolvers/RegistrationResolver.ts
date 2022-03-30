@@ -45,7 +45,11 @@ export class RegistrationResolver {
   }
 
   @Mutation(() => String)
-  async deleteRegistration(@Ctx() context, @Arg("studentId") studentId: string, @Arg("courseId") courseId: string): Promise<String> {
+  async deleteRegistration(
+    @Ctx() context,
+    @Arg("studentId") studentId: string,
+    @Arg("courseId") courseId: string,
+  ): Promise<string> {
     const { user } = context;
     let auth = false;
 
@@ -77,7 +81,7 @@ export class RegistrationResolver {
     unregisteredUser.groups = groups;
     await unregisteredUser.save();
 
-    const deletedRegistrationId = registration.id // copy registration, because the id is undefined after .remove()
+    const deletedRegistrationId = registration.id; // copy registration, because the id is undefined after .remove()
 
     await registration.remove();
 

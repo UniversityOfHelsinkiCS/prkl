@@ -82,7 +82,6 @@ export class GroupResolver {
       .andWhere("registration.courseId = group.courseId")
       .getMany();
   }
-  
 
   // Returns sample groups based on received data, does not save them
   @Authorized(STAFF)

@@ -12,7 +12,9 @@
     "build": "npx tsc",
     "start": "node dist/src/app.js",
     "start:prod": "NODE_ENV=production node dist/src/app.js",
-    "start:test": "NODE_ENV=test node dist/src/app.js && jest"
+    "start:test": "NODE_ENV=test node dist/src/app.js && jest",
+    "eslint": "eslint --ext .ts ./src",
+    "eslint-fix": "eslint --ext .ts ./src --fix"
   },
   "author": "",
   "license": "MIT",
