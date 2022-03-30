@@ -52,6 +52,7 @@
     "morgan": "^1.9.1",
     "pg": "^7.17.1",
     "reflect-metadata": "^0.1.10",
+    "set-clustering": "^1.1.0",
     "type-graphql": "^0.17.6",
     "typeorm": "0.2.25",
     "unfuck-utf8-headers-middleware": "^1.0.1",

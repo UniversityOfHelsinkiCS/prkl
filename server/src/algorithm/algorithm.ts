@@ -1,5 +1,7 @@
 import * as _ from "lodash";
-import { workingTimeList } from "./evaluators/evaluateByWorkingHours";
+import cluster from "set-clustering";
+
+import { workingTimeList, hoursScorePair } from "./evaluators/evaluateByWorkingHours";
 import { Registration } from "../entities/Registration";
 import { GroupInput } from "../inputs/GroupInput";
 import evaluateBoth from "./evaluators/bothEvaluators";
@@ -66,17 +68,49 @@ export const formGroups: Algorithm = (targetGroupSize: number, registrations: Re
   let grouping: Group[] = createRandomGrouping(targetGroupSize, registrations);
   let score = scoreBoth(grouping);
 
+  const time1 = new Date();
+  
   for (let i = 0; i < registrations.length * 20; i++) {
     const newGrouping = mutateGrouping(grouping);
     const newScore = scoreBoth(newGrouping);
-
+    
     if (newScore > score) {
       score = newScore;
       grouping = newGrouping;
     }
   }
+  const time2 = new Date();
+  
+  console.log("final group: ", grouping);
+  
+  // SET CLUSTER TESTING
+  
+  const match = (r1: Registration, r2: Registration): Number => {
+    return evaluateBoth([r1, r2])
+  }
+  
+  const time3 = new Date();
+  const numberOfGroups: Number = Math.round(registrations.length / targetGroupSize)
+  
+  const c = cluster(registrations, match)
+  const testGroup = c.evenGroups(numberOfGroups);
+  const time4 = new Date();
+  
+  console.log("Curr Algo time: ", time2.getTime()-time1.getTime());
+  console.log("Test Algo time: ", time4.getTime()-time3.getTime());
+  
+
   console.log("Final grouping score: ", score);
-  return grouping.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput));
+  console.log("Curr Algo ", grouping.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput)));
+  console.log("Test Algo ", testGroup.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput)));
+  
+  const currAlgGroupScore = scoreBoth(grouping)
+  const newAlgGroupScore = scoreBoth(testGroup)
+
+  console.log("Curr Algo: ", currAlgGroupScore);
+  console.log("New Algo: ", newAlgGroupScore);
+
+  return testGroup.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput));
 };
 
 export const findGroupForGrouplessStudents = (
