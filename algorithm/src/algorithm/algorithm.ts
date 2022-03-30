@@ -92,7 +92,7 @@ export const findGroupForGrouplessStudents = (
       const groupClone = _.clone(group);
       groupClone.push(student);
       const score = evaluateBoth(groupClone);
-      if (score > topScore && (groupClone.length <= targetGroupSize +1 && groupClone.length >= targetGroupSize -1)) {
+      if (score > topScore && (groupClone.length <= targetGroupSize + 1 && groupClone.length >= targetGroupSize - 1)) {
         groupIndex = index;
         topScore = score;
       }

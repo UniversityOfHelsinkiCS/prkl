@@ -63,7 +63,7 @@ export const hoursScorePair = (pair: [Registration, Registration]): number => {
         }
     }
 
-    if (Math.min(pairOneTotalHours.length, pairTwoTotalHours.length) !==0) {
+    if (Math.min(pairOneTotalHours.length, pairTwoTotalHours.length) !== 0) {
         result = result / Math.min(pairOneTotalHours.length, pairTwoTotalHours.length);
     } else {
         result = 0;
@@ -71,13 +71,13 @@ export const hoursScorePair = (pair: [Registration, Registration]): number => {
     return result;
 }
 
-const allWorkingHours = ( map: Map<number, Set<workingTimeObject>>, helperMap: Map<number, Set<number>>, totalHours: number[], workDay: workingTimeObject ): Map<number, Set<workingTimeObject>> => {
+const allWorkingHours = (map: Map<number, Set<workingTimeObject>>, helperMap: Map<number, Set<number>>, totalHours: number[], workDay: workingTimeObject): Map<number, Set<workingTimeObject>> => {
 
     for (let i = workDay.startHour; i < workDay.endHour; i++) {
         const startDay = workDay.startDay;
         const startHour = i;
         const endHour = i + 1;
-        const times: workingTimeObject = {startDay, startHour, endHour, handled: false};
+        const times: workingTimeObject = { startDay, startHour, endHour, handled: false };
         if (!helperMap.get(startDay).has(i)) {
             helperMap.get(startDay).add(i);
             map.get(workDay.startDay).add(times);

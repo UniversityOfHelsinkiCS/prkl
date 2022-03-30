@@ -18,7 +18,7 @@ export const multipleScorePair = (pair: [Registration, Registration]): number =>
     const answers = _.map(pair,
         registration =>
             _.flatMap(registration.questionAnswers.filter(answer =>
-                    (answer.question.useInGroupCreation && (answer.question.questionType === "multipleChoice" || answer.question.questionType === "singleChoice"))),
+                (answer.question.useInGroupCreation && (answer.question.questionType === "multipleChoice" || answer.question.questionType === "singleChoice"))),
                 answer => _.map(answer.answerChoices,
                     choice => ([answer.questionId, choice.id, answer.question.content, choice.content]))))
 
@@ -26,8 +26,8 @@ export const multipleScorePair = (pair: [Registration, Registration]): number =>
         return 0;
     }
 
-    const answerCount = answers[0].length + answers[1].length
-    const sameAnswerCount = _.intersectionWith(answers[0], answers[1], _.isEqual).length * 2
+    const answerCount = answers[0].length + answers[1].length;
+    const sameAnswerCount = _.intersectionWith(answers[0], answers[1], _.isEqual).length * 2;
 
     return sameAnswerCount / answerCount
 }
