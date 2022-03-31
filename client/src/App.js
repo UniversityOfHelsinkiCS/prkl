@@ -1,4 +1,4 @@
-import React, { createContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { initShibbolethPinger } from 'unfuck-spa-shibboleth-session';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createStore, useStore } from 'react-hookstore';
@@ -21,14 +21,13 @@ import DevBar from './components/DevBar';
 import Header from './components/Header';
 import roles from './util/userRoles';
 import './App.css';
+import AppContext from './AppContext';
 
 createStore('grouplessStudentsStore', []);
 createStore('groupsUnsavedStore', false);
 createStore('lockedGroupsStore', []);
 createStore('teacherStore', []);
 createStore('groupsStore', []);
-
-export const AppContext = createContext();
 
 console.log('Version 22022022');
 

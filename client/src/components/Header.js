@@ -7,7 +7,7 @@ import { AppBar, Typography, Button, Grid, Toolbar } from '@material-ui/core';
 import { useHeaderStyles } from '../styles/ui/Header';
 import { privacyToggleVar } from '..';
 import roles from '../util/userRoles';
-import { AppContext } from '../App';
+import AppContext from '../AppContext';
 
 export default () => {
   const intl = useIntl();

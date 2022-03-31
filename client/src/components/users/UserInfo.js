@@ -7,7 +7,7 @@ import { ALL_COURSES } from '../../GqlQueries';
 import UserCourseList from './UserCourseList';
 import roles from '../../util/userRoles';
 import UserGroup from './UserGroup';
-import { AppContext } from '../../App';
+import AppContext from '../../AppContext';
 
 export default () => {
   const loaderClass = useLoaderStyle();

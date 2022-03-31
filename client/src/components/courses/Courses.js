@@ -17,7 +17,7 @@ import { useLoaderStyle } from '../../styles/ui/Loader';
 import { useCoursesStyles } from '../../styles/ui/Courses';
 import CourseListStaffControls from './CourseListStaffControls';
 import CourseList from './CourseList';
-import { AppContext } from '../../App';
+import AppContext from '../../AppContext';
 
 export default () => {
   const intl = useIntl();

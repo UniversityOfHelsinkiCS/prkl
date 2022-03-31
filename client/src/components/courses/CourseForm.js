@@ -32,7 +32,7 @@ import roles from '../../util/userRoles';
 import TeacherList from './TeacherList';
 import Popup from '../ui/Popup';
 
-import { AppContext } from '../../App';
+import AppContext from '../../AppContext';
 
 // Renders form for both adding and editing a course
 const CourseForm = ({ course, onCancelEdit, editView }) => {

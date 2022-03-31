@@ -22,7 +22,7 @@ import GroupsView from '../groups/GroupsView';
 import roles from '../../util/userRoles';
 import CourseForm from './CourseForm';
 import CourseInfo from './CourseInfo';
-import { AppContext } from '../../App';
+import AppContext from '../../AppContext';
 
 export const CourseContext = createContext();
 

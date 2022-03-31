@@ -29,7 +29,7 @@ import { setNotification } from '../ui/Notification';
 import GrouplessStudents from './GrouplessStudents';
 import userRoles from '../../util/userRoles';
 import Groups from './Groups';
-import { AppContext } from '../../App';
+import AppContext from '../../AppContext';
 
 const useStyles = makeStyles({
   formInput: {

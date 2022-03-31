@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useStore } from 'react-hookstore';
 import { AppBar, Button, ButtonGroup, Toolbar, Typography } from '@material-ui/core';
 import { useMockBarStyles } from '../styles/ui/MockBar';
-import { AppContext } from '../App';
+import AppContext from '../AppContext';
 
 export default () => {
   const { user } = useContext(AppContext);

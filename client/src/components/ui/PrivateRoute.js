@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Route } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import { AppContext } from '../../App';
+import AppContext from '../../AppContext';
 
 const NotAllowed = () => (
   <Alert severity="warning">
