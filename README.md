@@ -39,25 +39,27 @@ docker-compose up
 
 This starts the client, graphQl server, database and adminer service in their own containers. Use `docker ps` to list all running containers and `docker-compose down` to stop them.
 
-A graphQl endpoint can be found at http://localhost:3001/grapgql. The server restarts automatically after changes to the source code. The server also contains a production version of the client but it's not hot-loadable so it is more convenient to use the hot-loadable development front end at http://localhost:3000.
+A graphQl endpoint can be found at http://localhost:3001/grapgql.
 
-The Postgres database starts in it's own container. The local database can be accessed using Adminer at http://localhost:4000 (user: postgres, password: postgres).
+The server restarts automatically after changes to the source code. The server also contains a production version of the client but it's not hot-loadable so it is more convenient to use the hot-loadable development front end at http://localhost:3000.
 
-Note to Windows users: Hot loading changes in the front end and back end may not work as intended on a Windows machine.
+The local Postgres database starts in it's own container and it can easily be accessed using Adminer at http://localhost:3003 (System: PostgreSQL, Server: db, Username: postgres, Password: postgres, Database: postgres).
+
+Note to Windows users: Hot loading changes in the front end and back end may not work as intended on a Windows machine while using docker-compose. One solution is to install WSL and effectively run the environment on Linux. Another way is to use docker-compose only to start the database and adminer (`docker-compose up adminer db`) while starting the client and server manually. In this case start the client in the client folder with `npm start` and the server in the server folder with `npm run start:dev`.
 
 ## Installing dependencies
 
-The node_modules folders in both the frontend and backend are shared between the Docker container and development computer using Docker volumes. To ensure a consistent development environment it is adviced to install dependencies from inside the container and then mirror them to the outside. The reason is, that the operating system can affect what actual node_modules are installed. Installing dependencies from inside the container can be achieved using the following steps:
+The node_modules folders in both the frontend and backend are shared between the Docker container and development computer using Docker volumes. To ensure a consistent development environment it is adviced to install dependencies from inside the container and then mirror them to the outside. The reason is, that things like the npm version or the operating system can affect what actual node_modules are installed. Installing dependencies from inside the container can be achieved using the following steps:
 
 1. When in the /client or /server folder, install the dependency using `npm install` on your development computer like you normally would.
 2. Delete the node_modules folder
 3. Start the development environment using `docker-compose up --build`
 
-When the container starts up, it checks if a node_modules folder is present. If it's missing it installs the modules. After the install, the new node_modules folder will be visible on the development computer as well.
+When the container starts up, it checks if a node_modules folder is present. If it's missing it installs the modules. After the install, the new node_modules folder will appear on the development computer as well.
 
 ## End to end tests
 
-Cypress is used for end-to-end tests. It is recommended to have Cypress installed globally (`npm i -g cypress`). To use cypress locally, launch Assembler in development mode as outlined above. Then do:
+Cypress is used for end-to-end tests. It is recommended to have Cypress installed globally (`npm i -g cypress`). To use cypress, first launch Assembler in development mode as outlined above. Then do:
 
 ```
 cd e2e
