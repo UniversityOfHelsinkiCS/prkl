@@ -29,6 +29,7 @@ createStore('lockedGroupsStore', []);
 createStore('teacherStore', []);
 createStore('groupsStore', []);
 
+// eslint-disable-next-line no-console
 console.log('Version 22022022');
 
 export default () => {
