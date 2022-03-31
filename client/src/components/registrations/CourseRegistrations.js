@@ -18,7 +18,7 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 import questionSwitch, { count, getEmailsSeparatedBySemiColon } from '../../util/functions';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import { setNotification } from '../ui/Notification';
-import { CourseContext } from '../courses/Course';
+import CourseContext from '../courses/CourseContext';
 import { TIMES } from '../../util/questionTypes';
 import HourDisplay from '../misc/HourDisplay';
 import Popup from '../ui/Popup';

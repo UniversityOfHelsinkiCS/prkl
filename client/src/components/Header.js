@@ -5,7 +5,7 @@ import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { AppBar, Typography, Button, Grid, Toolbar } from '@material-ui/core';
 import { useHeaderStyles } from '../styles/ui/Header';
-import { privacyToggleVar } from '..';
+import { privacyToggleVar } from '../apolloReactiveVariables';
 import roles from '../util/userRoles';
 import AppContext from '../AppContext';
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useQuery, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
@@ -23,8 +23,7 @@ import roles from '../../util/userRoles';
 import CourseForm from './CourseForm';
 import CourseInfo from './CourseInfo';
 import AppContext from '../../AppContext';
-
-export const CourseContext = createContext();
+import CourseContext from './CourseContext';
 
 export default ({ id, match }) => {
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');

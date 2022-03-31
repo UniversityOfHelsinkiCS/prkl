@@ -2,7 +2,7 @@ import React from 'react';
 import { Snackbar } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { useReactiveVar } from '@apollo/client';
-import { notificationVar } from '../..';
+import { notificationVar } from '../../apolloReactiveVariables';
 
 export const setNotification = (message, type = 'info') => {
   notificationVar({
