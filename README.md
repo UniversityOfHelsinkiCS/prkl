@@ -45,7 +45,7 @@ The server restarts automatically after changes to the source code. The server a
 
 The local Postgres database starts in it's own container and it can easily be accessed using Adminer at http://localhost:3003 (System: PostgreSQL, Server: db, Username: postgres, Password: postgres, Database: postgres).
 
-Note to Windows users: Hot loading changes in the front end and back end may not work as intended on a Windows machine while using docker-compose. One solution is to install WSL and effectively run the environment on Linux. Another way is to use docker-compose only to start the database and adminer (`docker-compose up adminer db`) while starting the client and server manually. In this case start the client in the client folder with `npm start` and the server in the server folder with `npm run start:dev`.
+Note to Windows users: Hot loading changes in the front end and back end may not work as intended on a Windows machine while using docker-compose. One solution is to run the project on WSL (Windows Subsystem for Linux). Another way is to use docker-compose only to start the database and adminer (`docker-compose up adminer db`) while starting the client and server manually. In this case start the client in the client folder with `npm start` and the server in the server folder with `npm run start:dev`.
 
 ## Installing dependencies
 
@@ -56,6 +56,8 @@ The node_modules folders in both the frontend and backend are shared between the
 3. Start the development environment using `docker-compose up --build`
 
 When the container starts up, it checks if a node_modules folder is present. If it's missing it installs the modules. After the install, the new node_modules folder will appear on the development computer as well.
+
+If someone else has installed new dependencies (for example you see changes in package.json or package.lock.json after pulling a new version): Delete the node_modules folder and have the new dependencies installed automatically by using `docker-compose up --build`.
 
 ## End to end tests
 
