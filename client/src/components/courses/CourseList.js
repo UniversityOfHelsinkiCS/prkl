@@ -63,7 +63,7 @@ const Dropdown = ({ teachers, course, placeHolder }) => {
             <em>{placeHolder}</em>
           </MenuItem>
           {teachers.map(t => (
-            <MenuItem data-cy={t.firstname} onClick={() => handleClick(t, course)} value={t.id}>
+            <MenuItem data-cy={t.firstname} onClick={() => handleClick(t, course)} value={t.id} key={t.id}>
               {t.firstname}
               &nbsp;
               {t.lastname}
@@ -85,10 +85,11 @@ export default ({ courses, user }) => {
         <Card
           className={new Date(course.deadline) < new Date() ? classes.coursePast : classes.root}
           component={Paper}
+          key={course.id}
           data-cy={course.code}
         >
-          <CardContent component={Link} to={`/course/${course.id}`}>
-            <Typography className={classes.courseCode} color="textSecondary" gutterBottom>
+          <CardContent>
+            <Typography component={'span'} className={classes.courseCode} color="textSecondary" gutterBottom>
               <a
                 onClick={e => {
                   e.stopPropagation();
@@ -98,11 +99,12 @@ export default ({ courses, user }) => {
                 {course.code}
               </a>
               &nbsp; - &nbsp;
-              <Typography className={classes.title} color="textSecondary" gutterBottom>
+              <Typography component={Link} to={`/course/${course.id}`} className={classes.title} color="textSecondary" gutterBottom>
                 {course.title}
               </Typography>
             </Typography>
             <Typography
+              component={'span'}
               data-cy={`${course.code}-dropdown`}
               onClick={e => {
                 e.stopPropagation();

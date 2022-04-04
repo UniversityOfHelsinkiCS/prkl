@@ -78,7 +78,6 @@ export default () => {
         {/* these go to the right */}
         {user && user.role > roles.STAFF_ROLE ? (
           <Button
-            component={Link}
             onClick={() => {
               privacyToggleVar(!privacyToggleVar());
             }}
@@ -99,7 +98,6 @@ export default () => {
         </Button>
 
         <Button
-          component={Link}
           name="logout"
           onClick={handleLogout}
           data-cy="menu-logout"
@@ -107,6 +105,7 @@ export default () => {
         >
           <FormattedMessage id="header.logout" />
         </Button>
+
       </Toolbar>
     </AppBar>
   );
