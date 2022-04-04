@@ -9,7 +9,9 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
+    "@testing-library/user-event": "^7.2.1",
     "axios": "^0.21.1",
+    "fontsource-roboto": "^4.0.0",
     "graphql": "^14.6.0",
     "lodash": "^4.17.21",
     "material-ui-popup-state": "^1.8.0",
@@ -21,7 +23,9 @@
     "react-intl": "^3.11.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
-    "unfuck-spa-shibboleth-session": "^3.1.2"
+    "semantic-ui-react": "^0.88.2",
+    "unfuck-spa-shibboleth-session": "^3.1.2",
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -52,6 +56,7 @@
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^4.0.10",
     "prettier": "^1.19.1"
   }
 }
