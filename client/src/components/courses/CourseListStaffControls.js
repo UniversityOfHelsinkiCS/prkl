@@ -17,7 +17,7 @@ export default ({ controls }) => {
 
   const createCheckbox = (text, onChange, checked) => {
     return (
-      <FormGroup className={classes.row}>
+      <FormGroup className={classes.row} key={text}>
         <FormControlLabel
           label={text}
           control={

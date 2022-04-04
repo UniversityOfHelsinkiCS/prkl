@@ -8,6 +8,7 @@ services:
     build: ./client
     ports:
       - 3000:3000
+    container_name: prkl-frontend
     volumes:
       - ./client:/usr/src/app/frontend
 
@@ -28,6 +29,18 @@ services:
       - "REACT_APP_CUSTOM_NODE_ENV=development"
     depends_on:
       - frontend
+
+  algorithm:
+    build:
+      context: ./algorithm
+      dockerfile: dev.Dockerfile
+      args:
+        NODE_ENV: development
+    ports:
+      - 3004:3004
+    container_name: prkl-algorithm
+    volumes:
+      - ./algorithm:/usr/src/app/algorithm
 
   adminer:
     image: adminer

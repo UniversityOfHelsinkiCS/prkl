@@ -108,10 +108,12 @@ const HourDisplay = ({ header, times, students, groupId }) => {
         </TableHead>
         <TableBody>
           {timesTranspose.map((hours, index) => (
+            // eslint-disable-next-line react/no-array-index-key
             <TableRow key={`${groupId}-${index}`} className={classes.contentRow}>
               <TableCell className={classes.hourLabel}>{`${index + 8}-${index + 9}`}</TableCell>
               {hours.map((timeSlot, timeSlotIndex) => (
                 <TableCell
+                  // eslint-disable-next-line react/no-array-index-key
                   key={`${timeSlotIndex}-${groupId}-${index}`}
                   className={`${classes.tableEntry} ${classes[colorClass(timeSlot)]}`}
                 >

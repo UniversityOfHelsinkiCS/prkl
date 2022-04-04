@@ -83,7 +83,7 @@ export default ({ code, title, deadline, teachers, paragraphs }) => {
           <Divider light />
           <br />
 
-          <Typography variant="body1">
+          <Typography component={'span'} variant="body1">
             {paragraphs.map(p => (
               <p key={p}>{p}</p>
             ))}
