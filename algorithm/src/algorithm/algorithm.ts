@@ -53,6 +53,10 @@ const mutateGrouping = (grouping: Grouping) => {
   const groupsToSwapFrom = _.sampleSize(grouping, 2);
   const rest = _.without(grouping, ...groupsToSwapFrom);
 
+  if (groupsToSwapFrom.filter((g) => g.length <= 1).length > 0) {
+    return grouping;
+  }
+
   const group1User = _.sample(groupsToSwapFrom[0]);
   const group1Rest = _.without(groupsToSwapFrom[0], group1User);
 
