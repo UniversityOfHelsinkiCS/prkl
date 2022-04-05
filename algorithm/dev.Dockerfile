@@ -1,5 +1,7 @@
 FROM node:17-alpine3.15
 
+RUN apk update && apk add bash
+
 COPY ./ /usr/src/app/algorithm
 WORKDIR /usr/src/app/algorithm
 
