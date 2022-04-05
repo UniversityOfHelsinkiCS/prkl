@@ -7,9 +7,8 @@ import { useDevBarStyles } from '../styles/ui/DevBar';
 const apiUrl =
   process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : process.env.PUBLIC_URL;
 
-const switchUser = async (setMocking, id) => {
-  setMocking(prev => ({ ...prev, mockedUser: id }));
-  window.location.reload();
+const switchUser = (setMocking, mockedBy, id) => {
+  setMocking(() => ({ mockedBy, mockedUser: id }));
 };
 
 const resetDatabase = async () => {
@@ -40,14 +39,14 @@ export default () => {
         <Box>
           <Typography>Log in as...</Typography>
           <ButtonGroup className={classes.roleControls}>
-            <Button onClick={() => switchUser(setMocking, 1)} data-cy="switch-to-student">
+            <Button onClick={() => switchUser(setMocking, mocking.mockedBy, 1)} data-cy="switch-to-student">
               Student
             </Button>
-            <Button onClick={() => switchUser(setMocking, 2)} data-cy="switch-to-staff">
+            <Button onClick={() => switchUser(setMocking, mocking.mockedBy, 2)} data-cy="switch-to-staff">
               Staff
             </Button>
             <Button
-              onClick={() => switchUser(setMocking, mocking.mockedBy)}
+              onClick={() => switchUser(setMocking, mocking.mockedBy, mocking.mockedBy)}
               data-cy="switch-to-admin"
             >
               Admin

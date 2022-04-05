@@ -78,7 +78,6 @@ export default () => {
         {/* these go to the right */}
         {user && user.role > roles.STAFF_ROLE ? (
           <Button
-            component={Link}
             onClick={() => {
               privacyToggleVar(!privacyToggleVar());
             }}

@@ -8,9 +8,8 @@ export default () => {
   const { user } = useContext(AppContext);
   const [mocking, setMocking] = useStore('mocking');
 
-  const stopMocking = async mockedBy => {
-    setMocking(prev => ({ ...prev, mockedUser: mockedBy }));
-    window.location.reload();
+  const stopMocking = mockedBy => {
+    setMocking(() => ({mockedUser: mockedBy, mockedBy}));
   };
 
   const classes = useMockBarStyles();
