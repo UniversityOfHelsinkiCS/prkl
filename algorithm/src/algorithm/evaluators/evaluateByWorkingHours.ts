@@ -27,24 +27,24 @@ export const hoursScorePair = (pair: [Registration, Registration]): number => {
     const pairTwoTotalHours = [];
 
     for (const workingTime of pair[0].workingTimes) {
-        const startDay = workingTime.startTime.getDay();
-        const startHour = workingTime.startTime.getHours();
-        const endHour = workingTime.endTime.getHours();
+        const startDay = new Date(workingTime.startTime).getDay();
+        const startHour = new Date(workingTime.startTime).getHours();
+        const endHour = new Date(workingTime.endTime).getHours();
         const workDay: workingTimeObject = { startDay, startHour, endHour, handled: false };
 
         if (!pairOneWorkingTimes.has(startDay)) {
             pairOneWorkingTimes.set(startDay, new Set<workingTimeObject>());
             pairOneHelperMap.set(startDay, new Set<number>());
         }
-        allWorkingHours(pairOneWorkingTimes, pairOneHelperMap, pairOneTotalHours, workDay);
+        allWorkingHours(pairOneWorkingTimes, pairOneHelperMap, pairOneTotalHours, workDay); 
     }
 
     let result = 0;
 
     for (const workingTime of pair[1].workingTimes) {
-        const startDay = workingTime.startTime.getDay();
-        const startHour = workingTime.startTime.getHours();
-        const endHour = workingTime.endTime.getHours();
+        const startDay = new Date(workingTime.startTime).getDay();
+        const startHour = new Date(workingTime.startTime).getHours();
+        const endHour = new Date(workingTime.endTime).getHours();
         const workDay: workingTimeObject = { startDay, startHour, endHour, handled: false };
 
         if (!pairTwoWorkingTimes.has(startDay)) {

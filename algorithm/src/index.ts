@@ -16,8 +16,14 @@ interface RequestParameters {
 app.post("/", (req, res) => {
     console.log('yay')
     const data = req.body as RequestParameters;
+    // console.log(data);
+    
     const formed = formGroups(data.groupSize, data.registrations);
     res.send(formed);
+})
+
+app.get("/ping", (req, res) => {
+  res.send("pong");
 })
 
 app.listen(PORT, () => {
