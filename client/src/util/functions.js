@@ -1,5 +1,6 @@
 import React from 'react';
 import { TableCell, Chip } from '@material-ui/core';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 export const copyTextToClipboard = text => {
   if (text) {
@@ -56,14 +57,38 @@ export const timeParse = props => {
   return groupTimesMap;
 };
 
+const colors = [
+  '#34495e',
+  '#9b59b6',
+  '#3498db',
+  '#2ecc71',
+  '#16a085',
+  '#f39c12',
+  '#f1c40f',
+  '#e74c3c',
+  '#3742fa',
+  '#f78fb3',
+  '#079992',
+  '#4a69bd',
+];
+
+const keyValue = {};
+
 export default qa => {
   switch (qa.question.questionType) {
     case 'multipleChoice':
       return (
         <TableCell key={qa.id}>
-          {qa.answerChoices.map(question => (
-            <Chip label={question.content} />
-          ))}
+          
+          {qa.answerChoices.map(question => {
+            if (!keyValue[question.content]) {
+              keyValue[question.content] = colors.pop();
+            }
+
+            return (
+              <Chip style={{ backgroundColor: keyValue[question.content] }} label={question.content} />
+            )
+          })}
         </TableCell>
       );
     case 'singleChoice':
