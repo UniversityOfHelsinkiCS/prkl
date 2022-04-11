@@ -29,7 +29,11 @@ export const multipleScorePair = (pair: [Registration, Registration]): number =>
     const answerCount = answers[0].length + answers[1].length
     const sameAnswerCount = _.intersectionWith(answers[0], answers[1], _.isEqual).length * 2
 
-    return sameAnswerCount / answerCount
+    // this is not optimal awnser! The goal shoud be to find the first common anwnser and return 1 immediately
+    return sameAnswerCount > 0 ? 1 : 0
+
+    // Old return
+    // return sameAnswerCount / answerCount
 }
 
 const evaluateGroupByMultipleChoice: Evaluator = (group: Group) => {
