@@ -18,8 +18,8 @@ const ConfirmationButton = ({
 
   const formIsValidated = async () => {
     const { trigger, errors } = formControl;
-    await trigger();
-    return Object.keys(errors).length === 0;
+    const result = await trigger();
+    return Object.keys(errors).length === 0 && result;
   };
 
   const triggerClick = async e => {

@@ -22,7 +22,11 @@ const ValidatedInput = ({ name, type, formControl, optionality, ...rest }) => {
     if (!optionality) {
       register(
         { name },
-        { validate: selectedOptions => selectedOptions && selectedOptions.length !== 0 }
+        {
+          validate: selectedOptions => {
+            return !!selectedOptions && selectedOptions.length !== 0;
+          },
+        }
       );
     } else {
       register({ name }, { required: false });
