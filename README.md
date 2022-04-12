@@ -46,11 +46,7 @@ The server restarts automatically after changes to the source code. The server a
 The local Postgres database starts in it's own container and it can easily be accessed using Adminer at http://localhost:3003 (System: PostgreSQL, Server: db, Username: postgres, Password: postgres, Database: postgres).
 
 Note to Windows users: Hot loading changes in the front end and back end may not work as intended on a Windows machine while using docker-compose. One solution is to run the project on WSL (Windows Subsystem for Linux). Another way is to use docker-compose only to start the database and adminer (`docker-compose up adminer db`) while starting the client and server manually. In this case start the client in the client folder with `npm start` and the server in the server folder with `npm run start:dev`.
-Another possible solution is to use [Docker Desktop](https://docs.docker.com/desktop/windows/install/). Make sure the program is running before using `docker-compose up`, shut down prkl_frontend_1 and start the client with
-```
-cd client
-npm start dev
-```
+Another possible solution is to use [Docker Desktop](https://docs.docker.com/desktop/windows/install/). Make sure the program is running before using `docker-compose up`, shut down prkl_frontend_1 and start the client with `npm start dev`
 
 ## Installing dependencies
 
