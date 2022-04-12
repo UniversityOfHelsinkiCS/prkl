@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
   Table,
   TableBody,
@@ -11,9 +11,15 @@ import {
 } from '@material-ui/core';
 import { useUserCourseListStyles } from '../../styles/users/UserCourseList';
 
+
 export default ({ courses }) => {
   const classes = useUserCourseListStyles();
+  const history = useHistory();
 
+  const handleRowClick = (courseid) => {
+  
+    history.push(`/course/${courseid}`);
+  }
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">
@@ -29,11 +35,10 @@ export default ({ courses }) => {
           {courses.map(course => (
             <TableRow
               className={classes.row}
-              component={Link}
-              to={`/course/${course.id}`}
+              onClick={()=> handleRowClick(course.id)}
               key={course.code}
             >
-              <TableCell component="th" scope="row">
+              <TableCell>
                 {course.title}
               </TableCell>
               <TableCell align="center">{course.code}</TableCell>
