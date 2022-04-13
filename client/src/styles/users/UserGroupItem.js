@@ -5,6 +5,12 @@ const useUserGroupItemStyles = makeStyles(theme => ({
   table: {
     minWidth: 700,
   },
+
+  fabButton: {
+    marginLeft: "auto",
+    color: 'primary',
+  },
+
   head: {
     backgroundColor: '#1976d2',
     color: 'white',

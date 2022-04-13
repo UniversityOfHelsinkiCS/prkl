@@ -74,7 +74,7 @@ describe('Group publishing', () => {
               cy.switchToStudent();
               cy.visit(`/course/${courses[3].id}`);
               cy.get('[data-cy="show-user-groups-button"]').click();
-              cy.contains(`Message for ${groupName}:`);
+              cy.contains(`Message for ${groupName}`);
               cy.contains(groupMessage);
               cy.get('[data-cy="user-group-view-group-name"]').contains(groupName);
               cy.get('table>tbody>tr').each((tr) => {
