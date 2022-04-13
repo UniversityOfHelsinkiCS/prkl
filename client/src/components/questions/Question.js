@@ -109,7 +109,7 @@ const Question = ({ question, minHours, weekends, workTimeEndsAt, formControl })
 
   return (
     <div style={{ paddingTop: 5, paddingBottom: 5 }} data-cy="coursepage-question">
-      <Grid container justify="space-between">
+      <Grid container justifyContent="space-between">
         <Grid item>
           <b>{question.content}</b>
           {!question.optional && <span style={{ color: 'red' }}> *</span>}
