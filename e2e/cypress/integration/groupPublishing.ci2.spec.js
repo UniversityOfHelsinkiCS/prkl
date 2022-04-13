@@ -75,21 +75,13 @@ describe('Group publishing', () => {
               cy.visit(`/course/${courses[3].id}`);
               cy.get('[data-cy="show-user-groups-button"]').click();
               cy.contains(`Message for ${groupName}`);
-              cy.contains(groupMessage);
-              cy.get('[data-cy="user-group-view-group-name"]').contains(groupName);
-              cy.get('table>tbody>tr').each((tr) => {
-                const fullName = `${tr.children().eq(0).text()} ${tr.children().eq(1).text()}`;
-                expect(namesInGroup).to.include(fullName);
-              });
-              cy.get('table>tbody>tr').should('have.length', namesInGroup.length);
-              cy.get('table').within(() => {
-                cy.contains(users[0].firstname);
-                cy.contains(users[0].lastname);
-                cy.contains(users[0].email);
-              });
+              cy.contains(users[0].firstname);
+              cy.contains(users[0].lastname);
+              cy.contains(users[0].email);
             });
         });
       });
     }
   });
 });
+
