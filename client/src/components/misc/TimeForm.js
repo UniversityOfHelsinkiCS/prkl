@@ -163,7 +163,7 @@ const TimeForm = ({
               <TableCell
                 className={classes.tablecell}
                 align="center"
-                fullWidth
+                fullwidth="true"
                 data-weekday={day}
                 data-hour={hour}
                 bgcolor={switchChoiceColor(table[day][hour])}
