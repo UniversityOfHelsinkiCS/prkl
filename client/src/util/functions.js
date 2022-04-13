@@ -1,6 +1,6 @@
 import React from 'react';
 import { TableCell, Chip } from '@material-ui/core';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+
 
 export const copyTextToClipboard = text => {
   if (text) {
