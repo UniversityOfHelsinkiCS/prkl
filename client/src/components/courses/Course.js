@@ -345,7 +345,7 @@ export default ({ id, match }) => {
                           <br />
                           <BlueButton
                             onClick={handleExitButton}
-                            color="blue"
+                            color="default"
                             data-cy="back-to-info-from-groups-button"
                           >
                             <FormattedMessage id="course.switchInfoView" />
@@ -362,7 +362,7 @@ export default ({ id, match }) => {
                           <br />
                           <BlueButton
                             onClick={handleExitButton}
-                            color="blue"
+                            color="default"
                             data-cy="back-to-info-from-groups-button"
                           >
                             <FormattedMessage id="course.switchInfoView" />
