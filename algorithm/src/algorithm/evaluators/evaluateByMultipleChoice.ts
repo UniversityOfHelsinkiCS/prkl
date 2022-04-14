@@ -14,22 +14,33 @@ export const combinationsOfTwo = (arr: any[]): [any, any][] => {
     return combinations
 }
 
+// this function return 1 point per same anwnser per question. Multiple same anwsers on multichoise dont give extra points
 export const multipleScorePair = (pair: [Registration, Registration]): number => {
-    const answers = _.map(pair,
-        registration =>
-            _.flatMap(registration.questionAnswers.filter(answer =>
-                (answer.question.useInGroupCreation && (answer.question.questionType === "multipleChoice" || answer.question.questionType === "singleChoice"))),
-                answer => _.map(answer.answerChoices,
-                    choice => ([answer.questionId, choice.id, answer.question.content, choice.content]))))
+    const step1 = (answer) => {
+        const res = (answer.question.useInGroupCreation && (answer.question.questionType === "multipleChoice" || answer.question.questionType === "singleChoice"))
+        return res
+    }
+
+    const step2 = (answer) => {
+        const res = _.map(answer.answerChoices, choice => ([answer.questionId, choice.id, answer.question.content, choice.content]))
+        return res
+    }
+
+    const step3 = (registration) => {
+        const res = _.flatMap(registration.questionAnswers.filter(step1), step2)
+        return res
+    }
+
+    const answers = _.map(pair, step3)
 
     if (answers[0].length === 0 || answers[1].length === 0) {
         return 0;
     }
 
-    const answerCount = answers[0].length + answers[1].length;
-    const sameAnswerCount = _.intersectionWith(answers[0], answers[1], _.isEqual).length * 2;
+    const sameAnswers = _.intersectionWith(answers[0], answers[1], _.isEqual)
+    const sameAnswersPerQuestion = _.uniqBy(sameAnswers, a => a[0])
 
-    return sameAnswerCount / answerCount
+    return sameAnswersPerQuestion.length
 }
 
 const evaluateGroupByMultipleChoice: Evaluator = (group: Group) => {
