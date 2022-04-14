@@ -417,7 +417,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
               {...props}
               fullWidth
               multiline
-              rowsMax={5}
+              maxRows={5}
               variant="outlined"
               label={intl.formatMessage({
                 id: 'courseForm.courseDescriptionForm',

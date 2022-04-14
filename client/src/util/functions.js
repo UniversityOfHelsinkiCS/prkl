@@ -86,7 +86,7 @@ export default qa => {
             }
 
             return (
-              <Chip style={{ backgroundColor: keyValue[question.content] }} label={question.content} />
+              <Chip style={{ backgroundColor: keyValue[question.content] }} label={question.content} key={question.id} />
             )
           })}
         </TableCell>

@@ -89,7 +89,7 @@ const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
           </TableHead>
           <TableBody>
             {registrations.map(reg => (
-              <TableRow key={reg.id} data-cy="student-registration-row">
+              <TableRow key={reg.student.id} data-cy="student-registration-row">
                 <TableCell>{reg.student.firstname}</TableCell>
                 <TableCell>{reg.student.lastname}</TableCell>
                 <TableCell>{reg.student.studentNo}</TableCell>
