@@ -48,7 +48,7 @@ const Dropdown = ({ teachers, course, placeHolder }) => {
 
   return (
     <div>
-      <FormControl className={classes.formControl}>
+      <FormControl className={classes.formControl} component={'span'}>
         <Select
           className={classes.select}
           open={open}
@@ -63,7 +63,7 @@ const Dropdown = ({ teachers, course, placeHolder }) => {
             <em>{placeHolder}</em>
           </MenuItem>
           {teachers.map(t => (
-            <MenuItem data-cy={t.firstname} onClick={() => handleClick(t, course)} value={t.id}>
+            <MenuItem key={t.id} data-cy={t.firstname} onClick={() => handleClick(t, course)} value={t.id}>
               {t.firstname}
               &nbsp;
               {t.lastname}
@@ -83,12 +83,13 @@ export default ({ courses, user }) => {
     <div>
       {courses.map(course => (
         <Card
+          key={course.id}
           className={new Date(course.deadline) < new Date() ? classes.coursePast : classes.root}
           component={Paper}
           data-cy={course.code}
         >
           <CardContent component={Link} to={`/course/${course.id}`}>
-            <Typography className={classes.courseCode} color="textSecondary" gutterBottom>
+            <Typography className={classes.courseCode} color="textSecondary" component="span">
               <a
                 onClick={e => {
                   e.stopPropagation();
@@ -98,11 +99,13 @@ export default ({ courses, user }) => {
                 {course.code}
               </a>
               &nbsp; - &nbsp;
-              <Typography className={classes.title} color="textSecondary" gutterBottom>
+             
+              <Typography className={classes.title} color="textSecondary" display="inline">
                 {course.title}
               </Typography>
-            </Typography>
+              </Typography>
             <Typography
+            component="span"
               data-cy={`${course.code}-dropdown`}
               onClick={e => {
                 e.stopPropagation();
