@@ -2,8 +2,8 @@ import _ from "lodash";
 import { Registration } from "../../entities/Registration";
 import { Evaluator, Group } from "../algorithm";
 
-export const combinationsOfTwo = (arr: any[]): [any, any][] => {
-  const combinations = [];
+export const combinationsOfTwo = (arr: Registration[]): [Registration, Registration][] => {
+  const combinations: [Registration, Registration][] = [];
 
   for (let i = 0; i < arr.length; i++) {
     for (let j = i + 1; j < arr.length; j++) {
@@ -24,16 +24,14 @@ export const multipleScorePair = (pair: [Registration, Registration]): number =>
   };
 
   const step2 = (answer) => {
-    const res = _.map(answer.answerChoices, (choice) => [
-      answer.questionId,
-      choice.id,
-      answer.question.content,
-      choice.content,
-    ]);
+    const res = _.map(
+      answer.answerChoices,
+      (choice) => <string[]>[answer.questionId, choice.id, answer.question.content, choice.content],
+    );
     return res;
   };
 
-  const step3 = (registration) => {
+  const step3 = (registration: Registration) => {
     const res = _.flatMap(registration.questionAnswers.filter(step1), step2);
     return res;
   };
@@ -44,7 +42,7 @@ export const multipleScorePair = (pair: [Registration, Registration]): number =>
     return 0;
   }
 
-  const sameAnswers = _.intersectionWith(answers[0], answers[1], _.isEqual);
+  const sameAnswers = _.intersectionWith(answers[0], answers[1], (a1, a2) => _.isEqual(a1, a2));
   const sameAnswersPerQuestion = _.uniqBy(sameAnswers, (a) => a[0]);
 
   return sameAnswersPerQuestion.length;

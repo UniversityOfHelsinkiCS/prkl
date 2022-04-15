@@ -20,11 +20,11 @@ const evaluateByWorkingHours: Evaluator = (group: Group): number => {
 export const hoursScorePair = (pair: [Registration, Registration]): number => {
   const pairOneWorkingTimes = new Map<number, Set<workingTimeObject>>();
   const pairOneHelperMap = new Map<number, Set<number>>();
-  const pairOneTotalHours = [];
+  const pairOneTotalHours: number[] = [];
 
   const pairTwoWorkingTimes = new Map<number, Set<workingTimeObject>>();
   const pairTwoHelperMap = new Map<number, Set<number>>();
-  const pairTwoTotalHours = [];
+  const pairTwoTotalHours: number[] = [];
 
   for (const workingTime of pair[0].workingTimes) {
     const startDay = new Date(workingTime.startTime).getDay();

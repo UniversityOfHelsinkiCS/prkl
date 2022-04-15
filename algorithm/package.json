@@ -6,7 +6,7 @@
   "scripts": {
     "tsc": "tsc",
     "dev": "ts-node-dev src/index.ts",
-    "eslint": "eslint --ext .ts ./src",
+    "eslint": "eslint --ext .ts .",
     "eslint-fix": "eslint --ext .ts . --fix"
   },
   "author": "",
