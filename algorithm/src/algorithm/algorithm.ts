@@ -80,7 +80,7 @@ export const formGroups: Algorithm = (targetGroupSize: number, registrations: Re
     }
   }
   console.log("Final grouping score: ", score);
-  return grouping.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput));
+  return grouping.map((group) => ({ userIds: group.map((registration) => registration.student.id) } as GroupInput));
 };
 
 export const findGroupForGrouplessStudents = (
@@ -88,7 +88,7 @@ export const findGroupForGrouplessStudents = (
   grouping: Grouping,
   targetGroupSize: number,
 ): GroupInput[] => {
-  grouplessStudents.map(student => {
+  grouplessStudents.map((student) => {
     let topScore = -1;
     let groupIndex = -1;
 
@@ -96,7 +96,7 @@ export const findGroupForGrouplessStudents = (
       const groupClone = _.clone(group);
       groupClone.push(student);
       const score = evaluateBoth(groupClone);
-      if (score > topScore && (groupClone.length <= targetGroupSize + 1 && groupClone.length >= targetGroupSize - 1)) {
+      if (score > topScore && groupClone.length <= targetGroupSize + 1 && groupClone.length >= targetGroupSize - 1) {
         groupIndex = index;
         topScore = score;
       }
@@ -107,5 +107,5 @@ export const findGroupForGrouplessStudents = (
     }
   });
 
-  return grouping.map(group => ({ userIds: group.map(registration => registration.student.id) } as GroupInput));
+  return grouping.map((group) => ({ userIds: group.map((registration) => registration.student.id) } as GroupInput));
 };
