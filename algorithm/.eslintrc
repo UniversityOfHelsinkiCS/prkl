@@ -27,6 +27,6 @@
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-      "project": "./tsconfig.json"
+      "project": "./algorithm/tsconfig.json"
     }
   }

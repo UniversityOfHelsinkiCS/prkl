@@ -80,35 +80,28 @@ export class Course extends BaseEntity {
   updatedAt: Date;
 
   @Field(() => [User])
-  @ManyToMany(
-    () => User,
-    user => user.coursesTeached,
-    { cascade: ["remove", "insert", "update"], onDelete: "CASCADE" },
-  )
+  @ManyToMany(() => User, (user) => user.coursesTeached, {
+    cascade: ["remove", "insert", "update"],
+    onDelete: "CASCADE",
+  })
   @JoinTable({ name: "courseTeachers" })
   teachers: User[];
 
   @Field(() => [Question])
-  @OneToMany(
-    () => Question,
-    question => question.course,
-    { cascade: ["remove", "insert", "update"], onDelete: "CASCADE" },
-  )
+  @OneToMany(() => Question, (question) => question.course, {
+    cascade: ["remove", "insert", "update"],
+    onDelete: "CASCADE",
+  })
   questions: Question[];
 
   @Field(() => [Group])
-  @OneToMany(
-    () => Group,
-    group => group.course,
-    { cascade: ["remove", "insert", "update"], onDelete: "CASCADE" },
-  )
+  @OneToMany(() => Group, (group) => group.course, { cascade: ["remove", "insert", "update"], onDelete: "CASCADE" })
   groups: Group[];
 
   @Field(() => [Registration])
-  @OneToMany(
-    () => Registration,
-    registration => registration.course,
-    { cascade: ["remove", "insert", "update"], onDelete: "CASCADE" },
-  )
+  @OneToMany(() => Registration, (registration) => registration.course, {
+    cascade: ["remove", "insert", "update"],
+    onDelete: "CASCADE",
+  })
   registrations: Registration[];
 }

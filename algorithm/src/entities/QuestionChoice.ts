@@ -21,16 +21,10 @@ export class QuestionChoice extends BaseEntity {
   order: number;
 
   @Field(() => Question)
-  @ManyToOne(
-    () => Question,
-    question => question.questionChoices,
-  )
+  @ManyToOne(() => Question, (question) => question.questionChoices)
   question: Question;
 
   @Field(() => [Answer])
-  @ManyToMany(
-    () => Answer,
-    answer => answer.answerChoices,
-  )
+  @ManyToMany(() => Answer, (answer) => answer.answerChoices)
   answers: Answer[];
 }

@@ -43,34 +43,18 @@ export class Question extends BaseEntity {
   useInGroupCreation: boolean;
 
   @Field(() => Course)
-  @ManyToOne(
-    () => Course,
-    course => course.questions,
-    { onDelete: "CASCADE" },
-  )
+  @ManyToOne(() => Course, (course) => course.questions, { onDelete: "CASCADE" })
   course: Course;
 
   @Field(() => [QuestionChoice])
-  @OneToMany(
-    () => QuestionChoice,
-    questionChoice => questionChoice.question,
-    { cascade: true },
-  )
+  @OneToMany(() => QuestionChoice, (questionChoice) => questionChoice.question, { cascade: true })
   questionChoices: QuestionChoice[];
 
   @Field(() => [Answer])
-  @OneToMany(
-    () => Answer,
-    answer => answer.question,
-    { cascade: true, onDelete: "CASCADE" },
-  )
+  @OneToMany(() => Answer, (answer) => answer.question, { cascade: true, onDelete: "CASCADE" })
   answers: Answer[];
 
   @Field(() => [WorkingTimes])
-  @OneToMany(
-    () => WorkingTimes,
-    workingTimes => workingTimes.timeQuestion,
-    { cascade: true, onDelete: "CASCADE" },
-  )
+  @OneToMany(() => WorkingTimes, (workingTimes) => workingTimes.timeQuestion, { cascade: true, onDelete: "CASCADE" })
   workingTimes: WorkingTimes[];
 }

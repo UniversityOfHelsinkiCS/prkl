@@ -33,18 +33,12 @@ export class Group extends BaseEntity {
   groupMessage: string;
 
   @Field(() => Course)
-  @ManyToOne(
-    () => Course,
-    course => course.groups,
-  )
+  @ManyToOne(() => Course, (course) => course.groups)
   @JoinColumn({ name: "courseId" })
   course: Course;
 
   @Field(() => [User])
-  @ManyToMany(
-    () => User,
-    user => user.groups,
-  )
+  @ManyToMany(() => User, (user) => user.groups)
   @JoinTable({ name: "groupStudents" })
   students: User[];
 }
