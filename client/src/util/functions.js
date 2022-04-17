@@ -58,18 +58,18 @@ export const timeParse = props => {
 };
 
 const colors = [
-  '#34495e',
+  '#9FA8DA',
   '#9b59b6',
-  '#3498db',
+  '#5bb1eb',
   '#2ecc71',
-  '#16a085',
-  '#f39c12',
+  '#53d4ba',
+  '#e8a335',
   '#f1c40f',
-  '#e74c3c',
-  '#3742fa',
+  '#ed7568',
+  '#898ff5',
   '#f78fb3',
-  '#079992',
-  '#4a69bd',
+  '#27cfc7',
+  '#B2EBF2',
 ];
 
 const keyValue = {};
