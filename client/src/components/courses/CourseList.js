@@ -48,7 +48,7 @@ const Dropdown = ({ teachers, course, placeHolder }) => {
 
   return (
     <div>
-      <FormControl className={classes.formControl} component={'span'}>
+      <FormControl className={classes.formControl} component="span">
         <Select
           className={classes.select}
           open={open}
@@ -63,7 +63,12 @@ const Dropdown = ({ teachers, course, placeHolder }) => {
             <em>{placeHolder}</em>
           </MenuItem>
           {teachers.map(t => (
-            <MenuItem key={t.id} data-cy={t.firstname} onClick={() => handleClick(t, course)} value={t.id}>
+            <MenuItem
+              key={t.id}
+              data-cy={t.firstname}
+              onClick={() => handleClick(t, course)}
+              value={t.id}
+            >
               {t.firstname}
               &nbsp;
               {t.lastname}
@@ -99,13 +104,12 @@ export default ({ courses, user }) => {
                 {course.code}
               </a>
               &nbsp; - &nbsp;
-             
               <Typography className={classes.title} color="textSecondary" display="inline">
                 {course.title}
               </Typography>
-              </Typography>
+            </Typography>
             <Typography
-            component="span"
+              component="span"
               data-cy={`${course.code}-dropdown`}
               onClick={e => {
                 e.stopPropagation();

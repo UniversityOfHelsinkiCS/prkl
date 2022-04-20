@@ -168,7 +168,9 @@ export default () => {
               style={{ width: '13em' }}
             >
               {orderOptions.map(o => (
-                <MenuItem value={o.value} key={o.value}>{o.text}</MenuItem>
+                <MenuItem value={o.value} key={o.value}>
+                  {o.text}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>

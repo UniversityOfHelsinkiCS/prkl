@@ -1,6 +1,8 @@
+// TODO: fix react react/destructuring-assignment errors
+/* eslint-disable react/destructuring-assignment */
+
 import React from 'react';
 import { TableCell, Chip } from '@material-ui/core';
-
 
 export const copyTextToClipboard = text => {
   if (text) {
@@ -79,15 +81,18 @@ export default qa => {
     case 'multipleChoice':
       return (
         <TableCell key={qa.id}>
-          
           {qa.answerChoices.map(question => {
             if (!keyValue[question.content]) {
               keyValue[question.content] = colors.pop();
             }
 
             return (
-              <Chip style={{ backgroundColor: keyValue[question.content] }} label={question.content} key={question.id} />
-            )
+              <Chip
+                style={{ backgroundColor: keyValue[question.content] }}
+                label={question.content}
+                key={question.id}
+              />
+            );
           })}
         </TableCell>
       );

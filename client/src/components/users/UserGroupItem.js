@@ -15,9 +15,9 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@material-ui/core';
+import EventAvailableIcon from '@material-ui/icons/EventAvailable';
 import HourDisplay from '../misc/HourDisplay';
 import { useUserGroupItemStyles } from '../../styles/users/UserGroupItem';
-import EventAvailableIcon from '@material-ui/icons/EventAvailable';
 
 export default ({ group, groupTimes, course }) => {
   const classes = useUserGroupItemStyles();
@@ -31,11 +31,11 @@ export default ({ group, groupTimes, course }) => {
     <Card variant="outlined">
       <CardHeader
         data-cy="user-group-view-group-name"
-        style={{backgroundColor: "#03A9F4", color: "#FFFFFF"}}
-        titleTypographyProps={{variant:'h6' }}
+        style={{ backgroundColor: '#03A9F4', color: '#FFFFFF' }}
+        titleTypographyProps={{ variant: 'h6' }}
         title={course.title}
-        subheader={group.groupName} 
-        />
+        subheader={group.groupName}
+      />
       <CardContent>
         {group.groupMessage && group.groupMessage !== '' && (
           <>
@@ -54,42 +54,47 @@ export default ({ group, groupTimes, course }) => {
           {group.students.map(student => (
             <ListItem key={student.id}>
               <ListItemAvatar>
-                <Avatar>{
-                  student.firstname[0].toUpperCase()}{student.lastname[0].toUpperCase()}
+                <Avatar>
+                  {student.firstname[0].toUpperCase()}
+                  {student.lastname[0].toUpperCase()}
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
-              primary={
-                <Typography gutterBottom>
-                  {student.firstname} {student.lastname}
-                </Typography>}
-              secondary={student.email}/>
+                primary={
+                  <Typography gutterBottom>
+                    {student.firstname} {student.lastname}
+                  </Typography>
+                }
+                secondary={student.email}
+              />
             </ListItem>
           ))}
         </List>
       </CardContent>
-    {groupTimes[group.id] && (
-      <>
-      <CardActions disableSpacing>
-        <Button className={classes.fabButton}
-        color='primary'
-        variant="contained"
-        onClick={() => handleExpandClick()}
-        endIcon={<EventAvailableIcon />}>
-          <FormattedMessage id="groups.showTimes" />
-        </Button>
-      </CardActions>
-      <Collapse in={expanded}
-      timeout="auto"
-      unmountOnExit>
-        <CardContent>
-          <HourDisplay
-            times={groupTimes[group.id]}
-            students={group.students.length}
-            groupId={group.id} />
-        </CardContent>
-      </Collapse></>
-    )}
+      {groupTimes[group.id] && (
+        <>
+          <CardActions disableSpacing>
+            <Button
+              className={classes.fabButton}
+              color="primary"
+              variant="contained"
+              onClick={() => handleExpandClick()}
+              endIcon={<EventAvailableIcon />}
+            >
+              <FormattedMessage id="groups.showTimes" />
+            </Button>
+          </CardActions>
+          <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <CardContent>
+              <HourDisplay
+                times={groupTimes[group.id]}
+                students={group.students.length}
+                groupId={group.id}
+              />
+            </CardContent>
+          </Collapse>
+        </>
+      )}
     </Card>
   );
 };
