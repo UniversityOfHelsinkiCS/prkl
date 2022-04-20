@@ -1,4 +1,4 @@
-FROM node:12.16
+FROM node:16.14.2
 # Install netcat for wait-for script
 RUN apt-get update && apt-get install -y netcat
 
