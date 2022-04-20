@@ -38,8 +38,7 @@ export default () => {
   return (
     <AppBar position="static" color="transparent">
       <Toolbar>
-        <Typography
-component={Link} to="/" variant="h5" className={classes.title}>
+        <Typography component={Link} to="/" variant="h5" className={classes.title}>
           Assembler
         </Typography>
 
