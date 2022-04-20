@@ -34,9 +34,6 @@
     "eslint": "eslint src",
     "eslint-fix": "eslint src --fix"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -50,11 +47,14 @@
     ]
   },
   "devDependencies": {
+    "eslint": "^8.13.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.10.0",
+    "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-react": "^7.29.4",
     "husky": "^4.0.10",
     "prettier": "^1.19.1",
     "react-scripts": "^5.0.1"
