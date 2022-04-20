@@ -1,6 +1,6 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { getRepository } from "typeorm";
-import _, { orderBy } from "lodash";
+import _ from "lodash";
 import { User } from "../entities/User";
 import { Course } from "../entities/Course";
 import { Question } from "../entities/Question";
