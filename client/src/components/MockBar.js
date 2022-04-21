@@ -9,7 +9,7 @@ export default () => {
   const [mocking, setMocking] = useStore('mocking');
 
   const stopMocking = mockedBy => {
-    setMocking(() => ({ mockedUser: mockedBy, mockedBy }));
+    setMocking(() => ({mockedUser: mockedBy, mockedBy}));
   };
 
   const classes = useMockBarStyles();

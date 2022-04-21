@@ -11,13 +11,15 @@ import {
 } from '@material-ui/core';
 import { useUserCourseListStyles } from '../../styles/users/UserCourseList';
 
+
 export default ({ courses }) => {
   const classes = useUserCourseListStyles();
   const history = useHistory();
 
-  const handleRowClick = courseid => {
+  const handleRowClick = (courseid) => {
+  
     history.push(`/course/${courseid}`);
-  };
+  }
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">
@@ -33,10 +35,12 @@ export default ({ courses }) => {
           {courses.map(course => (
             <TableRow
               className={classes.row}
-              onClick={() => handleRowClick(course.id)}
+              onClick={()=> handleRowClick(course.id)}
               key={course.code}
             >
-              <TableCell>{course.title}</TableCell>
+              <TableCell>
+                {course.title}
+              </TableCell>
               <TableCell align="center">{course.code}</TableCell>
             </TableRow>
           ))}

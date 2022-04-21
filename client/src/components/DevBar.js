@@ -39,16 +39,10 @@ export default () => {
         <Box>
           <Typography>Log in as...</Typography>
           <ButtonGroup className={classes.roleControls}>
-            <Button
-              onClick={() => switchUser(setMocking, mocking.mockedBy, 1)}
-              data-cy="switch-to-student"
-            >
+            <Button onClick={() => switchUser(setMocking, mocking.mockedBy, 1)} data-cy="switch-to-student">
               Student
             </Button>
-            <Button
-              onClick={() => switchUser(setMocking, mocking.mockedBy, 2)}
-              data-cy="switch-to-staff"
-            >
+            <Button onClick={() => switchUser(setMocking, mocking.mockedBy, 2)} data-cy="switch-to-staff">
               Staff
             </Button>
             <Button

@@ -46,11 +46,11 @@ export default ({ user, course }) => {
     <>
       {/* eslint-disable-next-line no-nested-ternary */}
       {userIsRegistered() && courseHasGroups() && (
-        <>
-          <UserGroupItem group={group[0]} groupTimes={groupTimes} course={course} />
-          <br />
-        </>
-      )}
+            <>
+            <UserGroupItem group={group[0]} groupTimes={groupTimes} course={course} />
+            <br></br>
+            </>
+         )}
     </>
   );
 };

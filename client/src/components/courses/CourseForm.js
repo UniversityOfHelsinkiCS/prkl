@@ -227,6 +227,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   // TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
 
   const code = getValues('courseCode') || '';
+  console.log(code);
   const [getByCode, { called, loading, data, refetch }] = useLazyQuery(COURSE_BY_CODE, {
     variables: { code },
     fetchPolicy: 'network-only',

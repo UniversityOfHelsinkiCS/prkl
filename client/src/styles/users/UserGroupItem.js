@@ -7,7 +7,7 @@ const useUserGroupItemStyles = makeStyles(theme => ({
   },
 
   fabButton: {
-    marginLeft: 'auto',
+    marginLeft: "auto",
     color: 'primary',
   },
 
