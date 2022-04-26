@@ -82,7 +82,6 @@ export class GroupResolver {
       .andWhere("registration.courseId = group.courseId")
       .getMany();
   }
-  
 
   // Returns sample groups based on received data, does not save them
   @Authorized(STAFF)
@@ -142,17 +141,17 @@ export class GroupResolver {
       const grouping: Grouping = [];
 
       for (const group of groups) {
-        const regArray: regArray = [];
+        const regsArray: regArray = [];
 
         for (const userId of group.userIds) {
           for (const registration of registrations) {
             if (registration.studentId === userId) {
-              regArray.push(registration);
+              regsArray.push(registration);
             }
           }
         }
 
-        grouping.push(regArray);
+        grouping.push(regsArray);
       }
 
       return grouping;

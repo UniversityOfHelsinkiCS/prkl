@@ -19,7 +19,7 @@ export default {
     'courseForm.courseDeadlineForm': 'Enrollment deadline',
     'courseForm.courseDescriptionForm': 'Course description',
     'courseForm.includeCalendar': 'Include a time table',
-    'courseForm.includeCalendarWeekends': 'include weekends as selectable times',
+    'courseForm.includeCalendarWeekends': 'Include weekends as selectable times',
     'courseForm.timeFormLabel': 'Purpose of the time table',
     'courseForm.timeQuestionDefault':
       'Working hours that are okay/unsure/impossible for you, respectively',

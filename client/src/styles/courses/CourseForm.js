@@ -33,7 +33,7 @@ const useCourseFormStyles = makeStyles({
     margin: 5,
   },
   slider: {
-    padding: '0 30px'
+    padding: '0 30px',
   },
 });
 

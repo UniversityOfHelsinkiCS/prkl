@@ -22,14 +22,14 @@ export type GrouplessStudent = {
 
 export type grouplessStudentsWorkingTimes = workingTimeList[];
 
-const sum = (arr: number[]) => arr.reduce((sum, val) => sum + val, 0);
+const sum = (arr: number[]): number => arr.reduce((sum, val) => sum + val, 0);
 
-const scoreBoth = (grouping: Grouping) => {
+const scoreBoth = (grouping: Grouping): number => {
   return sum(grouping.map(evaluateBoth));
 };
 
 // Generates random groups and makes sure that all groups are of approx. same size
-const createRandomGrouping = (targetGroupSize: number, registrations: Registration[]) => {
+const createRandomGrouping = (targetGroupSize: number, registrations: Registration[]): Registration[][] => {
   const shuffled = _.shuffle(registrations);
   const groups = _.chunk(shuffled, targetGroupSize);
   const leftOverGroup = groups[groups.length - 1];
@@ -45,7 +45,7 @@ const createRandomGrouping = (targetGroupSize: number, registrations: Registrati
   return groups;
 };
 
-const mutateGrouping = (grouping: Grouping) => {
+const mutateGrouping = (grouping: Grouping): Grouping => {
   if (grouping.length < 2) {
     return grouping;
   }
@@ -92,7 +92,7 @@ export const findGroupForGrouplessStudents = (
       const groupClone = _.clone(group);
       groupClone.push(student);
       const score = evaluateBoth(groupClone);
-      if (score > topScore && (groupClone.length <= targetGroupSize +1 && groupClone.length >= targetGroupSize -1)) {
+      if (score > topScore && groupClone.length <= targetGroupSize + 1 && groupClone.length >= targetGroupSize - 1) {
         groupIndex = index;
         topScore = score;
       }

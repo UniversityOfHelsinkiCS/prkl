@@ -6,7 +6,7 @@ import { TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { FACULTY_USERS } from '../../GqlQueries';
 import roles from '../../util/userRoles';
-import { AppContext } from '../../App';
+import AppContext from '../../AppContext';
 
 export default ({ courseTeachers, setCourseTeachers }) => {
   const [teachers, setTeachers] = useStore('teacherStore');

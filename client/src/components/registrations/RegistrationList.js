@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import CourseRegistrations from './CourseRegistrations';
 import roles from '../../util/userRoles';
-import { AppContext } from '../../App';
+import AppContext from '../../AppContext';
 
 export default ({ registrations, course, regByStudentId }) => {
   const { user } = useContext(AppContext);

@@ -1,6 +1,6 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { getRepository } from "typeorm";
-import _, { orderBy } from "lodash";
+import _ from "lodash";
 import { User } from "../entities/User";
 import { Course } from "../entities/Course";
 import { Question } from "../entities/Question";
@@ -46,12 +46,11 @@ export class CourseResolver {
       where: { code },
       relations: ["questions", "questions.questionChoices", "teachers"],
       order: { createdAt: "DESC" },
-      take: 1
-    })
-    
+      take: 1,
+    });
 
     if (!courses || user.role < STAFF) {
-      throw new Error("Course not found.")
+      throw new Error("Course not found.");
     }
 
     return courses;
@@ -229,7 +228,7 @@ export class CourseResolver {
 
   @Authorized(STAFF)
   @Mutation(() => String)
-  async deleteCourse(@Ctx() context, @Arg("id") id: string): Promise<String> {
+  async deleteCourse(@Ctx() context, @Arg("id") id: string): Promise<string> {
     const { user } = context;
     const course = await Course.findOne({ where: { id }, relations: ["teachers"] });
     if (!course) throw new Error("Course not found!");

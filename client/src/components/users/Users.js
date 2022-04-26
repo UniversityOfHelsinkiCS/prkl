@@ -18,7 +18,7 @@ import { useUsersStyle } from '../../styles/users/Users';
 import { useLoaderStyle } from '../../styles/ui/Loader';
 import { OrangeButton } from '../../styles/ui/Button';
 import roles from '../../util/userRoles';
-import { AppContext } from '../../App';
+import AppContext from '../../AppContext';
 
 export default () => {
   const classes = useUsersStyle();

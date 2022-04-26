@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useQuery, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
@@ -22,9 +22,8 @@ import GroupsView from '../groups/GroupsView';
 import roles from '../../util/userRoles';
 import CourseForm from './CourseForm';
 import CourseInfo from './CourseInfo';
-import { AppContext } from '../../App';
-
-export const CourseContext = createContext();
+import AppContext from '../../AppContext';
+import CourseContext from './CourseContext';
 
 export default ({ id, match }) => {
   const [groupsUnsaved, setGroupsUnsaved] = useStore('groupsUnsavedStore');
@@ -74,7 +73,7 @@ export default ({ id, match }) => {
   });
 
   const [deleteRegistration] = useMutation(DELETE_REGISTRATION, {
-    update(cache, { data: { deleteRegistration: id } }) {
+    update(cache, { data: { deleteRegistration: id } }) { // eslint-disable-line
       const success = cache.evict({
         id: cache.identify({
           __typename: 'Registration',
@@ -264,12 +263,12 @@ export default ({ id, match }) => {
             {userHasAccess() ? (
               <div style={{ maxWidth: '800px' }}>
                 {/* Only admin can edit or delete after publish */}
-               
-                  <>
-                    <BlueButton onClick={handleEditCourse} data-cy="edit-course-button">
-                      <FormattedMessage id="course.switchEditView" />
-                    </BlueButton>
-                    {!course.published || user.role === roles.ADMIN_ROLE ? (
+
+                <>
+                  <BlueButton onClick={handleEditCourse} data-cy="edit-course-button">
+                    <FormattedMessage id="course.switchEditView" />
+                  </BlueButton>
+                  {!course.published || user.role === roles.ADMIN_ROLE ? (
                     <ConfirmationButton
                       onConfirm={handleDeletion}
                       color={red[500]}
@@ -278,8 +277,7 @@ export default ({ id, match }) => {
                     >
                       <FormattedMessage id="course.delete" />
                     </ConfirmationButton>
-                  
-                ) : null}
+                  ) : null}
                 </>
               </div>
             ) : null}
@@ -347,7 +345,7 @@ export default ({ id, match }) => {
                           <br />
                           <BlueButton
                             onClick={handleExitButton}
-                            color="blue"
+                            color="default"
                             data-cy="back-to-info-from-groups-button"
                           >
                             <FormattedMessage id="course.switchInfoView" />
@@ -364,7 +362,7 @@ export default ({ id, match }) => {
                           <br />
                           <BlueButton
                             onClick={handleExitButton}
-                            color="blue"
+                            color="default"
                             data-cy="back-to-info-from-groups-button"
                           >
                             <FormattedMessage id="course.switchInfoView" />

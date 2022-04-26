@@ -5,9 +5,9 @@ import { useStore } from 'react-hookstore';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { AppBar, Typography, Button, Grid, Toolbar } from '@material-ui/core';
 import { useHeaderStyles } from '../styles/ui/Header';
-import { privacyToggleVar } from '..';
+import { privacyToggleVar } from '../apolloReactiveVariables';
 import roles from '../util/userRoles';
-import { AppContext } from '../App';
+import AppContext from '../AppContext';
 
 export default () => {
   const intl = useIntl();
@@ -38,8 +38,12 @@ export default () => {
   return (
     <AppBar position="static" color="transparent">
       <Toolbar>
-        <Typography component={Link} to="/" variant="h5" className={classes.title}>
-          Assembler
+        <Typography 
+            component={Link} 
+            to="/" 
+            variant="h5" 
+            className={classes.title}>
+            Assembler
         </Typography>
 
         <Grid container>
@@ -78,7 +82,6 @@ export default () => {
         {/* these go to the right */}
         {user && user.role > roles.STAFF_ROLE ? (
           <Button
-            component={Link}
             onClick={() => {
               privacyToggleVar(!privacyToggleVar());
             }}
@@ -100,6 +103,7 @@ export default () => {
 
         <Button
           component={Link}
+          to="/"
           name="logout"
           onClick={handleLogout}
           data-cy="menu-logout"

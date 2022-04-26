@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { makeStyles, Switch, FormGroup, FormControlLabel } from '@material-ui/core';
 import roles from '../../util/userRoles';
-import { AppContext } from '../../App';
+import AppContext from '../../AppContext';
 
 const useStyles = makeStyles({
   title: {
@@ -17,7 +17,7 @@ export default ({ controls }) => {
 
   const createCheckbox = (text, onChange, checked) => {
     return (
-      <FormGroup className={classes.row}>
+      <FormGroup className={classes.row} key={text}>
         <FormControlLabel
           label={text}
           control={

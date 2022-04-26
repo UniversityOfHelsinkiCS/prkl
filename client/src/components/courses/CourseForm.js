@@ -8,7 +8,6 @@ import _ from 'lodash';
 import {
   TextField,
   Button,
-  IconButton,
   FormGroup,
   Slider,
   Card,
@@ -33,7 +32,7 @@ import roles from '../../util/userRoles';
 import TeacherList from './TeacherList';
 import Popup from '../ui/Popup';
 
-import { AppContext } from '../../App';
+import AppContext from '../../AppContext';
 
 // Renders form for both adding and editing a course
 const CourseForm = ({ course, onCancelEdit, editView }) => {
@@ -43,11 +42,13 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   const history = useHistory();
   const intl = useIntl();
 
-  //TARVITAAN JOKU JOKA PÄIVITTÄÄ NÄÄ kaikki sivut ku vaihdetaan sivua päivitys toimii todella huonosti
+  // TARVITAAN JOKU JOKA PÄIVITTÄÄ NÄÄ kaikki sivut ku vaihdetaan sivua päivitys toimii todella huonosti
   const [updateCourse] = useMutation(UPDATE_COURSE, {
-    refetchQueries: [ { query: ALL_COURSES } ]  });
+    refetchQueries: [{ query: ALL_COURSES }],
+  });
   const [createCourse] = useMutation(CREATE_COURSE, {
-    refetchQueries: [ { query: ALL_COURSES } ]  })
+    refetchQueries: [{ query: ALL_COURSES }],
+  });
 
   const { id, firstname, lastname, studentNo, email, role } = user;
   const userFields = { id, firstname, lastname, studentNo, email, role };
@@ -179,11 +180,9 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
     });
 
     const questionsWOKeys = updatedQuestions.map(q => {
-      const omitOName = editView ? ['oName'] : ['oName', 'id']
-      const omitQKey = editView ? ['qKey'] :  ['qKey', 'id']
-      const opts = q.questionChoices
-        ? q.questionChoices.map(qc => _.omit(qc, omitOName))
-        : [];
+      const omitOName = editView ? ['oName'] : ['oName', 'id'];
+      const omitQKey = editView ? ['qKey'] : ['qKey', 'id'];
+      const opts = q.questionChoices ? q.questionChoices.map(qc => _.omit(qc, omitOName)) : [];
       const newQ = _.omit(q, omitQKey);
       newQ.questionChoices = opts;
       return newQ;
@@ -195,9 +194,9 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
       code: formData.courseCode,
       minGroupSize: editView ? course.minGroupSize : 1,
       maxGroupSize: editView ? course.maxGroupSize : 1,
-      workTimeEndsAt: workTimeEndsAt,
-      minHours: minHours,
-      weekends: weekends,
+      workTimeEndsAt,
+      minHours,
+      weekends,
       deadline: new Date(formData.deadline).setHours(23, 59),
       teachers: teachersWithoutType,
       questions: calendarToggle ? questionsWOKeys.concat(calendarQuestion) : questionsWOKeys,
@@ -210,12 +209,12 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
       if (editView) {
         // TODO: Responsive UI based on following variable result. See Notification.js
         // eslint-disable-next-line no-unused-vars
-        const result = await updateCourse({
+        await updateCourse({
           variables,
         });
         history.push(`/course/${course.id}`);
       } else {
-        const result = await createCourse({
+        await createCourse({
           variables,
         });
         history.push(`/`);
@@ -225,13 +224,13 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
     }
   };
 
-  /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
+  // TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
 
-  const code = getValues('courseCode');
-  const [getByCode, { called, loading, error, data, refetch }] = useLazyQuery(COURSE_BY_CODE, {
+  const code = getValues('courseCode') || '';
+  console.log(code);
+  const [getByCode, { called, loading, data, refetch }] = useLazyQuery(COURSE_BY_CODE, {
     variables: { code },
     fetchPolicy: 'network-only',
-    
   });
 
   useEffect(() => {
@@ -245,24 +244,24 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
       setValue('courseDescription', result.description);
       const calendarQuestion = result.questions.find(q => q.questionType === TIMES);
       if (calendarQuestion) {
-          //tämä ei todellakaan ole paras ratkaisu, sillä jos kirjoittaa muun kurssin, jolla ei ole timetablea, niin arvo jää. ratkaistu rivillä 230.
+        // tämä ei todellakaan ole paras ratkaisu, sillä jos kirjoittaa muun kurssin, jolla ei ole timetablea, niin arvo jää. ratkaistu rivillä 230.
         setCalendarToggle(true);
         setValue('calendarDescription', calendarQuestion.content);
-      }else{
+      } else {
         setCalendarToggle(false);
       }
-      const qstns = result.questions.filter(q => q.questionType !== TIMES)
-      .map(q => {
-        const newQ = removeTypename(q);
-        newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
-        return newQ;
-      });
+      const qstns = result.questions
+        .filter(q => q.questionType !== TIMES)
+        .map(q => {
+          const newQ = removeTypename(q);
+          newQ.questionChoices = q.questionChoices.map(qc => removeTypename(qc));
+          return newQ;
+        });
       setQuestions(qstns);
-
     }
-  }, [data]);
+  }, [called, data, loading, minHours, refetch, setValue, weekends, workTimeEndsAt]);
 
-  /// TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
+  // / TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
 
   return (
     <div className={classes.root}>
@@ -334,17 +333,17 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                 />
 
                 <Button
-                  disabled={editView}   //Ehdotus ettei tätä tulisi käyttää editissä.
-                  title={"Copy course by code"}
+                  disabled={editView} // Ehdotus ettei tätä tulisi käyttää editissä.
+                  title="Copy course by code"
                   onClick={() => getByCode()}
-                  startIcon={<SearchIcon/>}
+                  startIcon={<SearchIcon />}
                   size="small"
                   variant="outlined"
                   className={classes.searchButton}
                   data-cy="search-code-button"
                 >
                   Copy by code
-                  </Button>
+                </Button>
               </>
             )}
           />
@@ -418,7 +417,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
               {...props}
               fullWidth
               multiline
-              rowsMax={5}
+              maxRows={5}
               variant="outlined"
               label={intl.formatMessage({
                 id: 'courseForm.courseDescriptionForm',
@@ -452,7 +451,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                   data-cy="weekend-checkbox"
                   control={
                     <Checkbox
-                      disabled={editView}   //Tässä bugi timeformin kanssa siksi disabled editviewissä
+                      disabled={editView} // Tässä bugi timeformin kanssa siksi disabled editviewissä
                       color="primary"
                       checked={weekends}
                       onClick={() => {
@@ -464,25 +463,24 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                 />
               </CardActions>
 
-
               <CardActions>
-              <TextField
-                data-cy="min-hour-field"
-                label="Minimum working hours"
-                style = {{width: 200}}
-                type="number"
-                InputProps={{ inputProps: { min: 0, max: 40 } }}
-                value={minHours}
-                onChange={e => {
-                  var value = parseInt(e.target.value, 10);
-                  if (value > 40) value = 40;
-                  if (value < 0) value = 0;
-                  setMinWorkingHours(value);
-                }}
-                error={minHours > 40}
-                helperText={minHours > 40 ? 'Minimum hours too much!' : ' '}
-                variant="outlined"
-              />
+                <TextField
+                  data-cy="min-hour-field"
+                  label="Minimum working hours"
+                  style={{ width: 200 }}
+                  type="number"
+                  InputProps={{ inputProps: { min: 0, max: 40 } }}
+                  value={minHours}
+                  onChange={e => {
+                    let value = parseInt(e.target.value, 10);
+                    if (value > 40) value = 40;
+                    if (value < 0) value = 0;
+                    setMinWorkingHours(value);
+                  }}
+                  error={minHours > 40}
+                  helperText={minHours > 40 ? 'Minimum hours too much!' : ' '}
+                  variant="outlined"
+                />
               </CardActions>
 
               <CardContent>
@@ -503,7 +501,7 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
                   onChange={(event, newValue) => setWorkTimeEndsAt(newValue)}
                   getAriaValueText={value => `${value}.00`}
                   step={1}
-                  disabled={editView}   //Tässä bugi timeformin kanssa siksi disabled editviewissä
+                  disabled={editView} // Tässä bugi timeformin kanssa siksi disabled editviewissä
                   min={8}
                   max={22}
                 />

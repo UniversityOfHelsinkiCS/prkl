@@ -14,8 +14,8 @@ import RegistrationForm from './RegistrationForm';
 import UserGroup from '../users/UserGroup';
 import { BlueButton } from '../../styles/ui/Button';
 import { setNotification } from '../ui/Notification';
-import { CourseContext } from '../courses/Course';
-import { AppContext } from '../../App';
+import CourseContext from '../courses/CourseContext';
+import AppContext from '../../AppContext';
 
 export default ({ course, match }) => {
   const hookForm = useForm({ mode: 'onChange' });

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
 import {
+  Button,
   Card,
   CardContent,
   Typography,
@@ -40,7 +41,7 @@ export default ({ code, title, deadline, teachers, paragraphs }) => {
           <Typography variant="h6" gutterBottom>
             {`${intl.formatMessage({ id: 'courses.deadline' })} ${intl.formatDate(deadline)}`}
             {divider}
-            <Link
+            <Button
               onClick={handleClick}
               style={{
                 color: 'inherit',
@@ -49,7 +50,7 @@ export default ({ code, title, deadline, teachers, paragraphs }) => {
             >
               {intl.formatMessage({ id: 'courseInfo.teachers' })}
               <ExpandMoreIcon fontSize="small" />
-            </Link>
+            </Button>
 
             <Popover
               open={open}
@@ -67,7 +68,12 @@ export default ({ code, title, deadline, teachers, paragraphs }) => {
               <List>
                 {teachers.map(t => (
                   <ListItem divider key={t.id}>
-                    {t.firstname} {t.lastname} &nbsp; {divider} &nbsp;<Link href={`mailto:${t.email}`}>{t.email}</Link>
+                    {t.firstname}
+                    {t.lastname}
+                    &nbsp;
+                    {divider}
+                    &nbsp;
+                    <Link href={`mailto:${t.email}`}>{t.email}</Link>
                   </ListItem>
                 ))}
               </List>
@@ -77,7 +83,7 @@ export default ({ code, title, deadline, teachers, paragraphs }) => {
           <Divider light />
           <br />
 
-          <Typography variant="body1">
+          <Typography component={'span'} variant="body1">
             {paragraphs.map(p => (
               <p key={p}>{p}</p>
             ))}

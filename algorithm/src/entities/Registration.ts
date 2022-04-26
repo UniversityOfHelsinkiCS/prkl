@@ -40,34 +40,22 @@ export class Registration extends BaseEntity {
   studentId: string;
 
   @Field(() => Course)
-  @ManyToOne(
-    () => Course,
-    course => course.registrations,
-  )
+  @ManyToOne(() => Course, (course) => course.registrations)
   @JoinColumn({ name: "courseId" })
   course: Course;
 
   @Field(() => User)
-  @ManyToOne(
-    () => User,
-    user => user.registrations,
-  )
+  @ManyToOne(() => User, (user) => user.registrations)
   @JoinColumn({ name: "studentId" })
   student: User;
 
   @Field(() => [Answer])
-  @OneToMany(
-    () => Answer,
-    answer => answer.registration,
-    { cascade: ["remove", "insert", "update"] },
-  )
+  @OneToMany(() => Answer, (answer) => answer.registration, { cascade: ["remove", "insert", "update"] })
   questionAnswers: Answer[];
 
   @Field(() => [WorkingTimes])
-  @OneToMany(
-    () => WorkingTimes,
-    workingTimes => workingTimes.registration,
-    { cascade: ["remove", "insert", "update"] },
-  )
+  @OneToMany(() => WorkingTimes, (workingTimes) => workingTimes.registration, {
+    cascade: ["remove", "insert", "update"],
+  })
   workingTimes: WorkingTimes[];
 }

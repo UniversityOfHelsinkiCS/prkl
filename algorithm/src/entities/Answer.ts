@@ -34,28 +34,17 @@ export class Answer extends BaseEntity {
   registrationId: string;
 
   @Field(() => Question)
-  @ManyToOne(
-    () => Question,
-    question => question.answers,
-  )
+  @ManyToOne(() => Question, (question) => question.answers)
   @JoinColumn({ name: "questionId" })
   question: Question;
 
   @Field(() => Registration)
-  @ManyToOne(
-    () => Registration,
-    registration => registration.questionAnswers,
-    { onDelete: "CASCADE" },
-  )
+  @ManyToOne(() => Registration, (registration) => registration.questionAnswers, { onDelete: "CASCADE" })
   @JoinColumn({ name: "registrationId" })
   registration: Registration;
 
   @Field(() => [QuestionChoice])
-  @ManyToMany(
-    () => QuestionChoice,
-    questionChoice => questionChoice.answers,
-    { cascade: ["update"] },
-  )
+  @ManyToMany(() => QuestionChoice, (questionChoice) => questionChoice.answers, { cascade: ["update"] })
   @JoinTable({ name: "answerChoice" })
   answerChoices: QuestionChoice[];
 }

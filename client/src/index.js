@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom';
 import React, { useEffect } from 'react';
 import { IntlProvider } from 'react-intl';
 import { createStore, useStore } from 'react-hookstore';
-import { ApolloProvider, ApolloClient, InMemoryCache, makeVar } from '@apollo/client';
+import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import { dummyEmail, dummyStudentNumber } from './util/privacyDefaults';
 import messages from './localisation/messages';
+import { privacyToggleVar } from './apolloReactiveVariables';
 import App from './App';
 import './index.css';
 
@@ -13,9 +14,6 @@ createStore('mocking', {
   mockedBy: null,
   mockedUser: null,
 });
-
-export const privacyToggleVar = makeVar(false);
-export const notificationVar = makeVar({});
 
 const MockingEnabledClient = () => {
   const [mocking, setMocking] = useStore('mocking');

@@ -208,6 +208,6 @@ const demoMocks = [
 
 export const getMockHeaders = () => mocks[localStorage.getItem('mockHeaderIndex') || 0];
 
-//export const getMockHeaders = () => demoMocks[localStorage.getItem('mockHeaderIndex') || 0];
+// export const getMockHeaders = () => demoMocks[localStorage.getItem('mockHeaderIndex') || 0];
 
 export const setMockHeaders = index => localStorage.setItem('mockHeaderIndex', index);

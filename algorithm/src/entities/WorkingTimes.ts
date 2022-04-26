@@ -32,19 +32,12 @@ export class WorkingTimes extends BaseEntity {
   tentative: boolean;
 
   @Field(() => Registration)
-  @ManyToOne(
-    () => Registration,
-    registration => registration.workingTimes,
-    { onDelete: "CASCADE" },
-  )
+  @ManyToOne(() => Registration, (registration) => registration.workingTimes, { onDelete: "CASCADE" })
   @JoinColumn({ name: "registrationId" })
   registration: Registration;
 
   @Field(() => Question)
-  @ManyToOne(
-    () => Question,
-    question => question.workingTimes,
-  )
+  @ManyToOne(() => Question, (question) => question.workingTimes)
   @JoinColumn({ name: "questionId" })
   timeQuestion: Question;
 }

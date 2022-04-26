@@ -1,74 +1,95 @@
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
+  Typography,
+  Card,
+  CardHeader,
+  CardContent,
+  Avatar,
+  CardActions,
   Button,
+  Collapse,
+  Divider,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
 } from '@material-ui/core';
 import HourDisplay from '../misc/HourDisplay';
 import { useUserGroupItemStyles } from '../../styles/users/UserGroupItem';
+import EventAvailableIcon from '@material-ui/icons/EventAvailable';
 
 export default ({ group, groupTimes, course }) => {
-  const [showTime, setShowTime] = useState(false);
   const classes = useUserGroupItemStyles();
+  const [expanded, setExpanded] = useState(false);
 
-  const handleShowTime = () => {
-    setShowTime(!showTime);
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
   };
 
   return (
-    <TableContainer key={group.id} component={Paper}>
-      <Table className={classes.table} aria-label="customized table">
-        <TableHead data-cy="user-group-view-group-name" className={classes.head}>
-          <TableRow>
-            <TableCell className={classes.head}>
-              {course.title}: {group.groupName}
-            </TableCell>
-            <TableCell className={classes.head} />
-            <TableCell className={classes.head} align="right">
-              {groupTimes[group.id] ? (
-                <Button variant="outlined" className={classes.button} onClick={handleShowTime}>
-                  <FormattedMessage id="groups.showTimes" />
-                </Button>
-              ) : null}
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableHead className={classes.subHeading}>
-          <TableRow>
-            <TableCell className={classes.subHeading}>First name</TableCell>
-            <TableCell className={classes.subHeading} align="center">
-              Last Name
-            </TableCell>
-            <TableCell className={classes.subHeading} align="center">
-              Email
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {group.students.map(student => (
-            <TableRow className={classes.row} key={student.id}>
-              <TableCell component="tr" scope="row">
-                {student.firstname}
-              </TableCell>
-              <TableCell align="center">{student.lastname}</TableCell>
-              <TableCell align="center">{student.email}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      {showTime ? (
-        <HourDisplay
-          times={groupTimes[group.id]}
-          students={group.students.length}
-          groupId={group.id}
+    <Card variant="outlined">
+      <CardHeader
+        data-cy="user-group-view-group-name"
+        style={{backgroundColor: "#03A9F4", color: "#FFFFFF"}}
+        titleTypographyProps={{variant:'h6' }}
+        title={course.title}
+        subheader={group.groupName} 
         />
-      ) : null}
-    </TableContainer>
+      <CardContent>
+        {group.groupMessage && group.groupMessage !== '' && (
+          <>
+            <Typography variant="h5" gutterBottom>
+              <FormattedMessage id="groups.newMessage" />
+              &nbsp;
+              {group.groupName}
+            </Typography>
+            <Typography variant="body1" className={classes.message}>
+              {group.groupMessage}
+            </Typography>
+            <Divider />
+          </>
+        )}
+        <List>
+          {group.students.map(student => (
+            <ListItem key={student.id}>
+              <ListItemAvatar>
+                <Avatar>{
+                  student.firstname[0].toUpperCase()}{student.lastname[0].toUpperCase()}
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+              primary={
+                <Typography gutterBottom>
+                  {student.firstname} {student.lastname}
+                </Typography>}
+              secondary={student.email}/>
+            </ListItem>
+          ))}
+        </List>
+      </CardContent>
+    {groupTimes[group.id] && (
+      <>
+      <CardActions disableSpacing>
+        <Button className={classes.fabButton}
+        color='primary'
+        variant="contained"
+        onClick={() => handleExpandClick()}
+        endIcon={<EventAvailableIcon />}>
+          <FormattedMessage id="groups.showTimes" />
+        </Button>
+      </CardActions>
+      <Collapse in={expanded}
+      timeout="auto"
+      unmountOnExit>
+        <CardContent>
+          <HourDisplay
+            times={groupTimes[group.id]}
+            students={group.students.length}
+            groupId={group.id} />
+        </CardContent>
+      </Collapse></>
+    )}
+    </Card>
   );
 };

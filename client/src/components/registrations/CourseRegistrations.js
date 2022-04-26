@@ -18,7 +18,7 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 import questionSwitch, { count, getEmailsSeparatedBySemiColon } from '../../util/functions';
 import ConfirmationButton from '../ui/ConfirmationButton';
 import { setNotification } from '../ui/Notification';
-import { CourseContext } from '../courses/Course';
+import CourseContext from '../courses/CourseContext';
 import { TIMES } from '../../util/questionTypes';
 import HourDisplay from '../misc/HourDisplay';
 import Popup from '../ui/Popup';
@@ -64,7 +64,14 @@ const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
               </TableCell>
               <TableCell>
                 <FormattedMessage id="courseRegistration.email" />
-                <Button style={{backgroundColor: green[500]}} onClick={() => {navigator.clipboard.writeText(getEmailsSeparatedBySemiColon(registrations))}} >Copy All</Button>
+                <Button
+                  style={{ backgroundColor: green[500] }}
+                  onClick={() => {
+                    navigator.clipboard.writeText(getEmailsSeparatedBySemiColon(registrations));
+                  }}
+                >
+                  Copy All
+                </Button>
               </TableCell>
               {course.questions.some(q => q.questionType === TIMES) && (
                 <TableCell>
@@ -82,7 +89,7 @@ const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
           </TableHead>
           <TableBody>
             {registrations.map(reg => (
-              <TableRow key={reg.id} data-cy="student-registration-row">
+              <TableRow key={reg.student.id} data-cy="student-registration-row">
                 <TableCell>{reg.student.firstname}</TableCell>
                 <TableCell>{reg.student.lastname}</TableCell>
                 <TableCell>{reg.student.studentNo}</TableCell>
@@ -106,7 +113,10 @@ const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
                     </Popup>
                   </TableCell>
                 )}
-                {reg.questionAnswers.map(x => x).sort((a,b) => a.question.order-b.question.order).map(qa => questionSwitch(qa))}
+                {reg.questionAnswers
+                  .map(x => x)
+                  .sort((a, b) => a.question.order - b.question.order)
+                  .map(qa => questionSwitch(qa))}
                 <TableCell>
                   <ConfirmationButton
                     onConfirm={() => handleRegistrationRemoval(reg.student.id)}

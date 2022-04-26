@@ -22,7 +22,7 @@ export default ({ group, regByStudentId }) => {
         <ListItem>
           <HourDisplay
             header={intl.formatMessage({ id: 'groups.combinedHourDisplay' })}
-            groupId={group.id}
+            groupId={group.groupId}
             students={group.students.length}
             times={count(group.students.map(student => regByStudentId[student.studentNo]))}
           />

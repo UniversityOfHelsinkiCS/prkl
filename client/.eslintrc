@@ -3,7 +3,13 @@
   "plugins": ["prettier", "jsx-a11y"],
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "react/prop-types": 0,
-    "prettier/prettier": ["error"]
+    "react/prop-types": "off",
+    "prettier/prettier": "warn",
+    "import/no-cycle": "warn",
+    "react/no-array-index-key": "warn",
+    "react/jsx-one-expression-per-line": "off",
+    "react/jsx-wrap-multilines": "off",
+    "no-unused-vars": "warn",
+    "jsx-a11y/anchor-is-valid": "warn"
   }
 }

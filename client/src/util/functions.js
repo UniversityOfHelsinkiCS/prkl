@@ -1,46 +1,19 @@
 import React from 'react';
 import { TableCell, Chip } from '@material-ui/core';
 
-/**
- * A parser that intakes a student's answer to a question, and outputs a jsx table row -element containing the parsed answer.
- * eg. an answer to a multiple choice question with all options "yes", "no" and "maybe" could look like
- * this: "||no|maybe|"
- * @param{QuestionAnswer} - an answer associated with a given registration
- */
-const mapshit = qa => {
-  const formattedMultipleAnswers = ['|'];
-  let currentAnswer = 0;
 
-  if (qa.answerChoices.length !== 0) {
-    for (let index = 1; index <= qa.question.questionChoices.length; index += 1) {
-      if (
-        currentAnswer >= qa.answerChoices.length ||
-        index < qa.answerChoices[currentAnswer].order
-      ) {
-        formattedMultipleAnswers.push('|');
-      } else {
-        formattedMultipleAnswers.push(` ${qa.answerChoices[currentAnswer].content} |`);
-        currentAnswer += 1;
-      }
-    }
-  }
-
-  return formattedMultipleAnswers;
-};
-
-
-export const copyTextToClipboard = (text) => {
+export const copyTextToClipboard = text => {
   if (text) {
-    navigator.clipboard.writeText(text)
+    navigator.clipboard.writeText(text);
   }
-} 
+};
 
 const hours = 14;
 // either 8 or 6 depending on the timezone
 const first = 8;
 
 export const getEmailsSeparatedBySemiColon = registrations => {
-  const emails = registrations.map(reg => reg.student.email).reduce((a, b) => a + ';' + b);
+  const emails = registrations.map(reg => reg.student.email).reduce((a, b) => `${a};${b}`);
   return emails;
 };
 
@@ -48,7 +21,7 @@ export const count = registrations => {
   const times = [...Array(7)].map(() => [...Array(hours)].map(() => 0));
   // console.log('times begin:', times)
 
-  if (registrations[0] === undefined ) {
+  if (registrations[0] === undefined) {
     return null;
   }
 
@@ -62,11 +35,11 @@ export const count = registrations => {
       if (day === 0) {
         day = 7;
       }
-      day--;
+      day -= 1;
 
       if (diff >= 1) {
-        for (let i = 0; i <= diff - 1; i++) {
-          times[day][start - first + i]++;
+        for (let i = 0; i <= diff - 1; i += 1) {
+          times[day][start - first + i] += 1;
         }
       }
     });
@@ -84,11 +57,39 @@ export const timeParse = props => {
   return groupTimesMap;
 };
 
+const colors = [
+  '#9FA8DA',
+  '#9b59b6',
+  '#5bb1eb',
+  '#2ecc71',
+  '#53d4ba',
+  '#e8a335',
+  '#f1c40f',
+  '#ed7568',
+  '#898ff5',
+  '#f78fb3',
+  '#27cfc7',
+  '#B2EBF2',
+];
+
+const keyValue = {};
+
 export default qa => {
   switch (qa.question.questionType) {
     case 'multipleChoice':
       return (
-        <TableCell key={qa.id}>{qa.answerChoices.map(question => <Chip label={question.content} />)}</TableCell>
+        <TableCell key={qa.id}>
+          
+          {qa.answerChoices.map(question => {
+            if (!keyValue[question.content]) {
+              keyValue[question.content] = colors.pop();
+            }
+
+            return (
+              <Chip style={{ backgroundColor: keyValue[question.content] }} label={question.content} key={question.id} />
+            )
+          })}
+        </TableCell>
       );
     case 'singleChoice':
       return (

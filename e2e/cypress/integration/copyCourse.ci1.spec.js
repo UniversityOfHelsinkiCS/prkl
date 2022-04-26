@@ -40,9 +40,9 @@ describe('Copying old course data when add course', () => {
     cy.get('[data-cy="search-code-button"]').click();
     //Check if copy work
     cy.get('[data-cy="course-title-input"] input').should('have.value', 'Course from Cypress');
-    cy.get('[data-cy="course-title-input"]').clear().type('Second Course from Cypress');
-    cy.get('[data-cy="course-deadline-input"]').type('2100-12-12');
-    cy.get('[data-cy="course-code-input"]').clear().type('CYP969');
+    cy.get('[data-cy="course-title-input"] input').clear().type('Second Course from Cypress');
+    cy.get('[data-cy="course-deadline-input"] input').type('2100-12-12');
+    cy.get('[data-cy="course-code-input"] input').clear().type('CYP969');
     //Create question 2
     cy.get('[data-cy="add-question-button"]').click();
     cy.get('[data-cy="question-title"]').last().type('Greetings from second course');

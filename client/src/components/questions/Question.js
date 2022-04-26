@@ -94,23 +94,22 @@ const Question = ({ question, minHours, weekends, workTimeEndsAt, formControl })
       <Controller
         as={TimeForm}
         name={question.id}
-        weekends = {weekends}
-        minHours = {minHours}
-        workTimeEndsAt = {workTimeEndsAt}
+        weekends={weekends}
+        minHours={minHours}
+        workTimeEndsAt={workTimeEndsAt}
         onChange={([event]) => {
           return event;
         }}
         formControl={formControl}
         control={formControl.control}
         description={question.content}
-        
       />
     );
   }
 
   return (
     <div style={{ paddingTop: 5, paddingBottom: 5 }} data-cy="coursepage-question">
-      <Grid container justify="space-between">
+      <Grid container justifyContent="space-between">
         <Grid item>
           <b>{question.content}</b>
           {!question.optional && <span style={{ color: 'red' }}> *</span>}
