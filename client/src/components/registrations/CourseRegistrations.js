@@ -65,7 +65,7 @@ const CourseRegistrations = ({ course, registrations, regByStudentId }) => {
               <TableCell>
                 <FormattedMessage id="courseRegistration.email" />
                 <Button
-                  style={{ backgroundColor: green[500] }}
+                  style={{ backgroundColor: green[500], margin: '5px' }}
                   onClick={() => {
                     navigator.clipboard.writeText(getEmailsSeparatedBySemiColon(registrations));
                   }}

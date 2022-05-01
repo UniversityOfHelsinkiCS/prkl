@@ -86,7 +86,7 @@ export default ({ course, regByStudentId, group, tableIndex, setRegistrationsWit
                 <TableCell className={classes.heading}>
                   <FormattedMessage id="groups.email" />
                   <Button
-                    style={{ backgroundColor: green[500] }}
+                    style={{ backgroundColor: green[500], margin:'5px' }}
                     onClick={() => copyTextToClipboard(emails)}
                   >
                     Copy All

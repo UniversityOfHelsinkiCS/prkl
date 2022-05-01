@@ -1,5 +1,6 @@
 import React from 'react';
 import { TableCell, Chip } from '@material-ui/core';
+import { concat } from 'lodash';
 
 
 export const copyTextToClipboard = text => {
@@ -73,28 +74,35 @@ const colors = [
 ];
 
 const keyValue = {};
-
+const otherColor = {};
 export default qa => {
+  qa.answerChoices.map(question => {
+    if (!otherColor[question.order]) {
+      otherColor[question.order] = colors.pop();
+    }
+  })
   switch (qa.question.questionType) {
+
     case 'multipleChoice':
       return (
         <TableCell key={qa.id}>
           
           {qa.answerChoices.map(question => {
-            if (!keyValue[question.content]) {
-              keyValue[question.content] = colors.pop();
-            }
-
             return (
-              <Chip style={{ backgroundColor: keyValue[question.content] }} label={question.content} key={question.id} />
+              <Chip style={{ margin:'2px', backgroundColor: otherColor[question.order] }} 
+                label={question.content} key={question.id} />
             )
           })}
         </TableCell>
       );
     case 'singleChoice':
       return (
+        
         <TableCell key={qa.id}>
-          {qa.answerChoices[0] !== undefined ? qa.answerChoices[0].content : ''}
+          {qa.answerChoices[0] !== undefined ? 
+            <Chip style={{margin:'5px', backgroundColor: otherColor[qa.answerChoices[0].order] }} 
+              label={qa.answerChoices[0].content} key={qa.answerChoices[0].id} />
+          : ''}
         </TableCell>
       );
     case 'freeForm':
