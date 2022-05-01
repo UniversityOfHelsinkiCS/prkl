@@ -1,6 +1,5 @@
 import React from 'react';
 import { TableCell, Chip } from '@material-ui/core';
-import { concat } from 'lodash';
 
 
 export const copyTextToClipboard = text => {
@@ -59,39 +58,55 @@ export const timeParse = props => {
 };
 
 const colors = [
-  '#9FA8DA',
-  '#9b59b6',
-  '#5bb1eb',
-  '#2ecc71',
-  '#53d4ba',
-  '#e8a335',
-  '#f1c40f',
-  '#ed7568',
-  '#898ff5',
-  '#f78fb3',
-  '#27cfc7',
-  '#B2EBF2',
-];
+  '#D1C4E9',
+  '#E1BEE7',
+  '#F8BBD0',
+  '#FFCDD2',
+  '#FFCCBC',
+  '#FFE0B2',
+  '#FFECB3',
+  '#DCEDC8',
+  '#C8E6C9',
+  '#B2DFDB',
+  '#B2EBF2'
 
-const keyValue = {};
-const otherColor = {};
+]
+
+const colorChoice = {};
+const questionsForChips = [];
+
 export default qa => {
-  qa.answerChoices.map(question => {
-    if (!otherColor[question.order]) {
-      otherColor[question.order] = colors.pop();
+  qa.question.questionChoices.map(question => {
+    if (!colorChoice[question.order]) {
+      colorChoice[question.order] = colors.pop();
     }
   })
-  switch (qa.question.questionType) {
 
+  switch (qa.question.questionType) {
+    
+    //TÄÄ ON RUMA RATKAISU MUTTA TOIMII TEHKÄÄ PAREMPI, UNIIKKI AVAIN PITÄISI KYHÄTÄ VIELÄ
     case 'multipleChoice':
+      qa.question.questionChoices.map(question => {
+        questionsForChips[question.order]=undefined
+      })
+      const sorted = [...qa.answerChoices].sort((a, b) => a.order > b.order);
+      sorted.map(question => {
+        questionsForChips[question.order]=question
+      })
       return (
         <TableCell key={qa.id}>
-          
-          {qa.answerChoices.map(question => {
-            return (
-              <Chip style={{ margin:'2px', backgroundColor: otherColor[question.order] }} 
-                label={question.content} key={question.id} />
-            )
+          {questionsForChips.map(question => {
+            if (question !== undefined){
+              return (
+                <Chip style={{ width:'100px', margin:'2px', backgroundColor: colorChoice[question.order] }} 
+                  label={question.content} key={question.id} />
+              )
+            } else{
+              return (
+                <Chip style={{ width:'100px', margin:'2px', backgroundColor: 'transparent' }}key={question}  />
+              )
+            }
+
           })}
         </TableCell>
       );
@@ -100,7 +115,7 @@ export default qa => {
         
         <TableCell key={qa.id}>
           {qa.answerChoices[0] !== undefined ? 
-            <Chip style={{margin:'5px', backgroundColor: otherColor[qa.answerChoices[0].order] }} 
+            <Chip style={{ width:'100px', margin:'2px', backgroundColor: colorChoice[qa.answerChoices[0].order] }} 
               label={qa.answerChoices[0].content} key={qa.answerChoices[0].id} />
           : ''}
         </TableCell>
