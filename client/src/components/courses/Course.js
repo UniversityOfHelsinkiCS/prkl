@@ -11,6 +11,7 @@ import {
   DELETE_COURSE,
   COURSE_REGISTRATION,
   DELETE_REGISTRATION,
+  ALL_COURSES,
 } from '../../GqlQueries';
 import { BlueButton } from '../../styles/ui/Button';
 import { useLoaderStyle } from '../../styles/ui/Loader';
@@ -52,6 +53,7 @@ export default ({ id, match }) => {
         console.error(`Failed to delete course ${courseId} from cache.`);
       }
     },
+    refetchQueries: [{ query: ALL_COURSES }],
   });
 
   // Description collection of the course

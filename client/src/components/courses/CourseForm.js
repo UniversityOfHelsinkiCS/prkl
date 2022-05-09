@@ -227,7 +227,6 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
   // TÄÄ HOITAA KURSSIKOODILLA HAKEMISEN
 
   const code = getValues('courseCode') || '';
-  console.log(code);
   const [getByCode, { called, loading, data, refetch }] = useLazyQuery(COURSE_BY_CODE, {
     variables: { code },
     fetchPolicy: 'network-only',
@@ -237,9 +236,6 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
     if (called && !loading && data.getCourseByCode.length > 0) {
       const result = data.getCourseByCode[0];
       refetch();
-      setMinWorkingHours(result.minHours || minHours);
-      setWorkTimeEndsAt(result.workTimeEndsAt || workTimeEndsAt);
-      setWeekends(result.weekends || weekends);
       setValue('courseTitle', result.title);
       setValue('courseDescription', result.description);
       const calendarQuestion = result.questions.find(q => q.questionType === TIMES);
@@ -248,8 +244,12 @@ const CourseForm = ({ course, onCancelEdit, editView }) => {
         setCalendarToggle(true);
         setValue('calendarDescription', calendarQuestion.content);
       } else {
-        setCalendarToggle(false);
+          setCalendarToggle(calendarToggle);
       }
+      setMinWorkingHours(result.minHours || minHours);
+      setWorkTimeEndsAt(result.workTimeEndsAt || workTimeEndsAt);
+      setWeekends(result.weekends || weekends);
+
       const qstns = result.questions
         .filter(q => q.questionType !== TIMES)
         .map(q => {
