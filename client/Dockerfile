@@ -1,10 +1,10 @@
-FROM node:16.2
+FROM node:16.14
 
-COPY ./ /usr/src/app/frontend
-WORKDIR /usr/src/app/frontend
+# Install dependencies.
+WORKDIR /usr/src/app
+COPY package.json package-lock.json ./
+RUN npm ci
 
-EXPOSE 3000
+COPY . .
 
-# If node_modules do not exist, install before starting.  
-CMD [ -d "node_modules" ] && npm start || npm ci && npm start
-
+CMD npm start

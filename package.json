@@ -17,7 +17,8 @@
     "start:dev": "cd server && npm run start:dev",
     "start:test": "cd server && npm run start:test",
     "test": "docker-compose build test-app && docker-compose run tests; docker-compose down",
-    "dev": "docker-compose up db adminer app; exit 0"
+    "dev": "docker-compose up db adminer app; exit 0",
+    "start": "docker compose up --build db app client"
   },
   "repository": {
     "type": "git",
