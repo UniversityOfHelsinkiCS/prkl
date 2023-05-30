@@ -13,8 +13,8 @@ module.exports = {
   database: process.env.POSTGRES_DB,
   username: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
-  entities: [`${prefix}/entities/*.${ext}`],
+  entities: [`${__dirname}/dist/entities/*.js`],
   migrationsTableName: "migrations",
-  migrations: [`${prefix}/migrations/*.${ext}`],
+  migrations: [`${__dirname}/dist/migrations/*.js`],
   migrationsRun: true,
 };
