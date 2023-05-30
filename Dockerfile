@@ -26,4 +26,6 @@ RUN npm install -g typescript && cd server && npm run build
 
 EXPOSE 3001
 
-CMD cd server && npm run start:prod
+WORKDIR /opt/app-root/src/server
+
+CMD npm run start:prod
