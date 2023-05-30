@@ -9,10 +9,10 @@
   "main": "app.js",
   "scripts": {
     "start:dev": "NODE_ENV=development nodemon",
-    "build": "npx tsc",
-    "start": "node dist/src/app.js",
-    "start:prod": "NODE_ENV=production node dist/src/app.js",
-    "start:test": "NODE_ENV=test node dist/src/app.js && jest",
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "start:prod": "NODE_ENV=production node dist/app.js",
+    "start:test": "NODE_ENV=test node dist/app.js && jest",
     "eslint": "eslint --ext .ts ./src",
     "eslint-fix": "eslint --ext .ts ./src --fix"
   },

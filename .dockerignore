@@ -5,3 +5,4 @@ client/build
 documentation
 server/dist
 server/public
+server/test

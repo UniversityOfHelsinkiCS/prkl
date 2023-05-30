@@ -1,50 +1,28 @@
-FROM node:12.16
-# Install netcat for wait-for script
-RUN apt-get update && apt-get install -y netcat
+FROM registry.access.redhat.com/ubi8/nodejs-12
 
+ENV TZ="Europe/Helsinki"
 
-# Configure frontend url via --build-arg.
+WORKDIR /opt/app-root/src
+
 ARG PUBLIC_URL=/
 ENV PUBLIC_URL=$PUBLIC_URL
 
-# Set build time NODE_ENV.
 ARG NODE_ENV=production
 ENV NODE_ENV=$NODE_ENV
 
 ARG REACT_APP_CUSTOM_NODE_ENV=production
 ENV REACT_APP_CUSTOM_NODE_ENV=$REACT_APP_CUSTOM_NODE_ENV
 
-# Set timezone to Europe/Helsinki
-RUN echo "Europe/Helsinki" > /etc/timezone
-RUN dpkg-reconfigure -f noninteractive tzdata
-
-# Install frontend dependencies
-WORKDIR /usr/src/app/client
-COPY client/package.json client/package-lock.json ./
-RUN npm ci
-
-# Install backend dependencies
-WORKDIR /usr/src/app/server
-COPY server/package.json server/package-lock.json ./
-ENV NODE_ENV=""
-RUN npm ci
-ENV NODE_ENV=$NODE_ENV
+# Install dependencies
+COPY . .
+#RUN cd client && npm ci
+RUN cd server && npm ci
 
 # Build frontend.
-WORKDIR /usr/src/app
-COPY client client/
-WORKDIR /usr/src/app/client
-RUN npm run build
-RUN cp -r build/ ../server/public
+RUN cd client && npm run build && cp -r build/ ../server/public
 
 # Build backend
-WORKDIR /usr/src/app
-COPY server server/
-COPY ./wait-for /usr/src/app/server
-WORKDIR /usr/src/app/server
-RUN ["chmod", "+x", "./wait-for"]
-
-RUN npm run build
+RUN npm install -g typescript && cd server && npm run build
 
 EXPOSE 3001
 
