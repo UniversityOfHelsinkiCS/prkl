@@ -27,6 +27,11 @@ const main = async (): Promise<void> => {
       type: 'postgres',
       url: process.env.DATABASE_URL,
       ssl: true,
+      extra: {
+        ssl: {
+          rejectUnauthorized: false
+        }
+      }
     });
   } catch (error) {
     console.log("error:", error);
