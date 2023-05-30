@@ -26,6 +26,7 @@ const main = async (): Promise<void> => {
     await createConnection({
       type: 'postgres',
       url: process.env.DATABASE_URL,
+      ssl: true,
     });
   } catch (error) {
     console.log("error:", error);
