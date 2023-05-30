@@ -23,16 +23,7 @@ const port = 3001;
 
 const main = async (): Promise<void> => {
   try {
-    await createConnection({
-      type: 'postgres',
-      url: process.env.DATABASE_URL,
-      ssl: true,
-      extra: {
-        ssl: {
-          rejectUnauthorized: false
-        }
-      }
-    });
+    await createConnection();
   } catch (error) {
     console.log("error:", error);
   }
