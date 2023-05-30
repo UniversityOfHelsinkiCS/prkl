@@ -14,7 +14,7 @@ ARG REACT_APP_CUSTOM_NODE_ENV=production
 ENV REACT_APP_CUSTOM_NODE_ENV=$REACT_APP_CUSTOM_NODE_ENV
 
 # Install dependencies
-COPY --chmod=777 . .
+COPY . .
 #RUN cd client && npm ci
 RUN cd server && npm ci
 
