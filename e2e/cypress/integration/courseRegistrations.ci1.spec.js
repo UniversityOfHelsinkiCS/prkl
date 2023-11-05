@@ -92,7 +92,7 @@ describe('Course registrations', () => {
       cy.get('[data-cy="toc-checkbox"]').click();
       cy.get('[data-cy="register-on-course-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.contains('Already registered!');
+      cy.contains('You are registered!');
     });
 
     it('Can not enrol twice on the same course', () => {
@@ -104,7 +104,7 @@ describe('Course registrations', () => {
 
       cy.visit('/');
       cy.contains(courses[0].title).click();
-      cy.contains('Already registered!');
+      cy.contains('You are registered!');
       cy.wait(500);
       cy.get('[data-cy="register-on-course-button"]').should('not.exist');
     });
