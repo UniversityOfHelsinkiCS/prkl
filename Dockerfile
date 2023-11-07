@@ -22,7 +22,7 @@ RUN cd server && npm ci
 RUN cd client && npm run build && cp -r build/ ../server/public
 
 # Build backend
-RUN npm install -g typescript && cd server && npm run build
+RUN npm install -g typescript@4 && cd server && npm run build
 
 EXPOSE 3001
 
