@@ -27,6 +27,7 @@ services:
     environment:
       - "NODE_ENV=development"
       - "REACT_APP_CUSTOM_NODE_ENV=development"
+      - "DATABASE_URL=postgres://postgres:postgres@db:5432/postgres"
     depends_on:
       - frontend
 
