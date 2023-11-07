@@ -39,8 +39,7 @@ describe('Course registrations', () => {
       cy.get('[data-cy="register-on-course-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
 
-      cy.get('[data-cy="notification"]').should('contain.text', 'Registration successful');
-      cy.contains('Groups are not ready yet...');
+      cy.contains('Your registration was successful! Waiting for the end of the registration period...');
 
       // Admin-role check for correct answers.
       cy.switchToAdmin();
@@ -92,7 +91,7 @@ describe('Course registrations', () => {
       cy.get('[data-cy="toc-checkbox"]').click();
       cy.get('[data-cy="register-on-course-button"]').click();
       cy.get('[data-cy="confirmation-button-confirm"]').click();
-      cy.contains('You are registered!');
+      cy.contains('Your registration was successful! Waiting for the end of the registration period...');
     });
 
     it('Can not enrol twice on the same course', () => {
@@ -104,7 +103,7 @@ describe('Course registrations', () => {
 
       cy.visit('/');
       cy.contains(courses[0].title).click();
-      cy.contains('You are registered!');
+      cy.contains('Your registration was successful! Waiting for the end of the registration period...');
       cy.wait(500);
       cy.get('[data-cy="register-on-course-button"]').should('not.exist');
     });

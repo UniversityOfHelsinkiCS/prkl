@@ -63,7 +63,8 @@ describe('Group publishing', () => {
               cy.switchToStudent();
               cy.visit(`/course/${courses[3].id}`);
               cy.wait(500);
-              cy.get('[data-cy="disabled-show-user-groups-button"]').should('exist');
+              cy.contains('Groups are still under construction...')
+              cy.contains('If you want to cancel your registration, please contact course teacher.')
 
               cy.switchToStaff();
               cy.visit(`/course/${courses[3].id}`);
@@ -73,7 +74,6 @@ describe('Group publishing', () => {
 
               cy.switchToStudent();
               cy.visit(`/course/${courses[3].id}`);
-              cy.get('[data-cy="show-user-groups-button"]').click();
               cy.contains(`Message for ${groupName}`);
               cy.contains(users[0].firstname);
               cy.contains(users[0].lastname);
