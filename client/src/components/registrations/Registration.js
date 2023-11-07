@@ -12,12 +12,11 @@ import ConfirmationButton from '../ui/ConfirmationButton';
 import timeChoices from '../../util/timeFormChoices';
 import RegistrationForm from './RegistrationForm';
 import UserGroup from '../users/UserGroup';
-import { BlueButton } from '../../styles/ui/Button';
 import { setNotification } from '../ui/Notification';
 import CourseContext from '../courses/CourseContext';
 import AppContext from '../../AppContext';
 
-export default ({ course, match }) => {
+export default ({ course }) => {
   const hookForm = useForm({ mode: 'onChange' });
   const { handleSubmit } = hookForm;
   const { user } = useContext(AppContext);
@@ -99,14 +98,6 @@ export default ({ course, match }) => {
     return timeList;
   };
 
-  const handleUserGroupView = () => {
-    if (match.params.subpage !== 'usergroup') {
-      history.push(`/course/${course.id}/usergroup`);
-    } else {
-      history.push(`/course/${course.id}`);
-    }
-  };
-
   // Format form data for GraphQL and post to backend.
   const onSubmit = async data => {
     // Remove TOC button's value.
@@ -185,76 +176,58 @@ export default ({ course, match }) => {
     return found !== undefined;
   };
 
-  return (
-    <div>
-      {match.params.subpage === undefined ? (
-        <div>
-          {userIsRegistered() ? (
-            <div>
+  const registrationIsClosed = () => new Date(course.deadline) < new Date();
+
+  if (userIsRegistered()) {
+    if (registrationIsClosed()) {
+      if (course.groupsPublished)
+        return (
+          <div>
+            <UserGroup user={user} course={course} />
+            <Typography variant="h4">
               <br />
-              <Typography variant="h4">
-                <ThumbUpIcon fontSize="large" />
-                &nbsp;
-                <FormattedMessage id="course.userHasRegistered" />
-              </Typography>
-              {new Date(course.deadline) > new Date() ? (
-                <ConfirmationButton
-                  onConfirm={handleRegistrationDeletion}
-                  color={red[500]}
-                  modalMessage={intl.formatMessage({ id: 'courseRegistration.cancelConfirmation' })}
-                  buttonDataCy="cancel-registration-button"
-                >
-                  <br />
-                  <FormattedMessage id="courseRegistration.cancel" />
-                </ConfirmationButton>
-              ) : (
-                <Typography variant="h5">
-                  <FormattedMessage id="course.contactTeacher" />
-                </Typography>
-              )}
-              <div>
-                {course.groupsPublished ? (
-                  <div>
-                    <br />
-                    <BlueButton
-                      onClick={handleUserGroupView}
-                      color="blue"
-                      data-cy="show-user-groups-button"
-                    >
-                      <FormattedMessage id="course.showUserGroup" />
-                    </BlueButton>
-                  </div>
-                ) : (
-                  <div>
-                    <br />
-                    <BlueButton disabled data-cy="disabled-show-user-groups-button">
-                      <FormattedMessage id="course.disabledShowUserGroup" />
-                    </BlueButton>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div>
-              {new Date(course.deadline) > new Date() ? (
-                <RegistrationForm
-                  onSubmit={handleSubmit(onSubmit)}
-                  course={course}
-                  formControl={hookForm}
-                />
-              ) : null}
-            </div>
-          )}
-        </div>
-      ) : (
-        <div>
-          <UserGroup user={user} course={course} />
+              <FormattedMessage id="course.contactTeacher" />
+            </Typography>
+          </div>
+        );
+      return (
+        <Typography variant="h4">
+          <FormattedMessage id="course.groupsComeHere" />
           <br />
-          <BlueButton onClick={handleUserGroupView} data-cy="back-to-info-button">
-            <FormattedMessage id="course.switchInfoView" />
-          </BlueButton>
-        </div>
-      )}
-    </div>
-  );
+          <br />
+          <FormattedMessage id="course.contactTeacher" />
+        </Typography>
+      );
+    }
+    return (
+      <div>
+        <Typography variant="h4">
+          <ThumbUpIcon fontSize="large" />
+          &nbsp;
+          <FormattedMessage id="course.userHasRegistered" />
+        </Typography>
+        <br />
+        <ConfirmationButton
+          onConfirm={handleRegistrationDeletion}
+          color={red[500]}
+          modalMessage={intl.formatMessage({ id: 'courseRegistration.cancelConfirmation' })}
+          buttonDataCy="cancel-registration-button"
+        >
+          <br />
+          <FormattedMessage id="courseRegistration.cancel" />
+        </ConfirmationButton>
+      </div>
+    );
+  } else {
+    if (registrationIsClosed()) {
+      return (
+        <Typography variant="h4">
+          <FormattedMessage id="course.registrationClosed" />
+        </Typography>
+      );
+    }
+    return (
+      <RegistrationForm onSubmit={handleSubmit(onSubmit)} course={course} formControl={hookForm} />
+    );
+  }
 };

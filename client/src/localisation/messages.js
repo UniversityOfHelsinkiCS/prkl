@@ -109,7 +109,8 @@ export default {
     'course.gradeQuestion': 'What are your goals for the project?',
     'course.delete': 'Delete course',
     'course.confirmDelete': 'Delete this course?',
-    'course.userHasRegistered': 'Already registered!',
+    'course.userHasRegistered':
+      'Your registration was successful! Waiting for the end of the registration period...',
     'course.groupsComeHere': 'Groups are still under construction...',
     'course.disabledShowUserGroup': 'Groups are not ready yet...',
     'course.contactTeacher':
@@ -126,6 +127,7 @@ export default {
     'course.switchRegisterView': 'Register',
     'course.noTeachers': 'This course has no teachers. You will be set as a teacher',
     'course.joinToGroups': 'Join group here',
+    'course.registrationClosed': 'Registration for this course is closed.',
 
     'courseInfo.teachers': 'Teachers',
 
