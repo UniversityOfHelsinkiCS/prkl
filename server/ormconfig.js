@@ -10,10 +10,6 @@ module.exports = {
   migrationsTableName: "migrations",
   migrations: [`${prefix}/migrations/*.${ext}`],
   migrationsRun: true,
-  ssl: true,
-  extra: {
-    ssl: {
-      rejectUnauthorized: false
-    }
-  }
+  ssl: devMode ? false : true,
+  extra: devMode ? {} : { ssl: { rejectUnauthorized: false } },
 };
