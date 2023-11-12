@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { gql, useMutation } from '@apollo/client';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Typography } from '@material-ui/core';
+import { Link, Typography } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import { REGISTER_TO_COURSE } from '../../GqlQueries';
@@ -177,6 +177,17 @@ export default ({ course }) => {
   };
 
   const registrationIsClosed = () => new Date(course.deadline) < new Date();
+
+  const showOhtuLink = () => course?.id === '4f142151-b6e2-4120-b677-d1ae259ef6a8';
+
+  if (showOhtuLink()) {
+    return (
+      <Typography variant="h4">
+        Ilmoittautumisaika on päättynyt, katso miniprojektin ryhmäjako{' '}
+        <Link href="https://ohjelmistotuotanto-hy.github.io/ryhmajako/">täältä!</Link>
+      </Typography>
+    );
+  }
 
   if (userIsRegistered()) {
     if (registrationIsClosed()) {
